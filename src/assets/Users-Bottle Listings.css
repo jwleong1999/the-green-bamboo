@@ -1,0 +1,112 @@
+body {
+    /* colours */
+    background-color: #D9D9D9 ;
+
+    /* margins */
+    margin-left: 10px;
+    margin-right: 10px;
+
+    /* padding */
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.navbar {
+    border-bottom: 3px solid #535C72;
+}
+
+.navbar-brand {
+    margin-bottom: 10px;
+}
+
+.custom-btn {
+    color: whitesmoke;
+    background-color: #535C72;
+}
+
+.custom-btn:hover {
+    color: whitesmoke;
+    background-color: #747D92;
+}
+
+.custom-btn:focus {
+    outline-color: transparent;
+    outline-style:solid;
+    box-shadow:2px #747D92;
+}
+
+.navbar-toggler,
+.navbar-toggler:focus,
+.navbar-toggler:active,
+.navbar-toggler-icon:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
+}
+
+.search-bar {
+    border: 2px solid #535C72;
+}
+
+/* ----------- NOT IN USE ----------- */
+
+.card-deck {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+
+.card {
+    flex: 1 0 auto;
+}
+
+.scrollable {
+    max-height: 200px; /* Adjust the maximum height as needed */
+    overflow-y: auto;
+}
+
+.custom-pill {
+    color: rgb(4, 4, 4);
+    background-color: #e7dfcf;
+}
+
+.chart-container {
+    position: relative;
+    display: inline-block;
+}
+.scrollable-description {
+    position: sticky;
+    overflow: auto;
+}
+
+.selected-skill {
+    display: flex; /* Use flex layout to control alignment */
+    align-items: center; /* Vertically align text in the center */
+    margin-right: 5px; /* Add space between skills */
+    white-space: normal; /* Allow text to wrap */
+}
+
+table, thead, tr, th, tbody, td { 
+    border: 3px solid whitesmoke;
+    background-color: #e7dfcf !important;
+}
+.progress-circle {
+    display: block;
+    /* margin: 10px auto; */
+    margin-left: 90px;
+}
+  
+.progress-bar-circle {
+    /* stroke-dasharray: calc(251 * 80 / 100) 251; */
+    stroke-dashoffset: calc(126);
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    animation: progress forwards;
+    /* animation: progress 2s ease-out forwards; */
+}
+  
+@keyframes progress {
+    to {
+      stroke-dashoffset: 0;
+    }
+}
