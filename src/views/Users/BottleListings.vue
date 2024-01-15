@@ -33,11 +33,10 @@
     </nav>
 
     <!-- main content -->
-    <!-- <div id="app">
-        <ul>
-            {{producers}}
-        </ul>
-    </div> -->
+    <div>
+    <h1>Listings from Flask API: </h1>
+        {{ listings }}
+    </div>
 
 </template>
 
@@ -100,28 +99,28 @@
 
 <!-- JavaScript -->
 <script>
-// import axios from 'axios';
+import axios from 'axios';
 
-// export default {
-//     data() {
-//         return {
-//         producers: [],
-//         };
-//     },
-//     methods: {
-//         async refreshData() {
-//         try {
-//             const response = await axios.get('http://localhost:1111/api/GetProducers');
-//             this.producers = response.data;
-//         } catch (error) {
-//             console.error(error);
-//         }
-//         },
-//     },
-//     mounted() {
-//         this.refreshData();
-//     },
-// };
+export default {
+    data() {
+        return {
+        listings: [],
+        };
+    },
+    mounted() {
+        this.loadData();
+    },
+    methods: {
+        async loadData() {
+        try {
+            const response = await axios.get('http://127.0.0.1:5000/getListings');
+            this.listings = response.data;
+        } catch (error) {
+            console.error(error);
+        }
+        },
+    },
+};
 </script>
 
 

@@ -2,12 +2,14 @@
 # pip install Flask
 # pip install Flask Flask-PyMongo
 # pip install pymongo
+# pip install flask-cors
 
 import bson
 import json
 from bson import json_util
 from flask import Flask
 from flask_pymongo import PyMongo
+from flask_cors import CORS
 from werkzeug.local import LocalProxy
 
 from pymongo.errors import DuplicateKeyError, OperationFailure
@@ -15,6 +17,7 @@ from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 app.config["MONGO_URI"] = "mongodb+srv://jwleong2020:uOfXCrxLPCjgyA92@greenbamboo.wbiambw.mongodb.net/GreenBamboo?retryWrites=true&w=majority"
 db = PyMongo(app).db
 
@@ -23,8 +26,8 @@ db = PyMongo(app).db
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
-@app.route("/getItems")
-def hello_world():
+@app.route("/getListings")
+def getListings():
 
     #this step finds all the items in the collection, specifying Listings
     data = db.Listings.find({})
@@ -41,4 +44,5 @@ def hello_world():
         allListings.append(doc)
     return allListings
 
-app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
