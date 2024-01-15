@@ -2,7 +2,7 @@
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link> |
-    <router-link to="/usersbottlelistings">Bottle Listings</router-link>
+    <router-link to="/Users/Bottle-Listings">Bottle Listings</router-link>
   </nav>
   <router-view/>
 </template>

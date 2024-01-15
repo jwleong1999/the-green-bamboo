@@ -5,8 +5,7 @@
             <div class="container-fluid d-flex align-items-center justify-content-between">
                 <!-- logo -->
                 <div class="navbar-brand d-flex align-items-center" href="../login/index.html"> 
-                    <img src="../../Images/Logo/88 Bamboo.png" style="width: 50px; height: 50px;">
-                    <button type="button" class="btn custom-btn m-2 ps-4 pe-4"> 88 Bamboo </button>
+                    <img src="../../../Images/Logo/88 Bamboo.png" style="width: 50px; height: 50px;">
                 </div>
                 <!-- search bar -->
                 <div class="col-md-6">
