@@ -1,5 +1,8 @@
-#pip install python-bsonjs
-#should add into requirements.txt
+# pip install python-bsonjs
+# pip install Flask
+# pip install Flask Flask-PyMongo
+# pip install pymongo
+
 import bson
 import json
 from bson import json_util
