@@ -34,8 +34,7 @@
 
     <!-- main content -->
     <div>
-    <h1>Listings from Flask API: </h1>
-        {{ listings }}
+
     </div>
 
 </template>
@@ -104,7 +103,10 @@ import axios from 'axios';
 export default {
     data() {
         return {
-        listings: [],
+            listings: [],
+            producers: [],
+            users: [],
+            venues: []
         };
     },
     mounted() {
@@ -112,12 +114,38 @@ export default {
     },
     methods: {
         async loadData() {
-        try {
-            const response = await axios.get('http://127.0.0.1:5000/getListings');
-            this.listings = response.data;
-        } catch (error) {
-            console.error(error);
-        }
+            // Listings
+            try {
+                const response = await axios.get('http://127.0.0.1:5000/getListings');
+                this.listings = response.data;
+            } 
+            catch (error) {
+                console.error(error);
+            }
+            // Producers
+            try {
+                const response = await axios.get('http://127.0.0.1:5000/getProducers');
+                this.producers = response.data;
+            } 
+            catch (error) {
+                console.error(error);
+            }
+            // Users
+            try {
+                const response = await axios.get('http://127.0.0.1:5000/getUsers');
+                this.users = response.data;
+            } 
+            catch (error) {
+                console.error(error);
+            }
+            // Venues
+            try {
+                const response = await axios.get('http://127.0.0.1:5000/getVenues');
+                this.users = response.data;
+            } 
+            catch (error) {
+                console.error(error);
+            }
         },
     },
 };

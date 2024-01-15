@@ -26,6 +26,7 @@ db = PyMongo(app).db
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
+# [GET] Listings
 @app.route("/getListings")
 def getListings():
 
@@ -43,6 +44,63 @@ def getListings():
         # print(doc)
         allListings.append(doc)
     return allListings
+
+# [GET] Producers
+@app.route("/getProducers")
+def getProducers():
+
+    #this step finds all the items in the collection, specifying Producers
+    data = db.Producers.find({})
+
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+
+    allProducers = []
+    
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allProducers.append(doc)
+    return allProducers
+
+# [GET] Users
+@app.route("/getUsers")
+def getUsers():
+
+    #this step finds all the items in the collection, specifying Users
+    data = db.Users.find({})
+
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+
+    allUsers = []
+    
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allUsers.append(doc)
+    return allUsers
+
+# [GET] Venues
+@app.route("/getVenues")
+def getVenues():
+
+    #this step finds all the items in the collection, specifying Venues
+    data = db.Venues.find({})
+
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+
+    allVenues = []
+    
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allVenues.append(doc)
+    return allVenues
 
 if __name__ == "__main__":
     app.run(debug=True)
