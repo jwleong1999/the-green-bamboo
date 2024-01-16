@@ -1,7 +1,7 @@
 # 28_DCS__The Green Bamboo_“Happy Hour!” UGC Product Review Application
 
 <a>
-    <img src="images/Logo/88 Bamboo.png" title="The Green Bamboo" alt="The Green Bamboo" style="height: 150px">
+    <img src="Images/Logo/88 Bamboo.png" title="The Green Bamboo" alt="The Green Bamboo" style="height: 150px">
 </a>
 
 ## Team
