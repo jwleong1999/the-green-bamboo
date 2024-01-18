@@ -117,6 +117,7 @@ body {
 }
 
 .scrollable {
-    max-height: 120px; /* Adjust the maximum height as needed */
+    height: 120px;
+    max-height: 120px;
     overflow-y: auto;
 }

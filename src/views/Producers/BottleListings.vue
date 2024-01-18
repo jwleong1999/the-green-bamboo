@@ -35,13 +35,45 @@
     </div>
 
     <!-- main content -->
-    <div class="container pt-3">
+
+    <div class="container pt-5">
         <div class="row">
             <!-- producer information -->
             <div class="col-9">
                 <!-- header -->
-                <div class="row">
-                    
+                <div class="row"> <!-- TODO: edit this information (NEXT SPRINT) -->
+                    <!-- image -->
+                    <div class="col-3 image-container">
+                        <img src="../../../Images/Sample/beer.png" style="width: 200px; height: 200px;" class="img-border">
+                    </div>
+                    <!-- details -->
+                    <div class="col-9 text-start">
+                        <div class="container text-start">
+                            <!-- drink category -->
+                            <div class="row">
+                                <div class="col">
+                                    <h5 class="text-body-secondary fst-italic"> {{ specified_listing["Drink Category"] }} </h5>
+                                </div>
+                            </div>
+                            <!-- expression name -->
+                            <div class="row">
+                                <div class="col">
+                                    <h3 class="text-body-secondary"> <b> {{ specified_listing["Expression Name"] }} </b> </h3>
+                                </div>
+                            </div>
+                            <!-- producer & bottler -->
+                            <div class="row">
+                                <!-- producer -->
+                                <div class="col-6">
+                                    <h5 class="text-body-secondary"> <u> {{ specified_listing["Producer"] }} </u> </h5>
+                                </div>
+                                <!-- bottler -->
+                                <div class="col-6">
+                                    <h5 class="text-body-secondary"> Bottler: <u> {{ specified_listing["Bottler (OB or Specify name of IB)"] }} </u>  </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div> <!-- end of producer information -->
             
@@ -53,14 +85,16 @@
                         <div class="square primary-square rounded p-3 mb-3">
                             <!-- header text -->
                             <div class="square-inline">
-                                <h4 class="square-inline-text-start mr-auto"> Where to Try </h4>
+                                <h4 class="square-inline-text-start mr-auto"> Where to Buy </h4>
                             </div>
-                            <div class="py-2"></div>
                             <!-- body -->
-                            <div class="py-5">
-                                <!-- TODO: where to try function -->
+                            <div class="text-start"> <!-- TODO: add hyperlink to link to producer page-->
+                                <!-- [function] where to buy -->
+                                <div v-for="producer in producerListings" v-bind:key="producer._id">
+                                    <p> {{ producer }} </p>
+                                </div>
                             </div>
-                            <div class="py-2"></div>
+                            <div class="py-5"></div>
                         </div>
                     </div>
                     <!-- 88 bamboo's review -->
@@ -106,12 +140,25 @@
                 searchTerm: '',
                 searchResults: [],
                 filteredListings: [],
+                // specified listing
+                listing_id: null,
+                specified_listing: {},
+                // where to buy
+                producerListings: [],
             };
         },
         mounted() {
+            this.created()
             this.loadData();
         },
         methods: {
+            // fetch specific listing data
+            async created() {
+                // Get the query string parameters (listing ID) from the URL
+                const urlParams = new URLSearchParams(window.location.search);
+                this.listing_id = urlParams.get('id');
+            },
+
             // load data from database
             async loadData() {
                 // Listings
@@ -119,6 +166,8 @@
                     const response = await axios.get('http://127.0.0.1:5000/getListings');
                     this.listings = response.data;
                     this.filteredListings = this.listings; // originally, make filtered listings the entire collection of listings
+                    this.specified_listing = this.listings[this.listing_id]; // identify specified listing
+                    this.whereToBuy(); // find where to buy specified listing
                 } 
                 catch (error) {
                     console.error(error);
@@ -149,6 +198,12 @@
                 }
             },
 
+            // view which producers have specified listing
+            whereToBuy() {
+                this.producerListings = this.listings
+                    .filter(listing => listing["Expression Name"] == this.specified_listing["Expression Name"])
+                    .map(listing => listing["Producer"]);
+            }
         },
     };
 </script>

@@ -143,7 +143,7 @@
                         <div class="row">
                             <!-- v-loop for each listing -->
                             <div class="container text-start">
-                                <div v-for="listing in filteredListings" v-bind:key="listing._id" class="p-3">
+                                <div v-for="(listing, index) in filteredListings" v-bind:key="listing._id" class="p-3">
                                     <div class="row">
                                         <!-- image -->
                                         <div class="col-4 image-container">
@@ -172,7 +172,7 @@
                                                 </div>
                                                 <div class="col-6">
                                                     <div class="d-grid gap-5"> <!-- TODO: navigate when user clicks this button -->
-                                                        <button class="btn secondary-btn btn-md"> Read what the crowd thinks </button>
+                                                        <a class="btn secondary-btn btn-md" v-bind:href="'../Producers/Bottle-Listings?id=' +`${index}`"> Read what the crowd thinks </a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -434,6 +434,11 @@
                 this.filteredListings = this.listings;
                 this.search = false;
                 this.searchInput = '';
+            },
+
+            // for sending specific bottle listing to producer bottle listing page
+            viewProducerListing() {
+
             }
         },
     };
