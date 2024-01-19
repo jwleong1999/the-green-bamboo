@@ -19,17 +19,22 @@ const routes = [
     path: '/Users/Bottle-Listings',
     name: 'usersbottlelistings',
     component: () => import(/* webpackChunkName: "about" */ '../views/Users/BottleListings.vue')
-  }, 
-  {
-    path: '/Producers/Bottle-Listings',
-    name: 'producersbottlelistings',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Producers/BottleListings.vue')
   },  
   {
     path: '/userprofile',
     name: 'userprofile',
     component: () => import(/* webpackChunkName: "about" */ '../views/UserProfile.vue')
   },
+  {
+    path: '/Producer/Producer-Listings',
+    name: 'producerbottlelistings',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Producer/ProducerListings.vue')
+  },  
+  {
+    path: '/Producer/Producer-Create-Listing',
+    name: 'producercreatelistings',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Producer/CreateListing.vue')
+  },  
 ]
 
 const router = createRouter({

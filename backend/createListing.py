@@ -50,7 +50,7 @@ def createListings():
         return jsonify( 
             {   
                 "code": 201,
-                "data": rawBottle
+                "data": rawBottleName
             }
         ), 201
     except Exception:
@@ -67,4 +67,4 @@ def createListings():
     
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port = 5001)
