@@ -156,15 +156,13 @@
                                         <div class="col-8 ps-5">
                                             <!-- review -->
                                             <div class="row">
-                                                <!-- TODO: fetch data from new database -->
-                                                <h5 class="default-text fst-italic scrollable"> "{{ listing["Official Description"] }}". </h5>
+                                                <h5 class="default-text fst-italic scrollable"> "{{getReviews(listing)}}". </h5>
                                             </div>
                                             <!-- rating -->
                                             <div class="row pt-5"> 
                                                 <div class="col-6">
-                                                    <!-- TODO: fetch data from new database -->
                                                     <h1 class="rating-text">
-                                                        3.7 
+                                                        {{ getRatings(listing)}}
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                                             <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                                         </svg>
@@ -454,9 +452,35 @@
                 this.searchInput = '';
             },
 
-            // for sending specific bottle listing to producer bottle listing page
-            viewProducerListing() {
+            // get reviews for a listing
+            getReviews(listing) {
+                // list of all reviews of the particular drink
+                const reviews = this.reviews.filter((review) => {
+                    return review["Reviewed subject"] == listing["Expression Name"];
+                });
+                // choose random review from the list
+                const randomReview = reviews[Math.floor(Math.random() * reviews.length)];
+                // check if a review is found before accessing "Review Desc"
+                const reviewDesc = randomReview ? randomReview["Review Desc"] : null;
+                return reviewDesc;
+            },
 
+            // get ratings for a listing
+            getRatings(listing) {
+                const ratings = this.reviews.filter((rating) => {
+                    return rating["Reviewed subject"] == listing["Expression Name"];
+                });
+                // if there are no ratings
+                if (ratings.length == 0) {
+                    return "-";
+                }
+                // else there are ratings
+                const averageRating = ratings.reduce((total, rating) => {
+                    return total + rating["Rating"];
+                }, 0) / ratings.length;
+                // Format the averageRating to 1 decimal place
+                const formattedRating = parseFloat(averageRating.toFixed(1));
+                return formattedRating;
             }
         },
     };
