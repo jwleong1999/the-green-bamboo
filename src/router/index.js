@@ -26,8 +26,13 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/UserProfile.vue')
   },
   {
+    path: '/Producers/Bottle-Listings',
+    name: 'producersbottlelistings',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Producers/BottleListings.vue')
+  },  
+  {
     path: '/Producer/Producer-Listings',
-    name: 'producerbottlelistings',
+    name: 'producerlistings',
     component: () => import(/* webpackChunkName: "about" */ '../views/Producers/ProducerListings.vue')
   },  
   {
