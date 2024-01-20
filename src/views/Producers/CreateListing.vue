@@ -279,7 +279,7 @@
 
 <!-- JavaScript -->
 <script>
-    import axios from 'axios';
+    // import axios from 'axios';
     export default {
     data() {
         return {
@@ -340,27 +340,27 @@
             }
 
 
-            const response = await axios.post('http://127.0.0.1:5000/createListings',this.form)
-            .then((response)=>{
-                this.responseCode = response.data.code
-            })
-            .catch((error)=>{
-                console.log(error);
-                this.responseCode = error.response.data.code
-            });
-            console.log(this.responseCode)
-            if(this.responseCode==201){
-                this.successCreation=true;
-                this.submitForm=false;
-            }else{
-                this.errorCreation=true;
-                this.submitForm=false;
-                if(this.responseCode==400){
-                    this.duplicateEntry = true
-                }else{
-                    this.errorMessage = true
-                }
-            }
+            // const response = await axios.post('http://127.0.0.1:5000/createListings',this.form)
+            // .then((response)=>{
+            //     this.responseCode = response.data.code
+            // })
+            // .catch((error)=>{
+            //     console.log(error);
+            //     this.responseCode = error.response.data.code
+            // });
+            // console.log(this.responseCode)
+            // if(this.responseCode==201){
+            //     this.successCreation=true;
+            //     this.submitForm=false;
+            // }else{
+            //     this.errorCreation=true;
+            //     this.submitForm=false;
+            //     if(this.responseCode==400){
+            //         this.duplicateEntry = true
+            //     }else{
+            //         this.errorMessage = true
+            //     }
+            // }
 
         },
 
@@ -370,6 +370,7 @@
             this.submitForm=false
             this.errorCreation= false
             this.duplicateEntry= false
+            
             this.responseCode= ""
             this.isOperator = false
             for (const key in this.form) {

@@ -28,12 +28,12 @@ const routes = [
   {
     path: '/Producer/Producer-Listings',
     name: 'producerbottlelistings',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Producer/ProducerListings.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Producers/ProducerListings.vue')
   },  
   {
     path: '/Producer/Producer-Create-Listing',
     name: 'producercreatelistings',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Producer/CreateListing.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Producers/CreateListing.vue')
   },  
 ]
 
