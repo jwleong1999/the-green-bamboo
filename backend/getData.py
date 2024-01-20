@@ -26,6 +26,25 @@ db = PyMongo(app).db
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
+# [GET] Countries
+@app.route("/getCountries")
+def getCountries():
+
+    #this step finds all the items in the collection, specifying Countries
+    data = db.Countries.find({})
+
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+
+    allCountries = []
+    
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allCountries.append(doc)
+    return allCountries
+
 # [GET] Listings
 @app.route("/getListings")
 def getListings():
@@ -63,6 +82,25 @@ def getProducers():
         # print(doc)
         allProducers.append(doc)
     return allProducers
+
+# [GET] Reviews
+@app.route("/getReviews")
+def getReviews():
+
+    #this step finds all the items in the collection, specifying Reviews
+    data = db.Reviews.find({})
+
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+
+    allReviews = []
+    
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allReviews.append(doc)
+    return allReviews
 
 # [GET] Users
 @app.route("/getUsers")

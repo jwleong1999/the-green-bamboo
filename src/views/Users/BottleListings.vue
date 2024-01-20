@@ -339,8 +339,10 @@
         data() {
             return {
                 // data from database
+                countries: [],
                 listings: [],
                 producers: [],
+                reviews: [],
                 users: [],
                 venues: [],
                 // search
@@ -357,6 +359,14 @@
         methods: {
             // load data from database
             async loadData() {
+                // Countries
+                try {
+                    const response = await axios.get('http://127.0.0.1:5000/getCountries');
+                    this.countries = response.data;
+                } 
+                catch (error) {
+                    console.error(error);
+                }
                 // Listings
                 try {
                     const response = await axios.get('http://127.0.0.1:5000/getListings');
@@ -371,6 +381,14 @@
                     const response = await axios.get('http://127.0.0.1:5000/getProducers');
                     this.producers = response.data;
                 } 
+                catch (error) {
+                    console.error(error);
+                }
+                // Reviews
+                try {
+                    const response = await axios.get('http://127.0.0.1:5000/getReviews');
+                    this.reviews = response.data;
+                }
                 catch (error) {
                     console.error(error);
                 }
