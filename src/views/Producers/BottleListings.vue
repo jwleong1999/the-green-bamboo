@@ -164,7 +164,7 @@
                     const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
                     this.listings = response.data;
                     this.filteredListings = this.listings; // originally, make filtered listings the entire collection of listings
-                    this.specified_listing = this.listings[this.listing_id]; // identify specified listing
+                    this.specified_listing = this.listings.find(listing => listing._id.$oid == this.listing_id); // find specified listing
                     this.whereToBuy(); // find where to buy specified listing
                 } 
                 catch (error) {

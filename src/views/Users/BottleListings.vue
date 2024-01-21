@@ -143,7 +143,8 @@
                         <div class="row">
                             <!-- v-loop for each listing -->
                             <div class="container text-start">
-                                <div v-for="listing in filteredListings" v-bind:key="listing.ID" class="p-3">
+                                <div v-for="listing in filteredListings" v-bind:key="listing._id" class="p-3">
+
                                     <div class="row">
                                         <!-- image -->
                                         <div class="col-4 image-container">
@@ -156,7 +157,7 @@
                                         <div class="col-8 ps-5">
                                             <!-- review -->
                                             <div class="row">
-                                                <a class="default-text fst-italic scrollable" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing.ID}`">
+                                                <a class="default-text fst-italic scrollable" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
                                                     <h5> "{{ getReviews(listing) }}". </h5>
                                                 </a>
                                             </div>
@@ -172,13 +173,13 @@
                                                 </div>
                                                 <div class="col-6">
                                                     <div class="d-grid gap-5">
-                                                        <a class="btn secondary-btn btn-md" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing.ID}`"> Read what the crowd thinks </a>
+                                                        <a class="btn secondary-btn btn-md" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`"> Read what the crowd thinks </a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <!-- expression name -->
                                             <div class="row pt-2">
-                                                <a class="default-text" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing.ID}`">
+                                                <a class="default-text" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
                                                     <h4> {{ listing["Expression Name"] }} </h4>
                                                 </a>
                                             </div>
@@ -258,11 +259,11 @@
             <div class="row">
                 <!-- v-loop for each listing -->
                 <div class="container text-start">
-                    <div v-for="listing in filteredListings" v-bind:key="listing.ID" class="p-3">
+                    <div v-for="listing in filteredListings" v-bind:key="listing._id" class="p-3">
                         <div class="row">
                             <!-- image -->
                             <div class="col-3 image-container">
-                                <a v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing.ID}`">
+                                <a v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
                                     <img src="../../../Images/Sample/beer.png" style="width: 300px; height: 300px;" class="img-border"> 
                                 </a>
                             </div>
@@ -347,8 +348,6 @@
                 reviews: [],
                 users: [],
                 venues: [],
-                // add ID to listings
-                listingsWithID: [],
                 // search
                 search: false,
                 searchInput: '',
@@ -375,12 +374,8 @@
                 try {
                     const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
                     this.listings = response.data;
-                    // add in ID for each listing in entire listing set
-                    this.listingsWithID = this.listings.map((listing, index) => {
-                        return { ...listing, ID: index };
-                    });
-                    // originally, make filteredListings the entire collection of listings with ID
-                    this.filteredListings = this.listingsWithID;
+                    // originally, make filteredListings the entire collection of listings
+                    this.filteredListings = this.listings;
                 } 
                 catch (error) {
                     console.error(error);
@@ -429,36 +424,33 @@
                 this.searchTerm = this.searchInput;
 
                 // if there is something searched
-                if (searchInput.length > 0) {
-                    const searchResults = this.listingsWithID.filter((listing) => {
-                        const expressionName = listing["Expression Name"].toLowerCase();
-                        const producer = listing["Producer"].toLowerCase();
-                        return expressionName.includes(searchInput) || producer.includes(searchInput);
-                    });
-                    if (searchResults.length == 0) {
-                        this.errorFound = true;
-                        this.errorMessage = 'No results found, please try again.';
-                    } 
-                    else {
-                        this.errorFound = false;
-                        this.errorMessage = '';
-                    }
+                const searchResults = this.listings.filter((listing) => {
+                    const expressionName = listing["Expression Name"].toLowerCase();
+                    const producer = listing["Producer"].toLowerCase();
+                    return expressionName.includes(searchInput) || producer.includes(searchInput);
+                });
+
+                console.log(searchResults)
+
+                // if nothing found
+                if (searchResults.length == 0) {
+                    this.errorFound = true;
+                    this.errorMessage = 'No results found, please try again.';
+                } 
+                else {
+                    this.errorFound = false;
+                    this.errorMessage = '';
                     this.filteredListings = searchResults;
-                    // clear search input in search bar
-                    this.searchInput = '';
                 }
 
                 // if there is nothing searched
-                else {
-                    this.searchInput = '';
-                    this.filteredListings = this.listingsWithID;
-                    this.search = false;
-                }
+                // if (this.search == false) {
+                //     this.resetListings();
+                // }
             },
 
             // for resetting listings (show full listings)
             resetListings() {
-                this.filteredListings = this.listingsWithID;
                 this.search = false;
                 this.searchInput = '';
             },

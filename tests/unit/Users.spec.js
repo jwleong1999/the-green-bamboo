@@ -38,54 +38,34 @@ describe('Search Listings', () => {
     // Mock the fetchData method
     const fetchDataMock = jest.fn(() => Promise.resolve(all_listings));
 
-    // // Search input matches listings
-    // it('returns listings that match the search input', () => {
-    //     const wrapper = mount(BottleListings, {
-    //         data() {
-    //             return {
-    //                 listings: all_listings,
-    //                 searchInput: 'Macallan'
-    //             };
-    //         },
-    //     });
-
-    //     // Log initial state
-    //     console.log('Initial state:', {
-    //         searchInput: wrapper.vm.searchInput,
-    //         listingsWithID: wrapper.vm.listingsWithID,
-    //         searchResults: wrapper.vm.searchResults,
-    //         filteredListings: wrapper.vm.filteredListings,
-    //     });
-
-    //     // Call the searchListings method
-    //     wrapper.vm.searchInput = 'Macallan';
-    //     wrapper.vm.searchListings();
-
-    //     // Log state after calling searchListings
-    //     console.log('State after calling searchListings:', {
-    //         searchInput: wrapper.vm.searchInput,
-    //         listingsWithID: wrapper.vm.listingsWithID,
-    //         searchResults: wrapper.vm.searchResults,
-    //         filteredListings: wrapper.vm.filteredListings,
-    //     });
-
-
-    //     expect(wrapper.vm.filteredListings).toEqual([
-    //         {
-    //             "_id":{"$oid":"65ab760933b616ccc14b9f69"},
-    //             "Expression Name":"Nikka From The Barrel",
-    //             "Producer":"Nikka Whisky",
-    //             "Bottler (OB or Specify name of IB)":"OB",
-    //             "Country of Origin":"Japan",
-    //             "Drink Type":"Whiskey / Whisky",
-    //             "Drink Category":"Blended",
-    //             "Age":"NAS",
-    //             "ABV":"51%",
-    //             "88B Website Review (if applicable)":"https://88bamboo.co/blogs/whisky-reviews/nikka-from-the-barrel",
-    //             "Official Description":"This strong Japanese blend aged in bourbon barrels comes from the blend of two Nikka single malts Miyagikyo and Yoichi and a single grain whisky. Nikka from the Barrel was chosen best Japanese blended whisky under 12 years old at the World Whiskies Awards 2007."
-    //         }
-    //     ]);
-    // });
+    // Search input matches listings
+    it('returns listings that match the search input', () => {
+        const wrapper = mount(BottleListings, {
+            data() {
+                return {
+                    listings: all_listings,
+                    searchInput: 'Nikka'
+                };
+            },
+        });
+        // Call the searchListings method
+        wrapper.vm.searchListings();
+        expect(wrapper.vm.filteredListings).toEqual([
+            {
+                "_id":{"$oid":"65ab760933b616ccc14b9f69"},
+                "Expression Name":"Nikka From The Barrel",
+                "Producer":"Nikka Whisky",
+                "Bottler (OB or Specify name of IB)":"OB",
+                "Country of Origin":"Japan",
+                "Drink Type":"Whiskey / Whisky",
+                "Drink Category":"Blended",
+                "Age":"NAS",
+                "ABV":"51%",
+                "88B Website Review (if applicable)":"https://88bamboo.co/blogs/whisky-reviews/nikka-from-the-barrel",
+                "Official Description":"This strong Japanese blend aged in bourbon barrels comes from the blend of two Nikka single malts Miyagikyo and Yoichi and a single grain whisky. Nikka from the Barrel was chosen best Japanese blended whisky under 12 years old at the World Whiskies Awards 2007."
+            }
+        ]);
+    });
 
     // Search input does not match listings
     it('returns no listings that match the search input', () => {
@@ -97,6 +77,7 @@ describe('Search Listings', () => {
                 };
             },
         });
+        // Call the searchListings method
         wrapper.vm.searchListings();
         expect(wrapper.vm.searchResults).toStrictEqual([]);
     });
@@ -111,6 +92,7 @@ describe('Search Listings', () => {
                 };
             },
         });
+        // Call the searchListings method
         wrapper.vm.searchListings();
         expect(wrapper.vm.searchResults).toStrictEqual([]);
     });
