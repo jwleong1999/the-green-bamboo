@@ -23,7 +23,7 @@
 }
 
 nav {
-  padding-top: 30px;
+  padding: 30px;
 }
 
 nav a {
