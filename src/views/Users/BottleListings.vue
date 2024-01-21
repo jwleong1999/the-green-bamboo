@@ -482,10 +482,8 @@
                 const averageRating = ratings.reduce((total, rating) => {
                     return total + rating["Rating"];
                 }, 0) / ratings.length;
-                // Format the averageRating to 1 decimal place
-                const formattedRating = parseFloat(averageRating.toFixed(1));
-                return formattedRating;
-            }
+                return averageRating;
+        }
         },
     };
 </script>

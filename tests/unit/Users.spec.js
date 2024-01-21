@@ -4,7 +4,215 @@ import BottleListings from '../../src/views/Users/BottleListings.vue';
 
 // COMMAND TO RUN TEST: npm run test:unit
 
-// ------- SEARCH BOTTLE LISTINGS -------
+// -------------------------------------------------------------------------------------------------------------------------------------------------
+
+// -- [TGB 5] VIEW LISTINGS --
+describe('View Listings', () => {
+
+    // Sample reviews data
+    const all_reviews = [
+        {
+            "_id":{"$oid":"65a65ad60719072d03e5c6cd"},
+            "Username":"CharSiuCharlie",
+            "Reviewed subject":"Harmony Collection Inspired by Intense Arabica",
+            "Date":"1/25/2024",
+            "Rating": 5,
+            "Review Desc":"Best drink ever",
+            "Taged Users":["111hotpot","lotursroot519"],
+            "Review Title":"Sample review title"
+        },
+        {
+            "_id":{"$oid":"65a65ad60719072d03e5c6ce"},
+            "Username":"lotursroot519",
+            "Reviewed subject":"Ube Cream Liqueur",
+            "Date":"12/23/2023",
+            "Rating": 4,
+            "Review Desc":"Tasty drink",
+            "Taged Users":[],
+            "Review Title":"Sample review title"
+        },
+        {
+            "_id":{"$oid":"65a65ad60719072d03e5c6cf"},
+            "Username":"111hotpot",
+            "Reviewed subject":"Junglebird",
+            "Date":"2/5/2024",
+            "Rating": 1,
+            "Review Desc":"Poor Service",
+            "Taged Users":["lotusroot518"],
+            "Review Title":"Sample review title"
+        },
+        {
+            "_id":{"$oid":"65a65ad60719072d03e5c6d0"},
+            "Username":"111hotpot",
+            "Reviewed subject":"Malt Grain Cane",
+            "Date":"3/4/2024",
+            "Rating": 3,
+            "Review Desc":"Drinks are mediorce",
+            "Taged Users":[],
+            "Review Title":"Sample review title"
+        },
+        {
+            "_id":{"$oid":"65a65ad60719072d03e5c6d1"},
+            "Username":"lotursroot518",
+            "Reviewed subject":"Nikka From The Barrel",
+            "Date":"1/15/2022"
+            ,"Rating": 2,
+            "Review Desc":"Not very nice",
+            "Taged Users":["111hotpot","CharSiuCharlie"],
+            "Review Title":"Sample review title"
+        }
+    ];
+
+    // - GET REVIEWS -
+    describe('Get Reviews', () => {
+
+        // Mock the fetchData method
+        const fetchDataMock = jest.fn(() => Promise.resolve(all_reviews));
+
+        // Get reviews of listing with reviews
+        it('[Reviews returned] Get reviews of listing with reviews', () => {
+            const wrapper = mount(BottleListings, {
+                data() {
+                    return {
+                        reviews: all_reviews
+                    };
+                },
+            });
+            // Mock the listing data
+            const listing = {
+                                "_id":{"$oid":"65a65ad60719072d03e5c6cd"},
+                                "Expression Name":"Harmony Collection Inspired by Intense Arabica",
+                                "Producer":"The Macallan Distillery",
+                                "Bottler (OB or Specify name of IB)":"OB",
+                                "Country of Origin":"Scotland",
+                                "Drink Type":"Whiskey / Whisky",
+                                "Drink Category":"Single Malt",
+                                "Age":"NAS",
+                                "ABV":"44%",
+                                "88B Website Review (if applicable)":"https://88bamboo.co/blogs/whisky-reviews/the-macallan-harmony-collection-inspired-by-intense-arabica-single-malt-44-abv",
+                                "Official Description":"The second edition in our limited annual release series, this special single malt exudes flavours of sweet oak, tiramisu and dark chocolate, and provides a delightful whisky and coffee pairing experience."
+                            };
+            // Mock the randomReview
+            const randomReview = all_reviews[0];
+            // Call the getReviews method
+            const reviewDesc = wrapper.vm.getReviews(listing);
+            expect(reviewDesc).toBe("Best drink ever");
+        });
+
+        // Get reviews of listing with no reviews
+        it('[No reviews returned] Get reviews of listing with no reviews', () => {
+            const wrapper = mount(BottleListings, {
+                data() {
+                    return {
+                        reviews: all_reviews
+                    };
+                },
+            });
+            // Mock the listing data
+            const listing = {
+                                "_id":{"$oid":"65ab760933b616ccc14b9f6a"},
+                                "Expression Name":"Ardbeg Ardcore",
+                                "Producer":"Ardbeg Distillery",
+                                "Bottler (OB or Specify name of IB)":"OB",
+                                "Country of Origin":"Scotland",
+                                "Drink Type":"Whiskey / Whisky",
+                                "Drink Category":"Single Malt",
+                                "Age":"NAS",
+                                "ABV":"46%",
+                                "88B Website Review (if applicable)":"https://88bamboo.co/blogs/whisky-reviews/ardbeg-ardcore-46-abv",
+                                "Official Description":"From a Distillery with more ups and downs that a pogoing punk comes Ardcore. Created with roasted black malt, roasted to the extreme, this spirit is all about what happens up front & centre stage. The malt is what defines its distinctive profile. Described as tasting like ‘biting on a spiky ball’, Ardcore is a dram that wears its heart on its sleeve… its black heart!"
+                            };
+            // Mock the randomReview
+            const randomReview = {};
+            // Call the getReviews method
+            const reviewDesc = wrapper.vm.getReviews(listing);
+            expect(reviewDesc).toBe(null);
+        });
+
+    });
+
+    // - GET RATINGS -
+    describe('Get Ratings', () => {
+
+        // Mock the fetchData method
+        const fetchDataMock = jest.fn(() => Promise.resolve(all_reviews));
+
+        // Get reviews of listing with ratings
+        it('[Ratings returned] Get reviews of listing with ratings', () => {
+            const wrapper = mount(BottleListings, {
+                data() {
+                    return {
+                        reviews: all_reviews
+                    };
+                },
+            });
+            // Mock the listing data
+            const listing = {
+                                "_id":{"$oid":"65ab760933b616ccc14b9f69"},
+                                "Expression Name":"Nikka From The Barrel",
+                                "Producer":"Nikka Whisky",
+                                "Bottler (OB or Specify name of IB)":"OB",
+                                "Country of Origin":"Japan",
+                                "Drink Type":"Whiskey / Whisky",
+                                "Drink Category":"Blended",
+                                "Age":"NAS",
+                                "ABV":"51%",
+                                "88B Website Review (if applicable)":"https://88bamboo.co/blogs/whisky-reviews/nikka-from-the-barrel",
+                                "Official Description":"This strong Japanese blend aged in bourbon barrels comes from the blend of two Nikka single malts Miyagikyo and Yoichi and a single grain whisky. Nikka from the Barrel was chosen best Japanese blended whisky under 12 years old at the World Whiskies Awards 2007."
+                            }
+            // Mock the ratings data
+            const ratings = {
+                                "_id":{"$oid":"65ab760933b616ccc14b9f69"},
+                                "Expression Name":"Nikka From The Barrel",
+                                "Producer":"Nikka Whisky",
+                                "Bottler (OB or Specify name of IB)":"OB",
+                                "Country of Origin":"Japan",
+                                "Drink Type":"Whiskey / Whisky",
+                                "Drink Category":"Blended",
+                                "Age":"NAS",
+                                "ABV":"51%",
+                                "88B Website Review (if applicable)":"https://88bamboo.co/blogs/whisky-reviews/nikka-from-the-barrel",
+                                "Official Description":"This strong Japanese blend aged in bourbon barrels comes from the blend of two Nikka single malts Miyagikyo and Yoichi and a single grain whisky. Nikka from the Barrel was chosen best Japanese blended whisky under 12 years old at the World Whiskies Awards 2007."
+                            }
+            // Call the getRatings method
+            const averageRating = wrapper.vm.getRatings(listing);
+            expect(averageRating).toBe(2);
+        });
+
+        // Get reviews of listing with no ratings
+        it('[No ratings returned] Get reviews of listing with no ratings', () => {
+            const wrapper = mount(BottleListings, {
+                data() {
+                    return {
+                        reviews: all_reviews
+                    };
+                },
+            });
+            // Mock the listing data
+            const listing = {
+                                "_id":{"$oid":"65a65ad60719072d03e5c6ce"},
+                                "Username":"lotursroot519",
+                                "Reviewed subject":"Ube Cream Liqueur",
+                                "Date":"12/23/2023",
+                                "Rating": 4,
+                                "Review Desc":"Tasty drink",
+                                "Taged Users":[],
+                                "Review Title":"Sample review title"
+                            }
+            // Mock the ratings data
+            const ratings = {}
+            // Call the getRatings method
+            const averageRating = wrapper.vm.getRatings(listing);
+            expect(averageRating).toBe("-");
+        });
+
+    });
+
+});
+
+// -------------------------------------------------------------------------------------------------------------------------------------------------
+
+// --- [TGB-6] SEARCH LISTINGS ---
 describe('Search Listings', () => {
     // Sample listings data
     const all_listings = [
@@ -105,7 +313,7 @@ describe('Search Listings', () => {
     const fetchDataMock = jest.fn(() => Promise.resolve(all_listings));
 
     // Search for bottle listing based on Expression Name
-    it('[Returns matched listings] Search for bottle listing based on Expression Name', () => {
+    it('[Listings returned] Search for bottle listing based on Expression Name', () => {
         const wrapper = mount(BottleListings, {
             data() {
                 return {
@@ -147,7 +355,7 @@ describe('Search Listings', () => {
     });
 
         // Search for bottle listing based on Expression Name, regardless of case
-        it('[Returns matched listings] Search for bottle listing based on Expression Name, regardless of case', () => {
+        it('[Listings returned] Search for bottle listing based on Expression Name, regardless of case', () => {
             const wrapper = mount(BottleListings, {
                 data() {
                     return {
@@ -176,7 +384,7 @@ describe('Search Listings', () => {
         });
 
     // Search for bottle listing based on Producer
-    it('[Returns matched listings] Search for bottle listing based on Producer', () => {
+    it('[Listings returned] Search for bottle listing based on Producer', () => {
         const wrapper = mount(BottleListings, {
             data() {
                 return {
@@ -218,7 +426,7 @@ describe('Search Listings', () => {
     });
 
     // Search for bottle listing based on Producer, regardless of case
-    it('[Returns matched listings] Search for bottle listing based on Producer, regardless of case', () => {
+    it('[Listings returned] Search for bottle listing based on Producer, regardless of case', () => {
         const wrapper = mount(BottleListings, {
             data() {
                 return {
@@ -277,3 +485,4 @@ describe('Search Listings', () => {
     });
 });
 
+// -------------------------------------------------------------------------------------------------------------------------------------------------
