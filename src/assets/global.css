@@ -26,6 +26,7 @@ body {
 .default-text {
     color: black;
     background-color: #D9D9D9;
+    text-decoration: none;
 }
 
 .primary-btn {

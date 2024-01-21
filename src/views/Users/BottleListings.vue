@@ -143,7 +143,7 @@
                         <div class="row">
                             <!-- v-loop for each listing -->
                             <div class="container text-start">
-                                <div v-for="(listing, index) in filteredListings" v-bind:key="listing._id" class="p-3">
+                                <div v-for="listing in filteredListings" v-bind:key="listing.ID" class="p-3">
                                     <div class="row">
                                         <!-- image -->
                                         <div class="col-4 image-container">
@@ -156,27 +156,31 @@
                                         <div class="col-8 ps-5">
                                             <!-- review -->
                                             <div class="row">
-                                                <h5 class="default-text fst-italic scrollable"> "{{getReviews(listing)}}". </h5>
+                                                <a class="default-text fst-italic scrollable" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing.ID}`">
+                                                    <h5> "{{ getReviews(listing) }}". </h5>
+                                                </a>
                                             </div>
                                             <!-- rating -->
                                             <div class="row pt-5"> 
                                                 <div class="col-6">
                                                     <h1 class="rating-text">
-                                                        {{ getRatings(listing)}}
+                                                        {{ getRatings(listing) }}
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                                             <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                                         </svg>
                                                     </h1>
                                                 </div>
                                                 <div class="col-6">
-                                                    <div class="d-grid gap-5"> <!-- TODO: navigate when user clicks this button -->
-                                                        <a class="btn secondary-btn btn-md" v-bind:href="'../Producers/Bottle-Listings?id=' +`${index}`"> Read what the crowd thinks </a>
+                                                    <div class="d-grid gap-5">
+                                                        <a class="btn secondary-btn btn-md" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing.ID}`"> Read what the crowd thinks </a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <!-- expression name -->
                                             <div class="row pt-2">
-                                                <h4> {{ listing["Expression Name"] }} </h4> 
+                                                <a class="default-text" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing.ID}`">
+                                                    <h4> {{ listing["Expression Name"] }} </h4>
+                                                </a>
                                             </div>
                                             <!-- producer -->
                                             <div class="row">
@@ -254,11 +258,13 @@
             <div class="row">
                 <!-- v-loop for each listing -->
                 <div class="container text-start">
-                    <div v-for="listing in filteredListings" v-bind:key="listing._id" class="p-3">
+                    <div v-for="listing in filteredListings" v-bind:key="listing.ID" class="p-3">
                         <div class="row">
                             <!-- image -->
                             <div class="col-3 image-container">
-                                <img src="../../../Images/Sample/beer.png" style="width: 300px; height: 300px;" class="img-border">
+                                <a v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing.ID}`">
+                                    <img src="../../../Images/Sample/beer.png" style="width: 300px; height: 300px;" class="img-border"> 
+                                </a>
                             </div>
                             <!-- details -->
                             <div class="col-9 ps-5">
@@ -343,6 +349,8 @@
                 reviews: [],
                 users: [],
                 venues: [],
+                // add ID to listings
+                listingsWithID: [],
                 // search
                 search: false,
                 searchInput: '',
@@ -369,7 +377,12 @@
                 try {
                     const response = await axios.get('http://127.0.0.1:5000/getListings');
                     this.listings = response.data;
-                    this.filteredListings = this.listings; // originally, make filtered listings the entire collection of listings
+                    // add in ID for each listing in entire listing set
+                    this.listingsWithID = this.listings.map((listing, index) => {
+                        return { ...listing, ID: index };
+                    });
+                    // originally, make filteredListings the entire collection of listings with ID
+                    this.filteredListings = this.listingsWithID;
                 } 
                 catch (error) {
                     console.error(error);
@@ -419,7 +432,7 @@
 
                 // if there is something searched
                 if (searchInput.length > 0) {
-                    const searchResults = this.listings.filter((listing) => {
+                    const searchResults = this.listingsWithID.filter((listing) => {
                         const expressionName = listing["Expression Name"].toLowerCase();
                         const producer = listing["Producer"].toLowerCase();
                         return expressionName.includes(searchInput) || producer.includes(searchInput);
@@ -440,14 +453,14 @@
                 // if there is nothing searched
                 else {
                     this.searchInput = '';
-                    this.filteredListings = this.listings;
+                    this.filteredListings = this.listingsWithID;
                     this.search = false;
                 }
             },
 
             // for resetting listings (show full listings)
             resetListings() {
-                this.filteredListings = this.listings;
+                this.filteredListings = this.listingsWithID;
                 this.search = false;
                 this.searchInput = '';
             },
