@@ -1,3 +1,5 @@
+<!-- This is the default generated component by Vue CLI, and should not be actively used in the final version. -->
+
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
