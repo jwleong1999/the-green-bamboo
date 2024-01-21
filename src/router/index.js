@@ -16,29 +16,34 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
   },
   {
+    path: '/search',
+    name: 'search',
+    component: () => import('../views/SearchView.vue')
+  },
+  {
     path: '/Users/Bottle-Listings',
     name: 'usersbottlelistings',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Users/BottleListings.vue')
+    component: () => import('../views/Users/BottleListings.vue')
   },  
   {
     path: '/userprofile',
     name: 'userprofile',
-    component: () => import(/* webpackChunkName: "about" */ '../views/UserProfile.vue')
+    component: () => import('../views/UserProfile.vue')
   },
   {
     path: '/Producers/Bottle-Listings',
     name: 'producersbottlelistings',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Producers/BottleListings.vue')
+    component: () => import('../views/Producers/BottleListings.vue')
   },  
   {
     path: '/Producer/Producer-Listings',
     name: 'producerlistings',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Producers/ProducerListings.vue')
+    component: () => import('../views/Producers/ProducerListings.vue')
   },  
   {
     path: '/Producer/Producer-Create-Listing',
     name: 'producercreatelistings',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Producers/CreateListing.vue')
+    component: () => import('../views/Producers/CreateListing.vue')
   },  
 ]
 
