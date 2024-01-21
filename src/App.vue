@@ -9,6 +9,7 @@
     <router-link to="/userprofile">User Profile</router-link>
   
   </nav>
+  <hr style="margin-bottom: 0;">
   <router-view/>
 </template>
 
@@ -22,7 +23,7 @@
 }
 
 nav {
-  padding: 30px;
+  padding-top: 30px;
 }
 
 nav a {
