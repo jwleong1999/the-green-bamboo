@@ -1,3 +1,6 @@
+<!-- Default generated view by Vue CLI, should not be actively used in the final version. -->
+<!-- Could be repurposed for use later. -->
+
 <template>
   <div class="about">
     <h1>This is an about page</h1>

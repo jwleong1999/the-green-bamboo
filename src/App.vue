@@ -1,4 +1,7 @@
+<!-- Root Component File. -->
+
 <template>
+  <!-- Temporary page navigation, to be removed eventually. -->
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link> |
@@ -9,7 +12,7 @@
     <router-link to="/userprofile">User Profile</router-link>
   
   </nav>
-  <hr style="margin-bottom: 0;">
+  <hr style="margin: 0;">
   <router-view/>
 </template>
 
