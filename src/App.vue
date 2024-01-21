@@ -17,6 +17,7 @@
 </template>
 
 <style>
+/* Styling from App.vue */
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
