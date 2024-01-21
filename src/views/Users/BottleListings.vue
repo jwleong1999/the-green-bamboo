@@ -336,8 +336,8 @@
 
 <!-- JavaScript -->
 <script>
+
     import axios from 'axios';
-    import '../../assets/global.css'
 
     export default {
         data() {
