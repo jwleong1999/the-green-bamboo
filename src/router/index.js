@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
+// TODO: Re-route paths to correct views, such as / path to BottleListings.vue
+// TODO: Discuss with team about path names and how to organize them
+
 const routes = [
   {
     path: '/',
