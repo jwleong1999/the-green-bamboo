@@ -15,7 +15,6 @@
 </template>
 
 <script>
-    import '../assets/global.css'
     import NavBar from '@/components/NavBar.vue'
 
     export default {

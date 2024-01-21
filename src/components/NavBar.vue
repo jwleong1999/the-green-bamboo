@@ -40,7 +40,6 @@
 </template>
 
 <script>
-    import '../assets/global.css'
     export default {
         name: "NavBar",
         data() {
