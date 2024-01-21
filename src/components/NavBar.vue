@@ -1,6 +1,7 @@
 <!-- Component for global Navigation Bar. Used in most pages on the application. -->
 
 <!-- Requires Review. Search function is not complete, and may require modification. -->
+<!-- TODO: Implement this component into all pages that require them, replacing in-built navbar code -->
 
 <template>
     <!-- Main NavBar -->
