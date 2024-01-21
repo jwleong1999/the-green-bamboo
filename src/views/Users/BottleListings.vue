@@ -157,7 +157,7 @@
                                         <div class="col-8 ps-5">
                                             <!-- review -->
                                             <div class="row">
-                                                <a class="default-text fst-italic scrollable" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
+                                                <a class="default-clickable-text fst-italic scrollable" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
                                                     <h5> "{{ getReviews(listing) }}". </h5>
                                                 </a>
                                             </div>
@@ -179,8 +179,8 @@
                                             </div>
                                             <!-- expression name -->
                                             <div class="row pt-2">
-                                                <a class="default-text" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
-                                                    <h4> {{ listing["Expression Name"] }} </h4>
+                                                <a class="primary-clickable-text" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
+                                                    <h4> <b> {{ listing["Expression Name"] }} </b> </h4>
                                                 </a>
                                             </div>
                                             <!-- producer -->
@@ -444,9 +444,9 @@
                 }
 
                 // if there is nothing searched
-                // if (this.search == false) {
-                //     this.resetListings();
-                // }
+                if (this.searchInput == '') {
+                    this.resetListings();
+                }
             },
 
             // for resetting listings (show full listings)
