@@ -123,7 +123,6 @@
 
 <!-- JavaScript -->
 <script>
-    import axios from 'axios';
 
     export default {
         data() {
@@ -162,7 +161,7 @@
             async loadData() {
                 // Listings
                 try {
-                    const response = await axios.get('http://127.0.0.1:5000/getListings');
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
                     this.listings = response.data;
                     this.filteredListings = this.listings; // originally, make filtered listings the entire collection of listings
                     this.specified_listing = this.listings[this.listing_id]; // identify specified listing
@@ -173,7 +172,7 @@
                 }
                 // Producers
                 try {
-                    const response = await axios.get('http://127.0.0.1:5000/getProducers');
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
                     this.producers = response.data;
                 } 
                 catch (error) {
@@ -181,7 +180,7 @@
                 }
                 // Users
                 try {
-                    const response = await axios.get('http://127.0.0.1:5000/getUsers');
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
                     this.users = response.data;
                 } 
                 catch (error) {
@@ -189,7 +188,7 @@
                 }
                 // Venues
                 try {
-                    const response = await axios.get('http://127.0.0.1:5000/getVenues');
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
                     this.users = response.data;
                 } 
                 catch (error) {

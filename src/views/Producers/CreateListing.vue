@@ -279,7 +279,7 @@
 
 <!-- JavaScript -->
 <script>
-    import axios from 'axios';
+    // import axios from 'axios';
     export default {
     data() {
         return {
@@ -340,7 +340,7 @@
             }
 
 
-            const response = await axios.post('http://127.0.0.1:5001/createListings',this.form)
+            const response = await this.$axios.post('http://127.0.0.1:5001/createListings',this.form)
             .then((response)=>{
                 this.responseCode = response.data.code
             })

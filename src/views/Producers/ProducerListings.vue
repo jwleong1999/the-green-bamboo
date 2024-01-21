@@ -175,22 +175,29 @@
 <script>
     // import axios from 'axios';
 
-    // export default {
-    //     data() {
-    //         return {
-    //             listings: [],
-    //             producers: [],
-    //             users: [],
-    //             venues: []
-    //         };
-    //     },
-    //     mounted() {
-    //         this.loadData();
-    //     },
-    //     methods: {
-    //         
-    //     },
-    // };
+    export default {
+        data() {
+            return {
+                // data from database
+                listings: [],
+                producers: [],
+                users: [],
+                venues: [],
+                // search
+                search: false,
+                searchInput: '',
+                searchTerm: '',
+                searchResults: [],
+                filteredListings: [],
+                // specified listing
+                listing_id: null,
+                specified_listing: {},
+                // where to buy
+                producerListings: [],
+            };
+        },
+    };
+
 </script>
 
 
