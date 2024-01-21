@@ -105,7 +105,7 @@ describe('Search Listings', () => {
     const fetchDataMock = jest.fn(() => Promise.resolve(all_listings));
 
     // Search for bottle listing based on Expression Name
-    it('r[Returns matched listings] Search for bottle listing based on Expression Name', () => {
+    it('[Returns matched listings] Search for bottle listing based on Expression Name', () => {
         const wrapper = mount(BottleListings, {
             data() {
                 return {
@@ -146,6 +146,35 @@ describe('Search Listings', () => {
         ]);
     });
 
+        // Search for bottle listing based on Expression Name, regardless of case
+        it('[Returns matched listings] Search for bottle listing based on Expression Name, regardless of case', () => {
+            const wrapper = mount(BottleListings, {
+                data() {
+                    return {
+                        listings: all_listings,
+                        searchInput: 'mAcAllan'
+                    };
+                },
+            });
+            // Call the searchListings method
+            wrapper.vm.searchListings();
+            expect(wrapper.vm.filteredListings).toEqual([
+                {
+                    "_id":{"$oid":"65ad1b67ce3fc2aff52a874b"},
+                    "Expression Name":"Harmony Collection Inspired by Intense Arabica",
+                    "Producer":"The Macallan Distillery",
+                    "Bottler (OB or Specify name of IB)":"OB",
+                    "Country of Origin":"Scotland",
+                    "Drink Type":"Whiskey / Whisky",
+                    "Drink Category":"Single Malt",
+                    "Age":"NAS",
+                    "ABV":"44%",
+                    "88B Website Review (if applicable)":"https://88bamboo.co/blogs/whisky-reviews/the-macallan-harmony-collection-inspired-by-intense-arabica-single-malt-44-abv",
+                    "Official Description":"The second edition in our limited annual release series, this special single malt exudes flavours of sweet oak, tiramisu and dark chocolate, and provides a delightful whisky and coffee pairing experience."
+                }
+            ]);
+        });
+
     // Search for bottle listing based on Producer
     it('[Returns matched listings] Search for bottle listing based on Producer', () => {
         const wrapper = mount(BottleListings, {
@@ -185,6 +214,35 @@ describe('Search Listings', () => {
                 "88B Website Review (if applicable)":"",
                 "Official Description":"Over-proof gin was traditionally reserved for officers of the British Royal Navy. Today, it’s for everyone! Fords Gin Officers’ Reserve is rested and aged in Amontillado Sherry casks for three weeks. Characteristics of the barrel’s wood shape the spirit’s flavour. It is then bottled at 54.5 ABV. This limited release is Fords Gin’s first Journey in Gin as a homage to the Navy Strength Gin category."
             }
+        ]);
+    });
+
+    // Search for bottle listing based on Producer, regardless of case
+    it('[Returns matched listings] Search for bottle listing based on Producer, regardless of case', () => {
+        const wrapper = mount(BottleListings, {
+            data() {
+                return {
+                    listings: all_listings,
+                    searchInput: 'niKKA fROM the BARrel'
+                };
+            },
+        });
+        // Call the searchListings method
+        wrapper.vm.searchListings();
+        expect(wrapper.vm.filteredListings).toEqual([
+            {
+                "_id":{"$oid":"65ab760933b616ccc14b9f69"},
+                "Expression Name":"Nikka From The Barrel",
+                "Producer":"Nikka Whisky",
+                "Bottler (OB or Specify name of IB)":"OB",
+                "Country of Origin":"Japan",
+                "Drink Type":"Whiskey / Whisky",
+                "Drink Category":"Blended",
+                "Age":"NAS",
+                "ABV":"51%",
+                "88B Website Review (if applicable)":"https://88bamboo.co/blogs/whisky-reviews/nikka-from-the-barrel",
+                "Official Description":"This strong Japanese blend aged in bourbon barrels comes from the blend of two Nikka single malts Miyagikyo and Yoichi and a single grain whisky. Nikka from the Barrel was chosen best Japanese blended whisky under 12 years old at the World Whiskies Awards 2007."
+            },
         ]);
     });
 

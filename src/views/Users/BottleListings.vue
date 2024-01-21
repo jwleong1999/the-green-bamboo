@@ -451,6 +451,7 @@
 
             // for resetting listings (show full listings)
             resetListings() {
+                this.filteredListings = this.listings;
                 this.search = false;
                 this.searchInput = '';
             },
