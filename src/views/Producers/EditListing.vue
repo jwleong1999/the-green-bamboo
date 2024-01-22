@@ -34,75 +34,17 @@
         </div>
     </div>
 
-    <!-- [if] no search input -->
-    <div v-if="search == false">
+     <!-- [if] no search input -->
+    <div>
         <!-- header -->
-        <div class="container pt-5">
-            <div class="row">
-                <!-- tagline -->
-                <div class="col-8">
-                    <h1 class="text-start"> Your glass deserves the best. </h1>
-                </div>
-                <!-- button -->
-                <div class="col-4">
-                    <div class="d-grid gap-2">
-                        <button class="btn secondary-btn btn-lg"> 
-                            Sign Up to Start Pouring 
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+        <!-- end of header -->
 
         <!-- main content -->
         <div class="container pt-3">
             <div class="row">
                 <!-- your drinks shelf & brands you follow -->
-                <div class="col-3">
-                    <div class="row">
-                        <!-- your drinks shelf -->
-                        <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3">
-                                <!-- header text -->
-                                <div class="square-inline">
-                                    <h4 class="square-inline-text-start mr-auto"> Your Drink Shelf </h4>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                                    </svg>
-                                </div>
-                                <!-- body -->
-                                <div class="py-4"></div>
-                                <div class="py-5">
-                                    <h6 class="fst-italic"> No drinks added yet. </h6>
-                                    <button class="btn secondary-btn-border btn-sm py-2 px-3"> Log in to add a drink to shelf </button>
-                                </div>
-                                <div class="py-4"></div>
-                            </div>
-                        </div>
-                        <!-- brands you follow -->
-                        <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3">
-                                <!-- header text -->
-                                <div class="square-inline">
-                                    <h4 class="square-inline-text-start mr-auto"> Brands You Follow </h4>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                                    </svg>
-                                </div>
-                                <!-- body -->
-                                <div class="py-4"></div>
-                                <div class="py-5">
-                                    <h6 class="fst-italic"> No brands added yet. </h6>
-                                    <button class="btn secondary-btn-border btn-sm py-2 px-3"> Log in to follow your favourite brand </button>
-                                </div>
-                                <div class="py-4"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
                 <!-- discover, following & filter by drink type -->
                 <div class="col-9">
                     <div class="container">
@@ -111,38 +53,20 @@
                             <!-- discover -->
                             <div class="col-4">
                                 <div class="d-grid gap-2">
-                                    <button class="btn primary-btn btn-sm">
-                                        <h4> Discover </h4>
-                                    </button>
+                                    <router-link :to="{ path: '/Producer/Producer-Create-Listing' }">
+                                        <button class="btn primary-btn btn-sm">
+                                            <h4> Add </h4>
+                                        </button>
+                                    </router-link>
                                 </div>
                             </div>
-                            <!-- following -->
-                            <div class="col-4">
-                                <div class="d-grid gap-2">
-                                    <button class="btn primary-btn-outline btn-sm">
-                                        <h4> Following </h4>
-                                    </button>
-                                </div>
-                            </div>
-                            <!-- filter by drink type -->
-                            <div class="col-4">
-                                <div class="d-grid gap-2 dropdown">
-                                    <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Filter by drink type
-                                    </button>
-                                    <ul class="dropdown-menu"> <!-- TODO: filter button to be implemented -->
-                                        <li><a class="dropdown-item" href="#">Action</a></li>
-                                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                    </ul>
-                                </div>
-                            </div>
+                          
                         </div>
 
                         <!-- listings -->
                         <div class="row">
                             <!-- v-loop for each listing -->
-                            <div class="container text-start">
+                            <div v-if="updateStatus == false" class="container text-start">
                                 <div class="p-3">
 
                                     <div class="row">
@@ -172,10 +96,9 @@
                                                     </h1>
                                                 </div>
                                                 <div class="col-6">
-                                                    <div class="d-grid gap-5">
-                                                        <a class="btn secondary-btn btn-md" > Read what the crowd thinks </a>
-                                                    </div>
-                                                    <a class="btn secondary-btn btn-md" @click="testing" > temp </a>
+                                                    <a class="btn secondary-btn btn-md" @click="updateListing" > Edit </a>
+                                                    <a class="btn secondary-btn btn-md" @click="temp" > temp </a>
+
                                                 </div>
                                             </div>
                                             <!-- expression name -->
@@ -192,147 +115,150 @@
                                     </div>
                                 </div>
                             </div>
+                            <div v-else class="container text-start">
+                                <div class="p-3">
+
+                                    <div class="row">
+                                        <!-- image -->
+                                        <div class="col-4 image-container">
+                                            <img src="../../../Images/Sample/beer.png" style="width: 300px; height: 300px;" class="img-border">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon" viewBox="0 0 16 16">
+                                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                                            </svg>
+                                        </div>
+                                        <!-- details -->
+                                        <div class="col-8 ps-5">
+                                            <!-- review -->
+                                            <label for="input">Enter Lisitng Name:</label>
+                                            <div class="row">
+                                                <div class="mb-3">
+                                                    <input type="Expression Name" class="form-control" id="exampleFormControlInput1" v-model="tempExpressionName">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label for="input">Enter Bottler Name:</label>
+                                                <div class="mb-3">
+                                                    <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="dropdown">Select Country of Origin:</label>
+                                                    <div class="input-group">
+                                                        
+                                                        <select class="form-select" id="inputGroupSelect01">
+                                                            <option selected>{{this.tempCountry }}</option>
+                                                            <option v-for="country in countries" :key="country['Country Name']" :value="country['Country Name']">
+                                                            {{ country['Country of Origin']  }}
+                                                        </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="dropdown">Select Drink Type:</label>
+                                                    <div class="input-group">
+                                                        <select class="form-select" id="inputGroupSelect01">
+                                                            <option selected>{{this.tempDrinkType }}</option>
+                                                            <option v-for="taste in drinkCategories" :key="taste['Drink Type']" :value="taste['Drink Type']">
+                                                            {{ taste['Drink Type']  }}
+                                                            </option>
+                                                        </select>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label for="dropdown">Select Drink Category:</label>
+                                                <div class="input-group mb-3">
+                                                    
+                                                    <select class="form-select" id="inputGroupSelect01">
+                                                        <option selected>Drink Category</option>
+                                                        <option v-for="taste in drinkCategories" :key="taste['Drink Type']" :value="taste['Drink Type']">
+                                                            {{ taste }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="row ">
+                                                <label for="input">Enter Bottle Age :</label>
+                                                <div class="col-md-6 mb-3">
+                                                    <input type="Expression Name" class="form-control" id="age" v-model="tempAge">
+                                                </div>
+                                                
+                                                <label for="input">Enter Bottle ABV (%):</label>
+                                                <div class="col-md-6 mb-3">
+                                                    <input type="Expression Name" class="form-control" id="abv" v-model="tempABV">
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="input">Enter Review Link (if available):</label>
+                                                <input type="Expression Name" class="form-control" id="exampleFormControlInput1" v-model="tempReviewLink">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="input">Enter Bottle Description:</label>
+                                                <input type="Expression Name" class="form-control" id="exampleFormControlInput1" v-model="tempDescription">
+                                            </div>
+
+                                            
+                                            
+                                            <!-- <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="dropdown">Select Option:</label>
+                                                    <div class="input-group">
+                                                        <select class="form-select" id="inputGroupSelect01">
+                                                            <option selected>Drink Type</option>
+                                                            <option value="1">One</option>
+                                                            <option value="2">Two</option>
+                                                            <option value="3">Three</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="dropdown">Select Option:</label>
+                                                    <div class="input-group">
+                                                        <select class="form-select" id="inputGroupSelect01">
+                                                            <option selected>Drink Category</option>
+                                                            <option value="1">One</option>
+                                                            <option value="2">Two</option>
+                                                            <option value="3">Three</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+                                            <!-- rating -->
+                                            <div class="row pt-5"> 
+                                                
+                                                <div class="col-6">
+                                                    <a class="btn secondary-btn btn-md" @click="saveListing" > Save </a>
+                                                </div>
+                                            </div>
+                                            <!-- expression name -->
+                                            
+                                            <!-- producer -->
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
                         </div> <!-- end of listings -->
                     </div> <!-- end of container -->
                 </div> <!-- end of discover, following & filter by drink type -->
             </div> <!-- end of row -->
         </div>
     </div>
+    
 
-    <!-- [else] with search inputs -->
-    <div v-else class="pt-5">
-        <div class="container default-text text-start">
-            <div class="row">
-                <!-- show matching # of search results -->
-                <div class="col-8 d-flex align-items-center">
-                    <!-- back button -->
-                    <span style="display: inline-block;">
-                        <span class="pe-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16" v-on:click="resetListings">
-                                <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
-                            </svg>
-                        </span>
-                        <h5 style="display: inline-block;"> Showing {{ filteredListings.length }} results for "{{ searchTerm }}" </h5> 
-                        <h5 style="display: inline-block;"> &nbsp; | &nbsp; </h5>
-                        <!-- show options to add listings -->
-                        <div style="display: inline-block;"> 
-                            <a href="#" class="link-underline-dark">
-                                <h5 style="display: inline-block;" class="default-text"> 
-                                    <u>
-                                        Don't see what you're looking for? Add a listing here! 
-                                    </u>
-                                </h5>
-                            </a>
-                        </div>
-                    </span>
-                </div>
-                <!-- filter by drink type -->
-                <div class="col-2">
-                    <div class="d-grid gap-2 dropdown">
-                        <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Filters
-                        </button>
-                        <ul class="dropdown-menu"> <!-- TODO: filter button to be implemented -->
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- sort by -->
-                <div class="col-2">
-                    <div class="d-grid gap-2 dropdown">
-                        <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Sort By
-                        </button>
-                        <ul class="dropdown-menu"> <!-- TODO: sort button to be implemented -->
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- show listings based on search results -->
-        <div class="container pt-3">
-            <div class="row">
-                <!-- v-loop for each listing -->
-                <div class="container text-start">
-                    <div class="p-3">
-                        <div class="row">
-                            <!-- image -->
-                            <div class="col-3 image-container">
-                                <a>
-                                    <img src="../../../Images/Sample/beer.png" style="width: 300px; height: 300px;" class="img-border"> 
-                                </a>
-                            </div>
-                            <!-- details -->
-                            <div class="col-9 ps-5">
-                                <!-- expression name, have tried & want to try & bookmark buttons -->
-                                <div class="row">
-                                    <!-- expression name -->
-                                    <div class="col-7">
-                                        <div class="row pt-2">
-                                            <h4 class="default-text"> 
-                                                <u> <b> {{ listing["Expression Name"] }}  </b> </u>
-                                            </h4> 
-                                        </div>
-                                    </div>
-                                    <!-- have tried button -->
-                                    <div class="col-2 pe-0">
-                                        <div class="d-grid">
-                                            <button type="button" class="btn btn-success btn-outline rounded-0"> Have tried </button>
-                                        </div>
-                                    </div>
-                                    <!-- want to try button -->
-                                    <div class="col-2 ps-0">
-                                        <div class="d-grid">
-                                            <button type="button" class="btn btn-info btn-outline rounded-0"> Want to try </button>
-                                        </div>
-                                    </div>
-                                    <!-- bookmark button -->
-                                    <div class="col-1 text-end">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
-                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div class="row py-2">
-                                    <!-- official description -->
-                                    <div class="col-10">
-                                        <div class="row pt-2 pb-5">
-                                            <h5 class="fst-italic scrollable"> {{ listing["Official Description"] }} </h5>
-                                        </div>
-                                    </div>
-                                    <!-- rating -->
-                                    <div class="col-2">
-                                        <h1 class="rating-text text-end">
-                                            3.7 
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                                            </svg>
-                                        </h1>
-                                    </div>
-                                </div>
-                                <!-- release date -->
-                                <div class="row pt-5"> 
-                                    <h5> 
-                                        <b> Release Date:</b>
-                                        11/09/23
-                                    </h5>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> <!-- end of listings -->
-        </div>
-
-    </div>
+    
 
 </template>
+
+
 
 <!-- ---------------------------------------------------------------------------------------------------------------------------------------------------------- -->
 
@@ -355,7 +281,22 @@
                 searchTerm: '',
                 searchResults: [],
                 filteredListings: [],
-                editable: []
+                editable: [],
+                drinkCategories:[],
+                updateStatus: false,
+                tempExpressionName: '',
+                tempProducer: '',
+                tempCountry: '',
+                tempDrinkType: '',
+                tempDrinkCategory: '',
+                tempAge: '',
+                tempABV: '',
+                tempReviewLink: '',
+                tempDescription: '',
+                tempBottler: ''
+
+
+                
             };
         },
         mounted() {
@@ -379,6 +320,16 @@
                     // originally, make filteredListings the entire collection of listings
                     this.filteredListings = this.listings;
                     this.editable = this.listings[0];
+                    this.tempExpressionName = this.editable["Expression Name"];
+                    this.tempProducer = this.editable["Producer"];
+                    this.tempCountry = this.editable["Country of Origin"];
+                    this.tempDrinkType = this.editable["Drink Type"];
+                    this.tempDrinkCategory = this.editable["Drink Category"];
+                    this.tempAge = this.editable["Age"];
+                    this.tempABV = this.editable["ABV"];
+                    this.tempReviewLink = this.editable["88B Website Review (if applicable)"];
+                    this.tempDescription = this.editable["Official Description"];
+                    this.tempBottler = this.editable["Bottler (OB or Specify name of IB)"];
                 } 
                 catch (error) {
                     console.error(error);
@@ -410,15 +361,30 @@
                 // Venues
                 try {
                     const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
-                    this.users = response.data;
+                    this.venues = response.data;
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+                // Drink Categories
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkCategories');
+                    this.drinkCategories = response.data;
                 } 
                 catch (error) {
                     console.error(error);
                 }
             },
 
-            testing() {
-                console.log(this.editable);
+            updateListing() {
+                this.updateStatus = true;
+            },
+
+            saveListing() {
+                this.updateStatus = false;
+            },
+            temp() {
+                console.log(this.drinkCategories);
             },
 
             // for search button
