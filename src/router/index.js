@@ -53,6 +53,12 @@ const routes = [
     name: 'producercreatelistings',
     component: () => import('../views/Producers/CreateListing.vue')
   },  
+  {
+    path: '/Producer/Producer-Edit-Listing',
+    name: 'producerupdatelistings',
+    component: () => import('../views/Producers/EditListing.vue')
+  },  
+
 ]
 
 const router = createRouter({

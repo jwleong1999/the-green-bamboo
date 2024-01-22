@@ -9,6 +9,7 @@
     <router-link to="/Producers/Bottle-Listings">(Producers) Bottle Listings</router-link> |
     <router-link to="/Producer/Producer-Listings">(Producers) Listings</router-link> |
     <router-link to="/Producer/Producer-Create-Listing">(Producers) Create Listings</router-link> |
+    <router-link to="/Producer/Producer-Edit-Listing">(Producers) Edit Listings</router-link> |
     <router-link to="/userprofile">User Profile</router-link>
   
   </nav>
