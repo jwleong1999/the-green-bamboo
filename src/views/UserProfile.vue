@@ -36,9 +36,59 @@
 
                     <!-- buttons -->
                     <div class="row mt-3">
-                        <button class="btn btn-outline-primary">Edit Profile</button>
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
                         <button class="btn btn-warning mt-3">View My Analytics</button>
                         <a href="#" class="mt-3">Want to be a moderator? Apply here!</a>
+                    </div>
+
+                    <!-- edit profile modal -->
+                    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Profile</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <!-- edit profile photo -->
+                                <div class="edit-profile-pic">
+                                    <div class="row mb-3">
+                                        <div class="col-4" style="margin: auto;">
+                                            Image Preview
+                                        </div>
+                                        <div class="col-8">
+                                            <img src="https://cdn.vectorstock.com/i/preview-1x/15/40/blank-profile-picture-image-holder-with-a-crown-vector-42411540.jpg" 
+                                                alt="" class="rounded-circle border border-dark profile-img" id="output">  
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-4" style="margin: auto;">
+                                            Edit Image
+                                        </div>
+                                        <div class="col-8">
+                                            <input class="form-control" id="file" type="file" @change="loadFile"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- change drink of choice -->
+                                <div class="edit-drink-choice">
+                                    <div class="row">
+                                        <div class="col-4" style="margin: auto;">
+                                            Drink Choice
+                                        </div>
+                                        <div class="col-8">
+                                            <!-- dropdown to choose drinks -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                            </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- badges -->
@@ -388,6 +438,11 @@ export default {
         toggleView() {
             this.showCurrentContent = !this.showCurrentContent; // Toggle the value
         },
+        loadFile(event) {
+            var image = document.getElementById("output");
+            image.src = URL.createObjectURL(event.target.files[0]);
+        },
+
     },
 };
 </script>
