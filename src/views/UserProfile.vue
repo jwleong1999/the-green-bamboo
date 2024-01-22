@@ -1,5 +1,5 @@
 <template>
-  <div class="userprofile">
+  <div v-if="user" class="userprofile">
 
     <div class="container text-start">
         <div class="row">
@@ -11,13 +11,15 @@
                     <!-- basic information -->
                     <div class="row">
                         <div class="col-8">
-                            <h3>Name</h3> 
-                            <b>@Username</b> <br/>
-                            Drinks tasted <br/>
+                            <h3>{{ user.Name }}</h3> 
+                            <b>@{{ user.Username }}</b> 
+                            <br/>
+                            <!-- todo --> 0 Drinks tasted 
+                            <br/>
                         </div>
                         <!-- profile picture -->
                         <div class="col-4 text-end">
-                            <img src="https://img.freepik.com/free-vector/realistic-vector-icon-golden-king-queen-crown-isolated-white-background_134830-2012.jpg" 
+                            <img src="https://cdn.vectorstock.com/i/preview-1x/15/40/blank-profile-picture-image-holder-with-a-crown-vector-42411540.jpg" 
                                 alt="" class="rounded-circle border border-dark profile-img">  
                         </div>
                     </div>
@@ -25,10 +27,10 @@
                     <!-- additional information -->
                     <div class="mt-3">
                         <span class="float-start"><b>Member since</b></span>
-                        <span class="float-end">Sept 2021</span>
+                        <!-- todo --> <span class="float-end">Sept 2021</span>
                         <br/>
                         <span class="float-start"><b>Drink of Choice</b></span>
-                        <span class="float-end">Soju</span>
+                        <span class="float-end">{{ drinkOfChoice }}</span>
                         <br/>
                     </div>
 
@@ -298,12 +300,93 @@
 export default {
     data() {
         return {
+            // user detail [TODO: CHANGE BASED ON USER]
+            userID: "659ed6047edad51baf9d3362",
+            user: {},
+            drinkOfChoice: "",
+            // data from database
+            countries: [],
+            listings: [],
+            producers: [],
+            reviews: [],
+            users: [],
+            venues: [],
+            // data for tab
             showCurrentContent: true, // Initially show the current content
         };
     },
+    mounted() {
+        this.loadData();
+        this.getUser(this.userID);
+    },
     methods: {
+        // load data from database
+        async loadData() {
+            // Countries
+            try {
+                const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
+                this.countries = response.data;
+            } 
+            catch (error) {
+                console.error(error);
+            }
+            // Listings
+            try {
+                const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
+                this.listings = response.data;
+                // originally, make filteredListings the entire collection of listings
+                this.filteredListings = this.listings;
+            } 
+            catch (error) {
+                console.error(error);
+            }
+            // Producers
+            try {
+                const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
+                this.producers = response.data;
+            } 
+            catch (error) {
+                console.error(error);
+            }
+            // Reviews
+            try {
+                const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
+                this.reviews = response.data;
+            }
+            catch (error) {
+                console.error(error);
+            }
+            // Users
+            try {
+                const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
+                this.users = response.data;
+
+                this.getUser(this.userID);
+                console.log(this.user);
+                this.getDrinkOfChoice();
+            } 
+            catch (error) {
+                console.error(error);
+            }
+            // Venues
+            try {
+                const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
+                this.users = response.data;
+            } 
+            catch (error) {
+                console.error(error);
+            }
+        },
+        // get user from user ID
+        getUser(id) {
+            this.user =  this.users.find(user => user._id.$oid === id);
+        },
+        getDrinkOfChoice() {
+            // convert the array into string with , as delimeter
+            this.drinkOfChoice = this.user["Drink of Choice"].join(", ");
+        },
         toggleView() {
-        this.showCurrentContent = !this.showCurrentContent; // Toggle the value
+            this.showCurrentContent = !this.showCurrentContent; // Toggle the value
         },
     },
 };
