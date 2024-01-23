@@ -26,11 +26,11 @@ def parse_json(data):
 @app.route("/createListings", methods= ['POST'])
 def createListings():
     rawBottle = request.get_json()
-    rawBottleName = rawBottle["drinkName"]
+    rawBottleName = rawBottle["listingName"]
 
 
     # existingBottle = db.Listings.find_one({"Expression Name": rawBottleName})
-    existingBottle = db.Listings.find_one({"drinkName": rawBottleName})
+    existingBottle = db.Listing.find_one({"listingName": rawBottleName})
 
     # Check whether bottle with the same name exists in the database
     if(existingBottle != None):
@@ -38,7 +38,7 @@ def createListings():
             {   
                 "code": 400,
                 "data": {
-                    "bottleName": rawBottleName
+                    "listingName": rawBottleName
                 },
                 "message": "Bottle already exists."
             }
@@ -48,7 +48,7 @@ def createListings():
     newBottle = data.Listings(**rawBottle)
 
     try:
-        insertResult = db.Listings.insert_one(data.asdict(newBottle))
+        insertResult = db.Listing.insert_one(data.asdict(newBottle))
 
         return jsonify( 
             {   
@@ -62,7 +62,7 @@ def createListings():
             {
                 "code": 500,
                 "data": {
-                    "bottleName": rawBottleName
+                    "listingName": rawBottleName
                 },
                 "message": "An error occurred creating the listing."
             }

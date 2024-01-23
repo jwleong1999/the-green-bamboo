@@ -56,31 +56,44 @@
                     <!-- Input: Bottle Name -->
                     <div class="form-group mb-3">
                         <p class="text-start mb-1">Name of Bottle <span class="text-danger">*</span></p>
-                        <input type="text" v-model="form['Expression Name']" class="form-control" id="bottleName" placeholder="Enter Bottle Name">
+                        <input type="text" v-model="form['listingName']" class="form-control" id="bottleName" placeholder="Enter Bottle Name">
                     </div>
 
-                    <!-- Input: Drink Type + Category -->
+                    <!-- Input: drinkType + Category -->
                     <div class="row mb-3">
                         <div class="form-group col-md-6">
                             <p class="text-start mb-1">Drink Type <span class="text-danger">*</span></p>
-                            <input type="text" class="form-control" v-model="form['Drink Type']" id="bottleType" placeholder="Type of Drink">
+                            <input type="text" class="form-control" v-model="form['drinkType']" id="drinkType" placeholder="Type of Drink">
                         </div>
                         <div class="form-group col-md-6">
                             <p class="text-start mb-1">Drink Category</p>
-                            <input type="text" class="form-control" v-model="form['Drink Category']" id="bottleCategory" placeholder="Category of Drink">
+                            <input type="text" class="form-control" v-model="form['typeCategory']" id="typeCategory" placeholder="Category of Drink">
                         </div>
                     </div>
                     
                     <!-- Input: Drink Description (ONLY FOR PRODUCERS) -->
                     <div class="form-group mb-3" v-if="mode == 'power'">
-                        <p class="text-start mb-1">Official Description</p>
-                        <textarea class="form-control" v-model="form['Official Description']" id="description" placeholder="Enter description of bottle"></textarea>
+                        <p class="text-start mb-1">Official Description <span class="text-danger">*</span></p>
+                        <textarea class="form-control" v-model="form['officialDesc']" id="officialDesc" placeholder="Enter description of bottle"></textarea>
                     </div>
 
                     <!-- Input: Link to website or source -->
                     <div class="form-group mb-3">
                         <p class="text-start mb-1">Link to website or source <span class="text-danger">*</span></p>
-                        <input type="text" class="form-control" v-model="form['88B Website Review (if applicable)']" id="bottleName" placeholder="Enter link">
+                        <input type="text" class="form-control" v-model="form['reviewLink']" id="reviewLink" placeholder="Enter link">
+                    </div>
+
+                    <!-- Input: Photo file -->
+                    <div class="form-group mb-3">
+                        <p class="text-start mb-1">Photo of bottle</p>
+                        <input class="form-control" type="file" id="formFile" @change="handleFileSelect">
+                    </div>
+
+                    <!-- Input: Producer Name -->
+                    <!-- TODO: Make this a dropdown list AND also to make it autofill and non-changeable for producer account-->
+                    <div class="form-group mb-3">
+                        <p class="text-start mb-1">Producer Name <span class="text-danger">*</span></p>
+                        <input type="text" class="form-control" v-model="form['producer']" id="producer" placeholder="Enter producer name">
                     </div>
 
                     <!-- Input: Independent Bottler Check -->
@@ -95,40 +108,40 @@
                     </div>
                     <!-- End of radios -->
                     <div class="form-group mb-3" v-if="isOperator == false">
-                        <p class="text-start mb-1">If yes, who is the independent bottler?</p>
-                        <input type="text" class="form-control" v-model="form['Bottler (OB or Specify name of IB)']" :disabled="isOperator" id="bottlerName" placeholder="Enter Bottler Name">
+                        <p class="text-start mb-1">If yes, who is the independent bottler? <span class="text-danger">*</span></p>
+                        <input type="text" class="form-control" v-model="form['bottler']" :disabled="isOperator" id="bottlerName" placeholder="Enter Bottler Name">
                     </div>
                     <!-- End of input text for independent bottler (ONLY APPEARS IF INDEPENDENT BOTTLER = TRUE) -->
 
-                    <!-- Input: Country of Origin -->
+                    <!-- Input: originCountry -->
                     <div class="form-group mb-3">
                         <p class="text-start mb-1">Country of Origin</p>
-                        <input type="text" class="form-control" v-model="form['Country of Origin']" id="countryOfOrigin" placeholder="Enter country">
+                        <input type="text" class="form-control" v-model="form['originCountry']" id="originCountry" placeholder="Enter country">
                     </div>
 
-                    <!-- Input: Alcohol Strength % ABV -->
+                    <!-- Input: Alcohol Strength % abv -->
                     <p class="text-start mb-1">Strength</p>
-                    <div class="form-group row">
+                    <div class="form-group row mb-3">
                         <div class="col-sm-3 pe-1">
-                            <input type="number" max="100" v-model="form['ABV']"  class="form-control" id="ABV">
+                            <input type="number" max="100" v-model="form['abv']"  class="form-control" id="abv">
                         </div>
-                        <label for="ABV" class="col-sm-3 col-form-label ps-1 text-start">% ABV</label>
+                        <label for="abv" class="col-sm-3 col-form-label ps-1 text-start">% ABV</label>
                         
                     </div>
 
-                    <!-- Input: Alcohol Age -->
+                    <!-- Input: Alcohol age -->
                     <p class="text-start mb-1">Age</p>
                     <div class="form-group row">
                         <div class="col-sm-3 pe-1">
-                            <input type="number" class="form-control" v-model="form['Age']" id="ABV">
+                            <input type="number" class="form-control" v-model="form['age']" id="abv">
                         </div>
-                        <label for="ABV" class="col-sm-3 col-form-label ps-1 text-start">years old</label>
+                        <label for="abv" class="col-sm-3 col-form-label ps-1 text-start">years old</label>
                         
                     </div>
 
                     <!-- TODO Input: Relationship with Brand (ONLY FOR USERS) -->
                     
-                    <button type="submit" class="btn secondary-btn">Submit</button>
+                    <button type="submit" class="btn secondary-btn">Submit Bottle Listing</button>
                     <!-- TODO: Return Button -->
                 
                 </form>
@@ -142,6 +155,7 @@
 </template>
 
 <script>
+    // import FileReader from 'filereader';
     export default {
         name: "SubmitListingNew",
         props: {
@@ -150,15 +164,17 @@
         data () {
             return {
                 form: {
-                    "Expression Name": "",
-                    "Drink Type": "",
-                    "Drink Category": "",
-                    "Official Description": "",
-                    "88B Website Review (if applicable)": "",
-                    "Bottler (OB or Specify name of IB)": "",
-                    "Country of Origin": "",
-                    "ABV": "",
-                    "Age": ""
+                    "listingName": "",
+                    "drinkType": "",
+                    "typeCategory": "",
+                    "officialDesc": "",
+                    "reviewLink": "",
+                    "bottler": "",
+                    "originCountry": "",
+                    "abv": "",
+                    "age": "",
+                    "photo": "",
+                    "producer":""
                 },
                 isOperator: false,
                 submitForm: false,
@@ -168,6 +184,106 @@
                 duplicateEntry: false,
                 fillForm: true
             }
+        },
+        methods:{
+            submitListing(){
+                if(this.mode == "power"){
+                    this.createListing()
+                }
+            },
+
+            async createListing(){
+            // form validation first
+            console.log(this.form["photo"])
+
+            let alertPhrase = "";
+            if(this.isOperator){
+                this.form["bottler"] = "OB"
+            }
+
+            // TODO Set default to a default base64 string
+            if(!this.form["photo"]){
+                this.form["photo"] = "scam"
+            }
+
+            
+            if (!this.form["listingName"].trim()){
+                alertPhrase += "Name of bottle is needed.\n"
+            }
+            if (!this.form["producer"].trim()){
+                alertPhrase += "Name of producer is needed.\n"
+            }
+            if(!this.form["drinkType"].trim()){
+                alertPhrase += "Type of drink is needed.\n"
+            }
+            if(!this.form["reviewLink"].trim()){
+                alertPhrase += "Link to website or source is needed.\n"
+            }
+            if(!this.form["bottler"].trim()){
+                alertPhrase += "Name of bottler is needed.\n"
+            }
+            if(alertPhrase){
+                alert(alertPhrase)
+                return "error"
+            }
+            
+            this.fillForm=false;
+            this.submitForm=true;
+
+
+            const response = await this.$axios.post('http://127.0.0.1:5001/createListings',this.form)
+            .then((response)=>{
+                this.responseCode = response.data.code
+            })
+            .catch((error)=>{
+                console.log(error);
+                this.responseCode = error.response.data.code
+            });
+            console.log(this.responseCode)
+            if(this.responseCode==201){
+                this.successSubmission=true;
+                this.submitForm=false;
+            }else{
+                this.errorSubmission=true;
+                this.submitForm=false;
+                if(this.responseCode==400){
+                    this.duplicateEntry = true
+                }else{
+                    this.errorMessage = true
+                }
+            }
+            return response
+
+        },
+
+        reset(){
+            this.fillForm=true
+            this.successSubmission=false
+            this.submitForm=false
+            this.errorSubmission= false
+            this.duplicateEntry= false
+            
+            this.responseCode= ""
+            this.isOperator = false
+            for (const key in this.form) {
+                this.form[key] = "";
+            }
+        },
+
+        handleFileSelect(event){
+            const file = event.target.files[0];
+            const reader = new FileReader;
+            
+            reader.onload = () => {
+                const base64String = reader.result.split(',')[1];
+                this.form["photo"] = base64String
+            };
+            
+            reader.readAsDataURL(file);
+            
+            
+        },  
+
         }
     }
 </script>

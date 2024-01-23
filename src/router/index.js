@@ -38,11 +38,11 @@ const routes = [
     name: 'usersrequestlistingnew',
     component: () => import('../views/Users/RequestListingNew.vue')
   },
-  {
-    path: '/Users/request/modify',
-    name: 'usersrequestlistingmodify',
-    component: () => import('../views/Users/RequestListingModify.vue')
-  },
+  // {
+  //   path: '/Users/request/modify',
+  //   name: 'usersrequestlistingmodify',
+  //   component: () => import('../views/Users/RequestListingModify.vue')
+  // },
   {
     path: '/userprofile',
     name: 'userprofile',

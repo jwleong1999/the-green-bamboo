@@ -1,5 +1,5 @@
 from dataclasses import dataclass, asdict
-from typing import Optional
+from typing import Optional, Union
 import pymongo
 import json
 
@@ -25,24 +25,27 @@ class drinkCategory:
 # Dataclass (Listing)
 @dataclass
 class Listings:
-    drinkName: str
-    producerName: str
-    Bottler: str
+    listingName: str
+    producer: str
+    bottler: str
     originCountry: str
     drinkType: str
-    drinkCategory: str
-    Age: str
-    ABV: str
-    reviewLink: Optional[str]
-    listingDesc: str
+    abv: str
+    officialDesc: str
+    photo: str
+    typeCategory: Optional[str] = None
+    age: Optional[str] = None
+    reviewLink: Optional[str] = None
+    sourceLink: Optional[str] = None
 
 # Dataclass (Producers)
 @dataclass
 class Producers:
     producerName: str
+    producerDesc: str
     originCountry: str
-    obStatus: Optional[str]
-    mainDrink: list
+    statusOB: Optional[str]
+    mainDrinks: list
 
 # Dataclass (Reviews)
 @dataclass
@@ -83,9 +86,9 @@ def convert_to_json(data):
     return json.dumps(data.__dict__)
 
 # # Example usage
-listing = Listings(drinkName="Whiskey", producerName="ABC Distillery", Bottler="ABC Bottler", originCountry="USA", drinkType="Whiskey", drinkCategory="Single Malt", Age="12 years", ABV="40%", reviewLink=None, listingDesc="A smooth and rich whiskey.")
-json_data = convert_to_json(listing)
-print(json_data)
+# listing = Listings(drinkName="Whiskey", producerName="ABC Distillery", Bottler="ABC Bottler", originCountry="USA", drinkType="Whiskey", drinkCategory="Single Malt", Age="12 years", ABV="40%", reviewLink=None, listingDesc="A smooth and rich whiskey.")
+# json_data = convert_to_json(listing)
+# print(json_data)
 
 country = Country(countryName="USA")
 json_data = convert_to_json(country)
