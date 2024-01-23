@@ -42,9 +42,9 @@
         <!-- div for the whole form plus header plus col-->
         <div class="row" v-if="fillForm">
             
-            <!-- button (WHAT DOES THIS DO) -->
-            <div class="col-3">
-            </div>
+            <!-- spacer -->
+            <div class="col-3"></div>
+            
             <!-- start of the elements -->
             <div class="col-6">
                 <div class="d-grid gap-2">
@@ -116,9 +116,9 @@
                         
                     </div>
 
-                    <!-- Input: Alcohol Age (ONLY FOR PRODUCERS) -->
-                    <p class="text-start mb-1" v-if="mode == 'power'">Age</p>
-                    <div class="form-group row" v-if="mode == 'power'">
+                    <!-- Input: Alcohol Age -->
+                    <p class="text-start mb-1">Age</p>
+                    <div class="form-group row">
                         <div class="col-sm-3 pe-1">
                             <input type="number" class="form-control" v-model="form['Age']" id="ABV">
                         </div>
@@ -128,7 +128,7 @@
 
                     <!-- TODO Input: Relationship with Brand (ONLY FOR USERS) -->
                     
-                    <button type="submit" class="primary-btn">Submit</button>
+                    <button type="submit" class="btn secondary-btn">Submit</button>
                     <!-- TODO: Return Button -->
                 
                 </form>
