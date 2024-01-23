@@ -32,7 +32,17 @@ const routes = [
     path: '/Users/Bottle-Listings',
     name: 'usersbottlelistings',
     component: () => import('../views/Users/BottleListings.vue')
-  },  
+  },
+  {
+    path: '/Users/request/new',
+    name: 'usersrequestlistingnew',
+    component: () => import('../views/Users/RequestListingNew.vue')
+  },
+  {
+    path: '/Users/request/modify',
+    name: 'usersrequestlistingmodify',
+    component: () => import('../views/Users/RequestListingModify.vue')
+  },
   {
     path: '/userprofile',
     name: 'userprofile',
@@ -42,12 +52,12 @@ const routes = [
     path: '/Producers/Bottle-Listings',
     name: 'producersbottlelistings',
     component: () => import('../views/Producers/BottleListings.vue')
-  },  
+  },
   {
     path: '/Producer/Producer-Listings',
     name: 'producerlistings',
     component: () => import('../views/Producers/ProducerListings.vue')
-  },  
+  },
   {
     path: '/Producer/Producer-Create-Listing',
     name: 'producercreatelistings',
@@ -57,7 +67,7 @@ const routes = [
     path: '/Producer/Producer-Edit-Listing',
     name: 'producerupdatelistings',
     component: () => import('../views/Producers/EditListing.vue')
-  },  
+  },
 
 ]
 
