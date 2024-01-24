@@ -19,8 +19,7 @@
                         </div>
                         <!-- profile picture -->
                         <div class="col-4 text-end">
-                            <img src="https://cdn.vectorstock.com/i/preview-1x/15/40/blank-profile-picture-image-holder-with-a-crown-vector-42411540.jpg" 
-                                alt="" class="rounded-circle border border-dark profile-img">  
+                            <img :src=" 'data:image/jpeg;base64,' + user.profile_picture" alt="" class="rounded-circle border border-dark profile-img">
                         </div>
                     </div>
 
@@ -57,9 +56,7 @@
                                             Image Preview
                                         </div>
                                         <div class="col-8">
-                                            <img src="https://cdn.vectorstock.com/i/preview-1x/15/40/blank-profile-picture-image-holder-with-a-crown-vector-42411540.jpg" 
-                                                alt="" class="rounded-circle border border-dark profile-img" id="output">  
-                                        </div>
+                                        <img :src="selectedImage || 'data:image/jpeg;base64,' + user.profile_picture" alt="" class="rounded-circle border border-dark profile-img" id="output">                                        </div>
                                     </div>
                                     <div class="row mb-3">
                                         <div class="col-4" style="margin: auto;">
@@ -79,13 +76,19 @@
                                         </div>
                                         <div class="col-8">
                                             <!-- dropdown to choose drinks -->
+                                            <select class="form-select" aria-label="Default select example">
+                                                <option selected>Open this select menu</option>
+                                                <option value="1">Beer</option>
+                                                <option value="2">Wine</option>
+                                                <option value="3">Whiskey</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Save changes</button>
+                                <button type="button" class="btn btn-primary" @click="saveChanges">Save changes</button>
                             </div>
                             </div>
                         </div>
@@ -363,6 +366,9 @@ export default {
             venues: [],
             // data for tab
             showCurrentContent: true, // Initially show the current content
+            // image upload
+            selectedImage: null,
+            imgae_obj: null,
         };
     },
     mounted() {
@@ -438,9 +444,42 @@ export default {
         toggleView() {
             this.showCurrentContent = !this.showCurrentContent; // Toggle the value
         },
-        loadFile(event) {
-            var image = document.getElementById("output");
-            image.src = URL.createObjectURL(event.target.files[0]);
+        async loadFile(event) {
+
+            console.log("loadFile");
+
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onloadend = async () => {
+                this.selectedImage = reader.result;
+                const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+
+                this.image_obj = {
+                    image: base64String,
+                    filename: file.name,
+                }
+                console.log("image_obj");
+                console.log(this.image_obj);
+
+            };
+            reader.readAsDataURL(file);
+        
+        },
+        async saveChanges() {
+            
+                try {
+                    const response = await this.$axios.post('http://127.0.0.1:5100/upload', 
+                        this.image_obj, 
+                    {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    console.log(response.data);
+                } catch (error) {
+                    console.error(error);
+                }        
         },
 
     },
