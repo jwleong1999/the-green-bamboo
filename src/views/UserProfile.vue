@@ -63,7 +63,7 @@
                                             Edit Image
                                         </div>
                                         <div class="col-8">
-                                            <input class="form-control" id="file" type="file" @change="loadFile"/>
+                                            <input class="form-control" id="file" type="file" @change="loadFile" ref="fileInput"/>
                                         </div>
                                     </div>
                                 </div>
@@ -87,8 +87,8 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" @click="saveChanges">Save changes</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cancelChanges">Close</button>
+                                <button type="button" class="btn btn-primary" @click="saveChanges" data-bs-dismiss="modal">Save changes</button>
                             </div>
                             </div>
                         </div>
@@ -375,18 +375,6 @@ export default {
     mounted() {
         this.loadData();
         this.getUser(this.userID);
-        this.$nextTick(() => {
-            const modal = document.getElementById('editProfileModal');
-            if (modal) {
-                modal.addEventListener('hidden.bs.modal', this.cancelChanges);
-            }
-            console.log("test");
-            if (modal) {
-                modal.addEventListener('hidden', () => {
-                    console.log('Modal hidden event fired');
-                });
-            }
-        });
     },
     methods: {
         // load data from database
@@ -466,8 +454,8 @@ export default {
         
         },
         async saveChanges() {
-            // $('#editProfileModal').modal('hide');
-
+            window.location.reload();
+            
             if (this.image64 == null) {
                 this.image64 = this.user["profile_picture"];
             }
@@ -491,6 +479,7 @@ export default {
         cancelChanges() {
             this.selectedDrinks = this.user["Drink of Choice"];
             this.selectedImage = null;
+            this.$refs.fileInput.value = '';
         }, 
 
     },
