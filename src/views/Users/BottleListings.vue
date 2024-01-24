@@ -128,12 +128,15 @@
                             <div class="col-4">
                                 <div class="d-grid gap-2 dropdown">
                                     <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Filter by drink type
+                                        {{ selectedDrinkType ? selectedDrinkType['Drink Type'] : 'Filter by drink type' }}
                                     </button>
                                     <ul class="dropdown-menu"> <!-- TODO: filter button to be implemented -->
-                                        <li><a class="dropdown-item" href="#">Action</a></li>
-                                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                        <!-- IN IMPLEMENTATION -->
+
+                                        <li v-for="type in drinkCategories" v-bind:key="type._id" class="p-3">
+                                        <a class="dropdown-item" @click="selectDrinkType(type)">{{ type['Drink Type'] }}</a>
+                                        </li>
+                                              
                                     </ul>
                                 </div>
                             </div>
@@ -348,12 +351,14 @@
                 reviews: [],
                 users: [],
                 venues: [],
+                drinkCategories: [],
                 // search
                 search: false,
                 searchInput: '',
                 searchTerm: '',
                 searchResults: [],
                 filteredListings: [],
+                selectedDrinkType:"",
             };
         },
         mounted() {
@@ -407,7 +412,15 @@
                 // Venues
                 try {
                     const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
-                    this.users = response.data;
+                    this.venues = response.data;
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+                // Drink Categories
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkCategories');
+                    this.drinkCategories = response.data;
                 } 
                 catch (error) {
                     console.error(error);
@@ -483,7 +496,15 @@
                     return total + rating["Rating"];
                 }, 0) / ratings.length;
                 return averageRating;
-        }
+        },
+
+            // Handle select of filter option
+            selectDrinkType(drinkType) {
+                this.selectedDrinkType = drinkType;
+                // TODO: add in function to change the view to filter view
+                console.log(drinkType)
+        },
+        
         },
     };
 </script>
