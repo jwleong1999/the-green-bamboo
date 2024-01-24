@@ -26,20 +26,18 @@ fs = GridFS(mongo.db)
 @app.route('/upload', methods=['POST'])
 def editProfile():
     data = request.get_json()
+    userID = data['userID']
+    image64 = data['image64']
+    drinkChoice = data['drinkChoice']
 
-    # profile picture
-    if 'image' not in data or 'filename' not in data:
-        return 'Invalid request', 400
-    
-    image = data['image']
-    filename = data['filename']
     try: 
-        updateImage = db.Users.update_one({'Username': 'lotursroot518'}, {'$set': {'profile_picture': image}})
+        updateImage = db.Users.update_one({'_id': ObjectId(userID)}, {'$set': {'profile_picture': image64}})
+        updateDrinkChoice = db.Users.update_one({'_id': ObjectId(userID)}, {'$set': {'Drink of Choice': drinkChoice}})
 
         return jsonify(
             {   
                 "code": 201,
-                "data": image
+                "data": image64
             }
         ), 201
     except Exception as e:
@@ -48,7 +46,7 @@ def editProfile():
             {
                 "code": 500,
                 "data": {
-                    "image": filename
+                    "image": image64[:8]
                 },
                 "message": "An error occurred updating the image."
             }
