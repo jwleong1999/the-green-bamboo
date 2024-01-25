@@ -18,6 +18,7 @@
     - Consider use of character counters and character limits if/when necessary.
     - [?] Relationship with Brand: If "Others" is selected, should there be a text box to fill in for users to specify their relationship?
     - [?] Should we save the form data for easier retry when invoking reset()? Should reset() just hard refresh the page?
+    - [?] Should source link field + review link field be on the same page? Need to validate if review link is from 88b?
 -->
 
 <template>
@@ -94,13 +95,13 @@
                     <!-- Input: Link to website or source (optional for creation, mandatory for request) -->
                     <div class="form-group mb-3">
                         <p class="text-start mb-1">Link to website or source <span class="text-danger" v-if="mode == 'user'">*</span></p>
-                        <input type="text" class="form-control" v-model="form['sourceLink']" id="sourceLink" placeholder="Enter link">
+                        <input type="text" class="form-control" v-model="form['sourceLink']" id="sourceLink" placeholder="Enter source link">
                     </div>
 
                     <!-- Input: Link to 88 Bamboo review -->
                     <div class="form-group mb-3">
                         <p class="text-start mb-1">Link to 88 Bamboo review</p>
-                        <input type="text" class="form-control" v-model="form['reviewLink']" id="reviewLink" placeholder="Enter link">
+                        <input type="text" class="form-control" v-model="form['reviewLink']" id="reviewLink" placeholder="Enter review link">
                     </div>
 
                     <!-- Input: Photo file -->
@@ -166,23 +167,23 @@
                     <p class="text-start mb-1" v-if="mode == 'user'">Your Relationship with the Brand <span class="text-danger">*</span></p>
                     <div class="text-start mb-3" v-if="mode == 'user'">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" v-model="form['brandRelation']" :value="'Customer'" name="brandRelationCustomer" id="brandRelationCustomer">
+                            <input class="form-check-input" type="radio" v-model="form['brandRelation']" :value="'Customer'" name="brandRelationCustomer" id="brandRelationCustomer">
                             <label class="form-check-label" for="brandRelationCustomer">Customer</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" v-model="form['brandRelation']" :value="'Employee'" name="brandRelationEmployee" id="brandRelationEmployee">
+                            <input class="form-check-input" type="radio" v-model="form['brandRelation']" :value="'Employee'" name="brandRelationEmployee" id="brandRelationEmployee">
                             <label class="form-check-label" for="brandRelationEmployee">Employee</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" v-model="form['brandRelation']" :value="'Public Relations'" name="brandRelationPR" id="brandRelationPR">
+                            <input class="form-check-input" type="radio" v-model="form['brandRelation']" :value="'Public Relations'" name="brandRelationPR" id="brandRelationPR">
                             <label class="form-check-label" for="brandRelationPR">Public Relations</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" v-model="form['brandRelation']" :value="'Distributor'" name="brandRelationDist" id="brandRelationDist">
+                            <input class="form-check-input" type="radio" v-model="form['brandRelation']" :value="'Distributor'" name="brandRelationDist" id="brandRelationDist">
                             <label class="form-check-label" for="brandRelationDist">Distributor</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" v-model="form['brandRelation']" :value="'Others'" name="brandRelationOther" id="brandRelationOther">
+                            <input class="form-check-input" type="radio" v-model="form['brandRelation']" :value="'Others'" name="brandRelationOther" id="brandRelationOther">
                             <label class="form-check-label" for="brandRelationOther">Others</label>
                         </div>
                     </div>
@@ -220,7 +221,7 @@
                     "originCountry": "",
                     "abv": "",
                     "age": "",
-                    "brandRelation": "",
+                    "brandRelation": "Others",
                     "photo": ""
                 },
                 isOperator: false,
@@ -265,6 +266,9 @@
             },
 
             submitListing(){
+                // Form Validation
+                
+
                 if(this.mode == "power"){
                     this.createListing()
                 }
