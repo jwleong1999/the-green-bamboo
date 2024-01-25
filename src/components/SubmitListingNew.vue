@@ -4,7 +4,7 @@
     TODO:
     - "Return" button may bring user back to same page, but with form cleared. Prevent that by returning to last notable page.
     - Dropdown Selection for Drink Type + Drink Category (with option for "Other"), Country of Origin
-    - Make Producer field a dropdown list (for non-producer) / autofill and non-changeable (for producer)
+    - Make Producer field a dropdown list (for non-producer) / autofill and non-changeable (for producer). This fills in producerID in backend as well.
     - If messages show, consider hiding / disabling the form
     - Independent Bottler Yes/No radio buttons should be styled to look like checkboxes.
         -- [?] Consider using switch / single checkbox instead (if so, flip isOperator: rename to indOperator).
@@ -13,10 +13,11 @@
     - Input: Relationship with Brand (ONLY FOR USERS)
     
     - Styling Discussion / Fixes
-    - [?] Relationship with Brand: If "Others" is selected, should there be a text box to fill in for users to specify their relationship?
     - Accept pre-filled information from users to be created by power users.
     - Consider if any duplicate submission has to be detected / prevented. Includes requests for bottles that already exist.
     - Consider use of character counters and character limits if/when necessary.
+    - [?] Relationship with Brand: If "Others" is selected, should there be a text box to fill in for users to specify their relationship?
+    - [?] Should we save the form data for easier retry when invoking reset()? Should reset() just hard refresh the page?
 -->
 
 <template>
@@ -200,7 +201,6 @@
 </template>
 
 <script>
-    // import FileReader from 'filereader';
     export default {
         name: "SubmitListingNew",
         props: {
@@ -213,13 +213,15 @@
                     "drinkType": "",
                     "typeCategory": "",
                     "officialDesc": "",
+                    "sourceLink": "",
                     "reviewLink": "",
+                    "producer": "",
                     "bottler": "",
                     "originCountry": "",
                     "abv": "",
                     "age": "",
-                    "photo": "",
-                    "producer":""
+                    "brandRelation": "",
+                    "photo": ""
                 },
                 isOperator: false,
                 submitForm: false,
@@ -227,12 +229,39 @@
                 errorSubmission: false,
                 errorMessage: false,
                 duplicateEntry: false,
-                fillForm: true
+                fillForm: true,
+                responseCode: ""
             }
         },
         methods:{
             goBack() {
                 this.$router.go(-1)
+            },
+
+            reset(){
+                this.isOperator = false
+                this.submitForm = false
+                this.successSubmission = false
+                this.errorSubmission = false
+                this.errorMessage = false   // is this required?
+                this.duplicateEntry = false
+                this.fillForm = true
+                this.responseCode= ""
+                for (const key in this.form) {
+                    this.form[key] = "";
+                }
+            },
+
+            handleFileSelect(event){
+                const file = event.target.files[0];
+                const reader = new FileReader;
+                
+                reader.onload = () => {
+                    const base64String = reader.result.split(',')[1];
+                    this.form["photo"] = base64String
+                };
+                
+                reader.readAsDataURL(file);
             },
 
             submitListing(){
@@ -242,96 +271,68 @@
             },
 
             async createListing(){
-            // form validation first
-            console.log(this.form["photo"])
+                // form validation first
+                console.log(this.form["photo"]) // REMOVE this line later
 
-            let alertPhrase = "";
-            if(this.isOperator){
-                this.form["bottler"] = "OB"
-            }
-
-            // TODO Set default to a default base64 string
-            if(!this.form["photo"]){
-                this.form["photo"] = "scam"
-            }
-
-            
-            if (!this.form["listingName"].trim()){
-                alertPhrase += "Name of bottle is needed.\n"
-            }
-            if (!this.form["producer"].trim()){
-                alertPhrase += "Name of producer is needed.\n"
-            }
-            if(!this.form["drinkType"].trim()){
-                alertPhrase += "Type of drink is needed.\n"
-            }
-            if(!this.form["reviewLink"].trim()){
-                alertPhrase += "Link to website or source is needed.\n"
-            }
-            if(!this.form["bottler"].trim()){
-                alertPhrase += "Name of bottler is needed.\n"
-            }
-            if(alertPhrase){
-                alert(alertPhrase)
-                return "error"
-            }
-            
-            this.fillForm=false;
-            this.submitForm=true;
-
-
-            const response = await this.$axios.post('http://127.0.0.1:5001/createListings',this.form)
-            .then((response)=>{
-                this.responseCode = response.data.code
-            })
-            .catch((error)=>{
-                console.log(error);
-                this.responseCode = error.response.data.code
-            });
-            console.log(this.responseCode)
-            if(this.responseCode==201){
-                this.successSubmission=true;
-                this.submitForm=false;
-            }else{
-                this.errorSubmission=true;
-                this.submitForm=false;
-                if(this.responseCode==400){
-                    this.duplicateEntry = true
-                }else{
-                    this.errorMessage = true
+                let alertPhrase = "";
+                if(this.isOperator){
+                    this.form["bottler"] = "OB"
                 }
-            }
-            return response
 
-        },
+                // TODO Set default to a default base64 string
+                if(!this.form["photo"]){
+                    this.form["photo"] = "scam"
+                }
 
-        reset(){
-            this.fillForm=true
-            this.successSubmission=false
-            this.submitForm=false
-            this.errorSubmission= false
-            this.duplicateEntry= false
-            
-            this.responseCode= ""
-            this.isOperator = false
-            for (const key in this.form) {
-                this.form[key] = "";
-            }
-        },
+                
+                if (!this.form["listingName"].trim()){
+                    alertPhrase += "Name of bottle is needed.\n"
+                }
+                if (!this.form["producer"].trim()){
+                    alertPhrase += "Name of producer is needed.\n"
+                }
+                if(!this.form["drinkType"].trim()){
+                    alertPhrase += "Type of drink is needed.\n"
+                }
+                if(!this.form["reviewLink"].trim()){
+                    alertPhrase += "Link to website or source is needed.\n"
+                }
+                if(!this.form["bottler"].trim()){
+                    alertPhrase += "Name of bottler is needed.\n"
+                }
+                if(alertPhrase){
+                    alert(alertPhrase)
+                    return "error"
+                }
+                
+                this.fillForm=false;
+                this.submitForm=true;
 
-        handleFileSelect(event){
-            const file = event.target.files[0];
-            const reader = new FileReader;
-            
-            reader.onload = () => {
-                const base64String = reader.result.split(',')[1];
-                this.form["photo"] = base64String
-            };
-            
-            reader.readAsDataURL(file);
-            
-            
-        },  
+
+                const response = await this.$axios.post('http://127.0.0.1:5001/createListings',this.form)
+                .then((response)=>{
+                    this.responseCode = response.data.code
+                })
+                .catch((error)=>{
+                    console.log(error);
+                    this.responseCode = error.response.data.code
+                });
+                console.log(this.responseCode)
+                if(this.responseCode==201){
+                    this.successSubmission=true;
+                    this.submitForm=false;
+                }else{
+                    this.errorSubmission=true;
+                    this.submitForm=false;
+                    if(this.responseCode==400){
+                        this.duplicateEntry = true
+                    }else{
+                        this.errorMessage = true
+                    }
+                }
+                return response
+
+            },
 
         }
     }
