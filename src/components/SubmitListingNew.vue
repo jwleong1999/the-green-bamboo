@@ -317,7 +317,7 @@
                     }
 
                     // Validate Alcohol Strength (% ABV)
-                    if (!this.form["abv"].trim()) {
+                    if (!this.form["abv"].toString().trim()) {
                         alertPhrase += "- Alcohol Strength is needed.\n"
                     }
                     

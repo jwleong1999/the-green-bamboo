@@ -283,7 +283,8 @@
                             <!-- image -->
                             <div class="col-3 image-container">
                                 <a v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
-                                    <img src="../../../Images/Sample/beer.png" style="width: 300px; height: 300px;" class="img-border"> 
+                                    <img v-if="listing['photo']" :src="'data:image/jpeg:base64,'+listing['photo']">
+                                    <img v-else src="../../../Images/Sample/beer.png" style="width: 300px; height: 300px;" class="img-border"> 
                                 </a>
                             </div>
                             <!-- details -->
