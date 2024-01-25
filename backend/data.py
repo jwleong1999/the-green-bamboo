@@ -37,6 +37,7 @@ class Listings:
     age: Optional[str] = None
     reviewLink: Optional[str] = None
     sourceLink: Optional[str] = None
+    producerID: Optional[str] = None
 
 # Dataclass (Producers)
 @dataclass
