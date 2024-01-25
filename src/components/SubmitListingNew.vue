@@ -5,6 +5,7 @@
     - Dropdown Selection for Drink Type + Drink Category (with option for "Other")
     - Make Producer field a dropdown list (for non-producer) / autofill and non-changeable (for producer)
     - If messages show, consider hiding / disabling the form
+    - Independent Bottler Yes/No radio buttons should be aligned left, styled to look like checkboxes. Consider using switch / single checkbox instead (if so, flip isOperator: rename to indOperator).
 
     - Form Methods (needs to do different things based on mode)
     - Input: Relationship with Brand (ONLY FOR USERS)
@@ -190,7 +191,7 @@
                     "photo": "",
                     "producer":""
                 },
-                isOperator: true,
+                isOperator: false,
                 submitForm: false,
                 successSubmission: false,
                 errorSubmission: false,
