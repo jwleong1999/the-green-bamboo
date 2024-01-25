@@ -8,7 +8,6 @@
     - Accept pre-filled information from user requests to be created by power users.
     - Fill in userID in backend with the corresponding requesting user's userID.
     
-    - [!] Check if producerID is even necessary, or if producer's name is sufficient.
     - Styling Discussion / Fixes
     - Consider if any duplicate submission has to be detected / prevented. Includes requests for bottles that already exist.
     - Consider use of character counters and character limits if/when necessary.
@@ -87,7 +86,7 @@
                     <!-- (ONLY FOR CREATION) Input: Drink Description -->
                     <div class="form-group mb-3" v-if="mode == 'power'">
                         <p class="text-start mb-1">Official Description <span class="text-danger">*</span></p>
-                        <textarea rows=3 class="form-control" v-model="form['officialDesc']" id="officialDesc" placeholder="Enter description of bottle" required></textarea>
+                        <textarea rows=3 class="form-control" v-model="form['officialDesc']" id="officialDesc" placeholder="Enter description of bottle"></textarea>
                     </div>
 
                     <!-- Input: Link to website or source (optional for creation, mandatory for request) -->
@@ -109,9 +108,10 @@
                     </div>
 
                     <!-- Input: Producer Name -->
+                    <!-- TODO Create dropdown menu tied to producerID, show producerNew textbox only if "Other" selected (no producerID). -->
                     <div class="form-group mb-3">
                         <p class="text-start mb-1">Producer Name <span class="text-danger">*</span></p>
-                        <input type="text" class="form-control" v-model="form['producer']" id="producer" placeholder="Enter Producer Name" required>
+                        <input type="text" class="form-control" v-model="form['producerNew']" id="producerNew" placeholder="Enter Producer Name">
                     </div>
 
                     <!-- Input: Independent Bottler Check -->
@@ -214,17 +214,21 @@
                     "officialDesc": "", // For creation only
                     "sourceLink": "",
                     "reviewLink": "",
-                    "producer": "",
-                    "producerID": "default", // TODO: Fill in producerID with producerID of specified producer. May be blank for request: new producer.
+                    "producerID": {
+                        "$oid": "defaultProducer"
+                    }, // TODO: Fill in producerID with producerID of specified producer. May be blank for request: new producer.
                     "bottler": "",
                     "originCountry": "",
                     "abv": "",
                     "age": "",
                     "photo": "",
                     // For request only
+                    "producerNew": "", // If producerID is blank, this must not be blank.
                     "brandRelation": "Others",
                     "reviewStatus": false,
-                    "userID": "" // TODO: Fill in userID with userID of user submitting form
+                    "userID": {
+                        "$oid": "defaultUser"
+                    } // TODO: Fill in userID with userID of user submitting form
                 },
                 isOperator: false,
                 submitForm: false,
@@ -250,12 +254,19 @@
                 this.duplicateEntry = false
                 this.fillForm = true
                 this.responseCode= ""
+
                 for (const key in this.form) {
                     this.form[key] = "";
                 }
-                this.form["producerID"] = "default" // temporary until we have a way to get producerID
                 this.form["brandRelation"] = "Others"
                 this.form["reviewStatus"] = false
+
+                this.form["producerID"] = {
+                    "$oid": "defaultProducer"
+                } // temporary until we have a way to get producerID
+                this.form["userID"] = {
+                    "$oid": "defaultUser"
+                } // temporary until we have a way to get userID
             },
 
             handleFileSelect(event){
@@ -284,19 +295,32 @@
                     alertPhrase += "- Drink Type is needed.\n"
                 }
 
-                // Validate Source Link (ONLY FOR REQUEST)
-                if (!this.form["sourceLink"].trim() && this.mode == "user") {
-                    alertPhrase += "- Link to website or source is needed.\n"
-                }
-
-                // Validate Producer Name
-                if (!this.form["producer"].trim()) {
-                    alertPhrase += "- Producer Name is needed.\n"
-                }
-
                 // Validate Independent Bottler Name (if OB, will be handled by database writing method)
                 if (!this.form["bottler"].trim() && this.isOperator == false) {
                     alertPhrase += "- Name of independent bottler is needed.\n"
+                }
+
+                // Validation ONLY FOR REQUEST
+                if (this.mode == "user") {
+
+                    // Validate Source Link
+                    if (!this.form["sourceLink"].trim()) {
+                        alertPhrase += "- Link to website or source is needed.\n"
+                    }
+
+                    // Validate Producer Name
+                    if (Object.prototype.hasOwnProperty.call(this.form["producerID"], "$oid")) {
+                        // If producerID is blank, check if producerNew is blank
+                        if (!this.form["producerID"]["$oid"].trim() && !this.form["producerNew"].trim()) {
+                            alertPhrase += "- Producer Name is needed.\n"
+                        }
+                    } else {
+                        // Check if producerNew is blank
+                        if (!this.form["producerNew"].trim()) {
+                            alertPhrase += "- Producer Name is needed.\n"
+                        }
+                    }
+
                 }
 
                 // Validation ONLY FOR CREATION
@@ -308,7 +332,12 @@
                     }
 
                     // Validate Producer ID
-                    if (!this.form["producerID"].trim()) {
+                    if (Object.prototype.hasOwnProperty.call(this.form["producerID"], "$oid")) {
+                        // If producerID is blank, check if producerNew is blank
+                        if (!this.form["producerID"]["$oid"].trim()) {
+                            alertPhrase += "- Producer ID is needed: Create new producer first!\n"
+                        }
+                    } else {
                         alertPhrase += "- Producer ID is needed: Create new producer first!\n"
                     }
 
@@ -326,6 +355,7 @@
 
                 if (alertPhrase != "Your submission is incomplete:\n") {
                     // If errors, alert user and return
+                    alertPhrase += "\nPlease fill in the required fields and try again."
                     alert(alertPhrase)
                     return "Submission Incomplete"
                 } else {
@@ -336,17 +366,17 @@
                     if (this.mode == "user") {
                         submitAPI = "http://127.0.0.1:5002/requestListing"
                         submitData = {
-                            "listingName": this.form["listingName"],
-                            "drinkType": this.form["drinkType"],
-                            "typeCategory": this.form["typeCategory"],
-                            "sourceLink": this.form["sourceLink"],
-                            "reviewLink": this.form["reviewLink"],
-                            "producer": this.form["producer"],
+                            "listingName": this.form["listingName"].trim(),
+                            "drinkType": this.form["drinkType"].trim(),
+                            "typeCategory": this.form["typeCategory"].trim(),
+                            "sourceLink": this.form["sourceLink"].trim(),
+                            "reviewLink": this.form["reviewLink"].trim(),
                             "producerID": this.form["producerID"],
-                            "bottler": this.form["bottler"],
-                            "originCountry": this.form["originCountry"],
-                            "abv": this.form["abv"].toString() + "%",
-                            "age": this.form["age"],
+                            "producerNew": this.form["producerNew"].trim(),
+                            "bottler": this.form["bottler"].trim(),
+                            "originCountry": this.form["originCountry"].trim(),
+                            "abv": this.form["abv"].toString().trim(),
+                            "age": this.form["age"].toString().trim(),
                             "photo": this.form["photo"],
                             "brandRelation": this.form["brandRelation"],
                             "reviewStatus": this.form["reviewStatus"],
@@ -356,18 +386,17 @@
                     } else if (this.mode == "power") {
                         submitAPI = "http://127.0.0.1:5001/createListing"
                         submitData = {
-                            "listingName": this.form["listingName"],
-                            "drinkType": this.form["drinkType"],
-                            "typeCategory": this.form["typeCategory"],
-                            "officialDesc": this.form["officialDesc"],
-                            "sourceLink": this.form["sourceLink"],
-                            "reviewLink": this.form["reviewLink"],
-                            "producer": this.form["producer"],
+                            "listingName": this.form["listingName"].trim(),
+                            "drinkType": this.form["drinkType"].trim(),
+                            "typeCategory": this.form["typeCategory"].trim(),
+                            "officialDesc": this.form["officialDesc"].trim(),
+                            "sourceLink": this.form["sourceLink"].trim(),
+                            "reviewLink": this.form["reviewLink"].trim(),
                             "producerID": this.form["producerID"],
-                            "bottler": this.form["bottler"],
-                            "originCountry": this.form["originCountry"],
-                            "abv": this.form["abv"].toString() + "%",
-                            "age": this.form["age"],
+                            "bottler": this.form["bottler"].trim(),
+                            "originCountry": this.form["originCountry"].trim(),
+                            "abv": this.form["abv"].toString().trim(),
+                            "age": this.form["age"].toString().trim(),
                             "photo": this.form["photo"]
                         }
 
@@ -380,6 +409,11 @@
                     // If not independent bottler, set bottler to "OB"
                     if (this.isOperator) {
                         submitData["bottler"] = "OB"
+                    }
+
+                    // If abv has value, add % sign
+                    if (submitData["abv"]) {
+                        submitData["abv"] = submitData["abv"].toString() + "%"
                     }
 
                     // If no photo, set default photo
