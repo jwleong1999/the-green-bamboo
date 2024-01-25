@@ -130,16 +130,16 @@
                                     <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         {{ selectedDrinkType ? selectedDrinkType['Drink Type'] : 'Filter by drink type' }}
                                     </button>
-                                    <ul class="dropdown-menu"> <!-- TODO: filter button to be implemented -->
+                                    <ul class="dropdown-menu">
+                                        <!-- TODO: filter button to be implemented -->
                                         <!-- IN IMPLEMENTATION -->
 
-                                        <li v-for="type in drinkCategories" v-bind:key="type._id" class="p-3">
-                                        <a class="dropdown-item" @click="selectDrinkType(type)">{{ type['Drink Type'] }}</a>
-                                        </li>
-                                              
+                                        <li v-for="type in drinkCategories" v-bind:key="type._id" class= "p-3">
+                                        <a class="dropdown-item" @click="selectDrinkType(type)"> {{ type['Drink Type'] }} </a>
+                                        </li>       
                                     </ul>
                                 </div>
-                            </div>
+                            </div>                            
                         </div>
 
                         <!-- listings -->
@@ -501,8 +501,26 @@
             // Handle select of filter option
             selectDrinkType(drinkType) {
                 this.selectedDrinkType = drinkType;
-                // TODO: add in function to change the view to filter view
-                console.log(drinkType)
+                // TODO: add in function to filter from original listings into filteredlistings
+                // console.log(drinkType)
+                const drinkTypeSearch = this.selectedDrinkType['Drink Type'].toLowerCase();
+                // console.log(drinkTypeSearch)
+                const searchResults = this.listings.filter((listing) => {
+                    const drinkTypeListing = listing["Drink Type"].toLowerCase();
+                    // const producer = listing["Producer"].toLowerCase();
+                    return drinkTypeListing.includes(drinkTypeSearch);
+                });
+                // if nothing found
+                if (searchResults.length == 0) {
+                    this.errorFound = true;
+                    this.errorMessage = 'No results found, please try again.';
+                    this.filteredListings = null;
+                } 
+                else {
+                    this.errorFound = false;
+                    this.errorMessage = '';
+                    this.filteredListings = searchResults;
+                }
         },
         
         },
