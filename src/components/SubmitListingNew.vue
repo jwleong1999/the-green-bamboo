@@ -8,6 +8,7 @@
     - Accept pre-filled information from user requests to be created by power users.
     - Fill in userID in backend with the corresponding requesting user's userID.
     
+    - [!] Check if producerID is even necessary, or if producer's name is sufficient.
     - Styling Discussion / Fixes
     - Consider if any duplicate submission has to be detected / prevented. Includes requests for bottles that already exist.
     - Consider use of character counters and character limits if/when necessary.
@@ -330,38 +331,73 @@
                 } else {
                     // If no errors, pass corresponding API into database writing method
                     let submitAPI = ""
+                    let submitData = {}
 
                     if (this.mode == "user") {
                         submitAPI = "http://127.0.0.1:5002/requestListing"
+                        submitData = {
+                            "listingName": this.form["listingName"],
+                            "drinkType": this.form["drinkType"],
+                            "typeCategory": this.form["typeCategory"],
+                            "sourceLink": this.form["sourceLink"],
+                            "reviewLink": this.form["reviewLink"],
+                            "producer": this.form["producer"],
+                            "producerID": this.form["producerID"],
+                            "bottler": this.form["bottler"],
+                            "originCountry": this.form["originCountry"],
+                            "abv": this.form["abv"].toString() + "%",
+                            "age": this.form["age"],
+                            "photo": this.form["photo"],
+                            "brandRelation": this.form["brandRelation"],
+                            "reviewStatus": this.form["reviewStatus"],
+                            "userID": this.form["userID"]
+                        }
+
                     } else if (this.mode == "power") {
                         submitAPI = "http://127.0.0.1:5001/createListing"
+                        submitData = {
+                            "listingName": this.form["listingName"],
+                            "drinkType": this.form["drinkType"],
+                            "typeCategory": this.form["typeCategory"],
+                            "officialDesc": this.form["officialDesc"],
+                            "sourceLink": this.form["sourceLink"],
+                            "reviewLink": this.form["reviewLink"],
+                            "producer": this.form["producer"],
+                            "producerID": this.form["producerID"],
+                            "bottler": this.form["bottler"],
+                            "originCountry": this.form["originCountry"],
+                            "abv": this.form["abv"].toString() + "%",
+                            "age": this.form["age"],
+                            "photo": this.form["photo"]
+                        }
+
                     } else {
                         // Catching statement for invalid mode
                         alert("There was an issue with submission. Try to reopen the page after saving your inputs!")
                         return "Invalid Mode"
                     }
 
-                    this.writeListing(submitAPI)
+                    // If not independent bottler, set bottler to "OB"
+                    if (this.isOperator) {
+                        submitData["bottler"] = "OB"
+                    }
+
+                    // If no photo, set default photo
+                    // TODO Set defaultPhoto to a default base64 string
+                    if (!submitData["photo"]) {
+                        submitData["photo"] = "defaultPhoto"
+                    }
+
+                    this.writeListing(submitAPI, submitData)
                 }
             },
 
-            async writeListing(submitAPI) {
-
-                // If not independent bottler, set bottler to "OB"
-                if (this.isOperator) {
-                    this.form["bottler"] = "OB"
-                }
-
-                // If no photo, set default photo
-                // TODO Set defaultPhoto to a default base64 string
-                if (!this.form["photo"]) {
-                    this.form["photo"] = "defaultPhoto"
-                }
+            async writeListing(submitAPI, submitData) {
 
                 this.fillForm = false; // Hide form
                 this.submitForm = true; // Display submission in progress message
 
-                const response = await this.$axios.post(submitAPI, this.form)
+                const response = await this.$axios.post(submitAPI, submitData)
                 .then((response)=>{
                     this.responseCode = response.data.code
                 })
