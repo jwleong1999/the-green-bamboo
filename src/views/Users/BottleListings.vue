@@ -141,7 +141,7 @@
                                 </div>
                             </div>       
 
-                            <!-- TODO another dropdown, based on this.selectedDrinkType, do a v-if selectedDrinkType !=""--> 
+                            <!-- Dropdown based on category--> 
                             <div v-if="selectedDrinkType != ''" class="col-3">
                                 <div class="d-grid gap-2 dropdown">
                                     <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -212,7 +212,7 @@
                             </div>
                         </div> <!-- end of listings -->
                     </div> <!-- end of container -->
-                </div> <!-- end of discover, following & filter by drink type -->
+                </div> <!--  end of discover, following & filter by drink type -->
             </div> <!-- end of row -->
         </div>
     </div>
@@ -375,6 +375,7 @@
                 searchTerm: '',
                 searchResults: [],
                 filteredListings: [],
+
                 selectedDrinkType:"",
                 selectedTypeCategory:[],
                 selectedCategory:"",
@@ -517,26 +518,22 @@
                 return averageRating;
         },
 
-            // Handle select of filter option
+            // Handle select of drink type filter option like sake, gin, whiskey
             selectDrinkType(drinkType) {
                 this.selectedCategory =null;
                 this.selectedDrinkType = drinkType;
 
                 // Dropdown for drink category after selecting drink type
                 for(let drinks of this.drinkCategories){
-                    // console.log(drinks)
                     if(drinks['Drink Type'] == drinkType['Drink Type']){
                         this.selectedTypeCategory = drinks['Category']
                     }
                 }
-                // console.log(this.selectedDrinkCategory)
                 
 
                 const drinkTypeSearch = this.selectedDrinkType['Drink Type'].toLowerCase();
-                // console.log(drinkTypeSearch)
                 const searchResults = this.listings.filter((listing) => {
                     const drinkTypeListing = listing["Drink Type"].toLowerCase();
-                    // const producer = listing["Producer"].toLowerCase();
                     return drinkTypeListing.includes(drinkTypeSearch);
                 });
                 // if nothing found
@@ -551,8 +548,33 @@
                     this.filteredListings = searchResults;
                 }
         },
-        selectDrinkCategory(drinkCategory) {
-            this.selectedCategory = drinkCategory;
+
+            //Select drink category like Blended for whiskey 
+            selectDrinkCategory(drinkCategory) {
+                // this.selectedCategory = drinkCategory;
+                // console.log(this.selectedCategory)
+                console.log(this.selectedDrinkType['Drink Type'])
+                
+                this.selectDrinkType(this.selectedDrinkType)
+                this.selectedCategory = drinkCategory;
+
+                const drinkCategorySearch = this.selectedCategory.toLowerCase();
+                const searchResults = this.filteredListings.filter((listing) => {
+                    const drinkCategory = listing["Drink Category"].toLowerCase();
+                    return drinkCategory.includes(drinkCategorySearch);
+                });
+                // console.log(searchResults)
+                // if nothing found
+                if (searchResults.length == 0) {
+                    this.errorFound = true;
+                    this.errorMessage = 'No results found, please try again.';
+                    this.filteredListings = null;
+                } 
+                else {
+                    this.errorFound = false;
+                    this.errorMessage = '';
+                    this.filteredListings = searchResults;
+                }
         },
     }
     };
