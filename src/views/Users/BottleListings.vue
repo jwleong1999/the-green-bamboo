@@ -449,7 +449,6 @@
 
             // for search button
             searchListings() {
-
                 // flag to check if there are search inputs
                 this.search = true;
 
@@ -463,16 +462,11 @@
                     return expressionName.includes(searchInput) || producer.includes(searchInput);
                 });
 
-                console.log(searchResults)
-
                 // if nothing found
                 if (searchResults.length == 0) {
-                    this.errorFound = true;
-                    this.errorMessage = 'No results found, please try again.';
+                    this.filteredListings = [];
                 } 
                 else {
-                    this.errorFound = false;
-                    this.errorMessage = '';
                     this.filteredListings = searchResults;
                 }
 
@@ -484,9 +478,9 @@
 
             // for resetting listings (show full listings)
             resetListings() {
-                this.filteredListings = this.listings;
-                this.search = false;
                 this.searchInput = '';
+                this.search = false;
+                this.filteredListings = this.listings;
             },
 
             // get reviews for a listing
