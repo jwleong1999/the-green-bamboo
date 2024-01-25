@@ -109,7 +109,7 @@
                         <!-- buttons -->
                         <div class="row">
                             <!-- discover -->
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="d-grid gap-2">
                                     <button class="btn primary-btn btn-sm">
                                         <h4> Discover </h4>
@@ -117,7 +117,7 @@
                                 </div>
                             </div>
                             <!-- following -->
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="d-grid gap-2">
                                     <button class="btn primary-btn-outline btn-sm">
                                         <h4> Following </h4>
@@ -125,7 +125,7 @@
                                 </div>
                             </div>
                             <!-- filter by drink type -->
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="d-grid gap-2 dropdown">
                                     <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         {{ selectedDrinkType ? selectedDrinkType['Drink Type'] : 'Filter by drink type' }}
@@ -136,6 +136,22 @@
 
                                         <li v-for="type in drinkCategories" v-bind:key="type._id" class= "p-3">
                                         <a class="dropdown-item" @click="selectDrinkType(type)"> {{ type['Drink Type'] }} </a>
+                                        </li>       
+                                    </ul>
+                                </div>
+                            </div>       
+
+                            <!-- TODO another dropdown, based on this.selectedDrinkType, do a v-if selectedDrinkType !=""--> 
+                            <div v-if="selectedDrinkType != ''" class="col-3">
+                                <div class="d-grid gap-2 dropdown">
+                                    <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {{ selectedCategory ? selectedCategory : 'Filter by drink category' }}
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <!-- TODO: filter button to be implemented -->
+
+                                        <li v-for="category in selectedTypeCategory" @click="selectDrinkCategory(category)" v-bind:key="category" class= "p-3">
+                                        <a class="dropdown-item"> {{ category }} </a>
                                         </li>       
                                     </ul>
                                 </div>
@@ -359,6 +375,8 @@
                 searchResults: [],
                 filteredListings: [],
                 selectedDrinkType:"",
+                selectedTypeCategory:[],
+                selectedCategory:"",
             };
         },
         mounted() {
@@ -500,9 +518,19 @@
 
             // Handle select of filter option
             selectDrinkType(drinkType) {
+                this.selectedCategory =null;
                 this.selectedDrinkType = drinkType;
-                // TODO: add in function to filter from original listings into filteredlistings
-                // console.log(drinkType)
+
+                // Dropdown for drink category after selecting drink type
+                for(let drinks of this.drinkCategories){
+                    // console.log(drinks)
+                    if(drinks['Drink Type'] == drinkType['Drink Type']){
+                        this.selectedTypeCategory = drinks['Category']
+                    }
+                }
+                // console.log(this.selectedDrinkCategory)
+                
+
                 const drinkTypeSearch = this.selectedDrinkType['Drink Type'].toLowerCase();
                 // console.log(drinkTypeSearch)
                 const searchResults = this.listings.filter((listing) => {
@@ -522,8 +550,10 @@
                     this.filteredListings = searchResults;
                 }
         },
-        
+        selectDrinkCategory(drinkCategory) {
+            this.selectedCategory = drinkCategory;
         },
+    }
     };
 </script>
 
