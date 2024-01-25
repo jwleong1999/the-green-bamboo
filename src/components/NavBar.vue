@@ -2,6 +2,7 @@
 
 <!-- Requires Review. Search function is not complete, and may require modification. -->
 <!-- TODO: Implement this component into all pages that require them, replacing in-built navbar code -->
+<!-- TODO: Check and adjust for responsiveness on mobile devices! -->
 
 <template>
     <!-- Main NavBar -->
