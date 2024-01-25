@@ -2,23 +2,24 @@
 
 <!--
     TODO:
-    - "Return" button may bring user back to same page, but with form cleared. Prevent that by returning to last notable page.
     - Dropdown Selection for Drink Type + Drink Category (with option for "Other"), Country of Origin
     - Make Producer field a dropdown list (for non-producer) / autofill and non-changeable (for producer). This fills in producerID in backend as well.
-    - If messages show, consider hiding / disabling the form
-    - Independent Bottler Yes/No radio buttons should be styled to look like checkboxes.
-        -- [?] Consider using switch / single checkbox instead (if so, flip isOperator: rename to indOperator).
+    - Accept pre-filled information from users to be created by power users.
 
     - Form Methods (needs to do different things based on mode)
     - Input: Relationship with Brand (ONLY FOR USERS)
     
     - Styling Discussion / Fixes
-    - Accept pre-filled information from users to be created by power users.
+    - If messages show, consider hiding / disabling the form
     - Consider if any duplicate submission has to be detected / prevented. Includes requests for bottles that already exist.
     - Consider use of character counters and character limits if/when necessary.
+    - "Return" button may bring user back to same page, but with form cleared. Prevent that by returning to last notable page.
+    
     - [?] Relationship with Brand: If "Others" is selected, should there be a text box to fill in for users to specify their relationship?
     - [?] Should we save the form data for easier retry when invoking reset()? Should reset() just hard refresh the page?
     - [?] Should source link field + review link field be on the same page? Need to validate if review link is from 88b?
+    - [?] Independent Bottler Yes/No radio buttons should be styled to look like checkboxes.
+        -- Consider using switch / single checkbox instead (if so, flip isOperator: rename to indOperator).
 -->
 
 <template>
@@ -251,6 +252,7 @@
                 for (const key in this.form) {
                     this.form[key] = "";
                 }
+                this.form["brandRelation"] = "Others"
             },
 
             handleFileSelect(event){
@@ -266,19 +268,63 @@
             },
 
             submitListing(){
-                // Form Validation
-                
+                // --- Form Validation ---
+                let alertPhrase = "Your submission is incomplete:\n";
 
-                if(this.mode == "power"){
-                    this.createListing()
+                // Validate Bottle Name
+                if (!this.form["listingName"].trim()) {
+                    alertPhrase += "- Name of Bottle is needed.\n"
                 }
+
+                // Validate Drink Type
+                if (!this.form["drinkType"].trim()) {
+                    alertPhrase += "- Drink Type is needed.\n"
+                }
+
+                // Validate Official Description (ONLY FOR CREATION)
+                if (!this.form["officialDesc"].trim() && this.mode == "power") {
+                    alertPhrase += "- Official Description is needed.\n"
+                }
+
+                // Validate Source Link (ONLY FOR REQUEST)
+                if (!this.form["sourceLink"].trim() && this.mode == "user") {
+                    alertPhrase += "- Link to website or source is needed.\n"
+                }
+
+                // Validate Producer Name
+                if (!this.form["producer"].trim()) {
+                    alertPhrase += "- Producer Name is needed.\n"
+                }
+
+                // Validate Independent Bottler Name (if OB, will be handled by database writing method)
+                if (!this.form["bottler"].trim() && this.isOperator == false) {
+                    alertPhrase += "- Name of independent bottler is needed.\n"
+                }
+
+                if (alertPhrase != "Your submission is incomplete:\n") {
+                    // If errors, alert user and return
+                    alert(alertPhrase)
+                    return "Submission Incomplete"
+                } else {
+                    // If no errors, call corresponding database writing method
+                    if (this.mode == "user") {
+                        this.requestListing()
+                    } else if (this.mode == "power") {
+                        this.createListing()
+                    } else {
+                        // Catching statement for invalid mode
+                        alert("There was an issue with submission. Try to reopen the page after saving your inputs!")
+                        return "Invalid Mode"
+                    }
+                }
+            },
+
+            async requestListing() {
+                return false;
             },
 
             async createListing(){
                 // form validation first
-                console.log(this.form["photo"]) // REMOVE this line later
-
-                let alertPhrase = "";
                 if(this.isOperator){
                     this.form["bottler"] = "OB"
                 }
@@ -286,27 +332,6 @@
                 // TODO Set default to a default base64 string
                 if(!this.form["photo"]){
                     this.form["photo"] = "scam"
-                }
-
-                
-                if (!this.form["listingName"].trim()){
-                    alertPhrase += "Name of bottle is needed.\n"
-                }
-                if (!this.form["producer"].trim()){
-                    alertPhrase += "Name of producer is needed.\n"
-                }
-                if(!this.form["drinkType"].trim()){
-                    alertPhrase += "Type of drink is needed.\n"
-                }
-                if(!this.form["reviewLink"].trim()){
-                    alertPhrase += "Link to website or source is needed.\n"
-                }
-                if(!this.form["bottler"].trim()){
-                    alertPhrase += "Name of bottler is needed.\n"
-                }
-                if(alertPhrase){
-                    alert(alertPhrase)
-                    return "error"
                 }
                 
                 this.fillForm=false;
