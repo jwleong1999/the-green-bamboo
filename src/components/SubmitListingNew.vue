@@ -190,7 +190,7 @@
                     "photo": "",
                     "producer":""
                 },
-                isOperator: false,
+                isOperator: true,
                 submitForm: false,
                 successSubmission: false,
                 errorSubmission: false,
