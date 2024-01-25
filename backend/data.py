@@ -57,6 +57,17 @@ class requestListings:
     userID: object
     photo: str
 
+# Dataclass (requestEdits)
+@dataclass
+class requestEdits:
+    duplicateLink: Optional[str]
+    sourceLink: Optional[str]
+    editDesc: str
+    listingID: object
+    userID: object
+    brandRelation: str
+    reviewStatus: bool
+
 # Dataclass (Producers)
 @dataclass
 class Producers:
