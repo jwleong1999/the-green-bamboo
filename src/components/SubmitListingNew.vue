@@ -139,26 +139,52 @@
                         <input type="text" class="form-control" v-model="form['originCountry']" id="originCountry" placeholder="Enter Country">
                     </div>
 
-                    <!-- Input: Alcohol Strength (% ABV) -->
-                    <p class="text-start mb-1">Strength</p>
-                    <div class="form-group row mb-3">
-                        <div class="col-3 pe-1">
-                            <input type="number" min="0" max="100" v-model="form['abv']" class="form-control" id="abv">
+                    <!-- Input: Alcohol Strength (% ABV) + Alcohol Age (years old) -->
+                    <div class="row mb-3">
+                        <div class="form-group col-6">
+                            <p class="text-start mb-1">Strength</p>
+                            <div class="form-group row">
+                                <div class="col-6 pe-1">
+                                    <input type="number" v-model="form['abv']" class="form-control" id="abv" min="0" max="100">
+                                </div>
+                                <label for="abv" class="col-6 col-form-label ps-1 text-start">% ABV</label>
+                            </div>
                         </div>
-                        <label for="abv" class="col-3 col-form-label ps-1 text-start">% ABV</label>
+                        <div class="form-group col-6">
+                            <p class="text-start mb-1">Age</p>
+                            <div class="form-group row">
+                                <div class="col-6 pe-1">
+                                    <input type="number" v-model="form['age']" class="form-control" id="age" min="0">
+                                </div>
+                                <label for="age" class="col-6 col-form-label ps-1 text-start">years old</label>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Input: Alcohol Age -->
-                    <p class="text-start mb-1">Age</p>
-                    <div class="form-group row mb-3">
-                        <div class="col-3 pe-1">
-                            <input type="number" class="form-control" v-model="form['age']" id="abv">
+                    <!-- (ONLY FOR USERS) Input: Relationship with Brand -->
+                    <p class="text-start mb-1" v-if="mode == 'user'">Your Relationship with the Brand <span class="text-danger">*</span></p>
+                    <div class="text-start mb-3" v-if="mode == 'user'">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" v-model="form['brandRelation']" :value="'Customer'" name="brandRelationCustomer" id="brandRelationCustomer">
+                            <label class="form-check-label" for="brandRelationCustomer">Customer</label>
                         </div>
-                        <label for="abv" class="col-3 col-form-label ps-1 text-start">years old</label>
-                        
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" v-model="form['brandRelation']" :value="'Employee'" name="brandRelationEmployee" id="brandRelationEmployee">
+                            <label class="form-check-label" for="brandRelationEmployee">Employee</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" v-model="form['brandRelation']" :value="'Public Relations'" name="brandRelationPR" id="brandRelationPR">
+                            <label class="form-check-label" for="brandRelationPR">Public Relations</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" v-model="form['brandRelation']" :value="'Distributor'" name="brandRelationDist" id="brandRelationDist">
+                            <label class="form-check-label" for="brandRelationDist">Distributor</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" v-model="form['brandRelation']" :value="'Others'" name="brandRelationOther" id="brandRelationOther">
+                            <label class="form-check-label" for="brandRelationOther">Others</label>
+                        </div>
                     </div>
-
-                    
                     
                     <button type="submit" class="btn secondary-btn mx-1 mb-3">Submit Bottle Listing</button>
                     <button type="button" class="btn primary-btn mx-1 mb-3" @click="goBack">Return</button>
