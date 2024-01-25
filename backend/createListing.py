@@ -23,7 +23,7 @@ def parse_json(data):
 #[POST]
 # require bottle name, drink type, producer
 # optional drink category, country of origin, bottler, age, ABV, 88bamboo website review (if applicable), official description
-@app.route("/createListings", methods= ['POST'])
+@app.route("/createListing", methods= ['POST'])
 def createListings():
     rawBottle = request.get_json()
     rawBottleName = rawBottle["listingName"]

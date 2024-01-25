@@ -4,16 +4,15 @@
     TODO:
     - Dropdown Selection for Drink Type + Drink Category (with option for "Other"), Country of Origin
     - Make Producer field a dropdown list (for non-producer) / autofill and non-changeable (for producer). This fills in producerID in backend as well.
-    - Accept pre-filled information from users to be created by power users.
-
-    - Form Methods (needs to do different things based on mode)
-    - Input: Relationship with Brand (ONLY FOR USERS)
+        -- Only users will have option for "Other" in dropdown list: if creating listing, new producer should be created first.
+    - Accept pre-filled information from user requests to be created by power users.
+    - Fill in userID in backend with the corresponding requesting user's userID.
     
     - Styling Discussion / Fixes
-    - If messages show, consider hiding / disabling the form
     - Consider if any duplicate submission has to be detected / prevented. Includes requests for bottles that already exist.
     - Consider use of character counters and character limits if/when necessary.
     - "Return" button may bring user back to same page, but with form cleared. Prevent that by returning to last notable page.
+    - Consider another backend check to ensure that submitter is authorized to submit listing in specified mode, with valid producerID for producers.
     
     - [?] Relationship with Brand: If "Others" is selected, should there be a text box to fill in for users to specify their relationship?
     - [?] Should we save the form data for easier retry when invoking reset()? Should reset() just hard refresh the page?
@@ -29,7 +28,6 @@
         <!-- Display when form is being submitted -->
         <div class="text-info-emphasis fst-italic fw-bold fs-5" v-if="submitForm"> 
             <span>The form is being submitted, please hold on!</span>
-            <hr>
         </div>
         
         <!-- Display when bottle listing is successfully submitted -->
@@ -40,7 +38,6 @@
             <button class="btn primary-btn btn-sm" @click="reset">
                 <span class="fs-5 fst-italic"> Submit another bottle listing here! </span>
             </button>
-            <hr>
         </div>
         
         <!-- Display when bottle listing submission encounters an error -->
@@ -51,7 +48,6 @@
             <button class="btn primary-btn btn-sm" @click="reset">
                 <span class="fs-5 fst-italic"> Retry your submission here! </span>
             </button>
-            <hr>
         </div>
 
 
@@ -136,16 +132,16 @@
                         <input type="text" class="form-control" v-model="form['bottler']" :disabled="isOperator" id="bottlerName" placeholder="Enter Bottler Name">
                     </div>
 
-                    <!-- Input: originCountry -->
+                    <!-- Input: Country of Origin -->
                     <div class="form-group mb-3">
-                        <p class="text-start mb-1">Country of Origin</p>
+                        <p class="text-start mb-1">Country of Origin <span class="text-danger" v-if="mode == 'power'">*</span></p>
                         <input type="text" class="form-control" v-model="form['originCountry']" id="originCountry" placeholder="Enter Country">
                     </div>
 
                     <!-- Input: Alcohol Strength (% ABV) + Alcohol Age (years old) -->
                     <div class="row mb-3">
                         <div class="form-group col-6">
-                            <p class="text-start mb-1">Strength</p>
+                            <p class="text-start mb-1">Strength <span class="text-danger" v-if="mode == 'power'">*</span></p>
                             <div class="form-group row">
                                 <div class="col-6 pe-1">
                                     <input type="number" v-model="form['abv']" class="form-control" id="abv" min="0" max="100">
@@ -214,16 +210,20 @@
                     "listingName": "",
                     "drinkType": "",
                     "typeCategory": "",
-                    "officialDesc": "",
+                    "officialDesc": "", // For creation only
                     "sourceLink": "",
                     "reviewLink": "",
                     "producer": "",
+                    "producerID": "default", // TODO: Fill in producerID with producerID of specified producer. May be blank for request: new producer.
                     "bottler": "",
                     "originCountry": "",
                     "abv": "",
                     "age": "",
+                    "photo": "",
+                    // For request only
                     "brandRelation": "Others",
-                    "photo": ""
+                    "reviewStatus": false,
+                    "userID": "" // TODO: Fill in userID with userID of user submitting form
                 },
                 isOperator: false,
                 submitForm: false,
@@ -252,7 +252,9 @@
                 for (const key in this.form) {
                     this.form[key] = "";
                 }
+                this.form["producerID"] = "default" // temporary until we have a way to get producerID
                 this.form["brandRelation"] = "Others"
+                this.form["reviewStatus"] = false
             },
 
             handleFileSelect(event){
@@ -281,11 +283,6 @@
                     alertPhrase += "- Drink Type is needed.\n"
                 }
 
-                // Validate Official Description (ONLY FOR CREATION)
-                if (!this.form["officialDesc"].trim() && this.mode == "power") {
-                    alertPhrase += "- Official Description is needed.\n"
-                }
-
                 // Validate Source Link (ONLY FOR REQUEST)
                 if (!this.form["sourceLink"].trim() && this.mode == "user") {
                     alertPhrase += "- Link to website or source is needed.\n"
@@ -301,44 +298,70 @@
                     alertPhrase += "- Name of independent bottler is needed.\n"
                 }
 
+                // Validation ONLY FOR CREATION
+                if (this.mode == "power") {
+
+                    // Validate Official Description
+                    if (!this.form["officialDesc"].trim()) {
+                        alertPhrase += "- Official Description is needed.\n"
+                    }
+
+                    // Validate Producer ID
+                    if (!this.form["producerID"].trim()) {
+                        alertPhrase += "- Producer ID is needed: Create new producer first!\n"
+                    }
+
+                    // Validate Country of Origin
+                    if (!this.form["originCountry"].trim()) {
+                        alertPhrase += "- Country of Origin is needed.\n"
+                    }
+
+                    // Validate Alcohol Strength (% ABV)
+                    if (!this.form["abv"].trim()) {
+                        alertPhrase += "- Alcohol Strength is needed.\n"
+                    }
+                    
+                }
+
                 if (alertPhrase != "Your submission is incomplete:\n") {
                     // If errors, alert user and return
                     alert(alertPhrase)
                     return "Submission Incomplete"
                 } else {
-                    // If no errors, call corresponding database writing method
+                    // If no errors, pass corresponding API into database writing method
+                    let submitAPI = ""
+
                     if (this.mode == "user") {
-                        this.requestListing()
+                        submitAPI = "http://127.0.0.1:5002/requestListing"
                     } else if (this.mode == "power") {
-                        this.createListing()
+                        submitAPI = "http://127.0.0.1:5001/createListing"
                     } else {
                         // Catching statement for invalid mode
                         alert("There was an issue with submission. Try to reopen the page after saving your inputs!")
                         return "Invalid Mode"
                     }
+
+                    this.writeListing(submitAPI)
                 }
             },
 
-            async requestListing() {
-                return false;
-            },
+            async writeListing(submitAPI) {
 
-            async createListing(){
-                // form validation first
-                if(this.isOperator){
+                // If not independent bottler, set bottler to "OB"
+                if (this.isOperator) {
                     this.form["bottler"] = "OB"
                 }
 
-                // TODO Set default to a default base64 string
-                if(!this.form["photo"]){
-                    this.form["photo"] = "scam"
+                // If no photo, set default photo
+                // TODO Set defaultPhoto to a default base64 string
+                if (!this.form["photo"]) {
+                    this.form["photo"] = "defaultPhoto"
                 }
-                
-                this.fillForm=false;
-                this.submitForm=true;
 
+                this.fillForm = false; // Hide form
+                this.submitForm = true; // Display submission in progress message
 
-                const response = await this.$axios.post('http://127.0.0.1:5001/createListings',this.form)
+                const response = await this.$axios.post(submitAPI, this.form)
                 .then((response)=>{
                     this.responseCode = response.data.code
                 })
@@ -348,19 +371,18 @@
                 });
                 console.log(this.responseCode)
                 if(this.responseCode==201){
-                    this.successSubmission=true;
-                    this.submitForm=false;
+                    this.successSubmission=true; // Display success message
+                    this.submitForm=false; // Hide submission in progress message
                 }else{
-                    this.errorSubmission=true;
-                    this.submitForm=false;
+                    this.errorSubmission=true; // Display error message
+                    this.submitForm=false; // Hide submission in progress message
                     if(this.responseCode==400){
-                        this.duplicateEntry = true
+                        this.duplicateEntry = true // Display duplicate entry message
                     }else{
-                        this.errorMessage = true
+                        this.errorMessage = true // Display generic error message
                     }
                 }
                 return response
-
             },
 
         }
