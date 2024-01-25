@@ -2,6 +2,11 @@
 
 <!--
     TODO:
+    - Dropdown Selection for Drink Type + Drink Category (with option for "Other")
+    - Make Producer field a dropdown list (for non-producer) / autofill and non-changeable (for producer)
+    - If messages show, consider hiding / disabling the form
+    - Independent Bottler Yes/No radio buttons should be aligned left, styled to look like checkboxes. Consider using switch / single checkbox instead (if so, flip isOperator: rename to indOperator).
+
     - Form Methods (needs to do different things based on mode)
     - Input: Relationship with Brand (ONLY FOR USERS)
     - Return Button
@@ -16,26 +21,31 @@
     <div class="container pt-3">
         
         <!-- Display when form is being submitted -->
-        <div v-if="submitForm"> 
-            <p>The form is being submitted, please hold on!</p>
+        <div class="text-info-emphasis fst-italic fw-bold fs-5" v-if="submitForm"> 
+            <span>The form is being submitted, please hold on!</span>
+            <hr>
         </div>
         
         <!-- Display when bottle listing is successfully submitted -->
-        <div v-if="successSubmission"> 
-            <h2 v-if="mode == 'user'">The bottle listing has successfully been submitted!</h2> <!-- for user -->
-            <h2 v-if="mode == 'power'">The bottle listing has successfully been created!</h2> <!-- for producer -->
+        <div class="text-success fst-italic fw-bold fs-3" v-if="successSubmission"> 
+            <span v-if="mode == 'user'">The bottle listing has successfully been submitted!</span> <!-- for user -->
+            <span v-if="mode == 'power'">The bottle listing has successfully been created!</span> <!-- for producer -->
+            <br>
             <button class="btn primary-btn btn-sm" @click="reset">
-                <h4> Submit another bottle listing here! </h4>
+                <span class="fs-5 fst-italic"> Submit another bottle listing here! </span>
             </button>
+            <hr>
         </div>
         
         <!-- Display when bottle listing submission encounters an error -->
-        <div v-if="errorSubmission"> 
-            <h2 v-if="errorMessage">An error occurred while attempting to submit, please try again!</h2>
-            <h2 v-if="duplicateEntry">The bottle listing you are trying to submit already exists.</h2>
+        <div class="text-danger fst-italic fw-bold fs-3" v-if="errorSubmission"> 
+            <span v-if="errorMessage">An error occurred while attempting to submit, please try again!</span>
+            <span v-if="duplicateEntry">The bottle listing you are trying to submit already exists.</span>
+            <br>
             <button class="btn primary-btn btn-sm" @click="reset">
-                <h4> Retry your submission here! </h4>
+                <span class="fs-5 fst-italic"> Retry your submission here! </span>
             </button>
+            <hr>
         </div>
 
 
@@ -56,31 +66,37 @@
                     <!-- Input: Bottle Name -->
                     <div class="form-group mb-3">
                         <p class="text-start mb-1">Name of Bottle <span class="text-danger">*</span></p>
-                        <input type="text" v-model="form['listingName']" class="form-control" id="bottleName" placeholder="Enter Bottle Name">
+                        <input type="text" v-model="form['listingName']" class="form-control" id="bottleName" placeholder="Enter Bottle Name" required>
                     </div>
 
-                    <!-- Input: drinkType + Category -->
+                    <!-- Input: drinkType (eg. Whiskey) + typeCategory (eg. Single Malt) -->
                     <div class="row mb-3">
                         <div class="form-group col-md-6">
                             <p class="text-start mb-1">Drink Type <span class="text-danger">*</span></p>
-                            <input type="text" class="form-control" v-model="form['drinkType']" id="drinkType" placeholder="Type of Drink">
+                            <input type="text" class="form-control" v-model="form['drinkType']" id="drinkType" placeholder="Enter Drink Type" required>
                         </div>
                         <div class="form-group col-md-6">
                             <p class="text-start mb-1">Drink Category</p>
-                            <input type="text" class="form-control" v-model="form['typeCategory']" id="typeCategory" placeholder="Category of Drink">
+                            <input type="text" class="form-control" v-model="form['typeCategory']" id="typeCategory" placeholder="Enter Drink Category">
                         </div>
                     </div>
                     
-                    <!-- Input: Drink Description (ONLY FOR PRODUCERS) -->
+                    <!-- (ONLY FOR CREATION) Input: Drink Description -->
                     <div class="form-group mb-3" v-if="mode == 'power'">
                         <p class="text-start mb-1">Official Description <span class="text-danger">*</span></p>
-                        <textarea class="form-control" v-model="form['officialDesc']" id="officialDesc" placeholder="Enter description of bottle"></textarea>
+                        <textarea rows=3 class="form-control" v-model="form['officialDesc']" id="officialDesc" placeholder="Enter description of bottle" required></textarea>
                     </div>
 
-                    <!-- Input: Link to website or source -->
-                    <div class="form-group mb-3">
-                        <p class="text-start mb-1">Link to website or source <span class="text-danger">*</span></p>
+                    <!-- (ONLY FOR CREATION) Input: Link to 88 Bamboo review -->
+                    <div class="form-group mb-3" v-if="mode == 'power'">
+                        <p class="text-start mb-1">Link to 88 Bamboo review</p>
                         <input type="text" class="form-control" v-model="form['reviewLink']" id="reviewLink" placeholder="Enter link">
+                    </div>
+
+                    <!-- Input: Link to website or source (optional for creation, mandatory for request) -->
+                    <div class="form-group mb-3">
+                        <p class="text-start mb-1">Link to website or source <span class="text-danger" v-if="mode == 'user'">*</span></p>
+                        <input type="text" class="form-control" v-model="form['sourceLink']" id="sourceLink" placeholder="Enter link">
                     </div>
 
                     <!-- Input: Photo file -->
@@ -90,10 +106,9 @@
                     </div>
 
                     <!-- Input: Producer Name -->
-                    <!-- TODO: Make this a dropdown list AND also to make it autofill and non-changeable for producer account-->
                     <div class="form-group mb-3">
                         <p class="text-start mb-1">Producer Name <span class="text-danger">*</span></p>
-                        <input type="text" class="form-control" v-model="form['producer']" id="producer" placeholder="Enter producer name">
+                        <input type="text" class="form-control" v-model="form['producer']" id="producer" placeholder="Enter Producer Name" required>
                     </div>
 
                     <!-- Input: Independent Bottler Check -->
