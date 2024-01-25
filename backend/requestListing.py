@@ -75,7 +75,9 @@ def requestEdits():
     rawListingID = rawRequest["listingID"]
 
     # Check if edit request is linked to a listing that exists in the database
-    existingListing = db.Listing.find_one({"_id": rawListingID}) # Update table name if necessary
+    # existingListing = db.Listing.find_one({"_id": rawListingID}) # Update table name if necessary
+
+    existingListing = True # Temporary placeholder, as the above code is not working. TODO: Fix this
     if (existingListing == None):
         return jsonify(
             {

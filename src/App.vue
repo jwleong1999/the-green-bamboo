@@ -7,7 +7,8 @@
     <router-link to="/about">About</router-link> |
     <router-link to="/Users/Bottle-Listings">(Users) Bottle Listings</router-link> |
     <router-link to="/Users/request/new">(Users) Request Listing [New]</router-link> |
-    <!-- <router-link to="/Users/request/modify">(Users) Request Listing [Modify]</router-link> | -->
+    <router-link to="/Users/request/modify?mode=edit">(Users) Request Listing [Modify]</router-link> |
+    <router-link to="/Users/request/modify?mode=duplicate">(Users) Request Listing [Duplicate]</router-link> |
     <router-link to="/Producers/Bottle-Listings">(Producers) Bottle Listings</router-link> |
     <router-link to="/Producer/Producer-Listings">(Producers) Listings</router-link> |
     <router-link to="/Producer/Producer-Create-Listing">(Producers) Create Listings</router-link> |
