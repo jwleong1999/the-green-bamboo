@@ -7,12 +7,13 @@
     - Make Producer field a dropdown list (for non-producer) / autofill and non-changeable (for producer)
     - If messages show, consider hiding / disabling the form
     - Independent Bottler Yes/No radio buttons should be styled to look like checkboxes.
-        -- Consider using switch / single checkbox instead (if so, flip isOperator: rename to indOperator).
+        -- [?] Consider using switch / single checkbox instead (if so, flip isOperator: rename to indOperator).
 
     - Form Methods (needs to do different things based on mode)
     - Input: Relationship with Brand (ONLY FOR USERS)
     
     - Styling Discussion / Fixes
+    - [?] Relationship with Brand: If "Others" is selected, should there be a text box to fill in for users to specify their relationship?
     - Accept pre-filled information from users to be created by power users.
     - Consider if any duplicate submission has to be detected / prevented. Includes requests for bottles that already exist.
     - Consider use of character counters and character limits if/when necessary.
@@ -55,10 +56,10 @@
         <div class="row" v-if="fillForm">
             
             <!-- spacer -->
-            <div class="col-3"></div>
+            <div class="col-xl-3 col-lg-2 col-md-1"></div>
             
             <!-- start of the elements -->
-            <div class="col-6">
+            <div class="col-xl-6 col-lg-8 col-md-10">
                 <div class="d-grid gap-2">
                     <p class="fw-bold fs-1">Submit A New Bottle Listing</p>
                 </div>
@@ -141,19 +142,19 @@
                     <!-- Input: Alcohol Strength (% ABV) -->
                     <p class="text-start mb-1">Strength</p>
                     <div class="form-group row mb-3">
-                        <div class="col-sm-3 pe-1">
+                        <div class="col-3 pe-1">
                             <input type="number" min="0" max="100" v-model="form['abv']" class="form-control" id="abv">
                         </div>
-                        <label for="abv" class="col-sm-3 col-form-label ps-1 text-start">% ABV</label>
+                        <label for="abv" class="col-3 col-form-label ps-1 text-start">% ABV</label>
                     </div>
 
                     <!-- Input: Alcohol Age -->
                     <p class="text-start mb-1">Age</p>
                     <div class="form-group row mb-3">
-                        <div class="col-sm-3 pe-1">
+                        <div class="col-3 pe-1">
                             <input type="number" class="form-control" v-model="form['age']" id="abv">
                         </div>
-                        <label for="abv" class="col-sm-3 col-form-label ps-1 text-start">years old</label>
+                        <label for="abv" class="col-3 col-form-label ps-1 text-start">years old</label>
                         
                     </div>
 
