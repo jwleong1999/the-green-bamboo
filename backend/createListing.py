@@ -45,7 +45,7 @@ def createListings():
         ), 400
     
     
-    newBottle = data.Listings(**rawBottle)
+    newBottle = data.listings(**rawBottle)
 
     try:
         insertResult = db.Listing.insert_one(data.asdict(newBottle))
