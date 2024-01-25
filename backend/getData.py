@@ -31,7 +31,7 @@ def parse_json(data):
 def getCountries():
 
     #this step finds all the items in the collection, specifying Countries
-    data = db.Countries.find({})
+    data = db.countries.find({})
 
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
@@ -50,7 +50,7 @@ def getCountries():
 def getListings():
 
     #this step finds all the items in the collection, specifying Listings
-    data = db.Listings.find({})
+    data = db.listings.find({})
 
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
@@ -69,7 +69,7 @@ def getListings():
 def getProducers():
 
     #this step finds all the items in the collection, specifying Producers
-    data = db.Producers.find({})
+    data = db.producers.find({})
 
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
@@ -88,7 +88,7 @@ def getProducers():
 def getReviews():
 
     #this step finds all the items in the collection, specifying Reviews
-    data = db.Reviews.find({})
+    data = db.reviews.find({})
 
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
@@ -107,7 +107,7 @@ def getReviews():
 def getUsers():
 
     #this step finds all the items in the collection, specifying Users
-    data = db.Users.find({})
+    data = db.users.find({})
 
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
@@ -126,7 +126,7 @@ def getUsers():
 def getVenues():
 
     #this step finds all the items in the collection, specifying Venues
-    data = db.Venues.find({})
+    data = db.venues.find({})
 
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
