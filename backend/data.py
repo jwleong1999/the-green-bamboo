@@ -2,6 +2,7 @@ from dataclasses import dataclass, asdict
 from typing import Optional, Union
 import pymongo
 import json
+from datetime import datetime
 
 # Connect to MongoDB
 client = pymongo.MongoClient("mongodb+srv://jwleong2020:uOfXCrxLPCjgyA92@greenbamboo.wbiambw.mongodb.net/GreenBamboo?retryWrites=true&w=majority")
@@ -11,16 +12,10 @@ database = client["GreenBamboo"]
 #NOTE TO DEVELOPERS, TO INSERT DATA INTO MONGO, CREATE A DATA INSTANCE OF THE DATACLASS NEEDED, THEN USE 
 # asdict(data) TO INSERT INTO MONGO
 
-# Dataclass (Country)
+# Dataclass (countries)
 @dataclass
-class Country:
-    countryName: str
-
-# Dataclass (drinkCatgeories)
-@dataclass
-class drinkCategory:
-    drinkType: str
-    Category: list
+class countries:
+    originCountry: str
 
 # Dataclass (listings)
 @dataclass
@@ -33,25 +28,80 @@ class listings:
     typeCategory: Optional[str]
     abv: str
     age: Optional[str]
-    sourceLink: Optional[str]
     reviewLink: Optional[str]
     officialDesc: str
+    sourceLink: Optional[str]
     photo: str
+
+# Dataclass (producers)
+@dataclass
+class producers:
+    producerName: str
+    producerDesc: str
+    originCountry: str
+    statusOB: Optional[str]
+    mainDrinks: list
+
+# Dataclass (reviews)
+@dataclass
+class reviews:
+    userID: object
+    reviewTarget: str
+    date: datetime
+    rating: int
+    reviewDesc: str
+    taggedUsers: Optional[list]
+    reviewTitle: str
+    reviewType: str
+    flavorTag: Optional[list]
+    photo: str # Optional[binary]
+
+# Dataclass (users)
+@dataclass
+class users:
+    username: str
+    displayName: str
+    choiceDrinks: list
+    drinkLists: object
+    modType: list
+    photo: str
+
+# Dataclass (venues)
+@dataclass
+class venues:
+    venueName: str
+    venueDesc: str
+    originCountry: str
+    address: str
+    openingHours: object
+
+# Dataclass (venuesAPI) --> Using Google Maps API
+@dataclass
+class venuesAPI:
+    venueAPIName: str
+    venueAPIDesc: str
+    originCountry: str
+
+# Dataclass (drinkTypes)
+@dataclass
+class drinkTypes:
+    drinkType: str
+    typeCategory: Optional[list]
 
 # Dataclass (requestListings)
 @dataclass
 class requestListings:
     listingName: str
-    producerID: Optional[object]
     producerNew: Optional[str]
+    producerID: Optional[object]
     bottler: str
     originCountry: Optional[str]
     drinkType: str
     typeCategory: Optional[str]
-    abv: Optional[str]
     age: Optional[str]
-    sourceLink: str
+    abv: Optional[str]
     reviewLink: Optional[str]
+    sourceLink: str
     brandRelation: str
     reviewStatus: bool
     userID: object
@@ -61,56 +111,19 @@ class requestListings:
 @dataclass
 class requestEdits:
     duplicateLink: Optional[str]
-    sourceLink: Optional[str]
     editDesc: str
+    sourceLink: Optional[str]
+    brandRelation: str
     listingID: object
     userID: object
-    brandRelation: str
     reviewStatus: bool
 
-# Dataclass (Producers)
+# Dataclass (modRequests)
 @dataclass
-class Producers:
-    producerName: str
-    producerDesc: str
-    originCountry: str
-    statusOB: Optional[str]
-    mainDrinks: list
-
-# Dataclass (Reviews)
-@dataclass
-class Reviews:
-    reviwerName: str
-    reviewedSubject: str
-    Date: str
-    Rating:int
-    reviewDesc: str
-    taggedUsers: Optional[list]
-    reviewTitle: str
-
-@dataclass
-class Users:
-    Username: str
-    Name: str
-    drinkOfChoice: Optional[list]
-
-# Dataclass (Venue) --> Using Google Maps API
-@dataclass
-class VenuesAPI:
-    venueName: str
-    venueDesc: str
-    countryLocated: str
-
-
-# Dataclass (Venue)
-@dataclass
-class Venues:
-    venueName: str
-    venueDesc: str
-    countryLocated: str
-    Address: str
-    openingHours: Optional[list]
-
+class modRequests:
+    userID: object
+    drinkType: str
+    modDesc: str
 
 def convert_to_json(data):
     return json.dumps(data.__dict__)
