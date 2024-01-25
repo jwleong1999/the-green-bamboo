@@ -250,7 +250,7 @@
                 this.submitForm = false
                 this.successSubmission = false
                 this.errorSubmission = false
-                this.errorMessage = false   // is this required?
+                this.errorMessage = false
                 this.duplicateEntry = false
                 this.fillForm = true
                 this.responseCode= ""
