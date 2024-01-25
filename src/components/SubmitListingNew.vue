@@ -65,14 +65,14 @@
                     <!-- Input: Bottle Name -->
                     <div class="form-group mb-3">
                         <p class="text-start mb-1">Name of Bottle <span class="text-danger">*</span></p>
-                        <input type="text" v-model="form['listingName']" class="form-control" id="bottleName" placeholder="Enter Bottle Name">
+                        <input type="text" v-model="form['listingName']" class="form-control" id="bottleName" placeholder="Enter Bottle Name" required>
                     </div>
 
                     <!-- Input: drinkType (eg. Whiskey) + typeCategory (eg. Single Malt) -->
                     <div class="row mb-3">
                         <div class="form-group col-md-6">
                             <p class="text-start mb-1">Drink Type <span class="text-danger">*</span></p>
-                            <input type="text" class="form-control" v-model="form['drinkType']" id="drinkType" placeholder="Enter Drink Type">
+                            <input type="text" class="form-control" v-model="form['drinkType']" id="drinkType" placeholder="Enter Drink Type" required>
                         </div>
                         <div class="form-group col-md-6">
                             <p class="text-start mb-1">Drink Category</p>
@@ -83,7 +83,7 @@
                     <!-- (ONLY FOR CREATION) Input: Drink Description -->
                     <div class="form-group mb-3" v-if="mode == 'power'">
                         <p class="text-start mb-1">Official Description <span class="text-danger">*</span></p>
-                        <textarea rows=3 class="form-control" v-model="form['officialDesc']" id="officialDesc" placeholder="Enter description of bottle"></textarea>
+                        <textarea rows=3 class="form-control" v-model="form['officialDesc']" id="officialDesc" placeholder="Enter description of bottle" required></textarea>
                     </div>
 
                     <!-- (ONLY FOR CREATION) Input: Link to 88 Bamboo review -->
@@ -107,7 +107,7 @@
                     <!-- Input: Producer Name -->
                     <div class="form-group mb-3">
                         <p class="text-start mb-1">Producer Name <span class="text-danger">*</span></p>
-                        <input type="text" class="form-control" v-model="form['producer']" id="producer" placeholder="Enter Producer Name">
+                        <input type="text" class="form-control" v-model="form['producer']" id="producer" placeholder="Enter Producer Name" required>
                     </div>
 
                     <!-- Input: Independent Bottler Check -->
