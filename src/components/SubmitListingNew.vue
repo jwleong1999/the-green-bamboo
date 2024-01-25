@@ -2,14 +2,16 @@
 
 <!--
     TODO:
-    - Dropdown Selection for Drink Type + Drink Category (with option for "Other")
+    - "Return" button may bring user back to same page, but with form cleared. Prevent that by returning to last notable page.
+    - Dropdown Selection for Drink Type + Drink Category (with option for "Other"), Country of Origin
     - Make Producer field a dropdown list (for non-producer) / autofill and non-changeable (for producer)
     - If messages show, consider hiding / disabling the form
-    - Independent Bottler Yes/No radio buttons should be aligned left, styled to look like checkboxes. Consider using switch / single checkbox instead (if so, flip isOperator: rename to indOperator).
+    - Independent Bottler Yes/No radio buttons should be styled to look like checkboxes.
+        -- Consider using switch / single checkbox instead (if so, flip isOperator: rename to indOperator).
 
     - Form Methods (needs to do different things based on mode)
     - Input: Relationship with Brand (ONLY FOR USERS)
-    - Return Button
+    
     - Styling Discussion / Fixes
     - Accept pre-filled information from users to be created by power users.
     - Consider if any duplicate submission has to be detected / prevented. Includes requests for bottles that already exist.
@@ -87,16 +89,16 @@
                         <textarea rows=3 class="form-control" v-model="form['officialDesc']" id="officialDesc" placeholder="Enter description of bottle" required></textarea>
                     </div>
 
-                    <!-- (ONLY FOR CREATION) Input: Link to 88 Bamboo review -->
-                    <div class="form-group mb-3" v-if="mode == 'power'">
-                        <p class="text-start mb-1">Link to 88 Bamboo review</p>
-                        <input type="text" class="form-control" v-model="form['reviewLink']" id="reviewLink" placeholder="Enter link">
-                    </div>
-
                     <!-- Input: Link to website or source (optional for creation, mandatory for request) -->
                     <div class="form-group mb-3">
                         <p class="text-start mb-1">Link to website or source <span class="text-danger" v-if="mode == 'user'">*</span></p>
                         <input type="text" class="form-control" v-model="form['sourceLink']" id="sourceLink" placeholder="Enter link">
+                    </div>
+
+                    <!-- Input: Link to 88 Bamboo review -->
+                    <div class="form-group mb-3">
+                        <p class="text-start mb-1">Link to 88 Bamboo review</p>
+                        <input type="text" class="form-control" v-model="form['reviewLink']" id="reviewLink" placeholder="Enter link">
                     </div>
 
                     <!-- Input: Photo file -->
@@ -113,40 +115,41 @@
 
                     <!-- Input: Independent Bottler Check -->
                     <p class="text-start mb-1">Is this bottle by an independent bottler? <span class="text-danger">*</span></p>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" @change="checkRadio" v-model="isOperator" :value = "false" name="inlineRadioOptions" id="independentBottler">
-                        <label class="form-check-label" for="inlineRadio1">Yes</label>
+                        <!-- Radio Buttons -->
+                    <div class="text-start mb-3">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" v-model="isOperator" :value="false" name="checkIBYes" id="independentBottler">
+                            <label class="form-check-label" for="independentBottler">Yes</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" v-model="isOperator" :value="true" name="checkIBNo" id="originalBottler">
+                            <label class="form-check-label" for="originalBottler">No</label>
+                        </div>
                     </div>
-                    <div class="form-check form-check-inline mb-3">
-                        <input class="form-check-input" type="radio" @change="checkRadio" v-model="isOperator" :value="true" name="inlineRadioOptions" id="notIndependent">
-                        <label class="form-check-label" for="inlineRadio2">No</label>
-                    </div>
-                    <!-- End of radios -->
+                        <!-- (ONLY IF above toggled to "Yes") Input Text for Independent Bottler -->
                     <div class="form-group mb-3" v-if="isOperator == false">
                         <p class="text-start mb-1">If yes, who is the independent bottler? <span class="text-danger">*</span></p>
                         <input type="text" class="form-control" v-model="form['bottler']" :disabled="isOperator" id="bottlerName" placeholder="Enter Bottler Name">
                     </div>
-                    <!-- End of input text for independent bottler (ONLY APPEARS IF INDEPENDENT BOTTLER = TRUE) -->
 
                     <!-- Input: originCountry -->
                     <div class="form-group mb-3">
                         <p class="text-start mb-1">Country of Origin</p>
-                        <input type="text" class="form-control" v-model="form['originCountry']" id="originCountry" placeholder="Enter country">
+                        <input type="text" class="form-control" v-model="form['originCountry']" id="originCountry" placeholder="Enter Country">
                     </div>
 
-                    <!-- Input: Alcohol Strength % abv -->
+                    <!-- Input: Alcohol Strength (% ABV) -->
                     <p class="text-start mb-1">Strength</p>
                     <div class="form-group row mb-3">
                         <div class="col-sm-3 pe-1">
-                            <input type="number" max="100" v-model="form['abv']"  class="form-control" id="abv">
+                            <input type="number" min="0" max="100" v-model="form['abv']" class="form-control" id="abv">
                         </div>
                         <label for="abv" class="col-sm-3 col-form-label ps-1 text-start">% ABV</label>
-                        
                     </div>
 
-                    <!-- Input: Alcohol age -->
+                    <!-- Input: Alcohol Age -->
                     <p class="text-start mb-1">Age</p>
-                    <div class="form-group row">
+                    <div class="form-group row mb-3">
                         <div class="col-sm-3 pe-1">
                             <input type="number" class="form-control" v-model="form['age']" id="abv">
                         </div>
@@ -154,10 +157,10 @@
                         
                     </div>
 
-                    <!-- TODO Input: Relationship with Brand (ONLY FOR USERS) -->
                     
-                    <button type="submit" class="btn secondary-btn">Submit Bottle Listing</button>
-                    <!-- TODO: Return Button -->
+                    
+                    <button type="submit" class="btn secondary-btn mx-1 mb-3">Submit Bottle Listing</button>
+                    <button type="button" class="btn primary-btn mx-1 mb-3" @click="goBack">Return</button>
                 
                 </form>
                 <!-- End of Form -->
@@ -201,6 +204,10 @@
             }
         },
         methods:{
+            goBack() {
+                this.$router.go(-1)
+            },
+
             submitListing(){
                 if(this.mode == "power"){
                     this.createListing()
