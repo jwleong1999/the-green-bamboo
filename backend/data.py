@@ -22,22 +22,40 @@ class drinkCategory:
     drinkType: str
     Category: list
 
-# Dataclass (Listing)
+# Dataclass (listings)
 @dataclass
-class Listings:
+class listings:
     listingName: str
-    producer: str
+    producerID: object
     bottler: str
     originCountry: str
     drinkType: str
+    typeCategory: Optional[str]
     abv: str
+    age: Optional[str]
+    sourceLink: Optional[str]
+    reviewLink: Optional[str]
     officialDesc: str
     photo: str
-    typeCategory: Optional[str] = None
-    age: Optional[str] = None
-    reviewLink: Optional[str] = None
-    sourceLink: Optional[str] = None
-    producerID: Optional[str] = None
+
+# Dataclass (requestListings)
+@dataclass
+class requestListings:
+    listingName: str
+    producerID: Optional[object]
+    producerNew: Optional[str]
+    bottler: str
+    originCountry: Optional[str]
+    drinkType: str
+    typeCategory: Optional[str]
+    abv: Optional[str]
+    age: Optional[str]
+    sourceLink: str
+    reviewLink: Optional[str]
+    brandRelation: str
+    reviewStatus: bool
+    userID: object
+    photo: str
 
 # Dataclass (Producers)
 @dataclass
