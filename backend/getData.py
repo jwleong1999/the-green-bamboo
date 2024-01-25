@@ -150,14 +150,14 @@ def getDrinkCategories():
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
 
-    allVenues = []
+    allDrinkCategories = []
     
     #parse bson as json
     dataEncode = parse_json(data)
     for doc in dataEncode:
         # print(doc)
-        allVenues.append(doc)
-    return allVenues
+        allDrinkCategories.append(doc)
+    return allDrinkCategories
 
 if __name__ == "__main__":
     app.run(debug=True, port = 5000)

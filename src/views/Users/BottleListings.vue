@@ -109,7 +109,7 @@
                         <!-- buttons -->
                         <div class="row">
                             <!-- discover -->
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="d-grid gap-2">
                                     <button class="btn primary-btn btn-sm">
                                         <h4> Discover </h4>
@@ -117,7 +117,7 @@
                                 </div>
                             </div>
                             <!-- following -->
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="d-grid gap-2">
                                     <button class="btn primary-btn-outline btn-sm">
                                         <h4> Following </h4>
@@ -125,18 +125,37 @@
                                 </div>
                             </div>
                             <!-- filter by drink type -->
-                            <div class="col-4">
+                            <div class="col-3">
                                 <div class="d-grid gap-2 dropdown">
                                     <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Filter by drink type
+                                        {{ selectedDrinkType ? selectedDrinkType['Drink Type'] : 'Filter by drink type' }}
                                     </button>
-                                    <ul class="dropdown-menu"> <!-- TODO: filter button to be implemented -->
-                                        <li><a class="dropdown-item" href="#">Action</a></li>
-                                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                    <ul class="dropdown-menu">
+                                        <!-- TODO: filter button to be implemented -->
+                                        <!-- IN IMPLEMENTATION -->
+
+                                        <li v-for="type in drinkCategories" v-bind:key="type._id" class= "p-3">
+                                        <a class="dropdown-item" @click="selectDrinkType(type)"> {{ type['Drink Type'] }} </a>
+                                        </li>       
                                     </ul>
                                 </div>
-                            </div>
+                            </div>       
+
+                            <!-- TODO another dropdown, based on this.selectedDrinkType, do a v-if selectedDrinkType !=""--> 
+                            <div v-if="selectedDrinkType != ''" class="col-3">
+                                <div class="d-grid gap-2 dropdown">
+                                    <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        {{ selectedCategory ? selectedCategory : 'Filter by drink category' }}
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <!-- TODO: filter button to be implemented -->
+
+                                        <li v-for="category in selectedTypeCategory" @click="selectDrinkCategory(category)" v-bind:key="category" class= "p-3">
+                                        <a class="dropdown-item"> {{ category }} </a>
+                                        </li>       
+                                    </ul>
+                                </div>
+                            </div>                            
                         </div>
 
                         <!-- listings -->
@@ -264,7 +283,8 @@
                             <!-- image -->
                             <div class="col-3 image-container">
                                 <a v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
-                                    <img src="../../../Images/Sample/beer.png" style="width: 300px; height: 300px;" class="img-border"> 
+                                    <img v-if="listing['photo']" :src="'data:image/jpeg:base64,'+listing['photo']">
+                                    <img v-else src="../../../Images/Sample/beer.png" style="width: 300px; height: 300px;" class="img-border"> 
                                 </a>
                             </div>
                             <!-- details -->
@@ -348,12 +368,16 @@
                 reviews: [],
                 users: [],
                 venues: [],
+                drinkCategories: [],
                 // search
                 search: false,
                 searchInput: '',
                 searchTerm: '',
                 searchResults: [],
                 filteredListings: [],
+                selectedDrinkType:"",
+                selectedTypeCategory:[],
+                selectedCategory:"",
             };
         },
         mounted() {
@@ -407,7 +431,15 @@
                 // Venues
                 try {
                     const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
-                    this.users = response.data;
+                    this.venues = response.data;
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+                // Drink Categories
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkCategories');
+                    this.drinkCategories = response.data;
                 } 
                 catch (error) {
                     console.error(error);
@@ -483,8 +515,46 @@
                     return total + rating["Rating"];
                 }, 0) / ratings.length;
                 return averageRating;
-        }
         },
+
+            // Handle select of filter option
+            selectDrinkType(drinkType) {
+                this.selectedCategory =null;
+                this.selectedDrinkType = drinkType;
+
+                // Dropdown for drink category after selecting drink type
+                for(let drinks of this.drinkCategories){
+                    // console.log(drinks)
+                    if(drinks['Drink Type'] == drinkType['Drink Type']){
+                        this.selectedTypeCategory = drinks['Category']
+                    }
+                }
+                // console.log(this.selectedDrinkCategory)
+                
+
+                const drinkTypeSearch = this.selectedDrinkType['Drink Type'].toLowerCase();
+                // console.log(drinkTypeSearch)
+                const searchResults = this.listings.filter((listing) => {
+                    const drinkTypeListing = listing["Drink Type"].toLowerCase();
+                    // const producer = listing["Producer"].toLowerCase();
+                    return drinkTypeListing.includes(drinkTypeSearch);
+                });
+                // if nothing found
+                if (searchResults.length == 0) {
+                    this.errorFound = true;
+                    this.errorMessage = 'No results found, please try again.';
+                    this.filteredListings = null;
+                } 
+                else {
+                    this.errorFound = false;
+                    this.errorMessage = '';
+                    this.filteredListings = searchResults;
+                }
+        },
+        selectDrinkCategory(drinkCategory) {
+            this.selectedCategory = drinkCategory;
+        },
+    }
     };
 </script>
 

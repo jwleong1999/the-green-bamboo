@@ -22,21 +22,51 @@ class drinkCategory:
     drinkType: str
     Category: list
 
-# Dataclass (Listing)
+# Dataclass (listings)
 @dataclass
-class Listings:
+class listings:
     listingName: str
-    producer: str
+    producerID: object
     bottler: str
     originCountry: str
     drinkType: str
+    typeCategory: Optional[str]
     abv: str
+    age: Optional[str]
+    sourceLink: Optional[str]
+    reviewLink: Optional[str]
     officialDesc: str
     photo: str
-    typeCategory: Optional[str] = None
-    age: Optional[str] = None
-    reviewLink: Optional[str] = None
-    sourceLink: Optional[str] = None
+
+# Dataclass (requestListings)
+@dataclass
+class requestListings:
+    listingName: str
+    producerID: Optional[object]
+    producerNew: Optional[str]
+    bottler: str
+    originCountry: Optional[str]
+    drinkType: str
+    typeCategory: Optional[str]
+    abv: Optional[str]
+    age: Optional[str]
+    sourceLink: str
+    reviewLink: Optional[str]
+    brandRelation: str
+    reviewStatus: bool
+    userID: object
+    photo: str
+
+# Dataclass (requestEdits)
+@dataclass
+class requestEdits:
+    duplicateLink: Optional[str]
+    sourceLink: Optional[str]
+    editDesc: str
+    listingID: object
+    userID: object
+    brandRelation: str
+    reviewStatus: bool
 
 # Dataclass (Producers)
 @dataclass
@@ -98,9 +128,9 @@ drink_category = drinkCategory(drinkType="Whiskey", Category=["Single Malt", "Bo
 json_data = convert_to_json(drink_category)
 print(json_data)
 
-producer = Producers(producerName="ABC Distillery", originCountry="USA", obStatus="Active", mainDrink=["Whiskey", "Vodka"])
-json_data = convert_to_json(producer)
-print(json_data)
+# producer = Producers(producerName="ABC Distillery", originCountry="USA", obStatus="Active", mainDrink=["Whiskey", "Vodka"])
+# json_data = convert_to_json(producer)
+# print(json_data)
 
 review = Reviews(reviwerName="John Doe", reviewedSubject="Whiskey", Date="2022-01-01", Rating=5, reviewDesc="Great whiskey!", taggedUsers=["Jane Doe"], reviewTitle="Amazing Whiskey")
 json_data = convert_to_json(review)

@@ -21,9 +21,9 @@ def parse_json(data):
     return json.loads(json_util.dumps(data))
 
 #[POST]
-# require bottle name, drink type, producer
-# optional drink category, country of origin, bottler, age, ABV, 88bamboo website review (if applicable), official description
-@app.route("/createListings", methods= ['POST'])
+# require bottle name, producer ID, bottler, country of origin, drink type, ABV, official description, photo
+# optional drink category, age, source link, review link
+@app.route("/createListing", methods= ['POST'])
 def createListings():
     rawBottle = request.get_json()
     rawBottleName = rawBottle["listingName"]
@@ -45,7 +45,7 @@ def createListings():
         ), 400
     
     
-    newBottle = data.Listings(**rawBottle)
+    newBottle = data.listings(**rawBottle)
 
     try:
         insertResult = db.Listing.insert_one(data.asdict(newBottle))
