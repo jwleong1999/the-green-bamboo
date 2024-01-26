@@ -205,7 +205,7 @@
                                             </div>
                                             <!-- producer -->
                                             <div class="row">
-                                                <h5> {{ listing["producer"] }} </h5> 
+                                                <h5> {{ getProducerName(listing) }} </h5> 
                                             </div>
                                         </div>
                                     </div>
@@ -408,7 +408,7 @@
                         console.error(error);
                     }
                 // listings
-                // _id, listingName, producer, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, officialDesc, sourceLink, photo
+                // _id, listingName, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, officialDesc, sourceLink, photo
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
                         this.listings = response.data;
@@ -535,6 +535,21 @@
                 this.searchInput = '';
                 this.search = false;
                 this.filteredListings = this.listings;
+            },
+
+            // get producerName for a listing based on producerID
+            getProducerName(listing) {
+                const producer = this.producers.find((producer) => {
+                    return producer["_id"]["$oid"] == listing["producerID"]["$oid"];
+                });
+                // ensures that producer is found before accessing "producerName"
+                if (producer) {
+                    const producerName = producer["producerName"];
+                    return producerName;
+                }
+                else {
+                    return null;
+                }
             },
 
             // get reviews for a listing

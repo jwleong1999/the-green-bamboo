@@ -65,7 +65,7 @@
                             <div class="row">
                                 <!-- producer -->
                                 <div class="col-6">
-                                    <h5 class="text-body-secondary"> <u> {{ specified_listing["producer"] }} </u> </h5>
+                                    <h5 class="text-body-secondary"> <u> {{ getProducerName(specified_listing["producerID"]) }} </u> </h5>
                                 </div>
                                 <!-- bottler -->
                                 <div class="col-6">
@@ -91,7 +91,7 @@
                             <div class="text-start"> <!-- TODO: add hyperlink to link to producer page-->
                                 <!-- [function] where to buy -->
                                 <div v-for="producer in producerListings" v-bind:key="producer._id">
-                                    <p> {{ producer }} </p>
+                                    <p> {{ getProducerName(producer) }} </p>
                                 </div>
                             </div>
                             <div class="py-5"></div>
@@ -160,48 +160,65 @@
             // load data from database
             async loadData() {
                 // Listings
-                try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
-                    this.listings = response.data;
-                    this.filteredListings = this.listings; // originally, make filtered listings the entire collection of listings
-                    this.specified_listing = this.listings.find(listing => listing._id.$oid == this.listing_id); // find specified listing
-                    this.whereToBuy(); // find where to buy specified listing
-                } 
-                catch (error) {
-                    console.error(error);
-                }
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
+                        this.listings = response.data;
+                        this.filteredListings = this.listings; // originally, make filtered listings the entire collection of listings
+                        this.specified_listing = this.listings.find(listing => listing._id.$oid == this.listing_id); // find specified listing
+                        this.whereToBuy(); // find where to buy specified listing
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
                 // Producers
-                try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
-                    this.producers = response.data;
-                } 
-                catch (error) {
-                    console.error(error);
-                }
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
+                        this.producers = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
                 // Users
-                try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
-                    this.users = response.data;
-                } 
-                catch (error) {
-                    console.error(error);
-                }
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
+                        this.users = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
                 // Venues
-                try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
-                    this.users = response.data;
-                } 
-                catch (error) {
-                    console.error(error);
-                }
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
+                        this.users = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
             },
 
             // view which producers have specified listing
             whereToBuy() {
                 this.producerListings = this.listings
                     .filter(listing => listing["listingName"] == this.specified_listing["listingName"])
-                    .map(listing => listing["producer"]);
-            }
+                    .map(listing => listing["producerID"]);
+
+                console.log(this.producerListings);
+            },
+
+            // get producerName for a listing based on producerID
+            getProducerName(producerID) {
+                const producer = this.producers.find((producer) => {
+                    return producer["_id"]["$oid"] == producerID["$oid"];
+                });
+                // ensures that producer is found before accessing "producerName"
+                if (producer) {
+                    const producerName = producer["producerName"];
+                    return producerName;
+                }
+                else {
+                    return null;
+                }
+            },
         },
     };
 </script>
