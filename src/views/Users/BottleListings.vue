@@ -183,14 +183,24 @@
                                         </div>
                                         <!-- details -->
                                         <div class="col-8 ps-5">
-                                            <!-- review -->
+                                            <!-- expression name -->
+                                            <div class="row pt-1">
+                                                <a class="primary-clickable-text" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
+                                                    <h4> <b> {{ listing["listingName"] }} </b> </h4>
+                                                </a>
+                                            </div>
+                                            <!-- producer -->
                                             <div class="row">
+                                                <h5> {{ getProducerName(listing) }} </h5> 
+                                            </div>
+                                            <!-- review -->
+                                            <div class="row pt-3">
                                                 <a class="default-clickable-text fst-italic scrollable" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
-                                                    <h5> "{{ getReviews(listing) }}". </h5>
+                                                    <h5> {{ listing["officialDesc"] }}. </h5>
                                                 </a>
                                             </div>
                                             <!-- rating -->
-                                            <div class="row pt-5"> 
+                                            <div class="row pt-4"> 
                                                 <div class="col-6">
                                                     <h1 class="rating-text">
                                                         {{ getRatings(listing) }}
@@ -204,16 +214,6 @@
                                                         <a class="btn secondary-btn btn-md" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`"> Read what the crowd thinks </a>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <!-- expression name -->
-                                            <div class="row pt-2">
-                                                <a class="primary-clickable-text" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
-                                                    <h4> <b> {{ listing["listingName"] }} </b> </h4>
-                                                </a>
-                                            </div>
-                                            <!-- producer -->
-                                            <div class="row">
-                                                <h5> {{ getProducerName(listing) }} </h5> 
                                             </div>
                                         </div>
                                     </div>
@@ -235,7 +235,7 @@
                     <!-- back button -->
                     <span style="display: inline-block;">
                         <span class="pe-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16" v-on:click="resetListings">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16" v-on:click="previousListing">
                                 <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
                             </svg>
                         </span>
@@ -319,17 +319,14 @@
                                             </h4> 
                                         </div>
                                     </div>
+
                                     <!-- have tried button -->
                                     <div class="col-2 pe-0">
-                                        <div class="d-grid">
-                                            <button type="button" class="btn btn-success btn-outline rounded-0"> Have tried </button>
-                                        </div>
+                                        <div v-html="checkDrinkLists(listing).buttons.haveTried" class="d-grid"> </div>
                                     </div>
                                     <!-- want to try button -->
                                     <div class="col-2 ps-0">
-                                        <div class="d-grid">
-                                            <button type="button" class="btn btn-info btn-outline rounded-0"> Want to try </button>
-                                        </div>
+                                        <div v-html="checkDrinkLists(listing).buttons.wantToTry" class="d-grid"> </div>
                                     </div>
                                     <!-- bookmark button -->
                                     <div class="col-1 text-end">
@@ -342,7 +339,7 @@
                                     <!-- official description -->
                                     <div class="col-10">
                                         <div class="row pt-2 pb-5">
-                                            <h5 class="fst-italic scrollable"> {{ listing["Official Description"] }} </h5>
+                                            <h5 class="fst-italic scrollable-long"> {{ listing["officialDesc"] }} </h5>
                                         </div>
                                     </div>
                                     <!-- rating -->
@@ -356,12 +353,13 @@
                                     </div>
                                 </div>
                                 <!-- release date -->
-                                <div class="row pt-5"> 
+                                <!-- NOTE: can exclude for now (no data) -->
+                                <!-- <div class="row pt-5"> 
                                     <h5> 
                                         <b> Release Date:</b>
-                                        11/09/23
+                                        date
                                     </h5>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -399,12 +397,14 @@
                 requestListings: [],
                 requestEdits: [],
                 modRequests: [],
+
                 // search
                 search: false,
-                searchInput: '',
+                searchInput: 'macallan',
                 searchTerm: '',
                 searchResults: [],
                 filteredListings: [],
+                searchHistory: [],
 
                 // for filter by drink categories
                 selectedDrinkType:"",
@@ -412,6 +412,16 @@
                 selectedCategory:"",
                 filterSearchResult: [],
                 isFilterType:false,
+
+                // customization for drinkLists buttons
+                // [TODO] get drink list of user, for now is hardcoded
+                drinkList:  {
+                                "haveTried": ["Harmony Collection Inspired by Intense Arabica"],
+                                "wantToTry": ["Catnip Gin No. 2", "Five Farms Irish Cream Liqueur"]
+                            },
+                haveTried: false,
+                wantToTry: false,
+
             };
         },
         mounted() {
@@ -532,17 +542,19 @@
             // for search button
             searchListings() {
                 // flag to check if there are search inputs
-                this.search = true;
-
                 const searchInput = this.searchInput.toLowerCase();
                 this.searchTerm = this.searchInput;
 
                 // if there is something searched
+                this.search = true;
                 const searchResults = this.listings.filter((listing) => {
                     const expressionName = listing["listingName"].toLowerCase();
                     const producer = this.getProducerName(listing).toLowerCase();
                     return expressionName.includes(searchInput) || producer.includes(searchInput);
                 });
+
+                // add search results to search history
+                this.searchHistory.push([searchInput, searchResults]);
 
                 // if nothing found
                 if (searchResults.length == 0) {
@@ -558,11 +570,30 @@
                 }
             },
 
+            // for viewing previous listings (show previous search results)
+            previousListing() {
+                // more than 1 search result history
+                if (this.searchHistory.length > 1) {
+                    // remove current search result
+                    this.searchHistory.pop();
+                    // get previous search result
+                    const previousSearch = this.searchHistory[this.searchHistory.length - 1];
+                    this.searchInput = previousSearch[0];
+                    this.searchTerm = this.searchInput;
+                    this.filteredListings = previousSearch[1];
+                }
+                // only 1 search result history
+                else {
+                    this.resetListings();
+                }
+            },
+
             // for resetting listings (show full listings)
             resetListings() {
                 this.searchInput = '';
                 this.search = false;
                 this.filteredListings = this.listings;
+                this.searchHistory = [];
             },
 
             // get producerName for a listing based on listing
@@ -685,7 +716,32 @@
                 this.searchListings(); // Or perform any other actions
                 this.selectDrinkType(this.selectedDrinkType)
         },
-    }
+
+            // check if user has already added listing to shelf, add colour to button accordingly
+            checkDrinkLists(listing) {
+                const haveTried = this.drinkList.haveTried.includes(listing.listingName);
+                const wantToTry = this.drinkList.wantToTry.includes(listing.listingName);
+
+                const haveTriedButton = `
+                <button type="button" class="btn custom-drink-list-btn rounded-0 ${haveTried ? 'disabled' : ''}">
+                    Have tried
+                </button>
+                `;
+
+                const wantToTryButton = `
+                <button type="button" class="btn custom-drink-list-btn rounded-0 ${wantToTry ? 'disabled' : ''}">
+                    Want to try
+                </button>
+                `;
+
+                return {
+                    buttons: {
+                        haveTried: haveTriedButton,
+                        wantToTry: wantToTryButton,
+                    }
+                }
+            }
+        }
     };
 </script>
 

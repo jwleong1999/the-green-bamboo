@@ -2,7 +2,8 @@
 
 body {
     color: black;
-    background-color: #D9D9D9 ;
+    background-color: #D9D9D9;
+    overflow: overlay;
 }
 
 .navbar-container {
@@ -39,7 +40,6 @@ body {
     color: #535C72;
     text-decoration: none;
 }
-
 
 .primary-btn {
     color: whitesmoke;
@@ -82,6 +82,16 @@ body {
     color: #535C72;
     background-color: whitesmoke;
     border: 3px solid #535C72;
+}
+
+.custom-drink-list-btn {
+    background-color: rgb(245, 232, 158);
+    border: 1px solid rgb(110, 110, 110);
+}
+
+.custom-drink-list-btn:hover {
+    background-color: rgb(238, 214, 80);
+    border: 2px solid black;
 }
 
 .btn-outline {
@@ -133,4 +143,25 @@ body {
     height: 120px;
     max-height: 120px;
     overflow-y: auto;
+}
+
+.scrollable-long {
+    height: 240px;
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+::-webkit-scrollbar {
+    background: transparent;
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: darkgrey;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-corner {
+    background: darkgrey;
+    border-radius: 10px;
 }
