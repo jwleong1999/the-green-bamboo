@@ -463,7 +463,7 @@
 
                 // search
                 search: false,
-                searchInput: 'macallan',
+                searchInput: '',
                 searchTerm: '',
                 searchResults: [],
                 filteredListings: [],
