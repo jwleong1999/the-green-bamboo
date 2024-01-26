@@ -129,14 +129,14 @@
                             <div class="col-3">
                                 <div class="d-grid gap-2 dropdown">
                                     <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        {{ selectedDrinkType ? selectedDrinkType['Drink Type'] : 'Filter by drink type' }}
+                                        {{ selectedDrinkType ? selectedDrinkType['drinkType'] : 'Filter by drink type' }}
                                     </button>
                                     <ul class="dropdown-menu">
                                         <!-- TODO: filter button to be implemented -->
                                         <!-- IN IMPLEMENTATION -->
 
-                                        <li v-for="drinkType in drinkCategories" v-bind:key="drinkType._id" class= "p-3">
-                                        <a class="dropdown-item" @click="selectDrinkType(drinkType)"> {{ drinkType['Drink Type'] }} </a>
+                                        <li v-for="drinkType in drinkTypes" v-bind:key="drinkType._id" class= "p-3">
+                                        <a class="dropdown-item" @click="selectDrinkType(drinkType)"> {{ drinkType['drinkType'] }} </a>
                                         </li>       
                                     </ul>
                                 </div>
@@ -387,6 +387,7 @@
                 searchResults: [],
                 filteredListings: [],
 
+                // for filter by drink categories
                 selectedDrinkType:"",
                 selectedTypeCategory:[],
                 selectedCategory:"",
@@ -512,8 +513,9 @@
                 // if there is something searched
                 const searchResults = this.listings.filter((listing) => {
                     const expressionName = listing["listingName"].toLowerCase();
-                    const producer = listing["producer"].toLowerCase();
-                    return expressionName.includes(searchInput) || producer.includes(searchInput);
+                    // const producer = listing["producer"].toLowerCase();
+                    return expressionName.includes(searchInput)
+                    // || producer.includes(searchInput);
                 });
 
                 // if nothing found
@@ -587,16 +589,15 @@
                 this.selectedDrinkType = drinkType;
 
                 // Dropdown for drink category after selecting drink type
-                for(let drinks of this.drinkCategories){
-                    if(drinks['Drink Type'] == drinkType['Drink Type']){
-                        this.selectedTypeCategory = drinks['Category']
+                for(let drinks of this.drinkTypes){
+                    if(drinks['drinkType'] == drinkType['drinkType']){
+                        this.selectedTypeCategory = drinks['typeCategory']
                     }
                 }
-                
 
-                const drinkTypeSearch = this.selectedDrinkType['Drink Type'].toLowerCase();
+                const drinkTypeSearch = this.selectedDrinkType['drinkType'].toLowerCase();
                 const searchResults = this.listings.filter((listing) => {
-                    const drinkTypeListing = listing["Drink Type"].toLowerCase();
+                    const drinkTypeListing = listing["drinkType"].toLowerCase();
                     return drinkTypeListing.includes(drinkTypeSearch);
                 });
                 // if nothing found
@@ -616,14 +617,14 @@
             selectDrinkCategory(drinkCategory) {
                 // this.selectedCategory = drinkCategory;
                 // console.log(this.selectedCategory)
-                console.log(this.selectedDrinkType['Drink Type'])
+                console.log(this.selectedDrinkType['drinkType'])
                 
                 this.selectDrinkType(this.selectedDrinkType)
                 this.selectedCategory = drinkCategory;
 
                 const drinkCategorySearch = this.selectedCategory.toLowerCase();
                 const searchResults = this.filteredListings.filter((listing) => {
-                    const drinkCategory = listing["Drink Category"].toLowerCase();
+                    const drinkCategory = listing["typeCategory"].toLowerCase();
                     return drinkCategory.includes(drinkCategorySearch);
                 });
                 // console.log(searchResults)
