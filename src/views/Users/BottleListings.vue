@@ -232,6 +232,7 @@
                             </svg>
                         </span>
                         <h5 style="display: inline-block;"> Showing {{ filteredListings.length }} results for "{{ searchTerm }}" </h5> 
+                        <h5 v-if="isFilterType" style="display: inline-block;"> and filter "{{ selectedDrinkType['drinkType'] }}"</h5> 
                         <h5 style="display: inline-block;"> &nbsp; | &nbsp; </h5>
                         <!-- show options to add listings -->
                         <div style="display: inline-block;"> 
@@ -249,12 +250,12 @@
                 <div class="col-2">
                     <div class="d-grid gap-2 dropdown">
                         <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Filters
+                            {{ selectedDrinkType ? selectedDrinkType['drinkType'] : 'Filter by drink type' }}
                         </button>
                         <ul class="dropdown-menu"> <!-- TODO: filter button to be implemented -->
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li v-for="drinkType in drinkTypes" v-bind:key="drinkType._id" class= "p-3">
+                                <a class="dropdown-item" @click="selectDrinkType(drinkType)"> {{ drinkType['drinkType'] }} </a>
+                            </li>       
                         </ul>
                     </div>
                 </div>
@@ -391,6 +392,8 @@
                 selectedDrinkType:"",
                 selectedTypeCategory:[],
                 selectedCategory:"",
+                filterSearchResult: [],
+                isFilterType:false,
             };
         },
         mounted() {
@@ -586,34 +589,49 @@
             selectDrinkType(drinkType) {
                 this.selectedCategory =null;
                 this.selectedDrinkType = drinkType;
-
-                // Dropdown for drink category after selecting drink type
+                console.log(this.searchInput)
+                console.log(this.search)
                 for(let drinks of this.drinkTypes){
                     if(drinks['drinkType'] == drinkType['drinkType']){
                         this.selectedTypeCategory = drinks['typeCategory']
                     }
                 }
-
                 const drinkTypeSearch = this.selectedDrinkType['drinkType'].toLowerCase();
-                const searchResults = this.listings.filter((listing) => {
-                    const drinkTypeListing = listing["drinkType"].toLowerCase();
-                    return drinkTypeListing.includes(drinkTypeSearch);
-                });
+
+                if(this.search){
+                    this.searchListings()
+                    const searchResults = this.filteredListings.filter((listing) => {
+                        const drinkTypeListing = listing["drinkType"].toLowerCase();
+                        return drinkTypeListing.includes(drinkTypeSearch);
+                    });
+                    this.filterSearchResult=searchResults
+                    this.isFilterType = true
+                }
+                
+                // Dropdown for drink category after selecting drink type
+                else{
+                    const searchResults = this.listings.filter((listing) => {
+                        const drinkTypeListing = listing["drinkType"].toLowerCase();
+                        return drinkTypeListing.includes(drinkTypeSearch);
+                    });
+                    this.filterSearchResult=searchResults
+                }
                 // if nothing found
-                if (searchResults.length == 0) {
-                    this.errorFound = true;
-                    this.errorMessage = 'No results found, please try again.';
+                if (this.filterSearchResult == null) {
+                    // this.errorFound = true;
+                    // this.errorMessage = 'No results found, please try again.';
                     this.filteredListings = null;
                 } 
                 else {
                     this.errorFound = false;
                     this.errorMessage = '';
-                    this.filteredListings = searchResults;
+                    this.filteredListings = this.filterSearchResult;
                 }
         },
 
             //Select drink category like Blended for whiskey 
             selectDrinkCategory(drinkCategory) {
+                console.log("error is here")
                 // this.selectedCategory = drinkCategory;
                 // console.log(this.selectedCategory)
                 console.log(this.selectedDrinkType['drinkType'])
