@@ -1,4 +1,4 @@
-﻿Username,Reviewed subject,Date,Rating,Review Desc,Taged Users.0,Taged Users.1,Taged Users.2,Taged Users.3,Taged Users.4
+﻿userID,reviewTarget,date,rating,reviewDesc,taggedUsers,reviewTitle,reviewType,flavorTag,photo
 lotursroot518,Nikka From The Barrel,1/15/2022,2,Not very nice,111hotpot,CharSiuCharlie,,,
 lotursroot519,Ube Cream Liqueur,12/23/2023,4,Tasty drink,,,,,
 CharSiuCharlie,Harmony Collection Inspired by Intense Arabica,1/25/2024,5,Best drink ever,111hotpot,lotursroot519,,,
