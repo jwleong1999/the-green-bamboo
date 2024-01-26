@@ -26,6 +26,10 @@ body {
     width: 75%;
 }
 
+.navbar-dropdown {
+    background-color: #DD9E54;
+}
+
 .default-text {
     color: black;
     background-color: #D9D9D9;
