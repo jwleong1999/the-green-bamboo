@@ -513,9 +513,8 @@
                 // if there is something searched
                 const searchResults = this.listings.filter((listing) => {
                     const expressionName = listing["listingName"].toLowerCase();
-                    // const producer = listing["producer"].toLowerCase();
-                    return expressionName.includes(searchInput)
-                    // || producer.includes(searchInput);
+                    const producer = this.getProducerName(listing).toLowerCase();
+                    return expressionName.includes(searchInput) || producer.includes(searchInput);
                 });
 
                 // if nothing found
