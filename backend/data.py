@@ -26,7 +26,7 @@ class listings:
     originCountry: str
     drinkType: str
     typeCategory: Optional[str]
-    abv: str
+    abv: float
     age: Optional[str]
     reviewLink: Optional[str]
     officialDesc: str
@@ -127,6 +127,8 @@ class modRequests:
 
 def convert_to_json(data):
     return json.dumps(data.__dict__)
+
+
 
 # # Example usage
 # listing = Listings(drinkName="Whiskey", producerName="ABC Distillery", Bottler="ABC Bottler", originCountry="USA", drinkType="Whiskey", drinkCategory="Single Malt", Age="12 years", ABV="40%", reviewLink=None, listingDesc="A smooth and rich whiskey.")
