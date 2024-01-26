@@ -541,7 +541,7 @@
                 this.filteredListings = this.listings;
             },
 
-            // get producerName for a listing based on producerID
+            // get producerName for a listing based on listing
             getProducerName(listing) {
                 const producer = this.producers.find((producer) => {
                     return producer["_id"]["$oid"] == listing["producerID"]["$oid"];

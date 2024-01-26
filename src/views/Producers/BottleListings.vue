@@ -201,8 +201,6 @@
                 this.producerListings = this.listings
                     .filter(listing => listing["listingName"] == this.specified_listing["listingName"])
                     .map(listing => listing["producerID"]);
-
-                console.log(this.producerListings);
             },
 
             // get producerName for a listing based on producerID
