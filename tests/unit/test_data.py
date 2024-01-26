@@ -130,8 +130,191 @@ class TestData(unittest.TestCase):
         review = reviews(userID=object(), reviewTarget="Product A", date=datetime.now(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Positive", photo="review.jpg")
         self.assertIsNone(review.flavorTag)
 
+    def test_users(self):
+        # Test case 1: Check if the username is set correctly
+        user = users(username="john_doe", displayName="John Doe", choiceDrinks=[], drinkLists=None, modType=[], photo="john.jpg")
+        self.assertEqual(user.username, "john_doe")
 
-    # Add more test methods for other dataclasses here
+        # Test case 2: Check if the display name is set correctly
+        user = users(username="john_doe", displayName="John Doe", choiceDrinks=[], drinkLists=None, modType=[], photo="john.jpg")
+        self.assertEqual(user.displayName, "John Doe")
+
+        # Test case 3: Check if the choice drinks list is set correctly
+        choice_drinks = ["Drink A", "Drink B", "Drink C"]
+        user = users(username="john_doe", displayName="John Doe", choiceDrinks=choice_drinks, drinkLists=None, modType=[], photo="john.jpg")
+        self.assertEqual(user.choiceDrinks, choice_drinks)
+
+        # Test case 4: Check if the drink lists object is set correctly
+        drink_lists = object()
+        user = users(username="john_doe", displayName="John Doe", choiceDrinks=[], drinkLists=drink_lists, modType=[], photo="john.jpg")
+        self.assertEqual(user.drinkLists, drink_lists)
+
+        # Test case 5: Check if the mod type list is set correctly
+        mod_type = ["Type A", "Type B", "Type C"]
+        user = users(username="john_doe", displayName="John Doe", choiceDrinks=[], drinkLists=None, modType=mod_type, photo="john.jpg")
+        self.assertEqual(user.modType, mod_type)
+
+        # Test case 6: Check if the photo is set correctly
+        user = users(username="john_doe", displayName="John Doe", choiceDrinks=[], drinkLists=None, modType=[], photo="john.jpg")
+        self.assertEqual(user.photo, "john.jpg")
+
+    def test_venues(self):
+        # Test case 1: Check if the venue name is set correctly
+        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=object())
+        self.assertEqual(venue.venueName, "Venue A")
+
+        # Test case 2: Check if the venue description is set correctly
+        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=object())
+        self.assertEqual(venue.venueDesc, "Description A")
+
+        # Test case 3: Check if the origin country is set correctly
+        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=object())
+        self.assertEqual(venue.originCountry, "Country A")
+
+        # Test case 4: Check if the address is set correctly
+        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=object())
+        self.assertEqual(venue.address, "Address A")
+
+        # Test case 5: Check if the opening hours object is set correctly
+        opening_hours = object()
+        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=opening_hours)
+        self.assertEqual(venue.openingHours, opening_hours)
+
+    def test_drinkTypes(self):
+        # Test case 1: Check if the drink type is set correctly
+        drink_type = "Type A"
+        dt = drinkTypes(drinkType=drink_type)
+        self.assertEqual(dt.drinkType, drink_type)
+
+        # Test case 2: Check if the type category is set correctly
+        type_category = ["Category A", "Category B", "Category C"]
+        dt = drinkTypes(drinkType="Type A", typeCategory=type_category)
+        self.assertEqual(dt.typeCategory, type_category)
+
+        # Test case 3: Check if the type category is None by default
+        dt = drinkTypes(drinkType="Type A")
+        self.assertIsNone(dt.typeCategory)
+
+    def test_requestListings(self):
+        # Test case 1: Check if the listing name is set correctly
+        listing_name = "Listing A"
+        request_listing = requestListings(listingName=listing_name, bottler="Bottler A", drinkType="Drink Type A", sourceLink="Source Link A", brandRelation="Brand Relation A", reviewStatus=True, userID=object(), photo="Photo A")
+        self.assertEqual(request_listing.listingName, listing_name)
+
+        # Test case 2: Check if the bottler is set correctly
+        bottler = "Bottler A"
+        request_listing = requestListings(listingName="Listing A", bottler=bottler, drinkType="Drink Type A", sourceLink="Source Link A", brandRelation="Brand Relation A", reviewStatus=True, userID=object(), photo="Photo A")
+        self.assertEqual(request_listing.bottler, bottler)
+
+        # Test case 3: Check if the drink type is set correctly
+        drink_type = "Drink Type A"
+        request_listing = requestListings(listingName="Listing A", bottler="Bottler A", drinkType=drink_type, sourceLink="Source Link A", brandRelation="Brand Relation A", reviewStatus=True, userID=object(), photo="Photo A")
+        self.assertEqual(request_listing.drinkType, drink_type)
+
+        # Test case 4: Check if the source link is set correctly
+        source_link = "Source Link A"
+        request_listing = requestListings(listingName="Listing A", bottler="Bottler A", drinkType="Drink Type A", sourceLink=source_link, brandRelation="Brand Relation A", reviewStatus=True, userID=object(), photo="Photo A")
+        self.assertEqual(request_listing.sourceLink, source_link)
+
+        # Test case 5: Check if the brand relation is set correctly
+        brand_relation = "Brand Relation A"
+        request_listing = requestListings(listingName="Listing A", bottler="Bottler A", drinkType="Drink Type A", sourceLink="Source Link A", brandRelation=brand_relation, reviewStatus=True, userID=object(), photo="Photo A")
+        self.assertEqual(request_listing.brandRelation, brand_relation)
+
+        # Test case 6: Check if the review status is set correctly
+        request_listing = requestListings(listingName="Listing A", bottler="Bottler A", drinkType="Drink Type A", sourceLink="Source Link A", brandRelation="Brand Relation A", reviewStatus=True, userID=object(), photo="Photo A")
+        self.assertTrue(request_listing.reviewStatus)
+
+        # Test case 7: Check if the user ID is set correctly
+        user_id = object()
+        request_listing = requestListings(listingName="Listing A", bottler="Bottler A", drinkType="Drink Type A", sourceLink="Source Link A", brandRelation="Brand Relation A", reviewStatus=True, userID=user_id, photo="Photo A")
+        self.assertEqual(request_listing.userID, user_id)
+
+        # Test case 8: Check if the photo is set correctly
+        photo = "Photo A"
+        request_listing = requestListings(listingName="Listing A", bottler="Bottler A", drinkType="Drink Type A", sourceLink="Source Link A", brandRelation="Brand Relation A", reviewStatus=True, userID=object(), photo=photo)
+        self.assertEqual(request_listing.photo, photo)
+
+        # Test case 9: Check if the optional fields are set correctly
+        producer_new = "Producer New A"
+        producer_id = object()
+        origin_country = "Origin Country A"
+        type_category = "Type Category A"
+        age = "Age A"
+        abv = "ABV A"
+        review_link = "Review Link A"
+        request_listing = requestListings(listingName="Listing A", bottler="Bottler A", drinkType="Drink Type A", sourceLink="Source Link A", brandRelation="Brand Relation A", reviewStatus=True, userID=object(), photo="Photo A", producerNew=producer_new, producerID=producer_id, originCountry=origin_country, typeCategory=type_category, age=age, abv=abv, reviewLink=review_link)
+        self.assertEqual(request_listing.producerNew, producer_new)
+        self.assertEqual(request_listing.producerID, producer_id)
+        self.assertEqual(request_listing.originCountry, origin_country)
+        self.assertEqual(request_listing.typeCategory, type_category)
+        self.assertEqual(request_listing.age, age)
+        self.assertEqual(request_listing.abv, abv)
+        self.assertEqual(request_listing.reviewLink, review_link)
+
+    
+
+    def test_requestEdits(self):
+        # Test case 1: Check if the edit description is set correctly
+        edit_desc = "Edit Description A"
+        request_edit = requestEdits(editDesc=edit_desc, brandRelation="Brand Relation A", listingID=object(), userID=object(), reviewStatus=True)
+        self.assertEqual(request_edit.editDesc, edit_desc)
+
+        # Test case 2: Check if the brand relation is set correctly
+        brand_relation = "Brand Relation A"
+        request_edit = requestEdits(editDesc="Edit Description A", brandRelation=brand_relation, listingID=object(), userID=object(), reviewStatus=True)
+        self.assertEqual(request_edit.brandRelation, brand_relation)
+
+        # Test case 3: Check if the listing ID is set correctly
+        listing_id = object()
+        request_edit = requestEdits(editDesc="Edit Description A", brandRelation="Brand Relation A", listingID=listing_id, userID=object(), reviewStatus=True)
+        self.assertEqual(request_edit.listingID, listing_id)
+
+        # Test case 4: Check if the user ID is set correctly
+        user_id = object()
+        request_edit = requestEdits(editDesc="Edit Description A", brandRelation="Brand Relation A", listingID=object(), userID=user_id, reviewStatus=True)
+        self.assertEqual(request_edit.userID, user_id)
+
+        # Test case 5: Check if the review status is set correctly
+        request_edit = requestEdits(editDesc="Edit Description A", brandRelation="Brand Relation A", listingID=object(), userID=object(), reviewStatus=True)
+        self.assertTrue(request_edit.reviewStatus)
+
+        # Test case 6: Check if the duplicate link is set correctly
+        duplicate_link = "Duplicate Link A"
+        request_edit = requestEdits(editDesc="Edit Description A", brandRelation="Brand Relation A", listingID=object(), userID=object(), reviewStatus=True, duplicateLink=duplicate_link)
+        self.assertEqual(request_edit.duplicateLink, duplicate_link)
+
+        # Test case 7: Check if the source link is set correctly
+        source_link = "Source Link A"
+        request_edit = requestEdits(editDesc="Edit Description A", brandRelation="Brand Relation A", listingID=object(), userID=object(), reviewStatus=True, sourceLink=source_link)
+        self.assertEqual(request_edit.sourceLink, source_link)
+
+        # Test case 8: Check if the optional fields are set correctly
+        request_edit = requestEdits(editDesc="Edit Description A", brandRelation="Brand Relation A", listingID=object(), userID=object(), reviewStatus=True)
+        self.assertIsNone(request_edit.duplicateLink)
+        self.assertIsNone(request_edit.sourceLink)
+
+    def test_modRequests(self):
+        # Test case 1: Check if the userID is set correctly
+        user_id = object()
+        mod_request = modRequests(userID=user_id, drinkType="Drink Type A", modDesc="Mod Description A")
+        self.assertEqual(mod_request.userID, user_id)
+
+        # Test case 2: Check if the drink type is set correctly
+        drink_type = "Drink Type A"
+        mod_request = modRequests(userID=object(), drinkType=drink_type, modDesc="Mod Description A")
+        self.assertEqual(mod_request.drinkType, drink_type)
+
+        # Test case 3: Check if the mod description is set correctly
+        mod_desc = "Mod Description A"
+        mod_request = modRequests(userID=object(), drinkType="Drink Type A", modDesc=mod_desc)
+        self.assertEqual(mod_request.modDesc, mod_desc)
+
+
+
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
