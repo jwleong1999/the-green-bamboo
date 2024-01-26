@@ -52,24 +52,24 @@
                             <!-- drink category -->
                             <div class="row">
                                 <div class="col">
-                                    <h5 class="text-body-secondary fst-italic"> {{ specified_listing["Drink Category"] }} </h5>
+                                    <h5 class="text-body-secondary fst-italic"> {{ specified_listing["typeCategory"] }} </h5>
                                 </div>
                             </div>
                             <!-- expression name -->
                             <div class="row">
                                 <div class="col">
-                                    <h3 class="text-body-secondary"> <b> {{ specified_listing["Expression Name"] }} </b> </h3>
+                                    <h3 class="text-body-secondary"> <b> {{ specified_listing["listingName"] }} </b> </h3>
                                 </div>
                             </div>
                             <!-- producer & bottler -->
                             <div class="row">
                                 <!-- producer -->
                                 <div class="col-6">
-                                    <h5 class="text-body-secondary"> <u> {{ specified_listing["Producer"] }} </u> </h5>
+                                    <h5 class="text-body-secondary"> <u> {{ specified_listing["producer"] }} </u> </h5>
                                 </div>
                                 <!-- bottler -->
                                 <div class="col-6">
-                                    <h5 class="text-body-secondary"> Bottler: <u> {{ specified_listing["Bottler (OB or Specify name of IB)"] }} </u>  </h5>
+                                    <h5 class="text-body-secondary"> Bottler: <u> {{ specified_listing["bottler"] }} </u>  </h5>
                                 </div>
                             </div>
                         </div>
@@ -199,8 +199,8 @@
             // view which producers have specified listing
             whereToBuy() {
                 this.producerListings = this.listings
-                    .filter(listing => listing["Expression Name"] == this.specified_listing["Expression Name"])
-                    .map(listing => listing["Producer"]);
+                    .filter(listing => listing["listingName"] == this.specified_listing["listingName"])
+                    .map(listing => listing["producer"]);
             }
         },
     };

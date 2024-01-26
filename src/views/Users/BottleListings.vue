@@ -26,6 +26,7 @@
             </div>
         </nav>
     </div>
+
     <!-- collapsible content -->
     <div class="collapse" id="navbarToggleExternalContent"> <!-- TODO: check what content to put here -->
         <div class="p-4">
@@ -134,8 +135,8 @@
                                         <!-- TODO: filter button to be implemented -->
                                         <!-- IN IMPLEMENTATION -->
 
-                                        <li v-for="type in drinkCategories" v-bind:key="type._id" class= "p-3">
-                                        <a class="dropdown-item" @click="selectDrinkType(type)"> {{ type['Drink Type'] }} </a>
+                                        <li v-for="drinkType in drinkCategories" v-bind:key="drinkType._id" class= "p-3">
+                                        <a class="dropdown-item" @click="selectDrinkType(drinkType)"> {{ drinkType['Drink Type'] }} </a>
                                         </li>       
                                     </ul>
                                 </div>
@@ -167,7 +168,7 @@
                                     <div class="row">
                                         <!-- image -->
                                         <div class="col-4 image-container">
-                                            <img src="../../../Images/Sample/beer.png" style="width: 300px; height: 300px;" class="img-border">
+                                            <img src="../../../Images/Drinks/Placeholder.png" style="width: 300px; height: 300px;" class="img-border">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon" viewBox="0 0 16 16">
                                                 <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
                                             </svg>
@@ -199,12 +200,12 @@
                                             <!-- expression name -->
                                             <div class="row pt-2">
                                                 <a class="primary-clickable-text" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
-                                                    <h4> <b> {{ listing["Expression Name"] }} </b> </h4>
+                                                    <h4> <b> {{ listing["listingName"] }} </b> </h4>
                                                 </a>
                                             </div>
                                             <!-- producer -->
                                             <div class="row">
-                                                <h5> {{ listing["Producer"] }} </h5> 
+                                                <h5> {{ listing["producer"] }} </h5> 
                                             </div>
                                         </div>
                                     </div>
@@ -295,7 +296,7 @@
                                     <div class="col-7">
                                         <div class="row pt-2">
                                             <h4 class="default-text"> 
-                                                <u> <b> {{ listing["Expression Name"] }}  </b> </u>
+                                                <u> <b> {{ listing["listingName"] }}  </b> </u>
                                             </h4> 
                                         </div>
                                     </div>
@@ -358,7 +359,13 @@
 <!-- JavaScript -->
 <script>
 
+    // import NavBar from '@/components/NavBar.vue'
+
     export default {
+        components:{
+            
+        },
+
         data() {
             return {
                 // data from database
@@ -368,7 +375,11 @@
                 reviews: [],
                 users: [],
                 venues: [],
-                drinkCategories: [],
+                venuesAPI: [],
+                drinkTypes: [],
+                requestListings: [],
+                requestEdits: [],
+                modRequests: [],
                 // search
                 search: false,
                 searchInput: '',
@@ -387,64 +398,107 @@
         methods: {
             // load data from database
             async loadData() {
-                // Countries
+                // countries
+                // _id, originCountry
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
+                        this.countries = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                // listings
+                // _id, listingName, producer, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, officialDesc, sourceLink, photo
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
+                        this.listings = response.data;
+                        // originally, make filteredListings the entire collection of listings
+                        this.filteredListings = this.listings;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                }
+                // producers
+                // _id, producerDesc, originCountry, statusOB, mainDrinks, producerName
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
+                        this.producers = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                // reviews
+                // _id, userID, reviewTarget, date, rating, reviewDesc, taggedUsers, reviewTitle, reviewType, flavorTag, photo
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
+                        this.reviews = response.data;
+                    }
+                    catch (error) {
+                        console.error(error);
+                    }
+                // users
+                // _id, username, displayName, choiceDrinks, drinkLists, modType, photo
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
+                        this.users = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                // venues
+                // _id, venueName, venueDesc, originCountry, address, openingHours
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
+                        this.venues = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                // venuesAPI
+                // _id, venueName, venueDesc, originCountry
                 try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
-                    this.countries = response.data;
-                } 
-                catch (error) {
-                    console.error(error);
-                }
-                // Listings
-                try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
-                    this.listings = response.data;
-                    // originally, make filteredListings the entire collection of listings
-                    this.filteredListings = this.listings;
-                } 
-                catch (error) {
-                    console.error(error);
-                }
-                // Producers
-                try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
-                    this.producers = response.data;
-                } 
-                catch (error) {
-                    console.error(error);
-                }
-                // Reviews
-                try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
-                    this.reviews = response.data;
-                }
-                catch (error) {
-                    console.error(error);
-                }
-                // Users
-                try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
-                    this.users = response.data;
-                } 
-                catch (error) {
-                    console.error(error);
-                }
-                // Venues
-                try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
-                    this.venues = response.data;
-                } 
-                catch (error) {
-                    console.error(error);
-                }
-                // Drink Categories
-                try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkCategories');
-                    this.drinkCategories = response.data;
-                } 
-                catch (error) {
-                    console.error(error);
-                }
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getVenuesAPI');
+                        this.venuesAPI = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                // drinkTypes
+                // _id, drinkType, typeCategory
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
+                        this.drinkTypes = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                // requestListings
+                // _id, listingName, producerNew, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, sourceLink, brandRelation, reviewStatus, userID, photo
+                    try {
+                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
+                            this.requestListings = response.data;
+                        } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                // requestEdits
+                // _id, duplicateLink, editDesc, sourceLink, brandRelation, listingID, userID, reviewStatus
+                    try {
+                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdits');
+                            this.requestEdits = response.data;
+                        } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                // modRequests
+                // _id, userID, drinkType, modDesc
+                    try {
+                            const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
+                            this.modRequests = response.data;
+                        } 
+                    catch (error) {
+                        console.error(error);
+                    }
             },
 
             // for search button
@@ -457,8 +511,8 @@
 
                 // if there is something searched
                 const searchResults = this.listings.filter((listing) => {
-                    const expressionName = listing["Expression Name"].toLowerCase();
-                    const producer = listing["Producer"].toLowerCase();
+                    const expressionName = listing["listingName"].toLowerCase();
+                    const producer = listing["producer"].toLowerCase();
                     return expressionName.includes(searchInput) || producer.includes(searchInput);
                 });
 
@@ -487,19 +541,19 @@
             getReviews(listing) {
                 // list of all reviews of the particular drink
                 const reviews = this.reviews.filter((review) => {
-                    return review["Reviewed subject"] == listing["Expression Name"];
+                    return review["reviewTarget"] == listing["listingName"];
                 });
                 // choose random review from the list
                 const randomReview = reviews[Math.floor(Math.random() * reviews.length)];
                 // check if a review is found before accessing "Review Desc"
-                const reviewDesc = randomReview ? randomReview["Review Desc"] : null;
+                const reviewDesc = randomReview ? randomReview["reviewDesc"] : null;
                 return reviewDesc;
             },
 
             // get ratings for a listing
             getRatings(listing) {
                 const ratings = this.reviews.filter((rating) => {
-                    return rating["Reviewed subject"] == listing["Expression Name"];
+                    return rating["reviewTarget"] == listing["listingName"];
                 });
                 // if there are no ratings
                 if (ratings.length == 0) {
@@ -507,7 +561,7 @@
                 }
                 // else there are ratings
                 const averageRating = ratings.reduce((total, rating) => {
-                    return total + rating["Rating"];
+                    return total + rating["rating"];
                 }, 0) / ratings.length;
                 return averageRating;
         },

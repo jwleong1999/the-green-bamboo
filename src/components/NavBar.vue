@@ -49,9 +49,45 @@
             }
         },
         methods: {
+            // searchListings() {
+            //     this.$router.push({name: 'search', query: {input: this.searchInput}})
+            // }
+            // for search button
             searchListings() {
-                this.$router.push({name: 'search', query: {input: this.searchInput}})
-            }
+                // flag to check if there are search inputs
+                this.search = true;
+
+                const searchInput = this.searchInput.toLowerCase();
+                this.searchTerm = this.searchInput;
+
+                // if there is something searched
+                const searchResults = this.listings.filter((listing) => {
+                    const expressionName = listing["Expression Name"].toLowerCase();
+                    const producer = listing["Producer"].toLowerCase();
+                    return expressionName.includes(searchInput) || producer.includes(searchInput);
+                });
+
+                // if nothing found
+                if (searchResults.length == 0) {
+                    this.filteredListings = [];
+                } 
+                else {
+                    this.filteredListings = searchResults;
+                }
+
+                // if there is nothing searched
+                if (this.searchInput == '') {
+                    this.resetListings();
+                }
+            },
+
+            // for resetting listings (show full listings)
+            resetListings() {
+                this.searchInput = '';
+                this.search = false;
+                this.filteredListings = this.listings;
+            },
+
         }
     }
 </script>

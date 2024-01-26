@@ -29,15 +29,11 @@ def parse_json(data):
 # [GET] Countries
 @app.route("/getCountries")
 def getCountries():
-
     #this step finds all the items in the collection, specifying Countries
     data = db.countries.find({})
-
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
-
     allCountries = []
-    
     #parse bson as json
     dataEncode = parse_json(data)
     for doc in dataEncode:
@@ -48,15 +44,11 @@ def getCountries():
 # [GET] Listings
 @app.route("/getListings")
 def getListings():
-
     #this step finds all the items in the collection, specifying Listings
     data = db.listings.find({})
-
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
-
     allListings = []
-    
     #parse bson as json
     dataEncode = parse_json(data)
     for doc in dataEncode:
@@ -67,15 +59,11 @@ def getListings():
 # [GET] Producers
 @app.route("/getProducers")
 def getProducers():
-
     #this step finds all the items in the collection, specifying Producers
     data = db.producers.find({})
-
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
-
     allProducers = []
-    
     #parse bson as json
     dataEncode = parse_json(data)
     for doc in dataEncode:
@@ -86,15 +74,11 @@ def getProducers():
 # [GET] Reviews
 @app.route("/getReviews")
 def getReviews():
-
     #this step finds all the items in the collection, specifying Reviews
     data = db.reviews.find({})
-
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
-
     allReviews = []
-    
     #parse bson as json
     dataEncode = parse_json(data)
     for doc in dataEncode:
@@ -105,15 +89,11 @@ def getReviews():
 # [GET] Users
 @app.route("/getUsers")
 def getUsers():
-
     #this step finds all the items in the collection, specifying Users
     data = db.users.find({})
-
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
-
     allUsers = []
-    
     #parse bson as json
     dataEncode = parse_json(data)
     for doc in dataEncode:
@@ -124,15 +104,11 @@ def getUsers():
 # [GET] Venues
 @app.route("/getVenues")
 def getVenues():
-
     #this step finds all the items in the collection, specifying Venues
     data = db.venues.find({})
-
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
-
     allVenues = []
-    
     #parse bson as json
     dataEncode = parse_json(data)
     for doc in dataEncode:
@@ -140,24 +116,80 @@ def getVenues():
         allVenues.append(doc)
     return allVenues
 
-# [GET] drinkCategories
-@app.route("/getDrinkCategories")
-def getDrinkCategories():
-
-    #this step finds all the items in the collection, specifying Venues
-    data = db.drinkCategories.find({})
-
+# [GET] VenuesAPI
+@app.route("/getVenuesAPI")
+def getVenuesAPI():
+    #this step finds all the items in the collection, specifying VenuesAPI
+    data = db.venuesAPI.find({})
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
-
-    allDrinkCategories = []
-    
+    allVenuesAPI = []
     #parse bson as json
     dataEncode = parse_json(data)
     for doc in dataEncode:
         # print(doc)
-        allDrinkCategories.append(doc)
-    return allDrinkCategories
+        allVenuesAPI.append(doc)
+    return allVenuesAPI
+
+# [GET] DrinkTypes
+@app.route("/getDrinkTypes")
+def getDrinkTypes():
+    #this step finds all the items in the collection, specifying Drink Types
+    data = db.drinkTypes.find({})
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+    allDrinkTypes = []
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allDrinkTypes.append(doc)
+    return allDrinkTypes
+
+# [GET] RequestListings
+@app.route("/getRequestListings")
+def getRequestListings():
+    #this step finds all the items in the collection, specifying Request Listings
+    data = db.requestListings.find({})
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+    allRequestListings = []
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allRequestListings.append(doc)
+    return allRequestListings
+
+# [GET] RequestEdits
+@app.route("/getRequestEdits")
+def getRequestEdits():
+    #this step finds all the items in the collection, specifying Request Edits
+    data = db.RequestEdits.find({})
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+    allRequestEdits = []
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allRequestEdits.append(doc)
+    return allRequestEdits
+
+# [GET] modRequests
+@app.route("/getModRequests")
+def getModRequests():
+    #this step finds all the items in the collection, specifying Mod Requests
+    data = db.ModRequests.find({})
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+    allModRequests = []
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allModRequests.append(doc)
+    return allModRequests
 
 if __name__ == "__main__":
     app.run(debug=True, port = 5000)
