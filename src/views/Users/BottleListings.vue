@@ -10,7 +10,7 @@
                 </div>
                 <!-- search bar -->
                 <div class="col-md-6">
-                    <input class="search-bar form-control rounded fst-italic" type="text" placeholder="What are you drinking today?" style="height: 50px;" v-model="searchInput" v-on:keyup.enter="searchListings"> 
+                    <input class="search-bar form-control rounded fst-italic" type="text" placeholder="What are you drinking today?" style="height: 50px;" v-model="searchInput" v-on:keyup.enter="helperSearch"> 
                 </div>
                 <div>
                     <!-- profile icon -->
@@ -130,10 +130,10 @@
                                 <div class="d-grid gap-2 dropdown">
                                     <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         {{ selectedDrinkType ? selectedDrinkType['drinkType'] : 'Filter by drink type' }}
+                                        <span class="cross-icon" @click="clearSelection">&#10005;</span>
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <!-- TODO: filter button to be implemented -->
-                                        <!-- IN IMPLEMENTATION -->
+                                        <!-- Filter button for drink type -->
 
                                         <li v-for="drinkType in drinkTypes" v-bind:key="drinkType._id" class= "p-3">
                                         <a class="dropdown-item" @click="selectDrinkType(drinkType)"> {{ drinkType['drinkType'] }} </a>
@@ -147,18 +147,26 @@
                                 <div class="d-grid gap-2 dropdown">
                                     <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         {{ selectedCategory ? selectedCategory : 'Filter by drink category' }}
+                                        <span class="cross-icon" @click="clearCategory">&#10005;</span>
                                     </button>
-                                    <ul class="dropdown-menu">
-                                        <!-- TODO: filter button to be implemented -->
+                                    <ul v-if="selectedTypeCategory != ''" class="dropdown-menu">
+                                        <!-- Filter button for drink category -->
 
                                         <li v-for="category in selectedTypeCategory" @click="selectDrinkCategory(category)" v-bind:key="category" class= "p-3">
-                                        <a class="dropdown-item"> {{ category }} </a>
+                                            <a class="dropdown-item"> {{ category }} </a>
                                         </li>       
+                                        
+                                    </ul>
+                                    <ul v-else class="dropdown-menu">
+                                        <li>There is no category for this</li>       
                                     </ul>
                                 </div>
                             </div>                            
                         </div>
 
+                        <!-- Display error message when no results for filter-->
+                        <h5 v-if="filteredListings==''" style="display: inline-block;"> There is no listing available for the selected filter </h5>
+                        
                         <!-- listings -->
                         <div class="row">
                             <!-- v-loop for each listing -->
@@ -236,6 +244,15 @@
                         <h5 style="display: inline-block;"> &nbsp; | &nbsp; </h5>
                         <!-- show options to add listings -->
                         <div style="display: inline-block;"> 
+                            <a href="#" class="link-underline-dark" @click="clearSelection">
+                                <h5 style="display: inline-block;" class="default-text"> 
+                                    <u>
+                                        Clear Filter 
+                                    </u>
+                                </h5>
+                            </a>
+                        </div>
+                        <div style="display: inline-block;"> 
                             <a href="#" class="link-underline-dark">
                                 <h5 style="display: inline-block;" class="default-text"> 
                                     <u>
@@ -251,8 +268,9 @@
                     <div class="d-grid gap-2 dropdown">
                         <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {{ selectedDrinkType ? selectedDrinkType['drinkType'] : 'Filter by drink type' }}
+
                         </button>
-                        <ul class="dropdown-menu"> <!-- TODO: filter button to be implemented -->
+                        <ul class="dropdown-menu"> <!-- Filter button for drink type -->
                             <li v-for="drinkType in drinkTypes" v-bind:key="drinkType._id" class= "p-3">
                                 <a class="dropdown-item" @click="selectDrinkType(drinkType)"> {{ drinkType['drinkType'] }} </a>
                             </li>       
@@ -504,6 +522,12 @@
                         console.error(error);
                     }
             },
+            // Helper function for onkeyup search to reset filter
+            helperSearch(){
+                this.searchListings()
+                this.isFilterType = false
+                this.selectedDrinkType = ''
+            },
 
             // for search button
             searchListings() {
@@ -587,15 +611,14 @@
 
             // Handle select of drink type filter option like sake, gin, whiskey
             selectDrinkType(drinkType) {
-                this.selectedCategory =null;
+                this.selectedCategory = null;
                 this.selectedDrinkType = drinkType;
-                console.log(this.searchInput)
-                console.log(this.search)
                 for(let drinks of this.drinkTypes){
                     if(drinks['drinkType'] == drinkType['drinkType']){
                         this.selectedTypeCategory = drinks['typeCategory']
                     }
                 }
+
                 const drinkTypeSearch = this.selectedDrinkType['drinkType'].toLowerCase();
 
                 if(this.search){
@@ -618,8 +641,6 @@
                 }
                 // if nothing found
                 if (this.filterSearchResult == null) {
-                    // this.errorFound = true;
-                    // this.errorMessage = 'No results found, please try again.';
                     this.filteredListings = null;
                 } 
                 else {
@@ -631,10 +652,6 @@
 
             //Select drink category like Blended for whiskey 
             selectDrinkCategory(drinkCategory) {
-                console.log("error is here")
-                // this.selectedCategory = drinkCategory;
-                // console.log(this.selectedCategory)
-                console.log(this.selectedDrinkType['drinkType'])
                 
                 this.selectDrinkType(this.selectedDrinkType)
                 this.selectedCategory = drinkCategory;
@@ -644,9 +661,8 @@
                     const drinkCategory = listing["typeCategory"].toLowerCase();
                     return drinkCategory.includes(drinkCategorySearch);
                 });
-                // console.log(searchResults)
                 // if nothing found
-                if (searchResults.length == 0) {
+                if (searchResults == null) {
                     this.errorFound = true;
                     this.errorMessage = 'No results found, please try again.';
                     this.filteredListings = null;
@@ -656,6 +672,18 @@
                     this.errorMessage = '';
                     this.filteredListings = searchResults;
                 }
+        },
+            clearSelection() {
+                // Handle the click event here
+                this.searchListings(); // Or perform any other actions
+                this.selectedDrinkType = ''
+                this.selectedCategory = ''
+                this.isFilterType = ''
+        },
+            clearCategory() {
+                // Handle the click event here
+                this.searchListings(); // Or perform any other actions
+                this.selectDrinkType(this.selectedDrinkType)
         },
     }
     };
