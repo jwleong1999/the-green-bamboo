@@ -514,7 +514,7 @@
                         console.error(error);
                 }
                 // producers
-                // _id, producerDesc, originCountry, statusOB, mainDrinks, producerName
+                // _id, producerName, producerDesc, originCountry, statusOB, mainDrinks
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
                         this.producers = response.data;
@@ -541,7 +541,8 @@
                         console.error(error);
                     }
                 // venues
-                // _id, venueName, venueDesc, originCountry, address, openingHours
+                // _id, venueName, venueDesc, origin
+                Country, address, openingHours
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
                         this.venues = response.data;
