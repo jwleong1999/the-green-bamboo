@@ -104,12 +104,12 @@
                                             <!-- expression name -->
                                             <div class="row pt-2">
                                                 <a class="primary-clickable-text">
-                                                    <h4> <b> {{ editable["Expression Name"] }} </b> </h4>
+                                                    <h4> <b> {{ editable["listingName"] }} </b> </h4>
                                                 </a>
                                             </div>
                                             <!-- producer -->
                                             <div class="row">
-                                                <h5> {{ editable["Producer"] }} </h5> 
+                                                <h5> {{ editable["producerID"] }} </h5> 
                                             </div>
                                         </div>
                                     </div>
@@ -136,21 +136,23 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <label for="input">Enter Bottler Name:</label>
+                                                <label for="input">Enter Producer Name:</label>
                                                 <div class="mb-3">
-                                                    <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler">
+                                                    <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempProducer">
                                                 </div>
                                             </div>
+
+                                            <!-- to input checkbox to indicate producer is independent or dependent -->
                                             <div class="row">
                                                 
                                                 <div class="col-md-6 mb-3">
                                                     <label for="dropdown">Select Country of Origin:</label>
                                                     <div class="input-group">
                                                         
-                                                        <select class="form-select" id="inputGroupSelect01">
+                                                        <select class="form-select" id="inputGroupSelect01" v-model="tempCountry">
                                                             <option selected>{{this.tempCountry }}</option>
-                                                            <option v-for="country in countries" :key="country['Country Name']" :value="country['Country Name']">
-                                                            {{ country['Country of Origin']  }}
+                                                            <option v-for="country in countries" :key="country['originCountry']" :value="country['originCountry']">
+                                                            {{ country['originCountry']  }}
                                                         </option>
                                                         </select>
                                                     </div>
@@ -159,28 +161,29 @@
                                                 <div class="col-md-6 mb-3">
                                                     <label for="dropdown">Select Drink Type:</label>
                                                     <div class="input-group">
-                                                        <select class="form-select" id="inputGroupSelect01">
+                                                        <select class="form-select" id="inputGroupSelect01" v-model="tempDrinkType">
                                                             <option selected>{{this.tempDrinkType }}</option>
-                                                            <option v-for="taste in drinkCategories" :key="taste['Drink Type']" :value="taste['Drink Type']">
-                                                            {{ taste['Drink Type']  }}
+                                                            <option v-for="taste in drinkCategories" :key="taste['drinkType']" :value="taste['drinkType']">
+                                                            {{ taste['drinkType']  }}
                                                             </option>
                                                         </select>
 
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <div v-if="tempDrinkCategoryList!=[]" class="row">
                                                 <label for="dropdown">Select Drink Category:</label>
-                                                <div class="input-group mb-3">
+                                                <div  class="input-group mb-3">
                                                     
-                                                    <select class="form-select" id="inputGroupSelect01">
+                                                    <select class="form-select" id="inputGroupSelect01" v-model="tempDrinkCategory">
                                                         <option selected>Drink Category</option>
-                                                        <option v-for="taste in drinkCategories" :key="taste['Drink Type']" :value="taste['Drink Type']">
-                                                            {{ taste }}
+                                                        <option v-for="cat in tempDrinkCategoryList" :key="cat" :value="cat">
+                                                            {{ cat }}
                                                         </option>
                                                     </select>
                                                 </div>
                                             </div>
+                                            
 
                                             <div class="row ">
                                                 <label for="input">Enter Bottle Age :</label>
@@ -194,10 +197,7 @@
                                                 </div>
                                                 
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="input">Enter Review Link (if available):</label>
-                                                <input type="Expression Name" class="form-control" id="exampleFormControlInput1" v-model="tempReviewLink">
-                                            </div>
+                                            
                                             <div class="mb-3">
                                                 <label for="input">Enter Bottle Description:</label>
                                                 <input type="Expression Name" class="form-control" id="exampleFormControlInput1" v-model="tempDescription">
@@ -288,12 +288,16 @@
                 tempProducer: '',
                 tempCountry: '',
                 tempDrinkType: '',
-                tempDrinkCategory: '',
+                tempDrinkCategory:"" ,
+                tempDrinkCategoryList: [],
                 tempAge: '',
                 tempABV: '',
                 tempReviewLink: '',
                 tempDescription: '',
-                tempBottler: ''
+                tempBottler: '',
+                drinkTypeInfo: {},
+                chooseCategory: false
+                
 
 
                 
@@ -320,16 +324,17 @@
                     // originally, make filteredListings the entire collection of listings
                     this.filteredListings = this.listings;
                     this.editable = this.listings[0];
-                    this.tempExpressionName = this.editable["Expression Name"];
-                    this.tempProducer = this.editable["Producer"];
-                    this.tempCountry = this.editable["Country of Origin"];
-                    this.tempDrinkType = this.editable["Drink Type"];
-                    this.tempDrinkCategory = this.editable["Drink Category"];
-                    this.tempAge = this.editable["Age"];
-                    this.tempABV = this.editable["ABV"];
-                    this.tempReviewLink = this.editable["88B Website Review (if applicable)"];
-                    this.tempDescription = this.editable["Official Description"];
-                    this.tempBottler = this.editable["Bottler (OB or Specify name of IB)"];
+                    this.tempExpressionName = this.editable["listingName"];
+                    this.tempProducer = this.editable["producerID"];
+                    this.tempCountry = this.editable["originCountry"];
+                    this.tempDrinkType = this.editable["drinkType"];
+                    this.tempDrinkCategory = this.editable["typeCategory"];
+                    this.tempAge = this.editable["age"];
+                    this.tempABV = this.editable["abv"];
+                    this.tempReviewLink = this.editable["reviewLink"];
+                    this.tempDescription = this.editable["officialDesc"];
+                    this.tempBottler = this.editable["sourceLink"];
+                    this.photo = this.editable["photo"];
                 } 
                 catch (error) {
                     console.error(error);
@@ -368,7 +373,7 @@
                 }
                 // Drink Categories
                 try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkCategories');
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
                     this.drinkCategories = response.data;
                 } 
                 catch (error) {
@@ -381,10 +386,19 @@
             },
 
             saveListing() {
-                this.updateStatus = false;
+                console.log(this.tempCountry)
             },
             temp() {
-                console.log(this.drinkCategories);
+                console.log(this.tempDrinkCategoryList)
+                console.log(this.tempDrinkType)
+                console.log(this.drinkTypeInfo)
+                console.log(this.drinkCategories)
+
+            },
+            isTypeCategoryEmpty() {
+                // Cannot filter out typeCategory for each drink
+                this.drinkTypeInfo = this.drinkCategories.filter(item => item.drinkType === this.tempDrinkType);
+                this.tempDrinkCategoryList = this.drinkTypeInfo.typeCategory;
             },
 
             // for search button
@@ -433,19 +447,19 @@
             getReviews(listing) {
                 // list of all reviews of the particular drink
                 const reviews = this.reviews.filter((review) => {
-                    return review["Reviewed subject"] == listing["Expression Name"];
+                    return review["reviewTarget"] == listing["listingName"];
                 });
                 // choose random review from the list
                 const randomReview = reviews[Math.floor(Math.random() * reviews.length)];
                 // check if a review is found before accessing "Review Desc"
-                const reviewDesc = randomReview ? randomReview["Review Desc"] : null;
+                const reviewDesc = randomReview ? randomReview["reviewDesc"] : null;
                 return reviewDesc;
             },
 
             // get ratings for a listing
             getRatings(listing) {
                 const ratings = this.reviews.filter((rating) => {
-                    return rating["Reviewed subject"] == listing["Expression Name"];
+                    return rating["reviewTarget"] == listing["listingName"];
                 });
                 // if there are no ratings
                 if (ratings.length == 0) {
@@ -453,7 +467,7 @@
                 }
                 // else there are ratings
                 const averageRating = ratings.reduce((total, rating) => {
-                    return total + rating["Rating"];
+                    return total + rating["rating"];
                 }, 0) / ratings.length;
                 // Format the averageRating to 1 decimal place
                 const formattedRating = parseFloat(averageRating.toFixed(1));
