@@ -23,16 +23,20 @@ db = PyMongo(app).db
 mongo = PyMongo(app)
 fs = GridFS(mongo.db)
 
-@app.route('/upload', methods=['POST'])
-def editProfile():
+@app.route('/editDetails', methods=['POST'])
+def editDetails():
     data = request.get_json()
+    print(data)
     userID = data['userID']
-    image64 = data['image64']
+    # if data contains image64
+    if 'image64' in data:
+        image64 = data['image64']
     drinkChoice = data['drinkChoice']
 
     try: 
-        updateImage = db.Users.update_one({'_id': ObjectId(userID)}, {'$set': {'profile_picture': image64}})
-        updateDrinkChoice = db.Users.update_one({'_id': ObjectId(userID)}, {'$set': {'Drink of Choice': drinkChoice}})
+        if 'image64' in data:
+            updateImage = db.users.update_one({'_id': ObjectId(userID)}, {'$set': {'photo': image64}})
+        updateDrinkChoice = db.users.update_one({'_id': ObjectId(userID)}, {'$set': {'choiceDrinks': drinkChoice}})
 
         return jsonify(
             {   
@@ -47,6 +51,35 @@ def editProfile():
                 "code": 500,
                 "data": {
                     "image": image64[:8]
+                },
+                "message": "An error occurred updating the image."
+            }
+        ), 500
+    
+
+@app.route('/editBookmark', methods=['POST'])
+def editBookmark():
+    data = request.get_json()
+    print(data)
+    userID = data['userID']
+    bookmark = data['bookmark']
+
+    try: 
+        updateBookmark = db.users.update_one({'_id': ObjectId(userID)}, {'$set': {'drinkLists': bookmark}})
+
+        return jsonify(
+            {   
+                "code": 201,
+                "data": bookmark
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "data": bookmark
                 },
                 "message": "An error occurred updating the image."
             }
