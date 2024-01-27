@@ -20,6 +20,7 @@ class countries:
 # Dataclass (listings)
 @dataclass
 class listings:
+    
     listingName: str
     producerID: object
     bottler: str
