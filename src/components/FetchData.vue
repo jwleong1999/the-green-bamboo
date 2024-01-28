@@ -1,3 +1,7 @@
+<!-- Component for fetching data. Calls loadData() and returns it in relevantly named lists. -->
+<!-- Does not include VenuesAPI, drinkTypes, requestListings, requestEdits, modRequests. -->
+<!-- TODO: Check potentially outdated API link. -->
+
 <script>
     export default {
         name: "FetchData",
@@ -68,7 +72,7 @@
                 }
                 // Drink Categories
                 try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkCategories');
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkCategories'); // Outdated? Please check.
                     this.drinkCategories = response.data;
                 } 
                 catch (error) {
