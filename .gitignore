@@ -21,3 +21,7 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# __pycache__ files
+backend/__pycache__
+tests/unit/__pycache__
