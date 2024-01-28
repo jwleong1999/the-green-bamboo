@@ -170,7 +170,7 @@ def getRequestListings():
 @app.route("/getRequestEdits")
 def getRequestEdits():
     #this step finds all the items in the collection, specifying Request Edits
-    data = db.RequestEdits.find({})
+    data = db.requestEdits.find({})
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
     allRequestEdits = []

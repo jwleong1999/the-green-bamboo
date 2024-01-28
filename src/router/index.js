@@ -68,6 +68,11 @@ const routes = [
     name: 'producerupdatelistings',
     component: () => import('../views/Producers/EditListing.vue')
   },
+  {
+    path: '/producers/requests',
+    name: 'producersrequests',
+    component: () => import('../views/Producers/ViewRequests.vue')
+  },
 
 ]
 
