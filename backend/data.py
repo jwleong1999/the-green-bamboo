@@ -1,3 +1,5 @@
+# Imported file for MongoDB dataclasses
+
 from dataclasses import dataclass, asdict
 from typing import Optional, Union
 import pymongo

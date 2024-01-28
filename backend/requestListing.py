@@ -1,3 +1,7 @@
+# Flask backend for handling user-submitted requests for new listings and edits to existing listings.
+# Port: 5002
+# Routes: /requestListing (POST), /requestEdits (POST)
+
 import bson
 import json
 from bson import json_util

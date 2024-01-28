@@ -1,3 +1,8 @@
+# Flask backend to get data from MongoDB
+# Port: 5000
+# Routes: /getCountries (GET), /getListings (GET), /getProducers (GET), /getReviews (GET), /getUsers (GET),
+#        /getVenues (GET), /getVenuesAPI (GET), /getDrinkTypes (GET), /getRequestListings (GET), /getRequestEdits (GET), /getModRequests (GET)
+
 # pip install python-bsonjs
 # pip install Flask
 # pip install Flask Flask-PyMongo

@@ -1,3 +1,7 @@
+# Flask backend for editing user profile
+# Port: 5100
+# Routes: /editDetails (POST), /editBookmark (POST)
+
 import bson
 import json
 from bson import json_util
