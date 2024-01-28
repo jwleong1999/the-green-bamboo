@@ -542,7 +542,7 @@
                     }
                 // venues
                 // _id, venueName, venueDesc, origin
-                Country, address, openingHours
+                // Country, address, openingHours
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
                         this.venues = response.data;
