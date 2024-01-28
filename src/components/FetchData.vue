@@ -1,6 +1,6 @@
 <!-- Component for fetching data. Calls loadData() and returns it in relevantly named lists. -->
 <!-- Does not include VenuesAPI, drinkTypes, requestListings, requestEdits, modRequests. -->
-<!-- TODO: Check potentially outdated API link. -->
+<!-- TODO: Check potentially outdated API link. Check purpose of this component - consider breaking down into individual methods. -->
 
 <script>
     export default {

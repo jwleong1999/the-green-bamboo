@@ -1,5 +1,4 @@
 <!-- User Form: Request for New Bottle Listing -->
-<!-- This form format should follow Producers/CreateListing.vue, as the 2 forms perform similar tasks. -->
 
 <!--
     TODO:
