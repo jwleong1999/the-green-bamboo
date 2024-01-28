@@ -281,7 +281,7 @@
                 reader.readAsDataURL(file);
             },
 
-            submitListing(){
+            async submitListing(){
                 // --- Form Validation ---
                 let alertPhrase = "Your submission is incomplete:\n";
 
@@ -385,6 +385,18 @@
 
                     } else if (this.mode == "power") {
                         submitAPI = "http://127.0.0.1:5001/createListing"
+
+                        // Default to tanglin gin producer ID
+                        await this.$axios.get('http://127.0.0.1:5000/getProducers')
+                        .then((response)=>{
+                            this.form["producerID"] = response.data[0]._id
+                        })
+                        .catch((error)=>{
+                            console.log(error);
+                            this.responseCode = error.response.data.code
+                        });
+                        // End of setting default to tanglin producer ID
+                        
                         submitData = {
                             "listingName": this.form["listingName"].trim(),
                             "drinkType": this.form["drinkType"].trim(),

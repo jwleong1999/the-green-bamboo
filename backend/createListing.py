@@ -32,7 +32,7 @@ def createListings():
 
 
     # existingBottle = db.Listings.find_one({"Expression Name": rawBottleName})
-    existingBottle = db.Listing.find_one({"listingName": rawBottleName})
+    existingBottle = db.listings.find_one({"listingName": rawBottleName})
 
     # Check whether bottle with the same name exists in the database
     if(existingBottle != None):
@@ -50,7 +50,7 @@ def createListings():
     newBottle = data.listings(**rawBottle)
 
     try:
-        insertResult = db.Listing.insert_one(data.asdict(newBottle))
+        insertResult = db.listings.insert_one(data.asdict(newBottle))
 
         return jsonify( 
             {   
