@@ -152,10 +152,10 @@
                                 <h4 class="square-inline-text-start mr-auto"> Where to Buy </h4>
                             </div>
                             <!-- body -->
-                            <div class="text-start"> <!-- TODO: add hyperlink to link to producer page-->
+                            <div class="text-start pt-2"> <!-- TODO: add hyperlink to link to producer page-->
                                 <!-- [function] where to buy -->
                                 <div v-for="producer in producerListings" v-bind:key="producer._id">
-                                    <p> {{ getProducerName(producer) }} </p>
+                                    <p class="no-margin"> {{ getProducerName(producer) }} </p>
                                 </div>
                             </div>
                             <div class="py-5"></div>
