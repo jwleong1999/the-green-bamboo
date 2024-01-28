@@ -161,7 +161,7 @@
                                                 <div class="col-md-6 mb-3">
                                                     <label for="dropdown">Select Drink Type:</label>
                                                     <div class="input-group">
-                                                        <select class="form-select" id="inputGroupSelect01" v-model="tempDrinkType">
+                                                        <select class="form-select" id="inputGroupSelect01" v-model="tempDrinkType" @change="getDrinkCategoryList">
                                                             <option selected>{{this.tempDrinkType }}</option>
                                                             <option v-for="taste in drinkCategories" :key="taste['drinkType']" :value="taste['drinkType']">
                                                             {{ taste['drinkType']  }}
@@ -171,14 +171,14 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div v-if="tempDrinkCategoryList!=[]" class="row">
-                                                <label for="dropdown">Select Drink Category:</label>
+                                            <div class="row">
+                                                <label for="dropdown">Select Drink Type Category:</label>
                                                 <div  class="input-group mb-3">
                                                     
                                                     <select class="form-select" id="inputGroupSelect01" v-model="tempDrinkCategory">
-                                                        <option selected>Drink Category</option>
-                                                        <option v-for="cat in tempDrinkCategoryList" :key="cat" :value="cat">
-                                                            {{ cat }}
+                                                        <option selected>Select drink category</option>
+                                                        <option v-for="cat in tempTypeCategoryList" :key="cat" :value="cat">
+                                                            {{ cat  }}
                                                         </option>
                                                     </select>
                                                 </div>
@@ -289,13 +289,13 @@
                 tempCountry: '',
                 tempDrinkType: '',
                 tempDrinkCategory:"" ,
-                tempDrinkCategoryList: [],
+                tempTypeCategoryList: null,
                 tempAge: '',
                 tempABV: '',
                 tempReviewLink: '',
                 tempDescription: '',
                 tempBottler: '',
-                drinkTypeInfo: {},
+                drinkTypeInfo: null,
                 chooseCategory: false
                 
 
@@ -305,6 +305,7 @@
         },
         mounted() {
             this.loadData();
+            
         },
         methods: {
             // load data from database
@@ -383,22 +384,39 @@
 
             updateListing() {
                 this.updateStatus = true;
+                for (let category of this.drinkCategories) {
+                console.log(category.drinkType)
+                if (category.drinkType == this.tempDrinkType) {
+                    this.drinkTypeInfo = category;
+                    this.tempTypeCategoryList = category.typeCategory;
+                    }
+                
+                }
             },
 
             saveListing() {
-                console.log(this.tempCountry)
+                this.updateStatus = false;
+                
+                
             },
             temp() {
-                console.log(this.tempDrinkCategoryList)
-                console.log(this.tempDrinkType)
                 console.log(this.drinkTypeInfo)
+                console.log(this.tempDrinkType)
                 console.log(this.drinkCategories)
+                
+                
+                // console.log(this.tempDrinkType)
+                console.log(this.drinkTypeInfo.typeCategory)
+            
+                
 
             },
-            isTypeCategoryEmpty() {
-                // Cannot filter out typeCategory for each drink
-                this.drinkTypeInfo = this.drinkCategories.filter(item => item.drinkType === this.tempDrinkType);
-                this.tempDrinkCategoryList = this.drinkTypeInfo.typeCategory;
+            getDrinkCategoryList() {
+                  
+                
+
+                
+                
             },
 
             // for search button
