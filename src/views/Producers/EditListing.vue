@@ -96,8 +96,9 @@
                                                     </h1>
                                                 </div>
                                                 <div class="col-6">
-                                                    <a class="btn secondary-btn btn-md" @click="updateListing" > Edit </a>
-                                                    <a class="btn secondary-btn btn-md" @click="temp" > temp </a>
+                                                    
+                                                    <a class="btn secondary-btn btn-md" @click="updateListing(); getDrinkCategoryList();"> Edit </a>
+                                                    <a class="btn secondary-btn btn-md" @click="temp()" > temp </a>
 
                                                 </div>
                                             </div>
@@ -135,17 +136,35 @@
                                                     <input type="Expression Name" class="form-control" id="exampleFormControlInput1" v-model="tempExpressionName">
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <div v-if="independentStatus" class="row">
                                                 <label for="input">Enter Producer Name:</label>
                                                 <div class="mb-3">
-                                                    <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempProducer">
+                                                    <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler">
+                                                </div>
+
+                                            </div>
+                                            <div v-else class="row">
+                                                <label for="input">Enter Producer Name:</label>
+                                                <div class="mb-3">
+                                                    <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label for="checkbox">Is the producer independent?</label>
+                                                <div class="mb-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="checkbox" v-model="independentStatus" @change="independentBottler">
+                                                        <label class="form-check-label" for="checkbox">
+                                                            Independent
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
 
                                             <!-- to input checkbox to indicate producer is independent or dependent -->
                                             <div class="row">
                                                 
-                                                <div class="col-md-6 mb-3">
+                                                <div class=" mb-3">
                                                     <label for="dropdown">Select Country of Origin:</label>
                                                     <div class="input-group">
                                                         
@@ -157,7 +176,8 @@
                                                         </select>
                                                     </div>
                                                 </div>
-
+                                            </div>    
+                                            <div class="row">
                                                 <div class="col-md-6 mb-3">
                                                     <label for="dropdown">Select Drink Type:</label>
                                                     <div class="input-group">
@@ -170,22 +190,24 @@
 
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="row">
-                                                <label for="dropdown">Select Drink Type Category:</label>
-                                                <div  class="input-group mb-3">
-                                                    
-                                                    <select class="form-select" id="inputGroupSelect01" v-model="tempDrinkCategory">
-                                                        <option selected>Select drink category</option>
-                                                        <option v-for="cat in tempTypeCategoryList" :key="cat" :value="cat">
-                                                            {{ cat  }}
-                                                        </option>
-                                                    </select>
+                                            
+                                                <div v-if="tempTypeCategoryList.length>1" class="col-md-6 mb-3"  >
+                                                    <label for="dropdown">Select Drink Type Category:</label>
+                                                    <div class="col-md-6 mb-3">
+                                                    <div class="input-group">
+                                                        
+                                                        <select class="form-select" id="inputGroupSelect01" v-model="tempDrinkCategory">
+                                                            <option v-for="cat in tempTypeCategoryList" :key="cat" :value="cat">
+                                                                {{ cat  }}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             
 
-                                            <div class="row ">
+                                            <div class="row">
                                                 <label for="input">Enter Bottle Age :</label>
                                                 <div class="col-md-6 mb-3">
                                                     <input type="Expression Name" class="form-control" id="age" v-model="tempAge">
@@ -200,7 +222,7 @@
                                             
                                             <div class="mb-3">
                                                 <label for="input">Enter Bottle Description:</label>
-                                                <input type="Expression Name" class="form-control" id="exampleFormControlInput1" v-model="tempDescription">
+                                                <textarea class="form-control" id="exampleFormControlInput1" v-model="tempDescription" style="height: 200px;"></textarea>
                                             </div>
 
                                             
@@ -285,6 +307,7 @@
                 drinkCategories:[],
                 updateStatus: false,
                 tempExpressionName: '',
+                tempProducerID: '',
                 tempProducer: '',
                 tempCountry: '',
                 tempDrinkType: '',
@@ -293,10 +316,12 @@
                 tempAge: '',
                 tempABV: '',
                 tempReviewLink: '',
+                tempSourceLink: '',
                 tempDescription: '',
                 tempBottler: '',
                 drinkTypeInfo: null,
-                chooseCategory: false
+                chooseCategory: false,
+                independentStatus:false
                 
 
 
@@ -305,6 +330,7 @@
         },
         mounted() {
             this.loadData();
+            
             
         },
         methods: {
@@ -326,7 +352,8 @@
                     this.filteredListings = this.listings;
                     this.editable = this.listings[0];
                     this.tempExpressionName = this.editable["listingName"];
-                    this.tempProducer = this.editable["producerID"];
+                    this.tempProducerID = this.editable["producerID"];
+                    this.tempBottler = this.editable["bottler"];
                     this.tempCountry = this.editable["originCountry"];
                     this.tempDrinkType = this.editable["drinkType"];
                     this.tempDrinkCategory = this.editable["typeCategory"];
@@ -334,7 +361,7 @@
                     this.tempABV = this.editable["abv"];
                     this.tempReviewLink = this.editable["reviewLink"];
                     this.tempDescription = this.editable["officialDesc"];
-                    this.tempBottler = this.editable["sourceLink"];
+                    this.tempSourceLink = this.editable["sourceLink"];
                     this.photo = this.editable["photo"];
                 } 
                 catch (error) {
@@ -344,6 +371,14 @@
                 try {
                     const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
                     this.producers = response.data;
+
+                    for (let producer of this.producers) {
+                    if (JSON.stringify(producer._id) == JSON.stringify(this.tempProducerID)) {
+                        this.tempProducer = producer.producerName;
+                        
+                    }
+                    }
+                    
                 } 
                 catch (error) {
                     console.error(error);
@@ -384,14 +419,8 @@
 
             updateListing() {
                 this.updateStatus = true;
-                for (let category of this.drinkCategories) {
-                console.log(category.drinkType)
-                if (category.drinkType == this.tempDrinkType) {
-                    this.drinkTypeInfo = category;
-                    this.tempTypeCategoryList = category.typeCategory;
-                    }
-                
-                }
+                console.log(this.tempTypeCategoryList)
+
             },
 
             saveListing() {
@@ -400,22 +429,50 @@
                 
             },
             temp() {
-                console.log(this.drinkTypeInfo)
-                console.log(this.tempDrinkType)
-                console.log(this.drinkCategories)
-                
-                
-                // console.log(this.tempDrinkType)
-                console.log(this.drinkTypeInfo.typeCategory)
-            
-                
+                console.log(this.editable)
+                console.log(this.tempBottler)
 
             },
             getDrinkCategoryList() {
-                  
-                
+                for (let category of this.drinkCategories) {
+                if (category.drinkType == this.tempDrinkType) {
+                    this.drinkTypeInfo = category;
+                    this.tempTypeCategoryList = category.typeCategory;
+                    }
+                }
 
-                
+            },
+            independentBottler(event) {
+                this.independentStatus = event.target.checked;
+                // Declare producerNamePlaceholder outside of the loop
+                let bottlerNamePlaceholder = "";
+
+                if (this.independentStatus == true) {
+                    // May need to work on this 
+                    this.tempBottler = bottlerNamePlaceholder;
+                    bottlerNamePlaceholder=this.tempBottler;
+
+                    
+                    
+                } else {
+                    // bottlerNamePlaceholder=this.tempBottler;
+                    this.tempBottler = 'OB'
+                    
+                }
+
+                console.log(this.independentStatus);
+                // console.log(this.tempProducer);
+                // if (this.independentStatus == true) {
+                //     var producerNamePlaceholder = this.tempProducer;
+                //     this.tempProducer = 'OB';
+                // }
+                // else
+                // this.tempProducer = producerNamePlaceholder;
+                // console.log(this.independentStatus)
+                // console.log(this.tempProducer)
+            },
+
+            getProducerName(){
                 
             },
 
