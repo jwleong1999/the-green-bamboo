@@ -36,16 +36,14 @@
 
      <!-- [if] no search input -->
     <div>
-        <!-- header -->
-
-        <!-- end of header -->
+        
 
         <!-- main content -->
         <div class="container pt-3">
             <div class="row">
-                <!-- your drinks shelf & brands you follow -->
                 
-                <!-- discover, following & filter by drink type -->
+                
+                <!-- Back Button -->
                 <div class="col-9">
                     <div class="container">
                         <!-- buttons -->
@@ -63,169 +61,142 @@
                           
                         </div>
 
-                        <!-- listings -->
-                        <div class="row">
-                            
-                            
-                            <div class="container text-start">
-                                <div class="p-3">
+                        <form v-on:submit.prevent="updateListing" id="frm">
+                            <div class="row">
+                                
+                                
+                                <div class="container text-start">
+                                    <div class="p-3">
 
-                                    <div class="row">
-                                        <!-- image -->
-                                        <div class="col-4 image-container">
-                                            <img src="../../../Images/Sample/beer.png" style="width: 300px; height: 300px;" class="img-border">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon" viewBox="0 0 16 16">
-                                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
-                                            </svg>
-                                        </div>
-
-                                        
-                                        <!-- details -->
-                                        <div class="col-8 ps-5">
-                                            <!-- review -->
-                                            <label for="input">Enter Lisitng Name:</label>
-                                            <div class="row">
-                                                <div class="mb-3">
-                                                    <input type="Expression Name" class="form-control" id="exampleFormControlInput1" v-model="tempExpressionName">
-                                                </div>
-                                            </div>
-                                            <div v-if="independentStatus" class="row">
-                                                <label for="input">Enter Producer Name:</label>
-                                                <div class="mb-3">
-                                                    <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler">
-                                                </div>
-
-                                            </div>
-                                            <div v-else class="row">
-                                                <label for="input">Enter Producer Name:</label>
-                                                <div class="mb-3">
-                                                    <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler" disabled>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <label for="checkbox">Is the producer independent?</label>
-                                                <div class="mb-3">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" id="checkbox" v-model="independentStatus" @change="independentBottler">
-                                                        <label class="form-check-label" for="checkbox">
-                                                            Independent
-                                                        </label>
-                                                    </div>
-                                                </div>
+                                        <div class="row">
+                                            <!-- image -->
+                                            <div class="col-4 image-container">
+                                                <img src="../../../Images/Sample/beer.png" style="width: 300px; height: 300px;" class="img-border">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon" viewBox="0 0 16 16">
+                                                    <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                                                </svg>
                                             </div>
 
-                                            <!-- to input checkbox to indicate producer is independent or dependent -->
-                                            <div class="row">
-                                                
-                                                <div class=" mb-3">
-                                                    <label for="dropdown">Select Country of Origin:</label>
-                                                    <div class="input-group">
-                                                        
-                                                        <select class="form-select" id="inputGroupSelect01" v-model="tempCountry">
-                                                            <option selected>{{this.tempCountry }}</option>
-                                                            <option v-for="country in countries" :key="country" :value="country">
-                                                            {{ country}}
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>    
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="dropdown">Select Drink Type:</label>
-                                                    <div class="input-group">
-                                                        <select class="form-select" id="inputGroupSelect01" v-model="tempDrinkType" @change="getDrinkCategoryList">
-                                                            <!-- <option selected>{{this.tempDrinkType }}</option> -->
-                                                            <option v-for="taste in drinkCategories" :key="taste['drinkType']" :value="taste['drinkType']">
-                                                            {{ taste['drinkType']  }}
-                                                            </option>
-                                                        </select>
-
-                                                    </div>
-                                                </div>
                                             
-                                                <div v-if="tempTypeCategoryList.length>1" class="col-md-6 mb-3"  >
-                                                    <label for="dropdown">Select Drink Type Category:</label>
+                                            <!-- details -->
+                                            <div class="col-8 ps-5">
+                                                <!-- review -->
+                                                <label for="input">Enter Lisitng Name:</label>
+                                                <div class="row">
+                                                    <div class="mb-3">
+                                                        <input type="Expression Name" class="form-control" id="exampleFormControlInput1" v-model="tempExpressionName">
+                                                    </div>
+                                                </div>
+                                                <div v-if="independentStatus" class="row">
+                                                    <label for="input">Enter Producer Name:</label>
+                                                    <div class="mb-3">
+                                                        <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler">
+                                                    </div>
+
+                                                </div>
+                                                <div v-else class="row">
+                                                    <label for="input">Enter Producer Name:</label>
+                                                    <div class="mb-3">
+                                                        <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <label for="checkbox">Is the producer independent?</label>
+                                                    <div class="mb-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="checkbox" v-model="independentStatus" @change="independentBottler">
+                                                            <label class="form-check-label" for="checkbox">
+                                                                Independent
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- to input checkbox to indicate producer is independent or dependent -->
+                                                <div class="row">
+                                                    
+                                                    <div class=" mb-3">
+                                                        <label for="dropdown">Select Country of Origin:</label>
+                                                        <div class="input-group">
+                                                            
+                                                            <select class="form-select" id="inputGroupSelect01" v-model="tempCountry">
+                                                                <option selected>{{this.tempCountry }}</option>
+                                                                <option v-for="country in countries" :key="country" :value="country">
+                                                                {{ country}}
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>    
+                                                <div class="row">
                                                     <div class="col-md-6 mb-3">
-                                                    <div class="input-group">
-                                                        
-                                                        <select class="form-select" id="inputGroupSelect01" v-model="tempDrinkCategory">
-                                                            <option v-for="cat in tempTypeCategoryList" :key="cat" :value="cat">
-                                                                {{ cat }}
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
+                                                        <label for="dropdown">Select Drink Type:</label>
+                                                        <div class="input-group">
+                                                            <select class="form-select" id="inputGroupSelect01" v-model="tempDrinkType" @change="getDrinkCategoryList">
+                                                                
+                                                                <option v-for="taste in drinkCategories" :key="taste['drinkType']" :value="taste['drinkType']">
+                                                                {{ taste['drinkType']  }}
+                                                                </option>
+                                                            </select>
 
-                                            <div class="row">
-                                                <label for="input">Enter Bottle Age :</label>
-                                                <div class="col-md-6 mb-3">
-                                                    <input type="Expression Name" class="form-control" id="age" v-model="tempAge">
+                                                        </div>
+                                                    </div>
+                                                
+                                                    <div v-if="tempTypeCategoryList.length>1" class="col-md-6 mb-3"  >
+                                                        <label for="dropdown">Select Drink Type Category:</label>
+                                                        <div class="col-md-6 mb-3">
+                                                        <div class="input-group">
+                                                            
+                                                            <select class="form-select" id="inputGroupSelect01" v-model="tempTypeCategory">
+                                                                <option v-for="cat in tempTypeCategoryList" :key="cat" :value="cat">
+                                                                    {{ cat }}
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 
-                                                <label for="input">Enter Bottle ABV (%):</label>
-                                                <div class="col-md-6 mb-3">
-                                                    <input type="Expression Name" class="form-control" id="abv" v-model="tempABV">
-                                                </div>
-                                                
-                                            </div>
-                                            
-                                            <div class="mb-3">
-                                                <label for="input">Enter Bottle Description:</label>
-                                                <textarea class="form-control" id="exampleFormControlInput1" v-model="tempDescription" style="height: 200px;"></textarea>
-                                            </div>
 
-                                            
-                                            
-                                            <!-- <div class="row">
-                                                <div class="col-md-6">
-                                                    <label for="dropdown">Select Option:</label>
-                                                    <div class="input-group">
-                                                        <select class="form-select" id="inputGroupSelect01">
-                                                            <option selected>Drink Type</option>
-                                                            <option value="1">One</option>
-                                                            <option value="2">Two</option>
-                                                            <option value="3">Three</option>
-                                                        </select>
+                                                <div class="row">
+                                                    <label for="input">Enter Bottle Age :</label>
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="Expression Name" class="form-control" id="age" v-model="tempAge">
                                                     </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label for="dropdown">Select Option:</label>
-                                                    <div class="input-group">
-                                                        <select class="form-select" id="inputGroupSelect01">
-                                                            <option selected>Drink Category</option>
-                                                            <option value="1">One</option>
-                                                            <option value="2">Two</option>
-                                                            <option value="3">Three</option>
-                                                        </select>
+                                                    
+                                                    <label for="input">Enter Bottle ABV (%):</label>
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="Expression Name" class="form-control" id="abv" v-model="tempABV">
                                                     </div>
+                                                    
                                                 </div>
-                                            </div> -->
-                                            <!-- rating -->
-                                            <div class="row pt-5"> 
                                                 
-                                                <div class="col-6">
-                                                    <a class="btn secondary-btn btn-md" @click="saveListing" > Save </a>
+                                                <div class="mb-3">
+                                                    <label for="input">Enter Bottle Description:</label>
+                                                    <textarea class="form-control" id="exampleFormControlInput1" v-model="tempDescription" style="height: 200px;"></textarea>
                                                 </div>
+
+                                                <div class="row pt-5"> 
+                                                    <div class="col-6">
+                                                        <button class="btn secondary-btn btn-md" type="submit" > Save </button>
+                                                    </div>
+                                                </div>
+                                                <!-- expression name -->
+                                                
+                                                <!-- producer -->
+                                                
                                             </div>
-                                            <!-- expression name -->
-                                            
-                                            <!-- producer -->
-                                            
                                         </div>
                                     </div>
+                                    
+                                    
                                 </div>
-                                
-                                
-                            </div>
-                        </div> <!-- end of listings -->
+                            </div> <!-- end of form content -->
+                        </form> <!-- end of form -->
                     </div> <!-- end of container -->
-                </div> <!-- end of discover, following & filter by drink type -->
+                </div> <!-- end of back button -->
             </div> <!-- end of row -->
-        </div>
+        </div> <!-- end of main content -->
     </div>
     
 
@@ -266,7 +237,7 @@
                 tempProducer: '',
                 tempCountry: '',
                 tempDrinkType: '',
-                tempDrinkCategory:"" ,
+                tempTypeCategory:"" ,
                 tempTypeCategoryList: "EMPTY",
                 tempAge: '',
                 tempABV: '',
@@ -274,9 +245,8 @@
                 tempSourceLink: '',
                 tempDescription: '',
                 tempBottler: '',
-                drinkTypeInfo: null,
-                chooseCategory: false,
-                independentStatus:false
+                independentStatus:false,
+                responseCode: ""
                 
 
 
@@ -294,11 +264,7 @@
             // Get id for the listing
             async created() {
                 // Get the id from the route params
-                
                 this.listingID = this.$route.params.id;
-                
-                
-                
             },
 
             
@@ -334,7 +300,7 @@
                     this.tempBottler = this.editable["bottler"];
                     this.tempCountry = this.editable["originCountry"];
                     this.tempDrinkType = this.editable["drinkType"];
-                    this.tempDrinkCategory = this.editable["typeCategory"];
+                    this.tempTypeCategory = this.editable["typeCategory"];
                     this.tempAge = this.editable["age"];
                     this.tempABV = this.editable["abv"];
                     this.tempReviewLink = this.editable["reviewLink"];
@@ -397,28 +363,12 @@
                 }
             },
             getDrinkCategoryList() {
-                // for (let category of this.drinkCategories) {
-                // if (category.drinkType == this.tempDrinkType) {
-                //     this.drinkTypeInfo = category;
-                //     this.tempTypeCategoryList = category.typeCategory;
-                //     }
-                // }
-
+            
                 this.tempTypeCategoryList=this.drinkCategories.find(cat => cat.drinkType == this.tempDrinkType).typeCategory;
 
             },
 
-            updateListing() {
-                this.updateStatus = true;
-                console.log(this.tempTypeCategoryList)
-
-            },
-
-            saveListing() {
-                this.updateStatus = false;
-                
-                
-            },
+            
             temp() {
                 console.log(this.editable)
                 console.log(this.tempBottler)
@@ -434,31 +384,46 @@
                     // May need to work on this 
                     this.tempBottler = bottlerNamePlaceholder;
                     bottlerNamePlaceholder=this.tempBottler;
-
-                    
-                    
                 } else {
                     // bottlerNamePlaceholder=this.tempBottler;
                     this.tempBottler = 'OB'
                     
                 }
 
-                console.log(this.independentStatus);
-                // console.log(this.tempProducer);
-                // if (this.independentStatus == true) {
-                //     var producerNamePlaceholder = this.tempProducer;
-                //     this.tempProducer = 'OB';
-                // }
-                // else
-                // this.tempProducer = producerNamePlaceholder;
-                // console.log(this.independentStatus)
-                // console.log(this.tempProducer)
             },
-
-            getProducerName(){
+            async updateListing(){
+                let updateAPI = `http://127.0.0.1:5003/updateListing/${this.listingID}`;
                 
+                let updatedData = {
+                    "listingName": this.tempExpressionName.trim(),
+                    "producerID": this.tempProducerID,
+                    "bottler": this.tempBottler.trim(),
+                    "originCountry": this.tempCountry.trim(),
+                    "drinkType": this.tempDrinkType.trim(),
+                    "abv": this.tempABV,
+                    "officialDesc": this.tempDescription.trim(),
+                    "photo": this.photo.trim(),
+                    "age":this.tempAge.trim(),
+                    "typeCategory": this.tempTypeCategory.trim(),
+                    "reviewLink": this.tempReviewLink.trim(),
+                    "sourceLink": this.tempSourceLink.trim(),
+                }
+
+                const response = await this.$axios.put(updateAPI, updatedData)
+                .then((response)=>{
+                    this.responseCode = response.data.code
+                })
+                .catch((error)=>{
+                    console.log(error);
+                    this.responseCode = error.response.data.code
+                });
+                console.log(response)
+                
+
+                return response
             },
 
+            
             // for search button
             searchListings() {
 

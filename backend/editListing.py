@@ -16,6 +16,8 @@ from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
 import data
+from bson import ObjectId
+from flask import request
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -26,16 +28,18 @@ def parse_json(data):
     return json.loads(json_util.dumps(data))
 
 
-@app.route("/updateListing/", methods=['PUT'])
-def updateListing():
+@app.route("/updateListing/<id>", methods=['PUT'])
+def updateListing(id):
+    
+    
+    listing_id=ObjectId(id)
     updatedListing = request.get_json()
     
     updatedListingName = updatedListing["listingName"]
-    oid = updatedListing["_id"]
-
-
+    
     # existingBottle = db.Listings.find_one({"Expression Name": rawBottleName})
     existingBottle = db.Listing.find_one({"listingName": updatedListingName})
+   
 
     # Check whether bottle with the same name exists in the database
     if(existingBottle != None):
@@ -50,11 +54,12 @@ def updateListing():
         ), 400
     
     updatedBottle = data.listings(**updatedListing)
+    # print(data.asdict(updatedBottle))
+    # return "hello"
     
-
     try:
-        result = db.Listing.update_one(
-            {"_id": oid},
+        result = db.listings.update_one(
+            {"_id": listing_id},
             {"$set": data.asdict(updatedBottle)}
         )
 
@@ -63,7 +68,7 @@ def updateListing():
                 {
                     "code": 200,
                     "data": {
-                        "_id": oid
+                        "_id": id
                     },
                     "message": "Listing updated successfully."
                 }
@@ -73,28 +78,32 @@ def updateListing():
                 {
                     "code": 404,
                     "data": {
-                        "_id":  oid
+                        "_id":  id
                     },
-                    "message": "Listing not found."
+                    "message": "Listing was not updated"
                 }
             ), 404
+        
+    # If Id is invalid
     except InvalidId:
         return jsonify(
             {
                 "code": 400,
                 "data": {
-                    "_id": oid
+                    "_id": id
                 },
                 "message": "Invalid listing ID."
             }
         ), 400
+    
+    # If listing does not work
     except Exception as e:
         print(str(e))
         return jsonify(
             {
                 "code": 500,
                 "data": {
-                    "_id": oid
+                    "_id": id
                 },
                 "message": "An error occurred updating the listing."
             }
@@ -102,54 +111,55 @@ def updateListing():
 
 
 
-#[POST]
-# require bottle name, producer ID, bottler, country of origin, drink type, ABV, official description, photo
-# optional drink category, age, source link, review link
-@app.route("/createListing", methods= ['POST'])
-def createListings():
-    rawBottle = request.get_json()
-    rawBottleName = rawBottle["listingName"]
+
+# #[POST]
+# # require bottle name, producer ID, bottler, country of origin, drink type, ABV, official description, photo
+# # optional drink category, age, source link, review link
+# @app.route("/createListing", methods= ['POST'])
+# def createListings():
+#     rawBottle = request.get_json()
+#     rawBottleName = rawBottle["listingName"]
 
 
-    # existingBottle = db.Listings.find_one({"Expression Name": rawBottleName})
-    existingBottle = db.Listing.find_one({"listingName": rawBottleName})
+#     # existingBottle = db.Listings.find_one({"Expression Name": rawBottleName})
+#     existingBottle = db.Listing.find_one({"listingName": rawBottleName})
 
-    # Check whether bottle with the same name exists in the database
-    if(existingBottle != None):
-        return jsonify(
-            {   
-                "code": 400,
-                "data": {
-                    "listingName": rawBottleName
-                },
-                "message": "Bottle already exists."
-            }
-        ), 400
+#     # Check whether bottle with the same name exists in the database
+#     if(existingBottle != None):
+#         return jsonify(
+#             {   
+#                 "code": 400,
+#                 "data": {
+#                     "listingName": rawBottleName
+#                 },
+#                 "message": "Bottle already exists."
+#             }
+#         ), 400
     
     
-    newBottle = data.listings(**rawBottle)
+#     newBottle = data.listings(**rawBottle)
 
-    try:
-        insertResult = db.Listing.insert_one(data.asdict(newBottle))
+#     try:
+#         insertResult = db.Listing.insert_one(data.asdict(newBottle))
 
-        return jsonify( 
-            {   
-                "code": 201,
-                "data": rawBottleName
-            }
-        ), 201
-    except Exception as e:
-        print(str(e))
-        return jsonify(
-            {
-                "code": 500,
-                "data": {
-                    "listingName": rawBottleName
-                },
-                "message": "An error occurred creating the listing."
-            }
-        ), 500
+#         return jsonify( 
+#             {   
+#                 "code": 201,
+#                 "data": rawBottleName
+#             }
+#         ), 201
+#     except Exception as e:
+#         print(str(e))
+#         return jsonify(
+#             {
+#                 "code": 500,
+#                 "data": {
+#                     "listingName": rawBottleName
+#                 },
+#                 "message": "An error occurred creating the listing."
+#             }
+#         ), 500
     
 
 if __name__ == "__main__":
-    app.run(debug=True, port = 5001)
+    app.run(debug=True, port = 5003)
