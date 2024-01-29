@@ -4,6 +4,7 @@
   <!-- Temporary page navigation, to be removed eventually. -->
   <nav>
     <router-link to="/">Home</router-link> |
+    <router-link to="/Login">LoginPage</router-link> |
     <router-link to="/about">About</router-link> |
     <router-link to="/Users/Bottle-Listings">(Users) Bottle Listings</router-link> |
     <router-link to="/Users/request/new">(Users) Request Listing [New]</router-link> |

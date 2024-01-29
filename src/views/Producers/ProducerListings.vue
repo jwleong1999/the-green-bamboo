@@ -37,6 +37,10 @@
     <!-- header -->
     <div class="container pt-5">
         <div class="row">
+
+            <!-- title -->
+            <h1> Users Bottle Listings </h1>
+            <h1> to be developed later :) </h1>
             
             <!-- button -->
             <div class="col-4">

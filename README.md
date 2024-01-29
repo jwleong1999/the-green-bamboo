@@ -53,11 +53,15 @@ The goal of the project is to build out a program that allows users to search, b
 
 ### Logging In
 
-These are the login credentials for test accounts
+Navigate to `http://localhost:8080/Login` 
 
-- Navigate to `http://localhost/the-green-bamboo/` <!-- TODO: to be changed --> \
-**For Human Resources**: <!-- TODO: to be filled --> \
-**For Staff**: <!-- TODO: to be filled -->
+These are the login credentials for test accounts:
+
+| Account Type | Username | Password |
+| :---:  | :----: | :---: |
+| User | `111hotpot` | `westlife123` |
+| Producer | `The Macallan Distillery` | `macallan!d1st1llery` |
+| Venue | `GudSht` | `datssomegdshit` |
 
 ### Installation
 

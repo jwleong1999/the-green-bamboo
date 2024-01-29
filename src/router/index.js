@@ -20,8 +20,8 @@ const routes = [
   },
   {
     path: '/login',
-    name: 'login',
-    component: () => import('../views/LoginView.vue')
+    name: 'loginpage',
+    component: () => import('../views/LoginPage.vue')
   },
   {
     path: '/search',
@@ -77,7 +77,12 @@ const routes = [
     path: '/Producer/Producer-Edit-Listing/:id',
     name: 'producerupdatelistingsdetails',
     component: () => import('../views/Producers/EditListing.vue')
-  }
+  },
+  {
+    path: '/Venues/Bottle-Listings',
+    name: 'venuesbottlelistings',
+    component: () => import('../views/Venues/BottleListings.vue')
+  },
   
 
 ]
