@@ -127,7 +127,7 @@
                         duplicateLink: '',
                         brandRelation: 'Others',
                         listingID: {
-                            "$oid": "65b26ac6d583c059ba33ff10"
+                            "$oid": "65b34a06915a4e4e9e08876d"
                         }, // TODO: Fill in listingID with listingID of linked listing (where user clicked from)
                         userID: {
                             "$oid": "defaultUser"

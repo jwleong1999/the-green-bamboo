@@ -33,7 +33,7 @@ def requestListing():
     rawRequestName = rawRequest["listingName"]
 
     # Check if bottle with the same name already exists in the database
-    existingBottle = db.Listing.find_one({"listingName": rawRequestName}) # Update table name if necessary
+    existingBottle = db.listings.find_one({"listingName": rawRequestName})
     if (existingBottle != None):
         return jsonify(
             {
@@ -41,7 +41,7 @@ def requestListing():
                 "data": {
                     "listingName": rawRequestName
                 },
-                "message": "Bottle already exists."
+                "message": "Bottle with the same name already exists."
             }
         ), 400
     
@@ -76,12 +76,11 @@ def requestListing():
 @app.route("/requestEdits", methods= ['POST'])
 def requestEdits():
     rawRequest = request.get_json()
-    rawListingID = rawRequest["listingID"]
+    rawListingID = rawRequest["listingID"]["$oid"]
 
     # Check if edit request is linked to a listing that exists in the database
-    # existingListing = db.Listing.find_one({"_id": rawListingID}) # Update table name if necessary
+    existingListing = db.listings.find_one({"_id": ObjectId(rawListingID)})
 
-    existingListing = True # Temporary placeholder, as the above code is not working. TODO: Fix this
     if (existingListing == None):
         return jsonify(
             {
