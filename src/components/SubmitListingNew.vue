@@ -3,22 +3,20 @@
 <!--
     TODO:
     - Dropdown Selection for Drink Type + Drink Category (with option for "Other"), Country of Origin
-    - Accept pre-filled information from user requests to be created by power users.
+    - Accept pre-filled information from user requests to be created by power users, or to allow users to edit their submitted requests.
+    -- Users cannot submit requests for bottle listings that already exist. They should be directed to the edit page instead.
+    -- Different users can submit requests for the same bottle listing. Power users will decide which one to accept.
+    -- The same user cannot submit multiple requests for the same bottle listing.
 
     --- [ Requires Access Control First ] ---
     - Fill in userID in backend with the corresponding requesting user's userID.
     - Make Producer field a dropdown list (for non-producer) / autofill and non-changeable (for producer). This fills in producerID in backend as well.
         -- Only users will have option for "Other" in dropdown list: if creating listing, new producer should be created first.
     
-    - Styling Discussion / Fixes
-    - Consider if any duplicate submission has to be detected / prevented. Includes requests for bottles that already exist.
-    - Consider use of character counters and character limits if/when necessary.
     - "Return" button may bring user back to same page, but with form cleared. Prevent that by returning to last notable page.
     - Consider another backend check to ensure that submitter is authorized to submit listing in specified mode, with valid producerID for producers.
     
-    - [?] Relationship with Brand: If "Others" is selected, should there be a text box to fill in for users to specify their relationship?
-    - [?] Should we save the form data for easier retry when invoking reset()? Should reset() just hard refresh the page?
-    - [?] Should source link field + review link field be on the same page? Need to validate if review link is from 88b?
+    - Should we save the form data for easier retry when invoking reset()? Should reset() just hard refresh the page?
     - [?] Independent Bottler Yes/No radio buttons should be styled to look like checkboxes.
         -- Consider using switch / single checkbox instead (if so, flip isOperator: rename to indOperator).
 -->
