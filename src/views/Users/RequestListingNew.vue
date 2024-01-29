@@ -2,8 +2,7 @@
 
 <!--
     TODO:
-    - Make accessible to only users within application
-    - Consider if any duplicate submission has to be detected / prevented. Includes requests for bottles that already exist.
+    - [Access Control] Make accessible to only users within application
 -->
 
 <template>

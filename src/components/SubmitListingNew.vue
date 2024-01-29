@@ -3,10 +3,12 @@
 <!--
     TODO:
     - Dropdown Selection for Drink Type + Drink Category (with option for "Other"), Country of Origin
+    - Accept pre-filled information from user requests to be created by power users.
+
+    --- [ Requires Access Control First ] ---
+    - Fill in userID in backend with the corresponding requesting user's userID.
     - Make Producer field a dropdown list (for non-producer) / autofill and non-changeable (for producer). This fills in producerID in backend as well.
         -- Only users will have option for "Other" in dropdown list: if creating listing, new producer should be created first.
-    - Accept pre-filled information from user requests to be created by power users.
-    - Fill in userID in backend with the corresponding requesting user's userID.
     
     - Styling Discussion / Fixes
     - Consider if any duplicate submission has to be detected / prevented. Includes requests for bottles that already exist.

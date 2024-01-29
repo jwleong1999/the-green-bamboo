@@ -2,11 +2,10 @@
 
 <!--
     TODO:
-    - Make accessible to only users within application
-    - This form should only be accessible from a Bottle Listing page's "Suggest Edit" / "Report Duplicate" button
-    - This form should only function if a bottle listing information is parsed into the form. Show bottle listing information in the form.
-    - If no bottle listing information is parsed into the form, error message should be displayed. Redirect to previous page after short delay.
-    - If accessed via "Report Duplicate", the form should be pre-filled with template to report duplicate listing.
+    - [Access Control] Make accessible to only users within application
+    - [Access Control] This form should only be accessible from a Bottle Listing page's "Suggest Edit" / "Report Duplicate" button
+    --- This form should only function if a bottle listing information is parsed into the form. Show bottle listing information in the form.
+    --- If no bottle listing information is parsed into the form, error message should be displayed. Redirect to previous page after short delay.
     - "Return" button may bring user back to same page, but with form cleared. Prevent that by returning to last notable page.
 -->
 
