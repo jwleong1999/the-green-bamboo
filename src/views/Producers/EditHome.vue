@@ -84,7 +84,7 @@
                                                     </h1>
                                                 </div>
                                                 <div class="col-6">
-                                                    <router-link :to="{ path: '/Producer/Producer-Edit-Listing/:' + this.ID }">
+                                                    <router-link :to="{ path: '/Producer/Producer-Edit-Listing/' + this.ID }">
                                                         <a class="btn secondary-btn btn-md">Edit</a>
                                                     </router-link>
                                                         

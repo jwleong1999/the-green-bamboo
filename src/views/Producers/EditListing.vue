@@ -123,9 +123,9 @@
                                                         
                                                         <select class="form-select" id="inputGroupSelect01" v-model="tempCountry">
                                                             <option selected>{{this.tempCountry }}</option>
-                                                            <option v-for="country in countries" :key="country['originCountry']" :value="country['originCountry']">
-                                                            {{ country['originCountry']  }}
-                                                        </option>
+                                                            <option v-for="country in countries" :key="country" :value="country">
+                                                            {{ country}}
+                                                            </option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -259,6 +259,7 @@
                 filteredListings: [],
                 editable: [],
                 drinkCategories:[],
+                listingID:null,
                 updateStatus: false,
                 tempExpressionName: '',
                 tempProducerID: '',
@@ -284,20 +285,35 @@
         },
         mounted() {
             this.loadData();
-            
-            
-            
+            this.created();
             
         },
         
         methods: {
+
+            // Get id for the listing
+            async created() {
+                // Get the id from the route params
+                
+                this.listingID = this.$route.params.id;
+                
+                
+                
+            },
+
+            
             // load data from database
             
             async loadData() {
                 // Countries
                 try {
                     const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
-                    this.countries = response.data;
+                    for (let country of response.data) {
+                        // console.log(country.originCountry)
+                        this.countries.push(country.originCountry);
+                    }
+                    this.countries=this.countries.sort();
+
                 } 
                 catch (error) {
                     console.error(error);
@@ -305,10 +321,14 @@
                 // Listings
                 try {
                     const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
+
                     this.listings = response.data;
                     // originally, make filteredListings the entire collection of listings
+
                     this.filteredListings = this.listings;
-                    this.editable = this.listings[0];
+                    
+                    this.editable = this.listings.find(listing => listing._id["$oid"] == this.listingID);
+                    console.log(this.editable)
                     this.tempExpressionName = this.editable["listingName"];
                     this.tempProducerID = this.editable["producerID"];
                     this.tempBottler = this.editable["bottler"];
