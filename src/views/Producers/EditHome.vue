@@ -49,20 +49,8 @@
                 <div class="col-9">
                     <div class="container">
                         <!-- buttons -->
-                        <div class="row">
-                            <!-- discover -->
-                            <div class="col-4">
-                                <div class="d-grid gap-2">
-                                    <router-link :to="{ path: '/Producer/Producer-Create-Listing' }">
-                                        <button class="btn primary-btn btn-sm">
-                                            <h4> Add </h4>
-                                        </button>
-                                    </router-link>
-                                </div>
-                            </div>
-                          
-                        </div>
-                        {{ this.ID }}
+                        
+                        
                         <!-- listings -->
                         <div class="row">
                             <!-- v-loop for each listing -->

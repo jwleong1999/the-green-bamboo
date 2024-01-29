@@ -48,7 +48,20 @@
                 <!-- discover, following & filter by drink type -->
                 <div class="col-9">
                     <div class="container">
-                        
+                        <!-- buttons -->
+                        <div class="row">
+                            <!-- discover -->
+                            <div class="col-4">
+                                <div class="d-grid gap-2">
+                                    <router-link :to="{ path: '/Producer/Producer-Edit-Listing/' }">
+                                                <div class="col-mb-6 md-3" style="padding-bottom: 10px;">
+                                                    <a class="btn secondary-btn btn-md"> Back to listings </a>
+                                                </div>
+                                    </router-link>
+                                </div>
+                            </div>
+                          
+                        </div>
 
                         <!-- listings -->
                         <div class="row">
