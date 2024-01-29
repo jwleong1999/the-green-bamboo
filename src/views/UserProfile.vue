@@ -470,9 +470,6 @@ export default {
             this.currentList = name;
         },
         async loadFile(event) {
-
-            console.log("loadFile");
-
             const file = event.target.files[0];
             const reader = new FileReader();
 
@@ -482,8 +479,8 @@ export default {
 
                 this.image64 = base64String,
               
-                console.log("image64");
-                console.log(this.image64);
+                // console.log("image64");
+                // console.log(this.image64);
 
             };
             reader.readAsDataURL(file);
@@ -519,10 +516,8 @@ export default {
         }, 
         // checks if an item has been bookmarked
         async checkBookmark(listingName) {
-            console.log(this.userBookmarks);
             for (const category of Object.values(this.userBookmarks)) {
                 if (category.listItems) {
-                    console.log(category.listItems.includes(listingName));
                     if (category.listItems.includes(listingName)) {
                         return true;
                     }
@@ -539,7 +534,6 @@ export default {
                 console.error('Error fetching bookmark status:', error);
                 // Handle error if needed
             }
-            console.log(this.bookmarkStatus);
         },
         checkItem(listing) {
             this.bookmarkModalItem = listing;
@@ -561,8 +555,6 @@ export default {
                     }
                 }
             }
-            console.log(listing);
-            console.log(this.selectedBookmarkList);
         },
         checkBookmarkList(listName, bookmarkModalItem) {
             if (this.userBookmarks[listName].listItems.includes(bookmarkModalItem)) {
@@ -588,7 +580,6 @@ export default {
                     }
                 }
             }
-            console.log(this.userBookmarks);
 
             try {
                 const response = await this.$axios.post('http://127.0.0.1:5100/updateBookmark', 
