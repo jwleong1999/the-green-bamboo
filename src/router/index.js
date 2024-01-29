@@ -66,13 +66,19 @@ const routes = [
   {
     path: '/Producer/Producer-Edit-Listing',
     name: 'producerupdatelistings',
-    component: () => import('../views/Producers/EditListing.vue')
+    component: () => import('../views/Producers/EditHome.vue')
   },
   {
     path: '/producers/requests',
     name: 'producersrequests',
     component: () => import('../views/Producers/ViewRequests.vue')
   },
+  {
+    path: '/Producer/Producer-Edit-Listing/:id',
+    name: 'producerupdatelistingsdetails',
+    component: () => import('../views/Producers/EditListing.vue')
+  }
+  
 
 ]
 
