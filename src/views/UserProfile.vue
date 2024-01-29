@@ -195,7 +195,7 @@
                         <h4 class="mt-4">Recent Reviews</h4>
                         <div>
                             <div v-for="(review, index) in reviews" :key="index">
-                                <div style="display: flex" class="mb-3" v-if="review.userID.$oid == user._id.$oid">
+                                <div style="display: flex" class="mb-3" v-if="review.userID?.$oid == user._id?.$oid">
                                     <img :src=" 'data:image/png;base64,' + (review.photo||defaultDrinkImage)" alt="" class="border border-dark-subtle border-2 bottle-img me-3">
                                     <div>
                                         <h3>{{ review.reviewTarget }}</h3>
@@ -221,17 +221,49 @@
                         <!-- drink lists -->
                         <div v-if="showCurrentContent" class="mt-3">
 
-                            <button type="button" class="btn btn-outline-primary mb-3">Create New List</button>
+                            <button type="button" class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#createNewListModal">Create New List</button>
+
+                            <!-- create new list modal -->
+                            <div class="modal fade" id="createNewListModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Create New List</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="basic-url" class="form-label">List Name</label>
+                                            <div class="input-group mb-3">
+                                                <input v-model="newListName" type="text" class="form-control" placeholder="List Name" aria-label="Username" aria-describedby="basic-addon1">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="basic-url" class="form-label">List Description</label>
+                                            <div class="input-group mb-3">
+                                                <input v-model="newListDesc" type="text" class="form-control" placeholder="List Description (Optional)" aria-label="Username" aria-describedby="basic-addon1">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary" @click="addNewList">Save changes</button>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div v-for="(bookmarkList, name) in userBookmarks" :key="name" style="display: flex" class="mb-5">
                                 <img :src=" 'data:image/png;base64,' + (photo || defaultDrinkImage)" alt="" class="border border-dark-subtle border-2 bottle-img me-3">
                                 <div style="height: 150px; display: flex; flex-direction: column;" >
                                     <h3 class="mt-1">{{ name }} </h3>
-                                    <p>List Description (Optional)</p>
+                                    <p> {{ bookmarkList.listDesc }} </p>
                                     <div style="display: flex; margin-top: auto" class="mb-1">
-                                        <a class="me-4" @click="toggleView" href="#">View List</a>
-                                        <a class="me-4" @click="toggleView" href="#">Edit List</a>
-                                        <a @click="toggleView" href="#">Delete List</a>
+                                        <a class="me-4" @click="toggleView(name)" href="#">View List</a>
+                                        <a class="me-4" href="#">Edit List</a>
+                                        <a href="#">Delete List</a>
                                     </div>
                                 </div>
                             </div>
@@ -243,7 +275,7 @@
                         <div v-else>
                             <div class="row">
                                 <div class="col-12 col-md-6">
-                                    <h3>Drinks I Have Tried</h3>
+                                    <h3>{{currentList}}</h3>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <button @click="toggleView" type="button" class="btn btn-outline-primary">Back to Lists</button>
@@ -255,7 +287,7 @@
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                     <div class="modal-body">
-                                        <h3>Add drink to list</h3>
+                                        <h3>Add Drink to {{currentList}}</h3>
                                         <!-- search bar  -->
                                         <div class="input-group mb-3">
                                             <input type="text" class="form-control" placeholder="Search for drink" aria-label="Recipient's username" aria-describedby="button-addon2">
@@ -269,10 +301,10 @@
                                 </div>
                             </div>
 
-                            <div style="display: flex" class="mb-3">
+                            <div style="display: flex" class="mb-3" v-for="(drinkName, index) in user.drinkLists[currentList].listItems" :key="index">
                                 <img :src=" 'data:image/png;base64,' + (photo || defaultDrinkImage)" alt="" class="border border-dark-subtle border-2 bottle-img me-3">
                                 <div style="height: 150px; display: flex; flex-direction: column;">
-                                    <h3>Bombay</h3>
+                                    <h3>{{drinkName}}</h3>
                                     <p>Drink information </p>
                                     <div style="display: flex; margin-top: auto" class="mb-0">
                                         <a @click="toggleView" href="#" style="text-decoration: none;">
@@ -288,7 +320,9 @@
                                 <div>
                                     <h2>
                                         3.8 
-                                        <svg class="mb-2" xmlns="http://www.w3.org/2000/svg" height="18" width="20.25" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M287.9 0c9.2 0 17.6 5.2 21.6 13.5l68.6 141.3 153.2 22.6c9 1.3 16.5 7.6 19.3 16.3s.5 18.1-5.9 24.5L433.6 328.4l26.2 155.6c1.5 9-2.2 18.1-9.7 23.5s-17.3 6-25.3 1.7l-137-73.2L151 509.1c-8.1 4.3-17.9 3.7-25.3-1.7s-11.2-14.5-9.7-23.5l26.2-155.6L31.1 218.2c-6.5-6.4-8.7-15.9-5.9-24.5s10.3-14.9 19.3-16.3l153.2-22.6L266.3 13.5C270.4 5.2 278.7 0 287.9 0zm0 79L235.4 187.2c-3.5 7.1-10.2 12.1-18.1 13.3L99 217.9 184.9 303c5.5 5.5 8.1 13.3 6.8 21L171.4 443.7l105.2-56.2c7.1-3.8 15.6-3.8 22.6 0l105.2 56.2L384.2 324.1c-1.3-7.7 1.2-15.5 6.8-21l85.9-85.1L358.6 200.5c-7.8-1.2-14.6-6.1-18.1-13.3L287.9 79z"/></svg>
+                                        <svg class="mb-2" xmlns="http://www.w3.org/2000/svg" height="18" width="20.25" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                            <path d="M287.9 0c9.2 0 17.6 5.2 21.6 13.5l68.6 141.3 153.2 22.6c9 1.3 16.5 7.6 19.3 16.3s.5 18.1-5.9 24.5L433.6 328.4l26.2 155.6c1.5 9-2.2 18.1-9.7 23.5s-17.3 6-25.3 1.7l-137-73.2L151 509.1c-8.1 4.3-17.9 3.7-25.3-1.7s-11.2-14.5-9.7-23.5l26.2-155.6L31.1 218.2c-6.5-6.4-8.7-15.9-5.9-24.5s10.3-14.9 19.3-16.3l153.2-22.6L266.3 13.5C270.4 5.2 278.7 0 287.9 0zm0 79L235.4 187.2c-3.5 7.1-10.2 12.1-18.1 13.3L99 217.9 184.9 303c5.5 5.5 8.1 13.3 6.8 21L171.4 443.7l105.2-56.2c7.1-3.8 15.6-3.8 22.6 0l105.2 56.2L384.2 324.1c-1.3-7.7 1.2-15.5 6.8-21l85.9-85.1L358.6 200.5c-7.8-1.2-14.6-6.1-18.1-13.3L287.9 79z"/>
+                                        </svg>
                                     </h2>
                                 </div>
                             </div>
@@ -306,9 +340,9 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-check" v-for="(listItems, listName) in user.drinkLists" :key="listName">
-                            <input class="form-check-input" type="checkbox" :value="listName" id="flexCheckDefault" 
+                            <input class="form-check-input" type="checkbox" :value="listName" :id="listName" 
                                 v-model="selectedBookmarkList">
-                            <label class="form-check-label" for="flexCheckDefault">
+                            <label class="form-check-label" :for="listName">
                                 {{listName}}
                             </label>
                         </div>
@@ -364,6 +398,9 @@ export default {
             bookmarkStatus: {},
             bookmarkModalItem: "",
             selectedBookmarkList: [],
+            currentList: "",
+            newListName: "",
+            newListDesc: "",
             // to change
             recentActivity: ["Ube Cream Liqueur", "Nikka From The Barrel"],
         };
@@ -428,8 +465,9 @@ export default {
             // convert the array into string with , as delimeter
             this.drinkOfChoice = this.user.choiceDrinks.join(", ");
         },
-        toggleView() {
+        toggleView(name) {
             this.showCurrentContent = !this.showCurrentContent; // Toggle the value
+            this.currentList = name;
         },
         async loadFile(event) {
 
@@ -481,9 +519,13 @@ export default {
         }, 
         // checks if an item has been bookmarked
         async checkBookmark(listingName) {
+            console.log(this.userBookmarks);
             for (const category of Object.values(this.userBookmarks)) {
-                if (category.includes(listingName)) {
-                    return true;
+                if (category.listItems) {
+                    console.log(category.listItems.includes(listingName));
+                    if (category.listItems.includes(listingName)) {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -497,19 +539,19 @@ export default {
                 console.error('Error fetching bookmark status:', error);
                 // Handle error if needed
             }
-        },
-        createBookmarkList() {
-            // create a new bookmark list for the user
+            console.log(this.bookmarkStatus);
         },
         checkItem(listing) {
             this.bookmarkModalItem = listing;
             // if item is in userbookmark list, push the bookmark into the selectedBookmarkList
             for (const listName in this.userBookmarks) {
                 if (Object.hasOwnProperty.call(this.userBookmarks, listName)) {
-                    const bookmarkItems = this.userBookmarks[listName];
-                    if (bookmarkItems.includes(listing)) {
-                        if (!this.selectedBookmarkList.includes(listName)) {
-                            this.selectedBookmarkList.push(listName);
+                    const bookmarkItems = this.userBookmarks[listName].listItems;
+                    if (bookmarkItems) {
+                        if (bookmarkItems.includes(listing)) {
+                            if (!this.selectedBookmarkList.includes(listName)) {
+                                this.selectedBookmarkList.push(listName);
+                            }
                         }
                     } else {
                         if (this.selectedBookmarkList.includes(listName)) {
@@ -519,9 +561,11 @@ export default {
                     }
                 }
             }
+            console.log(listing);
+            console.log(this.selectedBookmarkList);
         },
         checkBookmarkList(listName, bookmarkModalItem) {
-            if (this.userBookmarks[listName].includes(bookmarkModalItem)) {
+            if (this.userBookmarks[listName].listItems.includes(bookmarkModalItem)) {
                 return true;
             }
             return false;
@@ -530,8 +574,9 @@ export default {
             // add or delete the item from the user's bookmark list
             for (const listName in this.userBookmarks) {
                 if (Object.hasOwnProperty.call(this.userBookmarks, listName)) {
-                    const bookmarkItems = this.userBookmarks[listName];
+                    const bookmarkItems = this.userBookmarks[listName].listItems;
                     if (this.selectedBookmarkList.includes(listName)) {
+                        
                         if (!bookmarkItems.includes(this.bookmarkModalItem)) {
                             bookmarkItems.push(this.bookmarkModalItem);
                         }
@@ -546,7 +591,7 @@ export default {
             console.log(this.userBookmarks);
 
             try {
-                const response = await this.$axios.post('http://127.0.0.1:5100/editBookmark', 
+                const response = await this.$axios.post('http://127.0.0.1:5100/updateBookmark', 
                     {
                         userID: this.userID,
                         bookmark: this.userBookmarks,
@@ -562,6 +607,30 @@ export default {
             
             window.location.reload();
 
+
+        },
+        async addNewList() {
+            // take the new list name and new list description, and post it to the database
+            this.userBookmarks[this.newListName] = {};
+            this.userBookmarks[this.newListName].listDesc = this.newListDesc;
+            this.userBookmarks[this.newListName].listItems = [];
+
+            try {
+                const response = await this.$axios.post('http://127.0.0.1:5100/updateBookmark', 
+                    {
+                        userID: this.userID,
+                        bookmark: this.userBookmarks,
+                    }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                console.log(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+            
+            window.location.reload();
 
         },
 

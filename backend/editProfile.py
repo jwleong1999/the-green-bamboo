@@ -61,8 +61,8 @@ def editDetails():
         ), 500
     
 
-@app.route('/editBookmark', methods=['POST'])
-def editBookmark():
+@app.route('/updateBookmark', methods=['POST'])
+def updateBookmark():
     data = request.get_json()
     print(data)
     userID = data['userID']
