@@ -99,7 +99,7 @@ def submitModRequest():
 
     try: 
         submitReq = db.modRequests.insert_one({
-            'userID': userID,
+            'userID': ObjectId(userID),
             'drinkType': drinkType,
             'modDesc': modDesc
         })
