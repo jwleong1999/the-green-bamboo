@@ -145,6 +145,29 @@ body {
     right: 15px;
 }
 
+.add-review-photo-container {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    margin: 20px;
+}
+
+.add-review-photo-background {
+    width: 100px;
+    height: 100px;            
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.8;
+    background-color: lightgrey;
+}
+
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .rating-text, .bi-star-fill {
     color: #DD9E54;
 }

@@ -161,10 +161,18 @@
                                 <p class="mb-2"> <u> Category </u> </p>
                                 <h5 class="text-body-secondary"> <b> {{ specified_listing["typeCategory"] }} </b> </h5>
                             </div>
-                            <!-- age -->
+                            <!-- age --> 
                             <div class="col-2 text-start">
-                                <p class="mb-2"> <u> Age </u> </p>
-                                <h5 class="text-body-secondary"> <b>  {{ specified_listing["age"] }} </b> </h5>
+                                <!-- for wine listings -->
+                                <div v-if="specified_listing['drinkType'] == 'Wine'">
+                                    <p class="mb-2"> <u> Vintage </u> </p> <!-- to change this to calculate the age -->
+                                    <h5 class="text-body-secondary"> <b>  {{ specified_listing["age"] }} </b> </h5>
+                                </div>
+                                <!-- for all other listings  -->
+                                <div v-else>
+                                    <p class="mb-2"> <u> Age </u> </p> 
+                                    <h5 class="text-body-secondary"> <b>  {{ specified_listing["age"] }} </b> </h5>
+                                </div>
                             </div>
                             <!-- country of origin -->
                             <div class="col-4 text-start">
@@ -197,22 +205,31 @@
                 <!-- more information (average rating, would recommend, would drink again) -->
                 <div class="row pt-3">
                     <div class="col-7">
-                        <!-- average rating -->
-                        <div class="col-4 text-start">
+                        <div class="row">
+                            <!-- average rating -->
+                            <div class="col-4 text-start">
                                 <p class="mb-2"> <u> Average Rating </u> </p>
-                                <h5 class="text-body-secondary rating-text ">
+                                <h5 class="text-body-secondary rating-text">
                                     {{ getRatings(specified_listing) }}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                         <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                     </svg>
                                 </h5>
                             </div>
-
-                        <!-- would recommend -->
-
-                        <!-- would drink again -->
+                            <!-- would recommend -->
+                            <div class="col-4 text-start">
+                                <p class="mb-2"> <u> Would Recommend </u> </p>
+                                <h5 class="text-body-secondary rating-text"> <b> 88% </b> </h5>
+                            </div>
+                            <!-- would drink again -->
+                            <div class="col-4 text-start">
+                                    <p class="mb-2"> <u> Would Drink Again </u> </p>
+                                    <h5 class="text-body-secondary rating-text"> <b> 83% </b> </h5>
+                            </div>
+                        </div>
                     </div>
 
+                    <!-- add your review -->
                     <div class="col-5">
                         <div class="d-grid gap-2">
                             <button class="btn primary-btn-less-round btn-lg"> 
@@ -223,9 +240,60 @@
                             </button>
                         </div>
                     </div>
-
-
                 </div>
+
+                <hr>
+
+                <!-- photos posted by other users -->
+                <div class="row text-start">
+                    <div class="col">
+                        <div class="d-flex justify-content-start">
+                            <!-- add new photo -->
+                            <div class="add-review-photo-container">
+                                <div class="add-review-photo-background centered rounded" v-on:click="addPhoto">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <!-- display other photos -->
+                            <!-- [TODO] THIS FOLLOWING PART IS HARDCODED FOR NOW (FOR UI SAKE), need to loop thru db to get the photos and display here -->
+                            <div class="add-review-photo-container">
+                                <div class="add-review-photo-background centered rounded">
+                                    
+                                </div>
+                            </div>
+                            <div class="add-review-photo-container">
+                                <div class="add-review-photo-background centered rounded">
+                                    
+                                </div>
+                            </div>
+                            <div class="add-review-photo-container">
+                                <div class="add-review-photo-background centered rounded">
+                                    
+                                </div>
+                            </div>
+                            <div class="add-review-photo-container">
+                                <div class="add-review-photo-background centered rounded">
+                                    
+                                </div>
+                            </div>
+                            <div class="add-review-photo-container">
+                                <div class="add-review-photo-background centered rounded">
+                                    
+                                </div>
+                            </div>
+                            <div class="add-review-photo-container">
+                                <div class="add-review-photo-background centered rounded">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
                 
             </div> <!-- end of producer information -->
             
@@ -495,7 +563,12 @@
                     return total + rating["rating"];
                 }, 0) / ratings.length;
                 return averageRating;
-        },
+            },
+
+            // add user's uploaded photo to database (TO BE IMPLEMENTED)
+            addPhoto() {
+                alert("This feature is not yet implemented.");
+            },
         },
     };
 </script>
