@@ -88,6 +88,39 @@ def updateBookmark():
                 "message": "An error occurred updating the image."
             }
         ), 500
+    
+@app.route('/submitModRequest', methods=['POST'])
+def submitModRequest():
+    data = request.get_json()
+    print(data)
+    userID = data['userID']
+    drinkType = data['drinkType']
+    modDesc = data['modDesc']
+
+    try: 
+        submitReq = db.modRequests.insert_one({
+            'userID': userID,
+            'drinkType': drinkType,
+            'modDesc': modDesc
+        })
+
+        return jsonify(
+            {   
+                "code": 201,
+                "data": userID
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "data": userID
+                },
+                "message": "An error occurred updating the image."
+            }
+        ), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5100)

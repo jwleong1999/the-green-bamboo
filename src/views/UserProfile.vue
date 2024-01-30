@@ -37,10 +37,10 @@
                     <div class="row mt-3">
                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
                         <button class="btn btn-warning mt-3">View My Analytics</button>
-                        <a href="#" class="mt-3">Want to be a moderator? Apply here!</a>
+                        <a href="#" class="mt-3" data-bs-toggle="modal" data-bs-target="#applyModerator">Want to be a moderator? Apply here!</a>
                     </div>
 
-                    <!-- edit profile modal -->
+                    <!-- editProfileModal start -->
                     <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
@@ -93,6 +93,34 @@
                             </div>
                         </div>
                     </div>
+                    <!-- editProfileModal end -->
+
+                    <!-- applyModerator start -->
+                    <div class="modal fade" id="applyModerator" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="text-end me-2 mt-2">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                            <div class="modal-body text-center">
+                                <h3>Want to become a moderator and help shape the global drinks community?</h3>
+                                <a href="#" style="font-style: italic;">Click here to learn more about being a moderator</a>
+                                <br/>
+                                <h5>What Drinks Category Are You Applying to Moderate?</h5>
+                                <select class="form-select" aria-label="Default select example" v-model="modCat">
+                                    <option v-for="(type, index) in drinkType" :key="index" :value="type">{{type}}</option>
+                                </select>
+                                <h5>What's your experience with the chosen category and why do you want to be a moderator?</h5>
+                                <div class="mb-3">
+                                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" v-model="modDesc"></textarea>
+                                </div>
+                                <btn class="btn btn-primary" data-bs-dismiss="modal" @click="submitModeratorApplication">Submit Moderator Request</btn>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- applyModerator end -->
+
 
                     <!-- badges -->
                     <div class="mt-3">
@@ -625,6 +653,23 @@ export default {
 
         },
 
+        async submitModeratorApplication() {
+            try {
+                const response = await this.$axios.post('http://127.0.0.1:5100/submitModRequest', 
+                    {
+                        userID: this.userID,
+                        drinkType: this.modCat,
+                        modDesc: this.modDesc,
+                    }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                console.log(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        },
     },
 };
 </script>
