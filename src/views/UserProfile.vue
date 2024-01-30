@@ -554,6 +554,7 @@ export default {
 
             reader.onloadend = async () => {
                 this.selectedImage = reader.result;
+                console.log(reader.result)
                 const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
 
                 this.image64 = base64String;
@@ -566,8 +567,6 @@ export default {
         
         },
         async saveChangesDetails() {
-            window.location.reload();
-
             if (this.image64 == null) {
                 this.image64 = this.user["profile_picture"];
             }
@@ -586,7 +585,9 @@ export default {
                 console.log(response.data);
             } catch (error) {
                 console.error(error);
-            }        
+            }
+
+            window.location.reload();
         },
         cancelChanges() {
             this.selectedDrinks = this.user.choiceDrinks;
