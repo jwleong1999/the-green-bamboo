@@ -81,7 +81,7 @@
                                             <!-- details -->
                                             <div class="col-8 ps-5">
                                                 <!-- review -->
-                                                <label for="input">Enter Lisitng Name:</label>
+                                                <label for="input">Enter Listing Name:</label>
                                                 <div class="row">
                                                     <div class="mb-3">
                                                         <input type="Expression Name" class="form-control" id="exampleFormControlInput1" v-model="tempExpressionName">
