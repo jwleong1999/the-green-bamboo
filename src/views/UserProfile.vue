@@ -554,7 +554,6 @@ export default {
 
             reader.onloadend = async () => {
                 this.selectedImage = reader.result;
-                console.log(reader.result)
                 const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
 
                 this.image64 = base64String;
