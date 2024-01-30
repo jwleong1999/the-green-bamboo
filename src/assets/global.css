@@ -58,6 +58,12 @@ body {
     border: 4px solid #535C72;
 }
 
+.primary-btn-less-round {
+    color: whitesmoke;
+    background-color: #535C72;
+    border-radius: 10px;
+}
+
 .primary-square {
     color: whitesmoke;
     background-color: #535C72;
@@ -172,4 +178,8 @@ body {
 
 .no-margin {
     margin: 0px
+}
+
+.no-padding {
+    padding: 0px
 }

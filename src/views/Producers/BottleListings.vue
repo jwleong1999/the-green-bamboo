@@ -103,12 +103,12 @@
     <div class="container pt-5">
         <div class="row">
             <!-- producer information -->
-            <div class="col-9">
+            <div class="col-9 no-margin">
                 <!-- header -->
-                <div class="row"> <!-- TODO: edit this information (NEXT SPRINT) -->
+                <div class="row">
                     <!-- image -->
                     <div class="col-3 image-container">
-                        <img src="../../../Images/Sample/beer.png" style="width: 200px; height: 200px;" class="img-border">
+                        <img src="../../../Images/Drinks/Placeholder.png" style="width: 200px; height: 200px;" class="img-border">
                     </div>
                     <!-- details -->
                     <div class="col-9 text-start">
@@ -121,24 +121,112 @@
                             </div>
                             <!-- expression name -->
                             <div class="row">
-                                <div class="col">
+                                <div class="col-9">
                                     <h3 class="text-body-secondary"> <b> {{ specified_listing["listingName"] }} </b> </h3>
+                                </div>
+                                <!-- suggest edit & report duplicate -->
+                                <div class="col-3">
+                                    <p class="text-body-secondary no-margin text-decoration-underline fst-italic"> Suggest Edit </p>
+                                    <p class="text-body-secondary no-margin text-decoration-underline fst-italic"> Report Duplicate </p>
                                 </div>
                             </div>
                             <!-- producer & bottler -->
                             <div class="row">
                                 <!-- producer -->
-                                <div class="col-6">
+                                <div class="col-5">
                                     <h5 class="text-body-secondary"> <u> {{ getProducerName(specified_listing["producerID"]) }} </u> </h5>
                                 </div>
                                 <!-- bottler -->
-                                <div class="col-6">
+                                <div class="col-4">
                                     <h5 class="text-body-secondary"> Bottler: <u> {{ specified_listing["bottler"] }} </u>  </h5>
+                                </div>
+                            </div>
+                            <!-- description -->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="py-2"></div>
+                                    <p> {{ specified_listing["officialDesc"] }} </p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- more information (category, age, country of origin, abv, list buttons & bookmark)-->
+                <div class="row pt-4">
+                    <div class="col-7">
+                        <div class="row">
+                            <!-- category -->
+                            <div class="col-4 text-start">
+                                <p class="mb-2"> <u> Category </u> </p>
+                                <h5 class="text-body-secondary"> <b> {{ specified_listing["typeCategory"] }} </b> </h5>
+                            </div>
+                            <!-- age -->
+                            <div class="col-2 text-start">
+                                <p class="mb-2"> <u> Age </u> </p>
+                                <h5 class="text-body-secondary"> <b>  {{ specified_listing["age"] }} </b> </h5>
+                            </div>
+                            <!-- country of origin -->
+                            <div class="col-4 text-start">
+                                <p class="mb-2"> <u> Country of Origin </u> </p>
+                                <h5 class="text-body-secondary"> <b> {{ specified_listing["originCountry"] }} </b> </h5>
+                            </div>
+                            <!-- abv -->
+                            <div class="col-2 text-start">
+                                <p class="mb-1"> <u> ABV </u> </p>
+                                <h5 class="text-body-secondary"> <b> {{ specified_listing["abv"] }} </b> </h5>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- have tried button -->
+                    <div class="col-2 pe-0">
+                        <div v-html="checkDrinkLists(specified_listing).buttons.haveTried" class="d-grid"> </div>
+                    </div>
+                    <!-- want to try button -->
+                    <div class="col-2 ps-0">
+                        <div v-html="checkDrinkLists(specified_listing).buttons.wantToTry" class="d-grid"> </div>
+                    </div>
+                    <!-- bookmark button -->
+                    <div class="col-1 text-end">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
+                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- more information (average rating, would recommend, would drink again) -->
+                <div class="row pt-3">
+                    <div class="col-7">
+                        <!-- average rating -->
+                        <div class="col-4 text-start">
+                                <p class="mb-2"> <u> Average Rating </u> </p>
+                                <h5 class="text-body-secondary rating-text ">
+                                    {{ getRatings(specified_listing) }}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                    </svg>
+                                </h5>
+                            </div>
+
+                        <!-- would recommend -->
+
+                        <!-- would drink again -->
+                    </div>
+
+                    <div class="col-5">
+                        <div class="d-grid gap-2">
+                            <button class="btn primary-btn-less-round btn-lg"> 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                                </svg>
+                                Add Your Review
+                            </button>
+                        </div>
+                    </div>
+
+
+                </div>
+                
             </div> <!-- end of producer information -->
             
             <!-- where to try & 88 bamboo's review -->
@@ -192,10 +280,18 @@
         data() {
             return {
                 // data from database
+                countries: [],
                 listings: [],
                 producers: [],
+                reviews: [],
                 users: [],
                 venues: [],
+                venuesAPI: [],
+                drinkTypes: [],
+                requestListings: [],
+                requestEdits: [],
+                modRequests: [],
+
                 // search
                 search: false,
                 searchInput: '',
@@ -207,6 +303,16 @@
                 specified_listing: {},
                 // where to buy
                 producerListings: [],
+
+                // customization for drinkLists buttons
+                // [TODO] get drink list of user, for now is hardcoded
+                drinkList:  {
+                                "haveTried": ["Harmony Collection Inspired by Intense Arabica"],
+                                "wantToTry": ["Catnip Gin No. 2", "Five Farms Irish Cream Liqueur"]
+                            },
+                haveTried: false,
+                wantToTry: false,
+
             };
         },
         mounted() {
@@ -223,7 +329,17 @@
 
             // load data from database
             async loadData() {
-                // Listings
+                // countries
+                // _id, originCountry
+                try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
+                        this.countries = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                // listings
+                // _id, listingName, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, officialDesc, sourceLink, photo
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
                         this.listings = response.data;
@@ -234,15 +350,26 @@
                     catch (error) {
                         console.error(error);
                     }
-                // Producers
-                    try {
+                // producers
+                // _id, producerName, producerDesc, originCountry, statusOB, mainDrinks
+                try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
                         this.producers = response.data;
                     } 
                     catch (error) {
                         console.error(error);
                     }
-                // Users
+                // reviews
+                // _id, userID, reviewTarget, date, rating, reviewDesc, taggedUsers, reviewTitle, reviewType, flavorTag, photo
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
+                        this.reviews = response.data;
+                    }
+                    catch (error) {
+                        console.error(error);
+                    }
+                // users
+                // _id, username, displayName, choiceDrinks, drinkLists, modType, photo
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
                         this.users = response.data;
@@ -250,11 +377,58 @@
                     catch (error) {
                         console.error(error);
                     }
-                // Venues
+                // venues
+                // _id, venueName, venueDesc, origin
+                // Country, address, openingHours
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
-                        this.users = response.data;
+                        this.venues = response.data;
                     } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                // venuesAPI
+                // _id, venueName, venueDesc, originCountry
+                try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getVenuesAPI');
+                        this.venuesAPI = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                // drinkTypes
+                // _id, drinkType, typeCategory
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
+                        this.drinkTypes = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                // requestListings
+                // _id, listingName, producerNew, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, sourceLink, brandRelation, reviewStatus, userID, photo
+                    try {
+                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
+                            this.requestListings = response.data;
+                        } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                // requestEdits
+                // _id, duplicateLink, editDesc, sourceLink, brandRelation, listingID, userID, reviewStatus
+                    try {
+                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdits');
+                            this.requestEdits = response.data;
+                        } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                // modRequests
+                // _id, userID, drinkType, modDesc
+                    try {
+                            const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
+                            this.modRequests = response.data;
+                        } 
                     catch (error) {
                         console.error(error);
                     }
@@ -281,6 +455,47 @@
                     return null;
                 }
             },
+
+            // check if user has already added listing to shelf, add colour to button accordingly
+            checkDrinkLists(listing) {
+                const haveTried = this.drinkList.haveTried.includes(listing.listingName);
+                const wantToTry = this.drinkList.wantToTry.includes(listing.listingName);
+
+                const haveTriedButton = `
+                <button type="button" class="btn custom-drink-list-btn rounded-0 ${haveTried ? 'disabled' : ''}">
+                    Have tried
+                </button>
+                `;
+
+                const wantToTryButton = `
+                <button type="button" class="btn custom-drink-list-btn rounded-0 ${wantToTry ? 'disabled' : ''}">
+                    Want to try
+                </button>
+                `;
+
+                return {
+                    buttons: {
+                        haveTried: haveTriedButton,
+                        wantToTry: wantToTryButton,
+                    }
+                }
+            },
+
+            // get ratings for a listing
+            getRatings(listing) {
+                const ratings = this.reviews.filter((rating) => {
+                    return rating["reviewTarget"] == listing["listingName"];
+                });
+                // if there are no ratings
+                if (ratings.length == 0) {
+                    return "-";
+                }
+                // else there are ratings
+                const averageRating = ratings.reduce((total, rating) => {
+                    return total + rating["rating"];
+                }, 0) / ratings.length;
+                return averageRating;
+        },
         },
     };
 </script>
