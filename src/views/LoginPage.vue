@@ -340,47 +340,47 @@
                         }
                     }
 
-                    // check if password matches username
-                    let passwordMatch = false
-                    let hashedPassword = this.hashPassword(this.ID, this.password)
+                    // if role exists, check if password matches username
+                    if (this.errors.length == 0) {
+                        let passwordMatch = false
+                        let hashedPassword = this.hashPassword(this.ID, this.password)
 
-                    console.log(hashedPassword)
-
-                    // [user]
-                    if (this.role == "user") {
-                        for (let i = 0; i < this.users.length; i++) {
-                            if (this.users[i].username == this.ID && this.users[i].hashedPassword == hashedPassword) {
-                                passwordMatch = true
-                                break
+                        // [user]
+                        if (this.role == "user") {
+                            for (let i = 0; i < this.users.length; i++) {
+                                if (this.users[i].username == this.ID && this.users[i].hashedPassword == hashedPassword) {
+                                    passwordMatch = true
+                                    break
+                                }
+                            }
+                            // password does not match username
+                            if (!passwordMatch) {
+                                this.errors.push("Password does not match username")
                             }
                         }
-                        // password does not match username
-                        if (!passwordMatch) {
-                            this.errors.push("Password does not match username")
-                        }
-                    }
-                    // [producer]
-                    else if (this.role == "producer") {
-                        for (let i = 0; i < this.producers.length; i++) {
-                            if (this.producers[i].producerName == this.ID && this.producers[i].hashedPassword == hashedPassword) {
-                                passwordMatch = true
-                                break
+                        // [producer]
+                        else if (this.role == "producer") {
+                            for (let i = 0; i < this.producers.length; i++) {
+                                if (this.producers[i].producerName == this.ID && this.producers[i].hashedPassword == hashedPassword) {
+                                    passwordMatch = true
+                                    break
+                                }
+                            }
+                            if (!passwordMatch) {
+                                this.errors.push("Password does not match username")
                             }
                         }
-                        if (!passwordMatch) {
-                            this.errors.push("Password does not match username")
-                        }
-                    }
-                    // [venue]
-                    else if (this.role == "venue") {
-                        for (let i = 0; i < this.venues.length; i++) {
-                            if (this.venues[i].venueName == this.ID && this.venues[i].hashedPassword == hashedPassword) {
-                                passwordMatch = true
-                                break
+                        // [venue]
+                        else if (this.role == "venue") {
+                            for (let i = 0; i < this.venues.length; i++) {
+                                if (this.venues[i].venueName == this.ID && this.venues[i].hashedPassword == hashedPassword) {
+                                    passwordMatch = true
+                                    break
+                                }
                             }
-                        }
-                        if (!passwordMatch) {
-                            this.errors.push("Password does not match username")
+                            if (!passwordMatch) {
+                                this.errors.push("Password does not match username")
+                            }
                         }
                     }
                 }
