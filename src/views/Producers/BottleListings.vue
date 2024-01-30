@@ -116,7 +116,7 @@
                             <!-- drink category -->
                             <div class="row">
                                 <div class="col">
-                                    <h5 class="text-body-secondary fst-italic"> {{ specified_listing["typeCategory"] }} </h5>
+                                    <h5 class="text-body-secondary fst-italic"> {{ specified_listing["drinkType"] }} </h5>
                                 </div>
                             </div>
                             <!-- expression name -->
