@@ -51,10 +51,21 @@
                             <!-- discover -->
                             <div class="col-4">
                                 <div class="d-grid gap-2">
-                                    <router-link :to="{ path: '/Producer/Producer-Edit-Listing/' }">
+                                     <!-- <router-link :to="{ path: '/Producer/Producer-Edit-Listing/' }">
                                                 <div class="col-mb-6 md-3" style="padding-bottom: 10px;">
                                                     <a class="btn secondary-btn btn-md"> Back to listings </a>
                                                 </div>
+                                    </router-link>  -->
+                                    <router-link :to="{ path: '/Producer/Producer-Edit-Listing/' }" class="text-secondary">
+                                    <span class="pe-2">
+                                        
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16" v-on:click="previousListing">
+                                            <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+                                        </svg>
+                                        <h5 style="display: inline-block;"> Back to listings </h5> 
+                                        
+                                        
+                                    </span>
                                     </router-link>
                                 </div>
                             </div>
@@ -71,7 +82,10 @@
                                         <div class="row">
                                             <!-- image -->
                                             <div class="col-4 image-container">
-                                                <img src="../../../Images/Sample/beer.png" style="width: 300px; height: 300px;" class="img-border">
+
+                                                <img v-if="image!=''" :src="'data:image/png;base64,'+image64"  style="width: 300px; height: 300px;" class="img-border">
+                                                <img v-else src="../../../Images/Drinks/Placeholder.png" style="width: 300px; height: 300px;" class="img-border">
+
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon" viewBox="0 0 16 16">
                                                     <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
                                                 </svg>
@@ -89,18 +103,9 @@
                                                 </div>
                                                 <div v-if="independentStatus" class="row">
                                                     <label for="input">Enter Producer Name:</label>
-                                                    <div class="mb-3">
+                                                    <div class="mb-1">
                                                         <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler">
                                                     </div>
-
-                                                </div>
-                                                <div v-else class="row">
-                                                    <label for="input">Enter Producer Name:</label>
-                                                    <div class="mb-3">
-                                                        <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
                                                     <label for="checkbox">Is the producer independent?</label>
                                                     <div class="mb-3">
                                                         <div class="form-check">
@@ -110,6 +115,28 @@
                                                             </label>
                                                         </div>
                                                     </div>
+                                                </div>
+                                                <div v-else class="row">
+                                                    <label for="input">Enter Producer Name:</label>
+                                                    <div class="mb-1">
+                                                        <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler" disabled>
+                                                    </div>
+                                                    <label for="checkbox">Is the producer independent?</label>
+                                                    <div class="mb-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="checkbox" v-model="independentStatus" @change="independentBottler">
+                                                            <label class="form-check-label" for="checkbox">
+                                                                Independent
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col mb-3">
+                                                        <label for="input">Enter Profile Photo:</label>
+                                                        <input class="form-control" id="file" type="file" @change="loadFile" ref="fileInput"/>
+                                                    </div>
+
                                                 </div>
 
                                                 <!-- to input checkbox to indicate producer is independent or dependent -->
@@ -134,8 +161,8 @@
                                                         <div class="input-group">
                                                             <select class="form-select" id="inputGroupSelect01" v-model="tempDrinkType" @change="getDrinkCategoryList">
                                                                 
-                                                                <option v-for="taste in drinkCategories" :key="taste['drinkType']" :value="taste['drinkType']">
-                                                                {{ taste['drinkType']  }}
+                                                                <option v-for="taste in drinkCategoriesList" :key="taste" :value="taste">
+                                                                {{ taste }}
                                                                 </option>
                                                             </select>
 
@@ -157,7 +184,6 @@
                                                     </div>
                                                 </div>
                                                 
-
                                                 <div class="row">
                                                     <label for="input">Enter Bottle Age :</label>
                                                     <div class="col-md-6 mb-3">
@@ -229,7 +255,8 @@
                 searchResults: [],
                 filteredListings: [],
                 editable: [],
-                drinkCategories:[],
+                drinkCategories:null,
+                drinkCategoriesList:[],
                 listingID:null,
                 updateStatus: false,
                 tempExpressionName: '',
@@ -238,7 +265,7 @@
                 tempCountry: '',
                 tempDrinkType: '',
                 tempTypeCategory:"" ,
-                tempTypeCategoryList: "EMPTY",
+                tempTypeCategoryList: [],
                 tempAge: '',
                 tempABV: '',
                 tempReviewLink: '',
@@ -246,7 +273,10 @@
                 tempDescription: '',
                 tempBottler: '',
                 independentStatus:false,
-                responseCode: ""
+                responseCode: "",
+                image64: '',
+                selectedImage:'',
+
                 
 
 
@@ -306,7 +336,7 @@
                     this.tempReviewLink = this.editable["reviewLink"];
                     this.tempDescription = this.editable["officialDesc"];
                     this.tempSourceLink = this.editable["sourceLink"];
-                    this.photo = this.editable["photo"];
+                    this.image64 = this.editable["photo"];
                     // this.tempTypeCategoryList=this.editable
                 } 
                 catch (error) {
@@ -356,7 +386,11 @@
                 try {
                     const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
                     this.drinkCategories = response.data;
-                    this.tempTypeCategoryList=this.drinkCategories.find(cat => cat.drinkType == this.tempDrinkType).typeCategory;
+                    for (let drink of this.drinkCategories) {
+                        this.drinkCategoriesList.push(drink.drinkType);
+                    }
+                    this.drinkCategoriesList=this.drinkCategoriesList.sort();
+                    this.tempTypeCategoryList=this.drinkCategories.find(cat => cat.drinkType == this.tempDrinkType).typeCategory.sort();
                 } 
                 catch (error) {
                     console.error(error);
@@ -391,6 +425,23 @@
                 }
 
             },
+            async loadFile(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onloadend = async () => {
+                this.selectedImage = reader.result;
+                const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+
+                this.image64 = base64String;
+              
+                // console.log("image64");
+                // console.log(this.image64);
+
+            };
+            reader.readAsDataURL(file);
+        
+            },
             async updateListing(){
                 let updateAPI = `http://127.0.0.1:5003/updateListing/${this.listingID}`;
                 
@@ -402,7 +453,7 @@
                     "drinkType": this.tempDrinkType.trim(),
                     "abv": this.tempABV,
                     "officialDesc": this.tempDescription.trim(),
-                    "photo": this.photo.trim(),
+                    "photo": this.image64.trim(),
                     "age":this.tempAge.trim(),
                     "typeCategory": this.tempTypeCategory.trim(),
                     "reviewLink": this.tempReviewLink.trim(),
@@ -422,6 +473,7 @@
 
                 return response
             },
+
 
             
             // for search button
