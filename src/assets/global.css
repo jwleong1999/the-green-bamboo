@@ -35,6 +35,11 @@ body {
     background-color: #D9D9D9;
 }
 
+.default-text-no-background {
+    color: black;
+}
+
+
 .default-clickable-text {
     color: black;
     text-decoration: none;
@@ -205,4 +210,11 @@ body {
 
 .no-padding {
     padding: 0px
+}
+
+.profile-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
 }
