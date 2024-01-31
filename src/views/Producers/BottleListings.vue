@@ -232,7 +232,7 @@
                     <!-- add your review -->
                     <div class="col-5">
                         <div class="d-grid gap-2">
-                            <button class="btn primary-btn-less-round btn-lg"> 
+                            <button class="btn primary-btn-less-round btn-lg" data-bs-toggle="modal" data-bs-target="#reviewModal"> 
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
                                 </svg>
@@ -241,6 +241,46 @@
                         </div>
                     </div>
                 </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <!-- change modal header colour -->
+                                <div class="modal-header" style="background-color: #0480be">
+                                    <h5 class="modal-title" id="reviewModalLabel">Modal title</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <!-- This is where  -->
+                                <div class="modal-body">
+                                    <div class="container-fluid">
+                                        <div class = 'row justify-content-start'>
+                                            <div class="col-md-3"> 
+                                                <p>Language</p>
+                                                <div class="input-group">                                                    
+                                                    <select class="form-select" id="inputGroupSelect01">
+                                                        <!-- Add in the languages here -->
+                                                        <option selected>ninabei</option>
+                                                        <option selected>konichiwa</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class = 'row justify-content-start'>
+                                            <div class = "col-md-9">
+                                                <p>Review <span class="text-danger">*</span></p>
+                                                <textarea class="form-control" id="reviewTextarea" rows="3" placeholder="Min 20 characters"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary">Submit Review</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
 
                 <hr>
 
