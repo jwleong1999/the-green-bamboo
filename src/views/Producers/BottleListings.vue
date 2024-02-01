@@ -367,14 +367,16 @@
                     <div class="col-12">
                         <div class="square primary-square rounded p-3 mb-3">
                             <!-- header text -->
-                            <div class="square-inline">
-                                <h4 class="square-inline-text-start mr-auto"> Where to Buy </h4>
+                            <div class="square-inline text-start">
+                                <h4 class="mr-auto"> Where to Buy </h4>
                             </div>
                             <!-- body -->
                             <div class="text-start pt-2"> <!-- TODO: add hyperlink to link to producer page-->
                                 <!-- [function] where to buy -->
                                 <div v-for="producer in producerListings" v-bind:key="producer._id">
-                                    <p class="no-margin"> {{ getProducerName(producer) }} </p>
+                                    <a class="primary-clickable-text" v-bind:href="'../Producers/Profile-Page?id=' + `${producer.$oid}`">
+                                        <p class="reverse-clickable-text no-margin"> {{ getProducerName(producer) }} </p>
+                                    </a>
                                 </div>
                             </div>
                             <div class="py-5"></div>
@@ -384,8 +386,8 @@
                     <div class="col-12">
                         <div class="square secondary-square rounded p-3 mb-3">
                             <!-- header text -->
-                            <div class="square-inline">
-                                <h4 class="square-inline-text-start mr-auto"> 88 Bamboo's Review </h4>
+                            <div class="square-inline text-start">
+                                <h4 class="mr-auto"> 88 Bamboo's Review </h4>
                             </div>
                             <div class="py-2 text-start">
                                 <a :href="specified_listing['reviewLink']" class="text-left default-text-no-background">
@@ -432,9 +434,11 @@
                 searchTerm: '',
                 searchResults: [],
                 filteredListings: [],
+
                 // specified listing
                 listing_id: null,
                 specified_listing: {},
+
                 // where to buy
                 producerListings: [],
 
@@ -461,9 +465,18 @@
         methods: {
             // fetch specific listing data
             async created() {
-                // Get the query string parameters (listing ID) from the URL
-                const urlParams = new URLSearchParams(window.location.search);
-                this.listing_id = urlParams.get('id');
+                try {
+                    // Get the query string parameters (listing ID) from the URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    this.listing_id = urlParams.get('id');
+                    if (this.listing_id == null) {
+                        // redirect to page
+                        this.$router.push('/Users/Bottle-Listings');
+                    }
+                } 
+                catch (error) {
+                    console.error(error);
+                }
             },
 
             // load data from database
@@ -518,8 +531,7 @@
                         console.error(error);
                     }
                 // venues
-                // _id, venueName, venueDesc, origin
-                // Country, address, openingHours
+                // _id, venueName, venueDesc, originCountry, address, openingHours
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
                         this.venues = response.data;

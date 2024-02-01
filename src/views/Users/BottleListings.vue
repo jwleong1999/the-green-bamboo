@@ -255,7 +255,9 @@
                                             </div>
                                             <!-- producer -->
                                             <div class="row">
-                                                <h5> {{ getProducerName(listing) }} </h5> 
+                                                <a class="primary-clickable-text" v-bind:href="'../Producers/Profile-Page?id=' + `${listing.producerID.$oid}`">
+                                                    <h5> <b> {{ getProducerName(listing) }} </b> </h5>
+                                                </a>
                                             </div>
                                             <!-- review -->
                                             <div class="row pt-3">
@@ -450,11 +452,11 @@
         data() {
             return {
                 // data from database
-                countries: [],
+                // countries: [],
                 listings: [],
                 producers: [],
                 reviews: [],
-                users: [],
+                // users: [],
                 venues: [],
                 venuesAPI: [],
                 drinkTypes: [],
@@ -496,13 +498,13 @@
             async loadData() {
                 // countries
                 // _id, originCountry
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
-                        this.countries = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //     const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
+                    //     this.countries = response.data;
+                    // } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
                 // listings
                 // _id, listingName, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, officialDesc, sourceLink, photo
                     try {
@@ -534,32 +536,31 @@
                     }
                 // users
                 // _id, username, displayName, choiceDrinks, drinkLists, modType, photo
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
-                        this.users = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //     const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
+                    //     this.users = response.data;
+                    // } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
                 // venues
-                // _id, venueName, venueDesc, origin
-                // Country, address, openingHours
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
-                        this.venues = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                // _id, venueName, venueDesc, originCountry, address, openingHours
+                    // try {
+                    //     const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
+                    //     this.venues = response.data;
+                    // } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
                 // venuesAPI
                 // _id, venueName, venueDesc, originCountry
-                try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getVenuesAPI');
-                        this.venuesAPI = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                // try {
+                //         const response = await this.$axios.get('http://127.0.0.1:5000/getVenuesAPI');
+                //         this.venuesAPI = response.data;
+                //     } 
+                //     catch (error) {
+                //         console.error(error);
+                //     }
                 // drinkTypes
                 // _id, drinkType, typeCategory
                     try {
@@ -571,31 +572,31 @@
                     }
                 // requestListings
                 // _id, listingName, producerNew, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, sourceLink, brandRelation, reviewStatus, userID, photo
-                    try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
-                            this.requestListings = response.data;
-                        } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
+                    //         this.requestListings = response.data;
+                    //     } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
                 // requestEdits
                 // _id, duplicateLink, editDesc, sourceLink, brandRelation, listingID, userID, reviewStatus
-                    try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdits');
-                            this.requestEdits = response.data;
-                        } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdits');
+                    //         this.requestEdits = response.data;
+                    //     } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
                 // modRequests
                 // _id, userID, drinkType, modDesc
-                    try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
-                            this.modRequests = response.data;
-                        } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
+                    //         this.modRequests = response.data;
+                    //     } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
             },
             // Helper function for onkeyup search to reset filter
             helperSearch(){
