@@ -87,9 +87,9 @@
                           
                         </div>
 
-                        <form v-on:submit.prevent="updateListing" id="frm">
+                        <form class="needs-validation" v-on:submit.prevent="updateListing" id="frm" novalidate>
+
                             <div class="row">
-                                
                                 
                                 <div class="container text-start">
                                     <div class="p-3">
