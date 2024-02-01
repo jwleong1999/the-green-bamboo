@@ -236,17 +236,35 @@
                 </div>
 
                 <hr>
-
                 <!-- most popular (highest ratings) -->
-                <!-- <div v-for="drinkInfo in getMostPopular(producer_id)" v-bind:key="drinkInfo"> -->
-                    <!-- drinkInfo: [listing (object): average rating]
-                        listing (object): drinkInfo[0]
-                        average rating: drinkInfo[1]
-                    -->
-                    <!-- <img :src=" 'data:image/jpeg;base64,' + (drinkInfo[0]['photo'] || defaultProfilePhoto)" alt="" style="width: 200px; height: 200px;" class="img-border"> 
-                </div> -->
+                <h3 class="text-body-secondary text-start"> 
+                    <b> Most Popular </b> 
+                </h3>
+                <div class="container">
+                    <div class="row">
+                        <div v-for="drinkInfo in getMostPopular()" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container">
+                            <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromDrink(drinkInfo[0]) || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon" viewBox="0 0 16 16">
+                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- most discussed (most number of reviews) -->
+                <h3 class="text-body-secondary text-start"> 
+                    <b> Most Discussed </b> 
+                </h3>
+                <div class="container">
+                    <div class="row">
+                        <div v-for="drinkInfo in getMostPopular()" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container">
+                            <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromDrink(drinkInfo[0]) || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon" viewBox="0 0 16 16">
+                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- recently added -->
 
@@ -529,41 +547,100 @@
                 return num_reviews;
             },
 
+            getAllReviews(producerID) {
+                let allReviews = [];
+                for (const i in this.reviews) {
+                    let review_target = this.reviews[i].reviewTarget;
+                    let all_drinks = this.getAllDrinks(producerID);
+                    for (const j in all_drinks) {
+                        let drink_name = all_drinks[j].listingName;
+                        if (review_target == drink_name) {
+                            let review = this.reviews[i];
+                            allReviews.push(review);
+                        }
+                    }
+                }
+                return allReviews;
+            },
+
             // send questions that users ask to producers
             sendQuestion () {
                 alert("function not yet implemented!")
             },
 
-            // get average ratings for each listing
-            getRatings(listing) {
-                const ratings = this.reviews.filter((rating) => {
-                    return rating["reviewTarget"] == listing["listingName"];
-                });
-                // if there are no ratings
-                if (ratings.length > 0) {
-                    return "-";
+            // get compiled dictionary of ratings of each type of drink
+            getRatingsByType() {
+                let allReviews = this.getAllReviews(this.producer_id);
+                let drinkRatings = {}
+                // for each drink, add the rating to a list
+                for (let i in allReviews) {
+                    let review = allReviews[i];
+                    let drink_name = review["reviewTarget"];
+                    let rating = review["rating"];
+                    if (drinkRatings[drink_name]) {
+                        drinkRatings[drink_name].push(rating);
+                    }
+                    else {
+                        drinkRatings[drink_name] = [rating];
+                    }
                 }
-                // else there are ratings
-                const averageRating = ratings.reduce((total, rating) => {
-                    return total + rating["rating"];
-                }, 0) / ratings.length;
-                return averageRating;
+                return drinkRatings;
             },
 
-            // // get most popular drinks for a producer (based on average rating)
-            // getMostPopular(producerID) {
-            //     let allDrinks = this.getAllDrinks(producerID);
-            //     let drinkRatings = {}
-            //     // for each drink, get the average rating
-            //     for (let i in allDrinks) {
-            //         let listing = allDrinks[i];
-            //         let averageRating = this.getRatings(listing);
-            //         drinkRatings[listing] = averageRating;
-            //     }
-            //     // sort the drinks by average rating
-            //     drinkRatings = Object.entries(drinkRatings).sort((a, b) => b[1] - a[1]);
-            //     return drinkRatings;
-            // }
+            // get average ratings for each listing
+            getAverageRatings() {
+                // create a new object to store the average rating for each drink
+                const averageRatings = {};
+
+                // access all ratings
+                let drinkRatings = this.getRatingsByType(this.producer_id);
+
+                // iterate through each drink and its ratings
+                for (const [drink, ratings] of Object.entries(drinkRatings)) {
+                    // filter out "-" values and convert the rest to numbers
+                    const filteredRatings = ratings.filter(value => value !== "-").map(Number);
+                    // check if there are valid ratings to calculate the average
+                    if (filteredRatings.length > 0) {
+                        // calculate the average rating for each drink
+                        const averageRating = filteredRatings.reduce((sum, rating) => sum + rating, 0) / filteredRatings.length;
+                        // store the average rating in the new object
+                        averageRatings[drink] = averageRating;
+                    }
+                }
+
+                // convert averageRatings object to an array of [key, value] pairs
+                const averageRatingsArray = Object.entries(averageRatings);
+
+                // sort the array based on the average ratings in descending order
+                averageRatingsArray.sort((a, b) => b[1] - a[1]);
+
+                // convert the sorted array back to an object
+                const sortedAverageRatings = Object.fromEntries(averageRatingsArray);
+
+                return sortedAverageRatings;
+            },
+
+            getMostPopular() {
+                // get the average ratings
+                const averageRatings = this.getAverageRatings();
+
+                // get the first 5 items from the average ratings
+                const firstFiveItems = Object.entries(averageRatings).slice(0, 5);
+
+                return firstFiveItems;
+            },
+
+            // get photo from drink
+            getPhotoFromDrink(drinkName) {
+                let photo = ""
+                for (const i in this.listings) {
+                    let listingName = this.listings[i].listingName;
+                    if (drinkName == listingName) {
+                        photo = this.listings[i].photo;
+                    }
+                }
+                return photo;
+            },
         }
     };
 </script>

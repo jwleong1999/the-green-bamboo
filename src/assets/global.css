@@ -140,6 +140,10 @@ body {
     border-radius: 30px;
 }
 
+.img-no-border-rounded {
+    border-radius: 30px;
+}
+
 .image-container {
     position: relative;
 }
@@ -160,6 +164,23 @@ body {
 .add-review-photo-background {
     width: 100px;
     height: 100px;            
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.8;
+    background-color: lightgrey;
+}
+
+.add-drink-photo-container {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    margin: 20px;
+}
+
+.add-drink-photo-background {
+    width: 150px;
+    height: 150px;            
     position: absolute;
     top: 0;
     left: 0;
