@@ -110,7 +110,7 @@
                                             <!-- details -->
                                             <div class="col-8 ps-5">
                                                 <!-- review -->
-                                                <label for="input">Enter Listing Name:</label>
+                                                <label for="input">Enter Listing Name:</label><span class="text-danger">*</span>
                                                 <div class="row">
                                                     <div class="mb-3">
                                                         <input type="Expression Name" class="form-control" id="exampleFormControlInput1" v-model="tempExpressionName">
@@ -122,7 +122,7 @@
       
 
                                                 <div v-if="independentStatus" class="row">
-                                                    <label for="input">Enter Producer Name:</label>
+                                                    <label for="input">Enter Producer Name:</label><span class="text-danger">*</span>
                                                     <div class="mb-1">
                                                         <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler" >
                                                         <span v-if="missingBottler" class="text-danger">Please enter a producer name.</span>
@@ -139,7 +139,7 @@
                                                     </div>
                                                 </div>
                                                 <div v-else class="row">
-                                                    <label for="input">Enter Producer Name:</label>
+                                                    <label for="input">Enter Producer Name:<span class="text-danger">*</span></label>
                                                     <div class="mb-1">
                                                         <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler" disabled>
                                                     </div>
@@ -165,7 +165,7 @@
                                                 <div class="row">
                                                     
                                                     <div class=" mb-3">
-                                                        <label for="dropdown">Select Country of Origin:</label>
+                                                        <label for="dropdown">Select Country of Origin:</label><span class="text-danger">*</span>
                                                         <div class="input-group">
                                                             
                                                             <select class="form-select" id="inputGroupSelect01" v-model="tempCountry">
@@ -179,7 +179,7 @@
                                                 </div>    
                                                 <div class="row">
                                                     <div class="col-md-6 mb-3">
-                                                        <label for="dropdown">Select Drink Type:</label>
+                                                        <label for="dropdown">Select Drink Type:</label><span class="text-danger">*</span>
                                                         <div class="input-group">
                                                             <select class="form-select" id="inputGroupSelect01" v-model="tempDrinkType" @change="getDrinkCategoryList">
                                                                 <option v-for="taste in drinkCategoriesList" :key="taste" :value="taste">
@@ -190,7 +190,7 @@
                                                     </div>
                                                 
                                                     <div v-if="tempTypeCategoryList.length>1" class="col-md-6 mb-3"  >
-                                                        <label for="dropdown">Select Drink Type Category:</label>
+                                                        <label for="dropdown">Select Drink Type Category:</label><span class="text-danger">*</span>
                                                         <div class="col-md-6 mb-3">
                                                             <div class="input-group">
                                                                 <select class="form-select" id="inputGroupSelect01" v-model="tempTypeCategory">
@@ -201,7 +201,7 @@
                                                                 </select>
                                                                 <span v-if="missingTypeCategory" class="text-danger">Please select a type category.</span>
                                                             </div>
-                                                            {{ tempTypeCategory }}
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -212,7 +212,7 @@
                                                         <input type="Expression Name" class="form-control" id="age" v-model="tempAge">
                                                     </div>
                                                     
-                                                    <label for="input">Enter Bottle ABV (%):</label>
+                                                    <label for="input">Enter Bottle ABV (%):<span class="text-danger">*</span></label>
                                                     <div class="col-md-6 mb-3">
                                                         <input type="Expression Name" class="form-control" id="abv" v-model="tempABV" >
                                                         <span v-if="missingABV" class="text-danger">Please enter an ABV.</span>
@@ -221,7 +221,7 @@
                                                 </div>
                                                 
                                                 <div class="mb-3">
-                                                    <label for="input">Enter Bottle Description:</label>
+                                                    <label for="input">Enter Bottle Description:</label><span class="text-danger">*</span>
                                                     <textarea class="form-control" id="exampleFormControlInput1" v-model="tempDescription" style="height: 200px;" ></textarea>
                                                     <span v-if="missingDescription" class="text-danger">Please enter a Description.</span>
                                                 </div>
