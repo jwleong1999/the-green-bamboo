@@ -89,6 +89,12 @@ body {
     border-radius: 10px;
 }
 
+.primary-btn-outline-thick {
+    color: #535C72;
+    background-color: whitesmoke;
+    border: 2px solid #535C72;
+}
+
 .secondary-btn {
     color: whitesmoke;
     background-color: #DD9E54;
@@ -102,10 +108,27 @@ body {
     border: 1px solid whitesmoke;
 }
 
+.secondary-btn-not-rounded {
+    color: whitesmoke;
+    background-color: #DD9E54;
+}
+
 .secondary-square {
     color: #535C72;
     background-color: whitesmoke;
     border: 3px solid #535C72;
+}
+
+.tertiary-btn {
+    color: whitesmoke;
+    background-color: #747D92;
+    border: 1px solid rgb(110, 110, 110);
+}
+
+.tertiary-btn:hover {
+    color: whitesmoke;
+    background-color: #535C72;
+    border: 1px solid rgb(110, 110, 110);
 }
 
 .custom-drink-list-btn {
@@ -258,4 +281,8 @@ body {
 
 .p-text-lg {
     font-size: 1.1rem;;
+}
+
+.question-box {
+    overflow-x: scroll;
 }

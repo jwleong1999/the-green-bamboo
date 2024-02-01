@@ -108,26 +108,44 @@
                 <div class="row">
                     <!-- image -->
                     <div class="col-3 image-container">
-                        <img :src=" 'data:image/jpeg;base64,' + (specified_producer['photo'] || defaultProfilePhoto)" alt="" style="width: 200px; height: 200px;" class="img-border">
+                        <img :src=" 'data:image/jpeg;base64,' + (specified_producer['photo'] || defaultProfilePhoto)" alt="" style="width: 200px; height: 200px;">
                     </div>
                     <!-- details -->
                     <div class="col-9 text-start">
                         <div class="container text-start">
                             <!-- country  -->
                             <div class="row">
-                                <div class="col">
+                                <div class="col-8">
                                     <h5 class="text-body-secondary fs"> {{ specified_producer["originCountry"] }} </h5>
+                                </div>
+                                <!-- claim this listing / add listing & edit profile -->
+                                <div class="col-4">
+                                    <div>
+                                        <!-- [if] user type is producer -->
+                                        <span v-if="userType == 'producer'" class="row"> 
+                                            <!-- add listing-->
+                                            <div class="col-6 d-grid no-padding">
+                                                <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
+                                                    Add listing
+                                                </button>
+                                            </div>
+                                            <!-- edit profile -->
+                                            <div class="col-6 d-grid no-padding">
+                                                <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
+                                                    Edit profile
+                                                </button>
+                                            </div>
+                                        </span>
+                                        <!-- [else] user type is NOT producer -->
+                                        <div v-else> 
+                                            <p class="text-body-secondary no-margin text-decoration-underline fst-italic"> Claim This Listing </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <!-- producer -->
                             <div class="row">
-                                <div class="col-9">
-                                    <h3 class="text-body-secondary"> <b> {{ getProducerName(producer_id) }} </b> </h3>
-                                </div>
-                                <!-- claim this listing -->
-                                <div class="col-3">
-                                    <p class="text-body-secondary no-margin text-decoration-underline fst-italic"> Claim This Listing </p>
-                                </div>
+                                <h3 class="text-body-secondary"> <b> {{ getProducerName(producer_id) }} </b> </h3>
                             </div>
                             <!-- description -->
                             <div class="row">
@@ -212,12 +230,11 @@
                                     
                                 </div>
                                 <!-- image -->
-                                <!-- [TODO: replace with update from the producer image]-->
                                 <div class="col-3 image-container text-end">
                                     <img :src=" 'data:image/jpeg;base64,' + (specified_producer['photo'] || defaultProfilePhoto)" alt="" style="width: 150px; height: 150px;">
                                 </div>
                             </div>
-                            <!-- reply to producer -->
+                            <!-- reply / send to producer -->
                             <div class="row pt-3">
                                 <!-- ask questions -->
                                 <div class="input-group centered">
@@ -226,8 +243,19 @@
                                             <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
                                         </svg>
                                     </div>
-                                    <input class="search-bar form-control rounded fst-italic" type="text" :placeholder="'Reply to ' + getProducerName(producer_id) + '!'" style="height: 50px;" v-model="question"> 
-                                    <div v-on:click="sendQuestion" class="send-icon ps-1">
+                                    <!-- [if] user type is producer -->
+                                    <input v-if="userType == 'producer'" class="search-bar form-control rounded fst-italic" type="text" placeholder="Say hi to your patrons!" style="height: 50px;" v-model="producerhi"> 
+                                    <!-- [else] userType is NOT producer -->
+                                    <input v-else class="search-bar form-control rounded fst-italic" type="text" :placeholder="'Reply to ' + getProducerName(producer_id) + '!'" style="height: 50px;" v-model="userhi"> 
+
+                                    <!-- [if] user type is producer -->
+                                    <div v-if="userType == 'producer'" v-on:click="producerGreetings" class="send-icon ps-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                        </svg>
+                                    </div>
+                                    <!-- [else] user type is NOT producer -->
+                                    <div v-else v-on:click="userGreetings" class="send-icon ps-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
                                         <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
                                         </svg>
@@ -236,7 +264,7 @@
                             </div>
                         </div>
 
-                        <!-- View more -->
+                        <!-- view more -->
                         <p class="tertiary-text text-decoration-underline pt-2 no-margin"> View more </p>
                     </div>
 
@@ -296,8 +324,26 @@
                         </div>
                         <!-- search -->
                         <div class="col-9">
-                            <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Search for expressions" style="height: 50px;" v-model="searchExpressions" v-on:keyup.enter="searchForExpressions()">
+                            <!-- [if] user type is producer -->
+                            <div v-if="userType == 'producer'" class="row">
+                                <div class="col-3 d-grid no padding">
+                                    <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text">
+                                        Edit catalogue
+                                    </button>
+                                </div>
+                                <div class="col-3 d-grid no padding">
+                                    <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text">
+                                        Add new bottle
+                                    </button>
+                                </div>
+                                <div class="col-6 d-grid no padding">
+                                    <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Search for expressions" style="height: 50px;" v-model="searchExpressions" v-on:keyup.enter="searchForExpressions()">
+                                </div>
+                            </div>
+                            <!-- [else] user type is NOT producer -->
+                            <input v-else class="search-bar form-control rounded fst-italic" type="text" placeholder="Search for expressions" style="height: 50px;" v-model="searchExpressions" v-on:keyup.enter="searchForExpressions()">
                         </div>
+                
                         <!-- sort by -->
                         <div class="col-2">
                             <div class="d-grid gap-2 dropdown">
@@ -385,15 +431,22 @@
 
             </div> <!-- end of producer information -->
             
-            <!-- q&a for producer & 88 bamboo's deepdive -->
+            <!-- view analytics & q&a for producer & 88 bamboo's deepdive -->
             <div class="col-3">
                 <div class="row">
+                    <!-- view analytics -->
+                    <div class="col-12 d-grid gap-2 pb-3">
+                        <button class="btn secondary-btn-not-rounded rounded-0" type="button"> View My Analytics </button>
+                    </div>
                     <!-- where to try -->
                     <div class="col-12">
                         <div class="square primary-square rounded p-3 mb-3">
                             <!-- header text -->
                             <div class="square-inline text-start">
-                                <h4 class="mr-auto"> Q&A for {{ getProducerName(producer_id) }} </h4>
+                                <!-- [if] user type producer -->
+                                <h4 v-if="userType == 'producer'" class="mr-auto"> Q&A for {{ getProducerName(producer_id) }} </h4>
+                                <!-- [else] user type is NOT producer -->
+                                <h4 v-else class="mr-auto"> Q&As for You! </h4>
                             </div>
                             <!-- body -->
                             <div class="text-start pt-2">
@@ -405,8 +458,18 @@
                                 </div>
                                 <!-- ask questions -->
                                 <div class="input-group centered">
-                                    <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Ask your question!" style="height: 50px;" v-model="question"> 
-                                    <div v-on:click="sendQuestion" class="send-icon ps-1">
+                                    <!-- [if] user type is producer -->
+                                    <input v-if="userType == 'producer'" class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Respond to your fans latest questions." v-model="answer"> 
+                                    <!-- [else] user type is NOT producer -->
+                                    <input v-else class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Ask your question!" v-model="question"> 
+                                    <!-- [if] user type is producer -->
+                                    <div v-if="userType == 'producer'" v-on:click="sendAnswer" class="send-icon ps-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                        </svg>
+                                    </div>
+                                    <!-- [else] user type is NOT producer -->
+                                    <div v-else v-on:click="sendQuestion" class="send-icon ps-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
                                         <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
                                         </svg>
@@ -462,6 +525,10 @@
                 requestEdits: [],
                 modRequests: [],
 
+                // define user type here 
+                // [TODO] to fetch user type once login function is implemented
+                userType: 'user',
+
                 // search
                 searchInput: '',
                 searchExpressions: '',
@@ -473,8 +540,13 @@
                 producer_id: null,
                 specified_producer: {},
 
+                // saying hi
+                producerhi: '',
+                userhi: '',
+
                 // q&a
                 question: '',
+                answer: '',
 
                 // all drinks that producer has
                 allDrinks: [],
@@ -692,9 +764,24 @@
                 return allReviews;
             },
 
+            // producer saying hi
+            producerGreetings () {
+                alert("producerGreetings function not yet implemented!")
+            },
+
+            // users saying hi
+            userGreetings () {
+                alert("userGreetings function not yet implemented!")
+            },
+
+            // send answer that producers give to users
+            sendAnswer () {
+                alert("sendAnswer function not yet implemented!")
+            },
+
             // send questions that users ask to producers
             sendQuestion () {
-                alert("function not yet implemented!")
+                alert("sendQuestion function not yet implemented!")
             },
 
             // get compiled dictionary of ratings of each type of drink
