@@ -5,35 +5,35 @@
     <NavBar></NavBar>
 
     <!-- title -->
-    <h2 class="p-5" style="text-align: center"> Login </h2>
+    <h2 class="p-5 text-center"> Login </h2>
 
     <!-- select buttons -->
     <div class="container pt-5 ">
-        <form id="login">
+        <form id="login" v-on:submit.prevent="checkLogin">
             <div class="row">
                 <!-- user -->
                 <div class="col-md-4 text-center">
                     <img src="../../Images/Profile/User.png" style="width: 100px; height: 100px">
                     <br><br>
-                    <input type="radio" id="user" name="role" value="user">
+                    <input class="form-check-input" type="radio" v-model="role" :value="'user'" name="roleSelect" id="roleUser">
                     <br>
-                    <label for="user"> User </label>
+                    <label class="form-check-label" for="roleUser">User</label>
                 </div>
                 <!-- producer -->
                 <div class="col-md-4 text-center">
                     <img src="../../Images/Profile/Producer.png" style="width: 100px; height: 100px">
                     <br><br>
-                    <input type="radio" id="producer" name="role" value="producer">
+                    <input class="form-check-input" type="radio" v-model="role" :value="'producer'" name="roleSelect" id="roleProducer">
                     <br>
-                    <label for="producer"> Producer </label>
+                    <label class="form-check-label" for="roleProducer">Producer</label>
                 </div>
                 <!-- venue -->
                 <div class="col-md-4 text-center">
                     <img src="../../Images/Profile/Venue.png" style="width: 100px; height: 100px">
                     <br><br>
-                    <input type="radio" id="venue" name="role" value="venue">
+                    <input class="form-check-input" type="radio" v-model="role" :value="'venue'" name="roleSelect" id="roleVenue">
                     <br>
-                    <label for="venue"> Venue </label>
+                    <label class="form-check-label" for="roleVenue">Venue</label>
                 </div>
             </div>
             <!-- username -->
@@ -84,7 +84,7 @@
             <!-- Confirm Selection -->
             <div class="row pt-3">
                 <div class="d-grid gap-2 col-1 mx-auto">
-                    <button class="btn primary-square" type="button" v-on:click="fetchFormValues"> Submit </button>
+                    <button type="submit" class="btn primary-square">Submit</button>
                 </div>
             </div>
         </form>
@@ -106,17 +106,9 @@
         data() {
             return {
                 // data from database
-                countries: [],
-                listings: [],
                 producers: [],
-                reviews: [],
                 users: [],
                 venues: [],
-                venuesAPI: [],
-                drinkTypes: [],
-                requestListings: [],
-                requestEdits: [],
-                modRequests: [],
 
                 // form values
                 ID: '',
@@ -132,41 +124,12 @@
         methods: {
             // load data from database
             async loadData() {
-                // countries
-                // _id, originCountry
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
-                        this.countries = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
-                // listings
-                // _id, listingName, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, officialDesc, sourceLink, photo
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
-                        this.listings = response.data;
-                        // originally, make filteredListings the entire collection of listings
-                        this.filteredListings = this.listings;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                }
                 // producers
                 // _id, producerName, producerDesc, originCountry, statusOB, mainDrinks
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
                         this.producers = response.data;
                     } 
-                    catch (error) {
-                        console.error(error);
-                    }
-                // reviews
-                // _id, userID, reviewTarget, date, rating, reviewDesc, taggedUsers, reviewTitle, reviewType, flavorTag, photo
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
-                        this.reviews = response.data;
-                    }
                     catch (error) {
                         console.error(error);
                     }
@@ -189,53 +152,9 @@
                     catch (error) {
                         console.error(error);
                     }
-                // venuesAPI
-                // _id, venueName, venueDesc, originCountry
-                try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getVenuesAPI');
-                        this.venuesAPI = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
-                // drinkTypes
-                // _id, drinkType, typeCategory
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
-                        this.drinkTypes = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
-                // requestListings
-                // _id, listingName, producerNew, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, sourceLink, brandRelation, reviewStatus, userID, photo
-                    try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
-                            this.requestListings = response.data;
-                        } 
-                    catch (error) {
-                        console.error(error);
-                    }
-                // requestEdits
-                // _id, duplicateLink, editDesc, sourceLink, brandRelation, listingID, userID, reviewStatus
-                    try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdits');
-                            this.requestEdits = response.data;
-                        } 
-                    catch (error) {
-                        console.error(error);
-                    }
-                // modRequests
-                // _id, userID, drinkType, modDesc
-                    try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
-                            this.modRequests = response.data;
-                        } 
-                    catch (error) {
-                        console.error(error);
-                    }
             },
 
+            // toggle password visibility
             showPassword() {
                 var password = document.getElementById("password");
                 if (password.type === "password") {
@@ -246,37 +165,10 @@
                 }
             },
 
-            // fetches the user's input (role, id and password)
-            fetchFormValues() {
-                // clear previous values
-                this.clearFormValues()
-                this.clearErrors()
-
-                // [role]
-                const roleRadios = document.getElementsByName("role");
-                // loop through the radio buttons to find the selected one
-                let selectedValue = "";
-                for (let i = 0; i < roleRadios.length; i++) {
-                    if (roleRadios[i].checked) {
-                        selectedValue = roleRadios[i].value;
-                        break; // Exit the loop when a selected radio button is found
-                    }
-                }
-                this.role = selectedValue
-
-                // [username]
-                this.ID = document.getElementById("id").value;
-
-                // [password]
-                this.password = document.getElementById("password").value;
-
-                // check if role selected, and ID & password keyed in
-                this.checkRole()
-            },
-
-            checkRole() {
+            // Form Submission Function
+            checkLogin() {
                 // // clear previous values
-                this.clearErrors()
+                this.errors = []
 
                 // [if] check if all details keyed in
                 if (this.role == "" || this.ID == "" || this.password == "") {
@@ -286,102 +178,61 @@
                     }
                     // check if ID keyed in
                     if (this.ID == "") {
-                        this.errors.push("No username keyed in")
+                        this.errors.push("No username entered")
                     }
                     // check if password keyed in
                     if (this.password == "") {
-                        this.errors.push("No password keyed in")
+                        this.errors.push("No password entered")
                     }
                 }
 
                 // [else] all details keyed in
                 else {
-                    // check if username matches role
+
+                    // Check login validity
+                    let accountExists = false
+                    let passwordMatch = false
+                    let hashedPassword = this.hashPassword(this.ID, this.password)
+
                     // [user]
                     if (this.role == "user") {
-                        // check if username exists
-                        let userExists = false
                         for (let i = 0; i < this.users.length; i++) {
                             if (this.users[i].username == this.ID) {
-                                userExists = true
+                                accountExists = true
+                                if (this.users[i].hashedPassword == hashedPassword) {
+                                    passwordMatch = true
+                                }
                                 break
                             }
-                        }
-                        if (!userExists) {
-                            this.errors.push("User does not exist")
                         }
                     }
                     // [producer]
                     if (this.role == "producer") {
-                        // check if username exists
-                        let producerExists = false
                         for (let i = 0; i < this.producers.length; i++) {
                             if (this.producers[i].producerName == this.ID) {
-                                producerExists = true
+                                accountExists = true
+                                if (this.producers[i].hashedPassword == hashedPassword) {
+                                    passwordMatch = true
+                                }
                                 break
                             }
-                        }
-                        if (!producerExists) {
-                            this.errors.push("Producer does not exist")
                         }
                     }
                     // [venue]
                     else if (this.role == "venue") {
-                        // check if username exists
-                        let venueExists = false
                         for (let i = 0; i < this.venues.length; i++) {
                             if (this.venues[i].venueName == this.ID) {
-                                venueExists = true
+                                accountExists = true
+                                if (this.venues[i].hashedPassword == hashedPassword) {
+                                    passwordMatch = true
+                                }
                                 break
                             }
                         }
-                        if (!venueExists) {
-                            this.errors.push("Venue does not exist")
-                        }
                     }
 
-                    // if role exists, check if password matches username
-                    if (this.errors.length == 0) {
-                        let passwordMatch = false
-                        let hashedPassword = this.hashPassword(this.ID, this.password)
-
-                        // [user]
-                        if (this.role == "user") {
-                            for (let i = 0; i < this.users.length; i++) {
-                                if (this.users[i].username == this.ID && this.users[i].hashedPassword == hashedPassword) {
-                                    passwordMatch = true
-                                    break
-                                }
-                            }
-                            // password does not match username
-                            if (!passwordMatch) {
-                                this.errors.push("Password does not match username")
-                            }
-                        }
-                        // [producer]
-                        else if (this.role == "producer") {
-                            for (let i = 0; i < this.producers.length; i++) {
-                                if (this.producers[i].producerName == this.ID && this.producers[i].hashedPassword == hashedPassword) {
-                                    passwordMatch = true
-                                    break
-                                }
-                            }
-                            if (!passwordMatch) {
-                                this.errors.push("Password does not match username")
-                            }
-                        }
-                        // [venue]
-                        else if (this.role == "venue") {
-                            for (let i = 0; i < this.venues.length; i++) {
-                                if (this.venues[i].venueName == this.ID && this.venues[i].hashedPassword == hashedPassword) {
-                                    passwordMatch = true
-                                    break
-                                }
-                            }
-                            if (!passwordMatch) {
-                                this.errors.push("Password does not match username")
-                            }
-                        }
+                    if (!accountExists || !passwordMatch) {
+                        this.errors.push("Invalid username or password")
                     }
                 }
 
@@ -404,23 +255,6 @@
                 }
 
                 return hash;
-            },
-
-            submitFormOnEnter(event) {
-                if (event.key === 'Enter') {
-                event.preventDefault(); // prevent the default form submission
-                this.fetchFormValues(); // manually trigger validation logic
-                }
-            },
-
-            // Clear previous values
-            clearFormValues() {
-                this.role = ""
-                this.ID = ""
-                this.password = ""
-            },
-            clearErrors() {
-                this.errors = []
             },
 
             redirectPage() {
