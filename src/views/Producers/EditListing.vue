@@ -34,12 +34,32 @@
         </div>
     </div>
 
-     <!-- [if] no search input -->
-    <div>
+     
+    <div >
+        <div class="text-success fst-italic fw-bold fs-3" v-if="successfulUpdate"> 
+            <span>The bottle listing has successfully been updated</span> <!-- for user -->
+            <br>
+            <router-link :to="{ path: '/Producer/Producer-Edit-Listing/' }" class="text-secondary">
+                <button class="btn primary-btn btn-sm">
+                    <span class="fs-5 fst-italic"> Go back to listings </span>
+                </button>
+            </router-link>
+        </div>
+
+        <div class="text-danger fst-italic fw-bold fs-3" v-if="errorSubmission"> 
+            <span v-if="errorMessage">An error occurred while attempting to update, please try again!</span>
+            <span v-if="duplicateEntry">A bottle lisiting of the same name already exists. Please try another name!</span>
+            <br>
+            <router-link :to="{ path: '/Producer/Producer-Edit-Listing/' + this.listingID }">
+            <button class="btn primary-btn btn-sm" @click="reset">
+                <span class="fs-5 fst-italic"> Go back to form </span>
+            </button>
+            </router-link>
+        </div>
         
 
-        <!-- main content -->
-        <div class="container pt-3">
+        <!-- main form -->
+        <div v-if="updateForm" class="container pt-3">
             <div class="row">
                 
                 
@@ -51,11 +71,7 @@
                             <!-- discover -->
                             <div class="col-4">
                                 <div class="d-grid gap-2">
-                                     <!-- <router-link :to="{ path: '/Producer/Producer-Edit-Listing/' }">
-                                                <div class="col-mb-6 md-3" style="padding-bottom: 10px;">
-                                                    <a class="btn secondary-btn btn-md"> Back to listings </a>
-                                                </div>
-                                    </router-link>  -->
+                                     
                                     <router-link :to="{ path: '/Producer/Producer-Edit-Listing/' }" class="text-secondary">
                                     <span class="pe-2">
                                         
@@ -64,7 +80,6 @@
                                         </svg>
                                         <h5 style="display: inline-block;"> Back to listings </h5> 
                                         
-                                        
                                     </span>
                                     </router-link>
                                 </div>
@@ -72,9 +87,9 @@
                           
                         </div>
 
-                        <form v-on:submit.prevent="updateListing" id="frm">
+                        <form class="needs-validation" v-on:submit.prevent="updateListing" id="frm" novalidate>
+
                             <div class="row">
-                                
                                 
                                 <div class="container text-start">
                                     <div class="p-3">
@@ -98,14 +113,24 @@
                                                 <label for="input">Enter Listing Name:</label>
                                                 <div class="row">
                                                     <div class="mb-3">
-                                                        <input type="Expression Name" class="form-control" id="exampleFormControlInput1" v-model="tempExpressionName">
+                                                        <input type="Expression Name" class="form-control" id="exampleFormControlInput1" v-model="tempExpressionName" required>
+                                                        <div class="invalid-feedback">
+                                                        Please enter a producer name.
+                                                        </div>
+                                                    </div>
+                                                    <div class="invalid-feedback">
+                                                        Please enter a valid expression name.
                                                     </div>
                                                 </div>
                                                 <div v-if="independentStatus" class="row">
                                                     <label for="input">Enter Producer Name:</label>
                                                     <div class="mb-1">
-                                                        <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler">
+                                                        <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler" required>
+                                                        <div class="invalid-feedback">
+                                                        Please enter a producer name.
+                                                        </div>
                                                     </div>
+                                                    
                                                     <label for="checkbox">Is the producer independent?</label>
                                                     <div class="mb-3">
                                                         <div class="form-check">
@@ -160,26 +185,26 @@
                                                         <label for="dropdown">Select Drink Type:</label>
                                                         <div class="input-group">
                                                             <select class="form-select" id="inputGroupSelect01" v-model="tempDrinkType" @change="getDrinkCategoryList">
-                                                                
                                                                 <option v-for="taste in drinkCategoriesList" :key="taste" :value="taste">
                                                                 {{ taste }}
                                                                 </option>
                                                             </select>
-
                                                         </div>
                                                     </div>
                                                 
                                                     <div v-if="tempTypeCategoryList.length>1" class="col-md-6 mb-3"  >
                                                         <label for="dropdown">Select Drink Type Category:</label>
                                                         <div class="col-md-6 mb-3">
-                                                        <div class="input-group">
-                                                            
-                                                            <select class="form-select" id="inputGroupSelect01" v-model="tempTypeCategory">
-                                                                <option v-for="cat in tempTypeCategoryList" :key="cat" :value="cat">
-                                                                    {{ cat }}
-                                                                </option>
-                                                            </select>
-                                                        </div>
+                                                            <div class="input-group">
+                                                                <select class="form-select" id="inputGroupSelect01" v-model="tempTypeCategory">
+                                                                    <option v-for="cat in tempTypeCategoryList.sort()" :key="cat" :value="cat" required>
+                                                                        {{ cat }}
+                                                                    </option>
+                                                                </select>
+                                                                <div class="invalid-feedback">
+                                                                    Please select a drink type category
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -192,14 +217,20 @@
                                                     
                                                     <label for="input">Enter Bottle ABV (%):</label>
                                                     <div class="col-md-6 mb-3">
-                                                        <input type="Expression Name" class="form-control" id="abv" v-model="tempABV">
+                                                        <input type="Expression Name" class="form-control" id="abv" v-model="tempABV" required>
+                                                        <div class="invalid-feedback">
+                                                        Please enter an ABV.
+                                                        </div>
                                                     </div>
                                                     
                                                 </div>
                                                 
                                                 <div class="mb-3">
                                                     <label for="input">Enter Bottle Description:</label>
-                                                    <textarea class="form-control" id="exampleFormControlInput1" v-model="tempDescription" style="height: 200px;"></textarea>
+                                                    <textarea class="form-control" id="exampleFormControlInput1" v-model="tempDescription" style="height: 200px;" required></textarea>
+                                                    <div class="invalid-feedback">
+                                                        Please enter a producer name.
+                                                    </div>
                                                 </div>
 
                                                 <div class="row pt-5"> 
@@ -222,7 +253,8 @@
                     </div> <!-- end of container -->
                 </div> <!-- end of back button -->
             </div> <!-- end of row -->
-        </div> <!-- end of main content -->
+        </div> <!-- end of main form -->
+
     </div>
     
 
@@ -264,7 +296,7 @@
                 tempProducer: '',
                 tempCountry: '',
                 tempDrinkType: '',
-                tempTypeCategory:"" ,
+                tempTypeCategory:null ,
                 tempTypeCategoryList: [],
                 tempAge: '',
                 tempABV: '',
@@ -276,8 +308,16 @@
                 responseCode: "",
                 image64: '',
                 selectedImage:'',
-
-                
+                successfulUpdate:null,
+                updateForm:true,
+                errorSubmission:false,
+                duplicateEntry:false,
+                errorMessage:false,
+                missingName:false,
+                missingBottler:false,
+                missingTypeCategory:false,
+                missingABV:false,
+                missingDescription:false,
 
 
                 
@@ -425,6 +465,14 @@
                 }
 
             },
+            reset(){
+                this.errorSubmission=false;
+                this.successfulUpdate=false;
+                this.updateForm=true;
+                this.duplicateEntry=false;
+                this.errorMessage=false;
+            },
+
             async loadFile(event) {
             const file = event.target.files[0];
             const reader = new FileReader();
@@ -468,11 +516,42 @@
                     console.log(error);
                     this.responseCode = error.response.data.code
                 });
-                console.log(this.responseCode)
-                
 
+                if(this.responseCode==200){
+                    this.successfulUpdate=true; // Display success message
+                    this.updateForm=false; // Hide submission in progress message
+                }
+                else{
+                    this.errorSubmission=true; // Display error message
+                    this.updateForm=false; // Hide submission in progress message
+                    if(this.responseCode==410){
+                        this.duplicateEntry = true // Display duplicate entry message
+                    }else{
+                        this.errorMessage = true // Display generic error message
+                    }
+                }
+                console.log(this.responseCode)
                 return response
             },
+            async writeListing(submitAPI, submitData) {
+
+                this.fillForm = false; // Hide form
+                this.submitForm = true; // Display submission in progress message
+
+                const response = await this.$axios.post(submitAPI, submitData)
+                .then((response)=>{
+                    this.responseCode = response.data.code
+                })
+                .catch((error)=>{
+                    console.log(error);
+                    this.responseCode = error.response.data.code
+                });
+                console.log(this.responseCode)
+               
+                return response
+            },
+
+
 
 
             

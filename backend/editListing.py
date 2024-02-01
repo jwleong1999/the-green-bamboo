@@ -30,7 +30,7 @@ def parse_json(data):
 
 @app.route("/updateListing/<id>", methods=['PUT'])
 def updateListing(id):
-    
+    existStatus=False
     
     listing_id=ObjectId(id)
     updatedListing = request.get_json()
@@ -38,20 +38,21 @@ def updateListing(id):
     updatedListingName = updatedListing["listingName"]
     
     # existingBottle = db.Listings.find_one({"Expression Name": rawBottleName})
-    existingBottle = db.Listing.find_one({"listingName": updatedListingName})
+    existingBottle = db.listings.find_one({"listingName": updatedListingName})
    
 
     # Check whether bottle with the same name exists in the database
     if(existingBottle != None):
-        return jsonify(
-            {   
-                "code": 400,
-                "data": {
-                    "listingName": updatedListingName
-                },
-                "message": "Bottle already exists."
-            }
-        ), 400
+        if(existingBottle["_id"] != listing_id):
+            return jsonify(
+                {   
+                    "code": 410,
+                    "data": {
+                        "listingName": updatedListingName
+                    },
+                    "message": "Bottle already exists."
+                }
+            ), 410
     
     updatedBottle = data.listings(**updatedListing)
     # print(data.asdict(updatedBottle))
@@ -76,38 +77,38 @@ def updateListing(id):
         else:
             return jsonify(
                 {
-                    "code": 404,
+                    "code": 440,
                     "data": {
                         "_id":  id
                     },
                     "message": "Listing was not updated"
                 }
-            ), 404
+            ), 440
         
     # If Id is invalid
     except InvalidId:
         return jsonify(
             {
-                "code": 400,
+                "code": 420,
                 "data": {
                     "_id": id
                 },
                 "message": "Invalid listing ID."
             }
-        ), 400
+        ), 420
     
     # If listing does not work
     except Exception as e:
         print(str(e))
         return jsonify(
             {
-                "code": 500,
+                "code": 450,
                 "data": {
                     "_id": id
                 },
                 "message": "An error occurred updating the listing."
             }
-        ), 500
+        ), 450
 
 
 
