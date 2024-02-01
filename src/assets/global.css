@@ -54,6 +54,11 @@ body {
     text-decoration: none;
 }
 
+.tertiary-text {
+    color: lightgrey;
+
+}
+
 .primary-btn {
     color: whitesmoke;
     background-color: #535C72;
