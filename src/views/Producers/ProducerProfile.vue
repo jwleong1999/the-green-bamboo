@@ -257,7 +257,7 @@
                 </h3>
                 <div class="container">
                     <div class="row">
-                        <div v-for="drinkInfo in getMostPopular()" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container">
+                        <div v-for="drinkInfo in getMostDiscussed()" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container">
                             <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromDrink(drinkInfo[0]) || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon" viewBox="0 0 16 16">
                                 <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
@@ -267,6 +267,9 @@
                 </div>
 
                 <!-- recently added -->
+                <h3 class="text-body-secondary text-start"> 
+                    <b> Recently Added </b> 
+                </h3>
 
             </div> <!-- end of producer information -->
             
@@ -547,6 +550,7 @@
                 return num_reviews;
             },
 
+            // get all reviews that a producer has
             getAllReviews(producerID) {
                 let allReviews = [];
                 for (const i in this.reviews) {
@@ -587,6 +591,24 @@
                 return drinkRatings;
             },
 
+            // get compiled dictionary of count of each type of drink
+            getCountsByType() {
+                let allReviews = this.getAllReviews(this.producer_id);
+                let drinkCount = {}
+                // for each drink, add the rating to a list
+                for (let i in allReviews) {
+                    let review = allReviews[i];
+                    let drink_name = review["reviewTarget"];
+                    if (drinkCount[drink_name]) {
+                        drinkCount[drink_name] += 1;
+                    }
+                    else {
+                        drinkCount[drink_name] = 1;
+                    }
+                }
+                return drinkCount;
+            },
+
             // get average ratings for each listing
             getAverageRatings() {
                 // create a new object to store the average rating for each drink
@@ -620,12 +642,39 @@
                 return sortedAverageRatings;
             },
 
+            getTotalCounts() {
+                let drinkCounts = this.getCountsByType()
+
+                // convert drinkCountsArray object to an array of [key, value] pairs
+                const drinkCountsArray = Object.entries(drinkCounts);
+
+                // sort the array based on the average ratings in descending order
+                drinkCountsArray.sort((a, b) => b[1] - a[1]);
+
+                // convert the sorted array back to an object
+                const sortedDrinkCounts = Object.fromEntries(drinkCountsArray);
+
+                return sortedDrinkCounts;
+            },
+
+            // get the most popular drinks
             getMostPopular() {
                 // get the average ratings
                 const averageRatings = this.getAverageRatings();
 
                 // get the first 5 items from the average ratings
                 const firstFiveItems = Object.entries(averageRatings).slice(0, 5);
+
+                return firstFiveItems;
+            },
+
+            // get the most discussed drinks
+            getMostDiscussed() {
+                // get the drink counts
+                const drinkCounts = this.getTotalCounts();
+
+                // get the first 5 items from the drink counts
+                const firstFiveItems = Object.entries(drinkCounts).slice(0, 5);
 
                 return firstFiveItems;
             },
