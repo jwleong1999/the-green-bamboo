@@ -146,7 +146,7 @@
                             <p class="text-start mb-1">Strength <span class="text-danger" v-if="mode == 'power'">*</span></p>
                             <div class="form-group row">
                                 <div class="col-6 pe-1">
-                                    <input type="number" v-model="form['abv']" class="form-control" id="abv" min="0" max="100">
+                                    <input type="number" v-model="form['abv']" class="form-control" id="abv" min="0" max="100" step="0.01">
                                 </div>
                                 <label for="abv" class="col-6 col-form-label ps-1 text-start">% ABV</label>
                             </div>
