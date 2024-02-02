@@ -131,6 +131,12 @@ body {
     border: 1px solid rgb(110, 110, 110);
 }
 
+.success-btn {
+    color: black;
+    background-color: #94c692;
+    border: 1px solid rgb(110, 110, 110);
+}
+
 .custom-drink-list-btn {
     background-color: rgb(245, 232, 158);
     border: 1px solid rgb(110, 110, 110);

@@ -43,6 +43,7 @@ class producers:
     originCountry: str
     mainDrinks: list
     hashedPassword: str
+    photo: str
     statusOB: Optional[str] = None
 
 # Dataclass (reviews)

@@ -108,7 +108,21 @@
                 <div class="row">
                     <!-- image -->
                     <div class="col-3 image-container">
-                        <img :src=" 'data:image/jpeg;base64,' + (specified_producer['photo'] || defaultProfilePhoto)" alt="" style="width: 200px; height: 200px;">
+                        <!-- [if] editing -->
+                        <div v-if="editing" style="position: relative; text-align: center;">
+                            <!-- image -->
+                            <img :src="selectedImage || 'data:image/jpeg;base64,' + (specified_producer['photo'] || defaultProfilePhoto)" 
+                                alt="" style="width: 200px; height: 200px; z-index: 1; opacity: 50%">
+                            <!-- change option -->
+                            <label for="file" class="btn primary-light-dropdown mt-3" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose file</label>
+                            <input id="file" type="file" v-on:change="loadFile" ref="fileInput" 
+                            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; opacity: 0; width: 200px; height: 200px; cursor: pointer;">
+                        </div>
+                        <!-- [else] not editing -->
+                        <div v-else>
+                            <img :src="selectedImage || 'data:image/jpeg;base64,' + (specified_producer['photo'] || defaultProfilePhoto)" 
+                                alt="" style="width: 200px; height: 200px; z-index: 1;">
+                        </div>
                     </div>
                     <!-- details -->
                     <div class="col-9 text-start">
@@ -124,14 +138,20 @@
                                     <span v-if="userType == 'producer'" class="row"> 
                                         <!-- add listing-->
                                         <div class="col-6 d-grid no-padding">
-                                            <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
+                                            <!-- if not editing -->
+                                            <button v-if="editing == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
                                                 Add listing
                                             </button>
                                         </div>
                                         <!-- edit profile -->
                                         <div class="col-6 d-grid no-padding">
-                                            <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
+                                            <!-- [if] not editing -->
+                                            <button v-if="editing == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" v-on:click="editProfile()">
                                                 Edit profile
+                                            </button>
+                                            <!-- [else] if editing -->
+                                            <button v-else type="button" class="btn success-btn rounded-0 reverse-clickable-text" v-on:click="saveEdit()">
+                                                Save
                                             </button>
                                         </div>
                                     </span>
@@ -181,7 +201,7 @@
 
                     <!-- follow this distillery -->
                     <div class="col-5">
-                        <div class="d-grid gap-2">
+                        <div v-if="userType != 'producer'" class="d-grid gap-2">
                             <button class="btn primary-btn-less-round btn-lg"> 
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
@@ -229,7 +249,8 @@
                                 </div>
                                 <!-- image -->
                                 <div class="col-3 image-container text-end">
-                                    <img :src=" 'data:image/jpeg;base64,' + (specified_producer['photo'] || defaultProfilePhoto)" alt="" style="width: 150px; height: 150px;">
+                                    <!-- [TODO] edit photo of this update -->
+                                    <img :src=" 'data:image/jpeg;base64,' + (defaultProfilePhoto)" alt="" style="width: 150px; height: 150px;">
                                 </div>
                             </div>
                             <!-- reply / send to producer -->
@@ -366,6 +387,7 @@
                                         <a v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
                                             <img :src=" 'data:image/jpeg;base64,' + (listing['photo'] || defaultProfilePhoto)" style="width: 150px; height: 150px;">
                                         </a>
+                                        
                                     </div>
                                     <!-- details -->
                                     <div class="col-10 ps-5">
@@ -442,9 +464,9 @@
                             <!-- header text -->
                             <div class="square-inline text-start">
                                 <!-- [if] user type producer -->
-                                <h4 v-if="userType == 'producer'" class="mr-auto"> Q&A for {{ getProducerName(producer_id) }} </h4>
+                                <h4 v-if="userType == 'producer'" class="mr-auto"> Q&A for You! </h4>
                                 <!-- [else] user type is NOT producer -->
-                                <h4 v-else class="mr-auto"> Q&As for You! </h4>
+                                <h4 v-else class="mr-auto"> Q&As for {{ getProducerName(producer_id) }} </h4>
                             </div>
                             <!-- body -->
                             <div class="text-start pt-2">
@@ -525,7 +547,14 @@
 
                 // define user type here 
                 // [TODO] to fetch user type once login function is implemented
-                userType: 'user',
+                userType: 'producer',
+
+                // check if user is editing
+                editing: false,
+
+                // edit image
+                selectedImage: '', // changed image
+                image64: null, // original image
 
                 // search
                 searchInput: '',
@@ -762,26 +791,6 @@
                 return allReviews;
             },
 
-            // producer saying hi
-            producerGreetings () {
-                alert("producerGreetings function not yet implemented!")
-            },
-
-            // users saying hi
-            userGreetings () {
-                alert("userGreetings function not yet implemented!")
-            },
-
-            // send answer that producers give to users
-            sendAnswer () {
-                alert("sendAnswer function not yet implemented!")
-            },
-
-            // send questions that users ask to producers
-            sendQuestion () {
-                alert("sendQuestion function not yet implemented!")
-            },
-
             // get compiled dictionary of ratings of each type of drink
             getRatingsByType() {
                 let allReviews = this.getAllReviews(this.producer_id);
@@ -987,6 +996,84 @@
                 this.searchExpressions = '';
                 this.filteredListings = this.getAllDrinks(this.producer_id);
             },
+
+            // when user click on "edit profile"
+            editProfile() {
+                // set editing status to true
+                this.editing = true;
+            },
+
+            // edit profile photo
+            async loadFile(event) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+
+                reader.onloadend = async () => {
+                    this.selectedImage = reader.result;
+                    const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+
+                    this.image64 = base64String;
+                
+                    console.log("image64");
+                    console.log(this.image64);
+
+                };
+                reader.readAsDataURL(file);
+            
+            },
+
+            // save edits when producer finishes editing profile
+            async saveEdit() {
+                // set editing status to false
+                this.editing = false;
+
+                // check if image is uploaded
+                if (this.image64 == null) {
+                    // set default image
+                    this.image64 = this.specified_producer["photo"];
+                }
+                
+                try {
+                    const response = await this.$axios.post('http://127.0.0.1:5200/editDetails', 
+                        {
+                            producerID: this.producer_id,
+                            image64: this.image64,
+                            // drinkChoice: this.selectedDrinks,
+                        }, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    console.log(response.data);
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+
+                // force page to reload
+                window.location.reload();
+            },
+
+            // producer saying hi
+            producerGreetings () {
+                alert("producerGreetings function not yet implemented!")
+            },
+
+            // users saying hi
+            userGreetings () {
+                alert("userGreetings function not yet implemented!")
+            },
+
+            // send answer that producers give to users
+            sendAnswer () {
+                alert("sendAnswer function not yet implemented!")
+            },
+
+            // send questions that users ask to producers
+            sendQuestion () {
+                alert("sendQuestion function not yet implemented!")
+            },
+
 
 
         }
