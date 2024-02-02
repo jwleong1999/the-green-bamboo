@@ -73,14 +73,32 @@
                     </div>
 
                     <!-- Input: drinkType (eg. Whiskey) + typeCategory (eg. Single Malt) -->
-                    <div class="row mb-3">
-                        <div class="form-group col-md-6">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
                             <p class="text-start mb-1">Drink Type <span class="text-danger">*</span></p>
-                            <input type="text" class="form-control" v-model="form['drinkType']" id="drinkType" placeholder="Enter Drink Type" required>
+                            <div class="input-group">
+                                <select class="form-select" id="drinkTypeSelect" v-model="tempDrinkType" @change="getDrinkCategoryList">
+                                    <option v-for="taste in drinkCategoriesList" :key="taste" :value="taste">
+                                    {{ taste }}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group col-md-6">
+                    
+                        <div v-if="tempTypeCategoryList.length>1" class="col-md-6 mb-3"  >
                             <p class="text-start mb-1">Drink Category</p>
-                            <input type="text" class="form-control" v-model="form['typeCategory']" id="typeCategory" placeholder="Enter Drink Category">
+                            <div class="col-md-6 mb-3">
+                                <div class="input-group">
+                                    <select class="form-select" id="inputGroupSelect01" v-model="tempTypeCategory">
+                                        <option v-for="cat in tempTypeCategoryList.sort()" :key="cat" :value="cat" >
+                                            {{ cat }}
+                                        </option>
+                                        
+                                    </select>
+                                    <span v-if="missingTypeCategory" class="text-danger">Please select a type category.</span>
+                                </div>
+                                
+                            </div>
                         </div>
                     </div>
                     
@@ -110,9 +128,18 @@
 
                     <!-- Input: Producer Name -->
                     <!-- TODO Create dropdown menu tied to producerID, show producerNew textbox only if "Other" selected (no producerID). -->
+                    <!-- set name only, then before submitting request, put the id, save computation -->
                     <div class="form-group mb-3">
                         <p class="text-start mb-1">Producer Name <span class="text-danger">*</span></p>
-                        <input type="text" class="form-control" v-model="form['producerNew']" id="producerNew" placeholder="Enter Producer Name">
+                        <select class="form-select" id="producerSelect" v-model="tempProducer" @change="getProducerID">
+                            <!-- <option selected>{{this.tempProducer }}</option> -->
+                            <option v-for="producer in producerList" :key="producer.producerName" :value="producer.producerName">
+                            {{ producer.producerName }}
+                            </option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <p v-if="this.tempProducer == 'Other'" class="text-start mt-2 mb-1">New Producer Name <span class="text-danger">*</span></p>
+                        <input v-if="this.tempProducer == 'Other'" type="text" class="form-control mb-1" v-model="form['producerNew']" id="producerNew" placeholder="Enter Producer Name">
                     </div>
 
                     <!-- Input: Independent Bottler Check -->
@@ -136,8 +163,18 @@
 
                     <!-- Input: Country of Origin -->
                     <div class="form-group mb-3">
-                        <p class="text-start mb-1">Country of Origin <span class="text-danger" v-if="mode == 'power'">*</span></p>
-                        <input type="text" class="form-control" v-model="form['originCountry']" id="originCountry" placeholder="Enter Country">
+                        <div class=" mb-3">
+                            <p class="text-start mb-1">Country of Origin <span class="text-danger" v-if="mode == 'power'">*</span></p>
+                            <div class="input-group">
+                                
+                                <select class="form-select" id="countrySelect" v-model="form['originCountry']">
+                                    <option selected>{{this.form['originCountry'] }}</option>
+                                    <option v-for="country in countries" :key="country" :value="country">
+                                    {{ country}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Input: Alcohol Strength (% ABV) + Alcohol Age (years old) -->
@@ -238,10 +275,69 @@
                 errorMessage: false,
                 duplicateEntry: false,
                 fillForm: true,
-                responseCode: ""
+                responseCode: "",
+                countries: [],
+                tempTypeCategory:"",
+                tempTypeCategoryList: [],
+                drinkCategoriesList: [],
+                producerList: [],
+                tempProducer: ""
             }
         },
+        mounted() {
+            this.loadData();
+        },
         methods:{
+            async loadData(){
+                // add countries variable
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
+                    for (let country of response.data) {
+                        // console.log(country.originCountry)
+                        this.countries.push(country.originCountry);
+                    }
+                    this.countries=this.countries.sort();
+
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
+                    this.drinkCategories = response.data;
+                    for (let drink of this.drinkCategories) {
+                        this.drinkCategoriesList.push(drink.drinkType);
+                    }
+                    this.drinkCategoriesList=this.drinkCategoriesList.sort();
+                    this.tempTypeCategoryList=this.drinkCategories.find(cat => cat.drinkType == this.tempDrinkType).typeCategory.sort();
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
+                    this.producerList = response.data;
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+            },
+
+            getDrinkCategoryList() {
+            
+                this.tempTypeCategoryList=this.drinkCategories.find(cat => cat.drinkType == this.tempDrinkType).typeCategory;
+                this.tempTypeCategory=""
+
+            },
+            getProducerID() {
+                if(this.tempProducer!= 'Other'){
+                    this.form['producerID']=this.producerList.find(producer => producer.producerName == this.tempProducer)._id;
+                }
+
+            },
+
             goBack() {
                 this.$router.go(-1)
             },
@@ -292,7 +388,7 @@
                 }
 
                 // Validate Drink Type
-                if (!this.form["drinkType"].trim()) {
+                if (!this.tempDrinkType.trim()) {
                     alertPhrase += "- Drink Type is needed.\n"
                 }
 
@@ -363,13 +459,13 @@
                     // If no errors, pass corresponding API into database writing method
                     let submitAPI = ""
                     let submitData = {}
-
+                    console.log(this.form['producerID'])
                     if (this.mode == "user") {
                         submitAPI = "http://127.0.0.1:5002/requestListing"
                         submitData = {
                             "listingName": this.form["listingName"].trim(),
-                            "drinkType": this.form["drinkType"].trim(),
-                            "typeCategory": this.form["typeCategory"].trim(),
+                            "drinkType": this.tempDrinkType.trim(),
+                            "typeCategory": this.tempTypeCategory.trim(),
                             "sourceLink": this.form["sourceLink"].trim(),
                             "reviewLink": this.form["reviewLink"].trim(),
                             "producerID": this.form["producerID"],
@@ -388,20 +484,20 @@
                         submitAPI = "http://127.0.0.1:5001/createListing"
 
                         // Default to tanglin gin producer ID
-                        await this.$axios.get('http://127.0.0.1:5000/getProducers')
-                        .then((response)=>{
-                            this.form["producerID"] = response.data[0]._id
-                        })
-                        .catch((error)=>{
-                            console.log(error);
-                            this.responseCode = error.response.data.code
-                        });
+                        // await this.$axios.get('http://127.0.0.1:5000/getProducers')
+                        // .then((response)=>{
+                        //     this.form["producerID"] = response.data[0]._id
+                        // })
+                        // .catch((error)=>{
+                        //     console.log(error);
+                        //     this.responseCode = error.response.data.code
+                        // });
                         // End of setting default to tanglin producer ID
                         
                         submitData = {
                             "listingName": this.form["listingName"].trim(),
-                            "drinkType": this.form["drinkType"].trim(),
-                            "typeCategory": this.form["typeCategory"].trim(),
+                            "drinkType": this.tempDrinkType.trim(),
+                            "typeCategory": this.tempTypeCategory.trim(),
                             "officialDesc": this.form["officialDesc"].trim(),
                             "sourceLink": this.form["sourceLink"].trim(),
                             "reviewLink": this.form["reviewLink"].trim(),
