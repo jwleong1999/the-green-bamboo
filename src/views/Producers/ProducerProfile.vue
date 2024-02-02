@@ -497,9 +497,9 @@
                                 <!-- ask questions -->
                                 <div class="input-group centered">
                                     <!-- [if] user type is producer -->
-                                    <input v-if="userType == 'producer'" class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Respond to your fans latest questions." v-model="answer"> 
+                                    <textarea v-if="userType == 'producer'" class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Respond to your fans latest questions." v-model="answer"></textarea>
                                     <!-- [else] user type is NOT producer -->
-                                    <input v-else class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Ask your question!" v-model="question"> 
+                                    <textarea v-else class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Ask your question!" v-model="question"></textarea>
                                     <!-- [if] user type is producer -->
                                     <div v-if="userType == 'producer'" v-on:click="sendAnswer" class="send-icon ps-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
