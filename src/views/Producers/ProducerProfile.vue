@@ -120,26 +120,24 @@
                                 </div>
                                 <!-- claim this listing / add listing & edit profile -->
                                 <div class="col-4">
-                                    <div>
-                                        <!-- [if] user type is producer -->
-                                        <span v-if="userType == 'producer'" class="row"> 
-                                            <!-- add listing-->
-                                            <div class="col-6 d-grid no-padding">
-                                                <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
-                                                    Add listing
-                                                </button>
-                                            </div>
-                                            <!-- edit profile -->
-                                            <div class="col-6 d-grid no-padding">
-                                                <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
-                                                    Edit profile
-                                                </button>
-                                            </div>
-                                        </span>
-                                        <!-- [else] user type is NOT producer -->
-                                        <div v-else> 
-                                            <p class="text-body-secondary no-margin text-decoration-underline fst-italic"> Claim This Listing </p>
+                                    <!-- [if] user type is producer -->
+                                    <span v-if="userType == 'producer'" class="row"> 
+                                        <!-- add listing-->
+                                        <div class="col-6 d-grid no-padding">
+                                            <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
+                                                Add listing
+                                            </button>
                                         </div>
+                                        <!-- edit profile -->
+                                        <div class="col-6 d-grid no-padding">
+                                            <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
+                                                Edit profile
+                                            </button>
+                                        </div>
+                                    </span>
+                                    <!-- [else] user type is NOT producer -->
+                                    <div v-else> 
+                                        <p class="text-body-secondary no-margin text-decoration-underline fst-italic"> Claim This Listing </p>
                                     </div>
                                 </div>
                             </div>
@@ -366,7 +364,7 @@
                                     <!-- image -->
                                     <div class="col-2 image-container">
                                         <a v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
-                                            <img :src=" 'data:image/jpeg;base64,' + (listing['photo'] || defaultProfilePhoto)" style="width: 150px; height: 150px;" class="img-border">
+                                            <img :src=" 'data:image/jpeg;base64,' + (listing['photo'] || defaultProfilePhoto)" style="width: 150px; height: 150px;">
                                         </a>
                                     </div>
                                     <!-- details -->
@@ -438,7 +436,7 @@
                     <div class="col-12 d-grid gap-2 pb-3">
                         <button class="btn secondary-btn-not-rounded rounded-0" type="button"> View My Analytics </button>
                     </div>
-                    <!-- where to try -->
+                    <!-- q&a -->
                     <div class="col-12">
                         <div class="square primary-square rounded p-3 mb-3">
                             <!-- header text -->
@@ -479,7 +477,7 @@
                             <div class="py-1"></div>
                         </div>
                     </div>
-                    <!-- 88 bamboo's review -->
+                    <!-- 88 bamboo's deepdive -->
                     <div class="col-12">
                         <div class="square secondary-square rounded p-3 mb-3">
                             <!-- header text -->
