@@ -250,28 +250,134 @@
                                     <h5 class="modal-title" id="reviewModalLabel">Modal title</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                                <!-- This is where  -->
+
+                                <!-- This is where modal starts for review-->
                                 <div class="modal-body">
-                                    <div class="container-fluid">
-                                        <div class = 'row justify-content-start'>
-                                            <div class="col-md-3"> 
-                                                <p>Language</p>
-                                                <div class="input-group">                                                    
-                                                    <select class="form-select" id="inputGroupSelect01">
-                                                        <!-- Add in the languages here -->
-                                                        <option selected>ninabei</option>
-                                                        <option selected>konichiwa</option>
-                                                    </select>
+
+                                    <!-- Start of left side elements -->
+                                    <div class="col-md-9">                                     
+                                        <div class="container-fluid">
+
+                                            <!-- Dropdown for language selection -->
+                                            <div class = 'row justify-content-start mb-4'>
+                                                <div class="col-md-4"> 
+                                                    <p class = 'text-start mb-2 fw-bold'>Language <span class="text-danger">*</span></p>
+                                                    <div class="input-group">                                                    
+                                                        <select class="form-select" id="inputGroupSelect01">
+                                                            <!-- Add in the languages here -->
+                                                            <option selected>ninabei</option>
+                                                            <option selected>konichiwa</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class = 'row justify-content-start'>
-                                            <div class = "col-md-9">
-                                                <p>Review <span class="text-danger">*</span></p>
-                                                <textarea class="form-control" id="reviewTextarea" rows="3" placeholder="Min 20 characters"></textarea>
+                                            <!-- end of dropdown for language selection -->
+
+                                            <!-- Text input are for review -->
+                                            <div class = 'row justify-content-start mb-3'>
+                                                <div class = "col-md-12">
+                                                    <p class = 'text-start mb-2 fw-bold'>Review <span class="text-danger">*</span></p>
+                                                    <textarea class="form-control" id="reviewTextarea" rows="3" placeholder="Min 20 characters"></textarea>
+                                                </div>
                                             </div>
+
+                                            <!-- Checkboxes for would recommend and would buy again -->
+                                            <div class = 'row justify-content-start mb-3 text-start'>
+                                                <div class = "col-md-12">
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                                        <label class="form-check-label text-start fw-bold" for="inlineCheckbox1">Would Recommend</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                                                        <label class="form-check-label text-start fw-bold" for="inlineCheckbox2">Would Drink Again</label>
+                                                    </div>                                                                                                   
+                                                </div>                                         
+                                            </div>
+                                            <!-- End of checkboxes -->
+
+                                            <!-- Buttons to expand -->
+                                            <div class = 'row justify-content-start mb-3 text-start'>
+                                                <div class = "col-md-12 text-center">
+                                                    <button class="btn primary-btn-less-round btn-lg"> 
+                                                        Extend Review
+                                                    </button>                                                                  
+                                                </div>                                         
+                                            </div>
+
+                                            <!-- Button to collapse -->
+                                            <div class = 'row justify-content-start mb-3 text-start'>
+                                                <div class = "col-md-12 text-center">
+                                                    <button class="btn primary-btn-less-round btn-lg"> 
+                                                        Condense Review
+                                                    </button>                                                                  
+                                                </div>                                         
+                                            </div>
+                                            <!-- end of button -->
+
+                                            <!-- Dashed line -->
+                                            <div class = 'row justify-content-start mb-1 text-start'>
+                                                <div class = "col-md-12 text-center">
+                                                    <p class="dotted-line">
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <!-- end of dash line -->
+
+
+                                            <!-- TODO: Make a colour grid/tables containing all the colour -->
+                                            <p>COLOUR</p>
+
+                                            <!-- Aroma taste and finish inputs -->
+                                            <div class="form-group mb-3">
+                                                <p class="text-start mb-1 fw-bold">Aroma:</p>
+                                                <input type="text" class="form-control" id="aroma">
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <p class="text-start mb-1 fw-bold">Taste:</p>
+                                                <input type="text" class="form-control" id="taste">
+                                            </div>
+                                            <div class="form-group mb-3">
+                                                <p class="text-start mb-1 fw-bold">Finish:</p>
+                                                <input type="text" class="form-control" id="finish">
+                                            </div>
+                                            <!-- End of armoa taste and finish inputs -->
+
+                                            <!-- Range slider for rating -->
+                                            <div class="col-md-5 mb-3"> 
+                                                <div class="row align-items-center text-start">
+                                                    <label for="customRange2" class="form-label fw-bold">Rating<span class="text-danger">*</span>: {{ rating }}</label>
+                                                    <div class="col-auto">
+                                                        <label for="customRange" class="form-label fw-bold">1</label>
+                                                    </div>
+                                                    <div class="col">
+                                                        <input v-model="rating" type="range" class="form-range" min="1" max="10" step="0.5" id="customRange">
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <label for="customRange" class="form-label fw-bold">10</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Start of flavour tag -->
+                                            <!-- Make this a search/dropdown -->
+                                            <div class="form-group mb-3">
+                                                <p class="text-start mb-1 fw-bold">Flavour Tags</p>
+                                                <input type="text" class="form-control" id="flavourTag">
+                                            </div>
+
+                                            <!-- Start of observation tags -->
+                                            <!-- Make this a search/dropdown -->
+                                            <div class="form-group mb-3">
+                                                <p class="text-start mb-1 fw-bold">Observation Tags</p>
+                                                <input type="text" class="form-control" id="observationTag">
+                                            </div>
+
+
                                         </div>
                                     </div>
+                                     <!-- End of left side elements -->
+
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -446,6 +552,9 @@
                             },
                 haveTried: false,
                 wantToTry: false,
+
+                // For creating review
+                rating: 5,
 
                 // matched user
                 matchedUser: {},

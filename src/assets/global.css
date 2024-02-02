@@ -292,3 +292,7 @@ body {
 .question-box {
     overflow-x: scroll;
 }
+
+.dotted-line {
+    border-bottom: thin grey dotted;;
+}
