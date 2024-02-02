@@ -130,7 +130,13 @@
                             <!-- country  -->
                             <div class="row">
                                 <div class="col-8">
-                                    <h5 class="text-body-secondary fs"> {{ specified_producer["originCountry"] }} </h5>
+                                    <!-- [if] editing -->
+                                    <div v-if="editing">
+                                        <label for="originCountryInput "> Country of origin </label>
+                                        <input type="text" class="form-control mb-3" id="originCountryInput" aria-describedby="originCountry" v-model="edit_originCountry">
+                                    </div>
+                                    <!-- [else] not editing -->
+                                    <h5 v-else class="text-body-secondary fs"> {{ specified_producer["originCountry"] }} </h5>
                                 </div>
                                 <!-- claim this listing / add listing & edit profile -->
                                 <div class="col-4">
@@ -163,13 +169,25 @@
                             </div>
                             <!-- producer -->
                             <div class="row">
-                                <h3 class="text-body-secondary"> <b> {{ getProducerName(producer_id) }} </b> </h3>
+                                <!-- [if] editing -->
+                                <div v-if="editing">
+                                    <label for="producerNameInput"> Producer name </label>
+                                    <input type="text" class="form-control mb-3" id="producerNameInput" aria-describedby="producerDesc" v-model="edit_producerName">
+                                </div>
+                                <!-- [else] not editing -->
+                                <h3 v-else class="text-body-secondary"> <b> {{ getProducerName(producer_id) }} </b> </h3>
                             </div>
                             <!-- description -->
                             <div class="row">
                                 <div class="col">
                                     <div class="py-2"></div>
-                                    <p> {{ specified_producer["producerDesc"] }} </p>
+                                    <!-- [if] editing -->
+                                    <div v-if="editing">
+                                        <label for="producerDescInput"> Producer description </label>
+                                        <textarea type="text" class="form-control mb-3" id="producerDescInput" aria-describedby="producerDesc" v-model="edit_producerDesc"> </textarea>
+                                    </div>
+                                    <!-- [else] not editing -->
+                                    <p v-else class="text-body-secondary fs"> {{ specified_producer["producerDesc"] }} </p>
                                 </div>
                             </div>
                         </div>
@@ -555,6 +573,11 @@
                 // edit image
                 selectedImage: '', // changed image
                 image64: null, // original image
+
+                // edit other fields
+                edit_producerName: '',
+                edit_producerDesc: '',
+                edit_originCountry: '',
 
                 // search
                 searchInput: '',
@@ -1001,6 +1024,11 @@
             editProfile() {
                 // set editing status to true
                 this.editing = true;
+
+                // set the current details to the edit details
+                this.edit_producerName = this.specified_producer["producerName"];
+                this.edit_producerDesc = this.specified_producer["producerDesc"];
+                this.edit_originCountry = this.specified_producer["originCountry"];
             },
 
             // edit profile photo
@@ -1038,7 +1066,9 @@
                         {
                             producerID: this.producer_id,
                             image64: this.image64,
-                            // drinkChoice: this.selectedDrinks,
+                            producerName: this.edit_producerName,
+                            producerDesc: this.edit_producerDesc,
+                            originCountry: this.edit_originCountry
                         }, {
                         headers: {
                             'Content-Type': 'application/json'

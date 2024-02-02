@@ -40,17 +40,23 @@ def editDetails():
     # if data contains image64
     if 'image64' in data:
         image64 = data['image64']
+        producerName = data['producerName']
+        producerDesc = data['producerDesc']
+        originCountry = data['originCountry']
         # drinkChoice = data['drinkChoice']
 
     try: 
         if 'image64' in data:
             updateImage = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'photo': image64}})
+            updateName = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'producerName': producerName}})
+            updateDesc = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'producerDesc': producerDesc}})
+            updateCountry = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'originCountry': originCountry}})
             # updateDrinkChoice = db.users.update_one({'_id': ObjectId(userID)}, {'$set': {'choiceDrinks': drinkChoice}})
 
         return jsonify(
             {   
                 "code": 201,
-                "data": image64
+                "message": "Updated profile successfully!"
             }
         ), 201
     except Exception as e:
@@ -59,9 +65,12 @@ def editDetails():
             {
                 "code": 500,
                 "data": {
-                    "image": image64[:8]
+                    "image": image64[:8],
+                    "name": producerName,
+                    "desc": producerDesc,
+                    "country": originCountry,
                 },
-                "message": "An error occurred updating the image."
+                "message": "An error occurred updating profile!"
             }
         ), 500
 
