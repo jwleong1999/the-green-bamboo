@@ -51,7 +51,6 @@ class producers:
 class reviews:
     userID: object
     reviewTarget: str
-    date: datetime
     rating: int
     reviewDesc: str
     reviewTitle: str
@@ -59,6 +58,7 @@ class reviews:
     photo: str 
     taggedUsers: Optional[list] = None
     flavorTag: Optional[list] = None
+    createdDate: datetime
 
 # Dataclass (users)
 @dataclass
@@ -70,6 +70,7 @@ class users:
     modType: list
     photo: str
     hashedPassword: str
+    joinDate: datetime
 
 # Dataclass (venues)
 @dataclass
