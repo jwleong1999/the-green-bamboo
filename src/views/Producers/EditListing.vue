@@ -34,12 +34,32 @@
         </div>
     </div>
 
-     <!-- [if] no search input -->
-    <div>
+     
+    <div >
+        <div class="text-success fst-italic fw-bold fs-3" v-if="successfulUpdate"> 
+            <span>The bottle listing has successfully been updated</span> <!-- for user -->
+            <br>
+            <router-link :to="{ path: '/Producer/Producer-Edit-Listing/' }" class="text-secondary">
+                <button class="btn primary-btn btn-sm">
+                    <span class="fs-5 fst-italic"> Go back to listings </span>
+                </button>
+            </router-link>
+        </div>
+
+        <div class="text-danger fst-italic fw-bold fs-3" v-if="errorSubmission"> 
+            <span v-if="errorMessage">An error occurred while attempting to update, please try again!</span>
+            <span v-if="duplicateEntry">A bottle lisiting of the same name already exists. Please try another name!</span>
+            <br>
+            <router-link :to="{ path: '/Producer/Producer-Edit-Listing/' + this.listingID }">
+            <button class="btn primary-btn btn-sm" @click="reset">
+                <span class="fs-5 fst-italic"> Go back to form </span>
+            </button>
+            </router-link>
+        </div>
         
 
-        <!-- main content -->
-        <div class="container pt-3">
+        <!-- main form -->
+        <div v-if="updateForm" class="container pt-3">
             <div class="row">
                 
                 
@@ -51,11 +71,7 @@
                             <!-- discover -->
                             <div class="col-4">
                                 <div class="d-grid gap-2">
-                                     <!-- <router-link :to="{ path: '/Producer/Producer-Edit-Listing/' }">
-                                                <div class="col-mb-6 md-3" style="padding-bottom: 10px;">
-                                                    <a class="btn secondary-btn btn-md"> Back to listings </a>
-                                                </div>
-                                    </router-link>  -->
+                                     
                                     <router-link :to="{ path: '/Producer/Producer-Edit-Listing/' }" class="text-secondary">
                                     <span class="pe-2">
                                         
@@ -64,7 +80,6 @@
                                         </svg>
                                         <h5 style="display: inline-block;"> Back to listings </h5> 
                                         
-                                        
                                     </span>
                                     </router-link>
                                 </div>
@@ -72,9 +87,9 @@
                           
                         </div>
 
-                        <form v-on:submit.prevent="updateListing" id="frm">
+                        <form v-on:submit.prevent="updateListing" id="frm" >
+
                             <div class="row">
-                                
                                 
                                 <div class="container text-start">
                                     <div class="p-3">
@@ -95,17 +110,24 @@
                                             <!-- details -->
                                             <div class="col-8 ps-5">
                                                 <!-- review -->
-                                                <label for="input">Enter Listing Name:</label>
+                                                <label for="input">Enter Listing Name:</label><span class="text-danger">*</span>
                                                 <div class="row">
                                                     <div class="mb-3">
                                                         <input type="Expression Name" class="form-control" id="exampleFormControlInput1" v-model="tempExpressionName">
+                                                        <span v-if="missingName" class="text-danger">Please enter a valid expression name.</span>
                                                     </div>
+                                                    
                                                 </div>
+                                                
+      
+
                                                 <div v-if="independentStatus" class="row">
-                                                    <label for="input">Enter Producer Name:</label>
+                                                    <label for="input">Enter Producer Name:</label><span class="text-danger">*</span>
                                                     <div class="mb-1">
-                                                        <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler">
+                                                        <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler" >
+                                                        <span v-if="missingBottler" class="text-danger">Please enter a producer name.</span>
                                                     </div>
+                                                    
                                                     <label for="checkbox">Is the producer independent?</label>
                                                     <div class="mb-3">
                                                         <div class="form-check">
@@ -117,7 +139,7 @@
                                                     </div>
                                                 </div>
                                                 <div v-else class="row">
-                                                    <label for="input">Enter Producer Name:</label>
+                                                    <label for="input">Enter Producer Name:<span class="text-danger">*</span></label>
                                                     <div class="mb-1">
                                                         <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler" disabled>
                                                     </div>
@@ -143,7 +165,7 @@
                                                 <div class="row">
                                                     
                                                     <div class=" mb-3">
-                                                        <label for="dropdown">Select Country of Origin:</label>
+                                                        <label for="dropdown">Select Country of Origin:</label><span class="text-danger">*</span>
                                                         <div class="input-group">
                                                             
                                                             <select class="form-select" id="inputGroupSelect01" v-model="tempCountry">
@@ -157,29 +179,29 @@
                                                 </div>    
                                                 <div class="row">
                                                     <div class="col-md-6 mb-3">
-                                                        <label for="dropdown">Select Drink Type:</label>
+                                                        <label for="dropdown">Select Drink Type:</label><span class="text-danger">*</span>
                                                         <div class="input-group">
                                                             <select class="form-select" id="inputGroupSelect01" v-model="tempDrinkType" @change="getDrinkCategoryList">
-                                                                
                                                                 <option v-for="taste in drinkCategoriesList" :key="taste" :value="taste">
                                                                 {{ taste }}
                                                                 </option>
                                                             </select>
-
                                                         </div>
                                                     </div>
                                                 
                                                     <div v-if="tempTypeCategoryList.length>1" class="col-md-6 mb-3"  >
-                                                        <label for="dropdown">Select Drink Type Category:</label>
+                                                        <label for="dropdown">Select Drink Type Category:</label><span class="text-danger">*</span>
                                                         <div class="col-md-6 mb-3">
-                                                        <div class="input-group">
+                                                            <div class="input-group">
+                                                                <select class="form-select" id="inputGroupSelect01" v-model="tempTypeCategory">
+                                                                    <option v-for="cat in tempTypeCategoryList.sort()" :key="cat" :value="cat" >
+                                                                        {{ cat }}
+                                                                    </option>
+                                                                    
+                                                                </select>
+                                                                <span v-if="missingTypeCategory" class="text-danger">Please select a type category.</span>
+                                                            </div>
                                                             
-                                                            <select class="form-select" id="inputGroupSelect01" v-model="tempTypeCategory">
-                                                                <option v-for="cat in tempTypeCategoryList" :key="cat" :value="cat">
-                                                                    {{ cat }}
-                                                                </option>
-                                                            </select>
-                                                        </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -190,16 +212,18 @@
                                                         <input type="Expression Name" class="form-control" id="age" v-model="tempAge">
                                                     </div>
                                                     
-                                                    <label for="input">Enter Bottle ABV (%):</label>
+                                                    <label for="input">Enter Bottle ABV (%):<span class="text-danger">*</span></label>
                                                     <div class="col-md-6 mb-3">
-                                                        <input type="Expression Name" class="form-control" id="abv" v-model="tempABV">
+                                                        <input type="Expression Name" class="form-control" id="abv" v-model="tempABV" >
+                                                        <span v-if="missingABV" class="text-danger">Please enter an ABV.</span>
                                                     </div>
                                                     
                                                 </div>
                                                 
                                                 <div class="mb-3">
-                                                    <label for="input">Enter Bottle Description:</label>
-                                                    <textarea class="form-control" id="exampleFormControlInput1" v-model="tempDescription" style="height: 200px;"></textarea>
+                                                    <label for="input">Enter Bottle Description:</label><span class="text-danger">*</span>
+                                                    <textarea class="form-control" id="exampleFormControlInput1" v-model="tempDescription" style="height: 200px;" ></textarea>
+                                                    <span v-if="missingDescription" class="text-danger">Please enter a Description.</span>
                                                 </div>
 
                                                 <div class="row pt-5"> 
@@ -222,7 +246,8 @@
                     </div> <!-- end of container -->
                 </div> <!-- end of back button -->
             </div> <!-- end of row -->
-        </div> <!-- end of main content -->
+        </div> <!-- end of main form -->
+
     </div>
     
 
@@ -264,10 +289,10 @@
                 tempProducer: '',
                 tempCountry: '',
                 tempDrinkType: '',
-                tempTypeCategory:"" ,
+                tempTypeCategory:"",
                 tempTypeCategoryList: [],
                 tempAge: '',
-                tempABV: '',
+                tempABV: null,
                 tempReviewLink: '',
                 tempSourceLink: '',
                 tempDescription: '',
@@ -276,8 +301,17 @@
                 responseCode: "",
                 image64: '',
                 selectedImage:'',
-
+                successfulUpdate:null,
+                updateForm:true,
+                errorSubmission:false,
+                duplicateEntry:false,
+                errorMessage:false,
+                missingName:false,
+                missingBottler:false,
                 
+                missingABV:false,
+                missingDescription:false,
+                errors:0
 
 
                 
@@ -399,6 +433,7 @@
             getDrinkCategoryList() {
             
                 this.tempTypeCategoryList=this.drinkCategories.find(cat => cat.drinkType == this.tempDrinkType).typeCategory;
+                this.tempTypeCategory=""
 
             },
 
@@ -425,6 +460,14 @@
                 }
 
             },
+            reset(){
+                this.errorSubmission=false;
+                this.successfulUpdate=false;
+                this.updateForm=true;
+                this.duplicateEntry=false;
+                this.errorMessage=false;
+            },
+
             async loadFile(event) {
             const file = event.target.files[0];
             const reader = new FileReader();
@@ -443,7 +486,27 @@
         
             },
             async updateListing(){
-                let updateAPI = `http://127.0.0.1:5003/updateListing/${this.listingID}`;
+                this.errors=0;
+                if(this.tempExpressionName.trim() == ''){
+                    this.missingName = true;
+                    this.errors++
+                }
+                if(this.tempBottler.trim() == ''){
+                    this.missingBottler = true;
+                    this.errors++
+                }
+                
+                if(this.tempABV == '' | this.tempABV == null){
+                    this.missingABV = true;
+                    this.errors++
+                }
+                if(this.tempDescription.trim() == ''){
+                    this.missingDescription = true;
+                    this.errors++
+                }
+
+                if(this.errors==0){
+                    let updateAPI = `http://127.0.0.1:5003/updateListing/${this.listingID}`;
                 
                 let updatedData = {
                     "listingName": this.tempExpressionName.trim(),
@@ -468,11 +531,44 @@
                     console.log(error);
                     this.responseCode = error.response.data.code
                 });
-                console.log(this.responseCode)
-                
 
+                if(this.responseCode==200){
+                    this.successfulUpdate=true; // Display success message
+                    this.updateForm=false; // Hide submission in progress message
+                }
+                else{
+                    this.errorSubmission=true; // Display error message
+                    this.updateForm=false; // Hide submission in progress message
+                    if(this.responseCode==410){
+                        this.duplicateEntry = true // Display duplicate entry message
+                    }else{
+                        this.errorMessage = true // Display generic error message
+                    }
+                }
+                console.log(this.responseCode)
+                return response
+                }
+                
+            },
+            async writeListing(submitAPI, submitData) {
+
+                this.fillForm = false; // Hide form
+                this.submitForm = true; // Display submission in progress message
+
+                const response = await this.$axios.post(submitAPI, submitData)
+                .then((response)=>{
+                    this.responseCode = response.data.code
+                })
+                .catch((error)=>{
+                    console.log(error);
+                    this.responseCode = error.response.data.code
+                });
+                console.log(this.responseCode)
+               
                 return response
             },
+
+
 
 
             

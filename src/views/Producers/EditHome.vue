@@ -293,29 +293,15 @@
                     this.tempBottler = bottlerNamePlaceholder;
                     bottlerNamePlaceholder=this.tempBottler;
 
-                    
-                    
                 } else {
                     // bottlerNamePlaceholder=this.tempBottler;
                     this.tempBottler = 'OB'
                     
                 }
-
                 console.log(this.independentStatus);
-                // console.log(this.tempProducer);
-                // if (this.independentStatus == true) {
-                //     var producerNamePlaceholder = this.tempProducer;
-                //     this.tempProducer = 'OB';
-                // }
-                // else
-                // this.tempProducer = producerNamePlaceholder;
-                // console.log(this.independentStatus)
-                // console.log(this.tempProducer)
             },
 
-            getProducerName(){
-                
-            },
+            
 
             // for search button
             searchListings() {

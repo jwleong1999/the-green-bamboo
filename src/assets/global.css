@@ -39,15 +39,24 @@ body {
     color: black;
 }
 
-
 .default-clickable-text {
     color: black;
+    text-decoration: none;
+}
+
+.reverse-clickable-text {
+    color: whitesmoke;
     text-decoration: none;
 }
 
 .primary-clickable-text {
     color: #535C72;
     text-decoration: none;
+}
+
+.tertiary-text {
+    color: lightgrey;
+
 }
 
 .primary-btn {
@@ -80,6 +89,12 @@ body {
     border-radius: 10px;
 }
 
+.primary-btn-outline-thick {
+    color: #535C72;
+    background-color: whitesmoke;
+    border: 2px solid #535C72;
+}
+
 .secondary-btn {
     color: whitesmoke;
     background-color: #DD9E54;
@@ -93,10 +108,27 @@ body {
     border: 1px solid whitesmoke;
 }
 
+.secondary-btn-not-rounded {
+    color: whitesmoke;
+    background-color: #DD9E54;
+}
+
 .secondary-square {
     color: #535C72;
     background-color: whitesmoke;
     border: 3px solid #535C72;
+}
+
+.tertiary-btn {
+    color: whitesmoke;
+    background-color: #747D92;
+    border: 1px solid rgb(110, 110, 110);
+}
+
+.tertiary-btn:hover {
+    color: whitesmoke;
+    background-color: #535C72;
+    border: 1px solid rgb(110, 110, 110);
 }
 
 .custom-drink-list-btn {
@@ -131,12 +163,12 @@ body {
     align-items: center;
 }
 
-.square-inline-text-start {
-    margin-right: auto; /* Pushes the text to the left */
-}
-
 .img-border {
     border: 4px solid #535C72;
+    border-radius: 30px;
+}
+
+.img-no-border-rounded {
     border-radius: 30px;
 }
 
@@ -160,6 +192,23 @@ body {
 .add-review-photo-background {
     width: 100px;
     height: 100px;            
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0.8;
+    background-color: lightgrey;
+}
+
+.add-drink-photo-container {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    margin: 20px;
+}
+
+.add-drink-photo-background {
+    width: 150px;
+    height: 150px;            
     position: absolute;
     top: 0;
     left: 0;
@@ -217,4 +266,23 @@ body {
     height: 50px;
     border-radius: 50%;
     object-fit: cover;
+}
+
+.profile-image-lg {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.send-icon {
+    rotate: 45deg;
+}
+
+.p-text-lg {
+    font-size: 1.1rem;;
+}
+
+.question-box {
+    overflow-x: scroll;
 }

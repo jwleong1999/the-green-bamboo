@@ -255,7 +255,9 @@
                                             </div>
                                             <!-- producer -->
                                             <div class="row">
-                                                <h5> {{ getProducerName(listing) }} </h5> 
+                                                <a class="primary-clickable-text" v-bind:href="'../Producers/Profile-Page?id=' + `${listing.producerID.$oid}`">
+                                                    <h5> <b> {{ getProducerName(listing) }} </b> </h5>
+                                                </a>
                                             </div>
                                             <!-- review -->
                                             <div class="row pt-3">
@@ -409,7 +411,7 @@
                                     <!-- rating -->
                                     <div class="col-2">
                                         <h1 class="rating-text text-end">
-                                            3.7 
+                                            {{ getRatings(listing) }}
                                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                                 <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                             </svg>
@@ -450,11 +452,11 @@
         data() {
             return {
                 // data from database
-                countries: [],
+                // countries: [],
                 listings: [],
                 producers: [],
                 reviews: [],
-                users: [],
+                // users: [],
                 venues: [],
                 venuesAPI: [],
                 drinkTypes: [],
@@ -496,13 +498,13 @@
             async loadData() {
                 // countries
                 // _id, originCountry
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
-                        this.countries = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //     const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
+                    //     this.countries = response.data;
+                    // } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
                 // listings
                 // _id, listingName, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, officialDesc, sourceLink, photo
                     try {
@@ -534,32 +536,31 @@
                     }
                 // users
                 // _id, username, displayName, choiceDrinks, drinkLists, modType, photo
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
-                        this.users = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //     const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
+                    //     this.users = response.data;
+                    // } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
                 // venues
-                // _id, venueName, venueDesc, origin
-                // Country, address, openingHours
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
-                        this.venues = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                // _id, venueName, venueDesc, originCountry, address, openingHours
+                    // try {
+                    //     const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
+                    //     this.venues = response.data;
+                    // } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
                 // venuesAPI
                 // _id, venueName, venueDesc, originCountry
-                try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getVenuesAPI');
-                        this.venuesAPI = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                // try {
+                //         const response = await this.$axios.get('http://127.0.0.1:5000/getVenuesAPI');
+                //         this.venuesAPI = response.data;
+                //     } 
+                //     catch (error) {
+                //         console.error(error);
+                //     }
                 // drinkTypes
                 // _id, drinkType, typeCategory
                     try {
@@ -571,31 +572,31 @@
                     }
                 // requestListings
                 // _id, listingName, producerNew, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, sourceLink, brandRelation, reviewStatus, userID, photo
-                    try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
-                            this.requestListings = response.data;
-                        } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
+                    //         this.requestListings = response.data;
+                    //     } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
                 // requestEdits
                 // _id, duplicateLink, editDesc, sourceLink, brandRelation, listingID, userID, reviewStatus
-                    try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdits');
-                            this.requestEdits = response.data;
-                        } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdits');
+                    //         this.requestEdits = response.data;
+                    //     } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
                 // modRequests
                 // _id, userID, drinkType, modDesc
-                    try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
-                            this.modRequests = response.data;
-                        } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
+                    //         this.modRequests = response.data;
+                    //     } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
             },
             // Helper function for onkeyup search to reset filter
             helperSearch(){
