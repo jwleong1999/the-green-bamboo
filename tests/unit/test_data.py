@@ -310,12 +310,23 @@ class TestData(unittest.TestCase):
         mod_request = modRequests(userID=object(), drinkType="Drink Type A", modDesc=mod_desc)
         self.assertEqual(mod_request.modDesc, mod_desc)
 
+    # TEST FOR PRESENCE OF HASHED PASSWORD
+    def test_users(self):
+        # Test case 2: Check if the hashed password is present
+        user = users(username="JohnDoe", displayName="John Doe", choiceDrinks=[], drinkLists=None, modType=[], photo="", hashedPassword="password123")
+        self.assertTrue(hasattr(user, "hashedPassword"))
 
+    def test_venues(self):
+        # Test case 2: Check if the hashed password is present
+        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=None, hashedPassword="password123")
+        self.assertTrue(hasattr(venue, "hashedPassword"))
 
+    def test_producers(self):
+        # Test case 2: Check if the hashed password is present
+        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="Country A", mainDrinks=[], statusOB=None, hashedPassword="password123")
+        self.assertTrue(hasattr(producer, "hashedPassword"))
 
-
-
-
+    
 if __name__ == '__main__':
     unittest.main()
 

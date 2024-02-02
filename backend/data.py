@@ -22,7 +22,6 @@ class countries:
 # Dataclass (listings)
 @dataclass
 class listings:
-    
     listingName: str
     producerID: object
     bottler: str
@@ -43,8 +42,8 @@ class producers:
     producerDesc: str
     originCountry: str
     mainDrinks: list
+    hashedPassword: str
     statusOB: Optional[str] = None
-    
 
 # Dataclass (reviews)
 @dataclass
@@ -69,6 +68,7 @@ class users:
     drinkLists: object
     modType: list
     photo: str
+    hashedPassword: str
 
 # Dataclass (venues)
 @dataclass
@@ -78,6 +78,7 @@ class venues:
     originCountry: str
     address: str
     openingHours: object
+    hashedPassword: str
 
 # Dataclass (venuesAPI) --> Using Google Maps API
 @dataclass
