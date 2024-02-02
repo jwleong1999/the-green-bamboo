@@ -56,9 +56,18 @@ class reviews:
     reviewTitle: str
     reviewType: str
     photo: str 
+    createdDate: datetime
+    colour: str
+    language: str
+    aroma: str
+    finish: str
+    location: object
+    taste:str
+    willRecommend: bool
+    wouldBuyAgain: bool
     taggedUsers: Optional[list] = None
     flavorTag: Optional[list] = None
-    createdDate: datetime
+    
 
 # Dataclass (users)
 @dataclass
@@ -71,6 +80,7 @@ class users:
     photo: str
     hashedPassword: str
     joinDate: datetime
+    followLists: object
 
 # Dataclass (venues)
 @dataclass

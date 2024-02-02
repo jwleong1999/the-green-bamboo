@@ -323,7 +323,7 @@ class TestData(unittest.TestCase):
 
     def test_producers(self):
         # Test case 2: Check if the hashed password is present
-        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="Country A", mainDrinks=[], statusOB=None, hashedPassword="password123")
+        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="Country A", mainDrinks=[], photo="" ,statusOB=None, hashedPassword="password123")
         self.assertTrue(hasattr(producer, "hashedPassword"))
 
     
