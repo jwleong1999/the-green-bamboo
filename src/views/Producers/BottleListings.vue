@@ -254,6 +254,7 @@
                                 <!-- This is where modal starts for review-->
                                 <div class="modal-body">
 
+                                    <div class="row">
                                     <!-- Start of left side elements -->
                                     <div class="col-md-9">                                     
                                         <div class="container-fluid">
@@ -378,7 +379,34 @@
                                     </div>
                                      <!-- End of left side elements -->
 
+                                    <!-- Start of right side elements, photo, location and friend tags -->
+                                    <div class="col-md-3">
+                                        <p class = 'text-start mb-2 fw-bold'>Photo <span class="text-danger">*</span></p>
+                                        <div class="mb-3">
+                                            <!-- TODO v:model here the file -->
+                                            <input class="form-control" type="file" id="formFile">
+                                            <!-- TODO Display the file here -->
+                                        </div>
+                                        
+                                        <div class="form-group mb-3">
+                                            <p class="text-start mb-1 fw-bold">Tag Friends</p>
+                                            <input type="text" class="form-control" id="friendTag">
+                                        </div>
+                                        
+                                        <div class="form-group mb-3">
+                                            <p class="text-start mb-1 fw-bold">Location</p>
+                                            <input type="text" class="form-control" id="locationTag">
+                                        </div>
+
+
+                                    </div> 
+                                    <!-- End of right side elements -->
+
                                 </div>
+                                <!-- End of bootstrap row -->
+
+                                </div>
+                                <!-- End of modal body -->
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                     <button type="button" class="btn btn-primary">Submit Review</button>
