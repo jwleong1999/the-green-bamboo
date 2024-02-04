@@ -122,7 +122,7 @@
       
 
                                                 <div v-if="independentStatus" class="row">
-                                                    <label for="input">Enter Producer Name:</label><span class="text-danger">*</span>
+                                                    <label for="input">Enter Producer Name:<span class="text-danger">*</span></label>
                                                     <div class="mb-1">
                                                         <input type="Bottler Name" class="form-control" id="exampleFormControlInput1" v-model="tempBottler" >
                                                         <span v-if="missingBottler" class="text-danger">Please enter a producer name.</span>

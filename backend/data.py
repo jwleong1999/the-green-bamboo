@@ -55,16 +55,16 @@ class reviews:
     reviewDesc: str
     reviewTitle: str
     reviewType: str
-    photo: str 
     createdDate: datetime
-    colour: str
     language: str
-    aroma: str
     finish: str
-    location: object
-    taste:str
     willRecommend: bool
     wouldBuyAgain: bool
+    photo: Optional[str] = None
+    colour: Optional[str] = None
+    aroma: Optional[str] = None
+    location: Optional[object] = None
+    taste: Optional[str] = None
     taggedUsers: Optional[list] = None
     flavorTag: Optional[list] = None
     
