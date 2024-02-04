@@ -67,118 +67,182 @@ class TestData(unittest.TestCase):
 
     def test_producers(self):
         # Test case 1: Check if the producer name is set correctly
-        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="USA", mainDrinks=["Drink A", "Drink B"])
+        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="USA", mainDrinks=["Drink A", "Drink B"], hashedPassword="password123", photo="producer.jpg")
         self.assertEqual(producer.producerName, "Producer A")
 
         # Test case 2: Check if the producer description is set correctly
-        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="USA", mainDrinks=["Drink A", "Drink B"])
+        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="USA", mainDrinks=["Drink A", "Drink B"], hashedPassword="password123", photo="producer.jpg")
         self.assertEqual(producer.producerDesc, "Description A")
 
         # Test case 3: Check if the origin country is set correctly
-        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="USA", mainDrinks=["Drink A", "Drink B"])
+        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="USA", mainDrinks=["Drink A", "Drink B"], hashedPassword="password123", photo="producer.jpg")
         self.assertEqual(producer.originCountry, "USA")
 
         # Test case 4: Check if the main drinks are set correctly
-        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="USA", mainDrinks=["Drink A", "Drink B"])
+        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="USA", mainDrinks=["Drink A", "Drink B"], hashedPassword="password123", photo="producer.jpg")
         self.assertEqual(producer.mainDrinks, ["Drink A", "Drink B"])
 
-        # Test case 5: Check if the optional statusOB is None when not provided
-        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="USA", mainDrinks=["Drink A", "Drink B"])
+        # Test case 5: Check if the hashed password is set correctly
+        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="USA", mainDrinks=["Drink A", "Drink B"], hashedPassword="password123", photo="producer.jpg")
+        self.assertEqual(producer.hashedPassword, "password123")
+
+        # Test case 6: Check if the photo is set correctly
+        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="USA", mainDrinks=["Drink A", "Drink B"], hashedPassword="password123", photo="producer.jpg")
+        self.assertEqual(producer.photo, "producer.jpg")
+
+        # Test case 7: Check if the statusOB is None when not provided
+        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="USA", mainDrinks=["Drink A", "Drink B"], hashedPassword="password123", photo="producer.jpg")
         self.assertIsNone(producer.statusOB)
 
+    def test_producers(self):
+        # Test case 8: Check if the hashed password is present
+        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="Country A", mainDrinks=[], hashedPassword="password123", photo="producer.jpg", statusOB=None)
+        self.assertTrue(hasattr(producer, "hashedPassword"))
+
     
+
+        
     def test_reviews(self):
         # Test case 1: Check if the userID is set correctly
         user_id = object()
-        review = reviews(userID=user_id, reviewTarget="Product A", date=datetime.now(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Positive", photo="review.jpg")
+        review = reviews(userID=user_id, reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
         self.assertEqual(review.userID, user_id)
 
         # Test case 2: Check if the review target is set correctly
-        review = reviews(userID=object(), reviewTarget="Product A", date=datetime.now(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Positive", photo="review.jpg")
-        self.assertEqual(review.reviewTarget, "Product A")
+        review_target = object()
+        review = reviews(userID=object(), reviewTarget=review_target, rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
+        self.assertEqual(review.reviewTarget, review_target)
 
-        # Test case 3: Check if the date is set correctly
-        now = datetime.now()
-        review = reviews(userID=object(), reviewTarget="Product A", date=now, rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Positive", photo="review.jpg")
-        self.assertEqual(review.date, now)
-
-        # Test case 4: Check if the rating is set correctly
-        review = reviews(userID=object(), reviewTarget="Product A", date=datetime.now(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Positive", photo="review.jpg")
+        # Test case 3: Check if the rating is set correctly
+        review = reviews(userID=object(), reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
         self.assertEqual(review.rating, 5)
 
-        # Test case 5: Check if the review description is set correctly
-        review = reviews(userID=object(), reviewTarget="Product A", date=datetime.now(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Positive", photo="review.jpg")
+        # Test case 4: Check if the review description is set correctly
+        review = reviews(userID=object(), reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
         self.assertEqual(review.reviewDesc, "Great product")
 
-        # Test case 6: Check if the review title is set correctly
-        review = reviews(userID=object(), reviewTarget="Product A", date=datetime.now(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Positive", photo="review.jpg")
+        # Test case 5: Check if the review title is set correctly
+        review = reviews(userID=object(), reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
         self.assertEqual(review.reviewTitle, "Amazing")
 
-        # Test case 7: Check if the review type is set correctly
-        review = reviews(userID=object(), reviewTarget="Product A", date=datetime.now(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Positive", photo="review.jpg")
-        self.assertEqual(review.reviewType, "Positive")
+        # Test case 6: Check if the review type is set correctly
+        review = reviews(userID=object(), reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
+        self.assertEqual(review.reviewType, "Venue")
 
-        # Test case 8: Check if the photo is set correctly
-        review = reviews(userID=object(), reviewTarget="Product A", date=datetime.now(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Positive", photo="review.jpg")
+        # Test case 7: Check if the created date is set correctly
+        now = datetime.now()
+        review = reviews(userID=object(), reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=now, language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
+        self.assertEqual(review.createdDate, now)
+
+        # Test case 8: Check if the language is set correctly
+        review = reviews(userID=object(), reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
+        self.assertEqual(review.language, "English")
+
+        # Test case 9: Check if the finish is set correctly
+        review = reviews(userID=object(), reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
+        self.assertEqual(review.finish, "Smooth")
+
+        # Test case 10: Check if the will recommend flag is set correctly
+        review = reviews(userID=object(), reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
+        self.assertTrue(review.willRecommend)
+
+        # Test case 11: Check if the would buy again flag is set correctly
+        review = reviews(userID=object(), reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
+        self.assertTrue(review.wouldBuyAgain)
+
+        # Test case 12: Check if the photo is set correctly
+        review = reviews(userID=object(), reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
         self.assertEqual(review.photo, "review.jpg")
 
-        # Test case 9: Check if the tagged users is None when not provided
-        review = reviews(userID=object(), reviewTarget="Product A", date=datetime.now(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Positive", photo="review.jpg")
+        # Test case 13: Check if the colour is None when not provided
+        review = reviews(userID=object(), reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
+        self.assertIsNone(review.colour)
+
+        # Test case 14: Check if the aroma is None when not provided
+        review = reviews(userID=object(), reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
+        self.assertIsNone(review.aroma)
+
+        # Test case 15: Check if the location is None when not provided
+        review = reviews(userID=object(), reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
+        self.assertIsNone(review.location)
+
+        # Test case 16: Check if the taste is None when not provided
+        review = reviews(userID=object(), reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
+        self.assertIsNone(review.taste)
+
+        # Test case 17: Check if the tagged users is None when not provided
+        review = reviews(userID=object(), reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
         self.assertIsNone(review.taggedUsers)
 
-        # Test case 10: Check if the flavor tag is None when not provided
-        review = reviews(userID=object(), reviewTarget="Product A", date=datetime.now(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Positive", photo="review.jpg")
+        # Test case 18: Check if the flavor tag is None when not provided
+        review = reviews(userID=object(), reviewTarget=object(), rating=5, reviewDesc="Great product", reviewTitle="Amazing", reviewType="Venue", createdDate=datetime.now(), language="English", finish="Smooth", willRecommend=True, wouldBuyAgain=True, photo="review.jpg")
         self.assertIsNone(review.flavorTag)
+        
+    
 
     def test_users(self):
         # Test case 1: Check if the username is set correctly
-        user = users(username="john_doe", displayName="John Doe", choiceDrinks=[], drinkLists=None, modType=[], photo="john.jpg")
+        user = users(username="john_doe", displayName="John Doe", choiceDrinks=[], drinkLists=None, modType=[], photo="john.jpg", hashedPassword="password123", joinDate=datetime.now(), followLists=None)
         self.assertEqual(user.username, "john_doe")
 
         # Test case 2: Check if the display name is set correctly
-        user = users(username="john_doe", displayName="John Doe", choiceDrinks=[], drinkLists=None, modType=[], photo="john.jpg")
+        user = users(username="john_doe", displayName="John Doe", choiceDrinks=[], drinkLists=None, modType=[], photo="john.jpg", hashedPassword="password123", joinDate=datetime.now(), followLists=None)
         self.assertEqual(user.displayName, "John Doe")
 
         # Test case 3: Check if the choice drinks list is set correctly
         choice_drinks = ["Drink A", "Drink B", "Drink C"]
-        user = users(username="john_doe", displayName="John Doe", choiceDrinks=choice_drinks, drinkLists=None, modType=[], photo="john.jpg")
+        user = users(username="john_doe", displayName="John Doe", choiceDrinks=choice_drinks, drinkLists=None, modType=[], photo="john.jpg", hashedPassword="password123", joinDate=datetime.now(), followLists=None)
         self.assertEqual(user.choiceDrinks, choice_drinks)
 
         # Test case 4: Check if the drink lists object is set correctly
         drink_lists = object()
-        user = users(username="john_doe", displayName="John Doe", choiceDrinks=[], drinkLists=drink_lists, modType=[], photo="john.jpg")
+        user = users(username="john_doe", displayName="John Doe", choiceDrinks=[], drinkLists=drink_lists, modType=[], photo="john.jpg", hashedPassword="password123", joinDate=datetime.now(), followLists=None)
         self.assertEqual(user.drinkLists, drink_lists)
 
         # Test case 5: Check if the mod type list is set correctly
         mod_type = ["Type A", "Type B", "Type C"]
-        user = users(username="john_doe", displayName="John Doe", choiceDrinks=[], drinkLists=None, modType=mod_type, photo="john.jpg")
+        user = users(username="john_doe", displayName="John Doe", choiceDrinks=[], drinkLists=None, modType=mod_type, photo="john.jpg", hashedPassword="password123", joinDate=datetime.now(), followLists=None)
         self.assertEqual(user.modType, mod_type)
 
         # Test case 6: Check if the photo is set correctly
-        user = users(username="john_doe", displayName="John Doe", choiceDrinks=[], drinkLists=None, modType=[], photo="john.jpg")
+        user = users(username="john_doe", displayName="John Doe", choiceDrinks=[], drinkLists=None, modType=[], photo="john.jpg", hashedPassword="password123", joinDate=datetime.now(), followLists=None)
         self.assertEqual(user.photo, "john.jpg")
+
+        # Test case 7: Check if the hashed password is present
+        user = users(username="JohnDoe", displayName="John Doe", choiceDrinks=[], drinkLists=None, modType=[], photo="", hashedPassword="password123", joinDate=datetime.now(), followLists=None)
+        self.assertTrue(hasattr(user, "hashedPassword"))
+
+        # Test case 8: Check if followList is an object 
+        follow_lists = object()
+        user = users(username="JohnDoe", displayName="John Doe", choiceDrinks=[], drinkLists=None, modType=[], photo="", hashedPassword="password123", joinDate=datetime.now(), followLists=follow_lists)
+        self.assertEqual(user.followLists, follow_lists)
+        
 
     def test_venues(self):
         # Test case 1: Check if the venue name is set correctly
-        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=object())
+        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=object(), hashedPassword="password123")
         self.assertEqual(venue.venueName, "Venue A")
 
         # Test case 2: Check if the venue description is set correctly
-        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=object())
+        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=object(), hashedPassword="password123")
         self.assertEqual(venue.venueDesc, "Description A")
 
         # Test case 3: Check if the origin country is set correctly
-        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=object())
+        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=object(), hashedPassword="password123")
         self.assertEqual(venue.originCountry, "Country A")
 
         # Test case 4: Check if the address is set correctly
-        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=object())
+        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=object(), hashedPassword="password123")
         self.assertEqual(venue.address, "Address A")
 
         # Test case 5: Check if the opening hours object is set correctly
         opening_hours = object()
-        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=opening_hours)
+        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=opening_hours, hashedPassword="password123")
         self.assertEqual(venue.openingHours, opening_hours)
+
+        # Test case 6: Check if the hashed password is present
+        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=None, hashedPassword="password123")
+        self.assertEqual(venue.hashedPassword, "password123")
 
     def test_drinkTypes(self):
         # Test case 1: Check if the drink type is set correctly
@@ -311,20 +375,11 @@ class TestData(unittest.TestCase):
         self.assertEqual(mod_request.modDesc, mod_desc)
 
     # TEST FOR PRESENCE OF HASHED PASSWORD
-    def test_users(self):
-        # Test case 2: Check if the hashed password is present
-        user = users(username="JohnDoe", displayName="John Doe", choiceDrinks=[], drinkLists=None, modType=[], photo="", hashedPassword="password123")
-        self.assertTrue(hasattr(user, "hashedPassword"))
+    
 
-    def test_venues(self):
-        # Test case 2: Check if the hashed password is present
-        venue = venues(venueName="Venue A", venueDesc="Description A", originCountry="Country A", address="Address A", openingHours=None, hashedPassword="password123")
-        self.assertTrue(hasattr(venue, "hashedPassword"))
+    
 
-    def test_producers(self):
-        # Test case 2: Check if the hashed password is present
-        producer = producers(producerName="Producer A", producerDesc="Description A", originCountry="Country A", mainDrinks=[], photo="" ,statusOB=None, hashedPassword="password123")
-        self.assertTrue(hasattr(producer, "hashedPassword"))
+    
 
     
 if __name__ == '__main__':

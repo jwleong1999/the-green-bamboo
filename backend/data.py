@@ -50,7 +50,7 @@ class producers:
 @dataclass
 class reviews:
     userID: object
-    reviewTarget: str
+    reviewTarget: object
     rating: int
     reviewDesc: str
     reviewTitle: str
