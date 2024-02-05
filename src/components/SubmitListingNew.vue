@@ -1,33 +1,37 @@
-<!-- Component for submitting new listings: Create (Producers, Admins?) / Request (Users) -->
+<!-- Component for submitting new listings: Create (Producers, Moderators, Admins) / Request (Users) -->
 
 <!--
     TODO:
-    - Dropdown Selection for Drink Type + Drink Category (with option for "Other"), Country of Origin
     - Accept pre-filled information from user requests to be created by power users, or to allow users to edit their submitted requests.
     -- Users cannot submit requests for bottle listings that already exist. They should be directed to the edit page instead.
     -- Different users can submit requests for the same bottle listing. Power users will decide which one to accept.
     -- The same user cannot submit multiple requests for the same bottle listing.
-
-    --- [ Requires Access Control First ] ---
-    - Fill in userID in backend with the corresponding requesting user's userID.
-    - Make Producer field a dropdown list (for non-producer) / autofill and non-changeable (for producer). This fills in producerID in backend as well.
-        -- Only users will have option for "Other" in dropdown list: if creating listing, new producer should be created first.
     
-    - "Return" button may bring user back to same page, but with form cleared. Prevent that by returning to last notable page.
+    - "Return" button may bring user back to same page, but with form cleared. Prevent that by returning to last notable page. (optional)
     - Consider another backend check to ensure that submitter is authorized to submit listing in specified mode, with valid producerID for producers.
-    
     - Should we save the form data for easier retry when invoking reset()? Should reset() just hard refresh the page?
-    - [?] Independent Bottler Yes/No radio buttons should be styled to look like checkboxes.
-        -- Consider using switch / single checkbox instead (if so, flip isOperator: rename to indOperator).
 -->
 
 <template>
     <!-- Header -->
     <div class="container pt-3">
+
+        <!-- Display when data is still loading -->
+        <div class="text-info-emphasis fst-italic fw-bold fs-5" v-if="!dataLoaded"> 
+            <span>Loading form, please wait...</span>
+            <br><br>
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
         
         <!-- Display when form is being submitted -->
         <div class="text-info-emphasis fst-italic fw-bold fs-5" v-if="submitForm"> 
             <span>The form is being submitted, please hold on!</span>
+            <br><br>
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
         </div>
         
         <!-- Display when bottle listing is successfully submitted -->
@@ -85,20 +89,25 @@
                             </div>
                         </div>
                     
-                        <div v-if="tempTypeCategoryList.length>1" class="col-md-6 mb-3"  >
+                        <div class="col-md-6 mb-3">
                             <p class="text-start mb-1">Drink Category</p>
-                            <div class="col-md-6 mb-3">
-                                <div class="input-group">
-                                    <select class="form-select" id="inputGroupSelect01" v-model="tempTypeCategory">
-                                        <option v-for="cat in tempTypeCategoryList.sort()" :key="cat" :value="cat" >
-                                            {{ cat }}
-                                        </option>
-                                        
-                                    </select>
-                                    <span v-if="missingTypeCategory" class="text-danger">Please select a type category.</span>
-                                </div>
-                                
+
+                            <!-- For drink types that have serveral categories to choose from -->
+                            <div class="input-group" v-if="tempTypeCategoryList.length > 1">
+                                <select class="form-select" id="inputGroupSelect01" v-model="tempTypeCategory">
+                                    <option v-for="cat in tempTypeCategoryList.sort()" :key="cat" :value="cat" >
+                                        {{ cat }}
+                                    </option>
+                                </select>
                             </div>
+                            
+                            <!-- If there are no categories to select, display disabled dummy selection field -->
+                            <div class="input-group" v-else>
+                                <select class="form-select" disabled>
+                                    <option selected>-</option>
+                                </select>
+                            </div>
+
                         </div>
                     </div>
                     
@@ -127,38 +136,46 @@
                     </div>
 
                     <!-- Input: Producer Name -->
-                    <!-- TODO Create dropdown menu tied to producerID, show producerNew textbox only if "Other" selected (no producerID). -->
+                    <!-- [IF] Producer is creating listing, lock Producer selection -->
+                    <div class="form-group mb-3" v-if="isProducer != false">
+                        <p class="text-start mb-1">Producer Name <span class="text-danger">*</span></p>
+                        <select class="form-select" disabled>
+                            <option selected>{{ isProducer }}</option>
+                        </select>
+                    </div>
+                    <!-- [ELSE] Dropdown menu tied to producerID, show producerNew textbox only if "Other" selected (no producerID). -->
                     <!-- set name only, then before submitting request, put the id, save computation -->
-                    <div class="form-group mb-3">
+                    <div class="form-group mb-3" v-else>
                         <p class="text-start mb-1">Producer Name <span class="text-danger">*</span></p>
                         <select class="form-select" id="producerSelect" v-model="tempProducer" @change="getProducerID">
                             <!-- <option selected>{{this.tempProducer }}</option> -->
                             <option v-for="producer in producerList" :key="producer.producerName" :value="producer.producerName">
                             {{ producer.producerName }}
                             </option>
-                            <option value="Other">Other</option>
+                            <option v-if="mode == 'user'" value="Other">[ Other ]</option>
                         </select>
-                        <p v-if="this.tempProducer == 'Other'" class="text-start mt-2 mb-1">New Producer Name <span class="text-danger">*</span></p>
-                        <input v-if="this.tempProducer == 'Other'" type="text" class="form-control mb-1" v-model="form['producerNew']" id="producerNew" placeholder="Enter Producer Name">
+                    </div>
+
+                    <!-- Input: New Producer Name (Request Only: if "Other" is selected in Producer Name) -->
+                    <div class="form-group mb-3" v-if="this.tempProducer == 'Other'">
+                        <p class="text-start mb-1">New Producer Name <span class="text-danger">*</span></p>
+                        <input type="text" class="form-control" v-model="form['producerNew']" id="producerNew" placeholder="Enter Producer Name">
                     </div>
 
                     <!-- Input: Independent Bottler Check -->
                     <p class="text-start mb-1">Is this bottle by an independent bottler? <span class="text-danger">*</span></p>
-                        <!-- Radio Buttons -->
+                    <!-- Toggleable Switch -->
                     <div class="text-start mb-3">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" v-model="isOperator" :value="false" name="checkIBYes" id="independentBottler">
-                            <label class="form-check-label" for="independentBottler">Yes</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" v-model="isOperator" :value="true" name="checkIBNo" id="originalBottler">
-                            <label class="form-check-label" for="originalBottler">No</label>
+                        <div class="form-check form-switch form-check-inline">
+                            <input class="form-check-input" type="checkbox" role="switch" id="IBCheck" name="IBCheck" v-model="indOperator">
+                            <label class="form-check-label" for="IBCheck" v-if="indOperator">Yes</label>
+                            <label class="form-check-label" for="IBCheck" v-if="!indOperator">No</label>
                         </div>
                     </div>
-                        <!-- (ONLY IF above toggled to "Yes") Input Text for Independent Bottler -->
-                    <div class="form-group mb-3" v-if="isOperator == false">
+                    <!-- (ONLY IF above toggled to "Yes") Input Text for Independent Bottler -->
+                    <div class="form-group mb-3" v-if="indOperator">
                         <p class="text-start mb-1">If yes, who is the independent bottler? <span class="text-danger">*</span></p>
-                        <input type="text" class="form-control" v-model="form['bottler']" :disabled="isOperator" id="bottlerName" placeholder="Enter Bottler Name">
+                        <input type="text" class="form-control" v-model="form['bottler']" :disabled="!indOperator" id="bottlerName" placeholder="Enter Bottler Name">
                     </div>
 
                     <!-- Input: Country of Origin -->
@@ -177,7 +194,7 @@
                         </div>
                     </div>
 
-                    <!-- Input: Alcohol Strength (% ABV) + Alcohol Age (years old) -->
+                    <!-- Input: Alcohol Strength (% ABV) + Alcohol Age / Vintage (years old / Year Bottled) -->
                     <div class="row mb-3">
                         <div class="form-group col-6">
                             <p class="text-start mb-1">Strength <span class="text-danger" v-if="mode == 'power'">*</span></p>
@@ -189,12 +206,13 @@
                             </div>
                         </div>
                         <div class="form-group col-6">
-                            <p class="text-start mb-1">Age</p>
+                            <p class="text-start mb-1" v-if="tempDrinkType == 'Liqueur'">Vintage (Year Bottled)</p>
+                            <p class="text-start mb-1" v-else>Age</p>
                             <div class="form-group row">
                                 <div class="col-6 pe-1">
                                     <input type="number" v-model="form['age']" class="form-control" id="age" min="0">
                                 </div>
-                                <label for="age" class="col-6 col-form-label ps-1 text-start">years old</label>
+                                <label for="age" class="col-6 col-form-label ps-1 text-start" v-if="tempDrinkType != 'Liqueur'">years old</label>
                             </div>
                         </div>
                     </div>
@@ -266,25 +284,31 @@
                     "reviewStatus": false,
                     "userID": {
                         "$oid": "defaultUser"
-                    } // TODO: Fill in userID with userID of user submitting form
+                    }
                 },
-                isOperator: false,
+                indOperator: true,
+                isProducer: false,
                 submitForm: false,
                 successSubmission: false,
                 errorSubmission: false,
                 errorMessage: false,
                 duplicateEntry: false,
-                fillForm: true,
+                fillForm: false,
+                dataLoaded: false,
                 responseCode: "",
                 countries: [],
                 tempTypeCategory:"",
                 tempTypeCategoryList: [],
                 drinkCategoriesList: [],
                 producerList: [],
-                tempProducer: ""
+                tempProducer: "",
+                tempDrinkType: "",
             }
         },
         mounted() {
+            this.userID = {
+                "$oid": localStorage.getItem('88B_accID')
+            };
             this.loadData();
         },
         methods:{
@@ -310,7 +334,8 @@
                         this.drinkCategoriesList.push(drink.drinkType);
                     }
                     this.drinkCategoriesList=this.drinkCategoriesList.sort();
-                    this.tempTypeCategoryList=this.drinkCategories.find(cat => cat.drinkType == this.tempDrinkType).typeCategory.sort();
+                    // this.tempTypeCategoryList=this.drinkCategories.find(cat => cat.drinkType == this.tempDrinkType).typeCategory.sort();
+                    // --- code line not necessary as drink type is not yet selected on data loading
                 } 
                 catch (error) {
                     console.error(error);
@@ -319,10 +344,19 @@
                 try {
                     const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
                     this.producerList = response.data;
+
+                    // Check if user is a producer
+                    if (localStorage.getItem('88B_accType') == "producer") {
+                        this.isProducer = this.producerList.find(producer => producer._id["$oid"] == this.userID["$oid"]).producerName;
+                        this.producerID = this.userID;
+                    }
                 } 
                 catch (error) {
                     console.error(error);
                 }
+
+                this.fillForm = true;
+                this.dataLoaded = true;
             },
 
             getDrinkCategoryList() {
@@ -343,7 +377,7 @@
             },
 
             reset(){
-                this.isOperator = false
+                this.indOperator = true
                 this.submitForm = false
                 this.successSubmission = false
                 this.errorSubmission = false
@@ -351,6 +385,9 @@
                 this.duplicateEntry = false
                 this.fillForm = true
                 this.responseCode= ""
+                this.tempTypeCategory = ""
+                this.tempProducer = ""
+                this.tempDrinkType = ""
 
                 for (const key in this.form) {
                     this.form[key] = "";
@@ -393,7 +430,7 @@
                 }
 
                 // Validate Independent Bottler Name (if OB, will be handled by database writing method)
-                if (!this.form["bottler"].trim() && this.isOperator == false) {
+                if (!this.form["bottler"].trim() && this.indOperator == true) {
                     alertPhrase += "- Name of independent bottler is needed.\n"
                 }
 
@@ -516,7 +553,7 @@
                     }
 
                     // If not independent bottler, set bottler to "OB"
-                    if (this.isOperator) {
+                    if (this.indOperator == false) {
                         submitData["bottler"] = "OB"
                     }
 
