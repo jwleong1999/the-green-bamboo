@@ -409,10 +409,16 @@
                                         <a v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
                                             <img :src=" 'data:image/jpeg;base64,' + (listing['photo'] || defaultProfilePhoto)" style="width: 150px; height: 150px;">
                                         </a>
-                                        <!-- edit -->
+                                        <!-- edit listing -->
                                         <button v-if="editingCatalogue == true" type="button" class="btn tertiary-btn reverse-clickable-text m-1">
                                             <a class="reverse-clickable-text" v-bind:href="'../Producer/Producer-Edit-Listing/' + `${listing._id.$oid}`">
                                                 Edit Listing
+                                            </a>
+                                        </button>
+                                        <!-- delete listing -->
+                                        <button v-if="editingCatalogue == true" type="button" class="btn btn-danger reverse-clickable-text p-1" v-on:click="deleteListings(listing)">
+                                            <a class="reverse-clickable-text">
+                                                Delete Listing
                                             </a>
                                         </button>
                                     </div>
@@ -1083,7 +1089,8 @@
                             producerName: this.edit_producerName,
                             producerDesc: this.edit_producerDesc,
                             originCountry: this.edit_originCountry
-                        }, {
+                        },
+                        {
                         headers: {
                             'Content-Type': 'application/json'
                         }
@@ -1121,6 +1128,22 @@
             // for user to edit their catalogue
             editCatalogue () {
                 this.editingCatalogue = true;
+            },
+
+            // delete bottle listing
+            async deleteListings(listing) {
+
+                try {
+                    const response = await this.$axios.delete(`http://127.0.0.1:5003/deleteListing/${listing._id.$oid}`);
+                    console.log(response.data);
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+
+                // force page to reload
+                window.location.reload();
+
             },
 
         }

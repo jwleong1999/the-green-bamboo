@@ -110,7 +110,53 @@ def updateListing(id):
             }
         ), 450
 
+# To delete a listing
+@app.route("/deleteListing/<id>", methods=['DELETE'])
+def deleteListing(id):
+        
+        listing_id = ObjectId(id)
 
+        try: 
+            result = db.listings.delete_one({"_id": listing_id})
+
+            return jsonify(
+                {   
+                    "code": 201,
+                    "message": "Listing deleted successfully!"
+                }
+            ), 201
+        except Exception as e:
+            print(str(e))
+            return jsonify(
+                {
+                    "code": 500,
+                    "data": {
+                        "id": listingID
+                    },
+                    "message": "An error occurred deleting listing!"
+                }
+            ), 500
+
+        if result.deleted_count > 0:
+            return jsonify(
+                {
+                    "code": 200,
+                    "data": {
+                        "_id": id
+                    },
+                    "message": "Listing deleted successfully."
+                }
+            ), 200
+        else:
+            return jsonify(
+                {
+                    "code": 440,
+                    "data": {
+                        "_id": id
+                    },
+                    "message": "Listing was not found."
+                }
+            ), 440
 
 
 # #[POST]
