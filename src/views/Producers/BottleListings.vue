@@ -327,7 +327,13 @@
 
 
                                             <!-- TODO: Make a colour grid/tables containing all the colour -->
-                                            <p>COLOUR</p>
+                                            <p class="text-start mb-1 fw-bold">Colour:</p>                                            
+                                            <div class="row justify-content-start mb-1 text-start">
+                                                <div class="col-md-12 text-center">
+                                                    <button @click="displaySelectColour(colour)" v-for="(colour, i) in colours" :key="i" type="button" :value="colour" class="btn m-0" data-bs-toggle="button" :style="{ width: '50px', height: '50px', backgroundColor: colour, color: colour, borderRadius: '0', borderColor:'grey', borderWidth:'1px'}">                                
+                                                    </button>
+                                                </div>
+                                            </div>
 
                                             <!-- Aroma taste and finish inputs -->
                                             <div class="form-group mb-3">
@@ -583,6 +589,8 @@
 
                 // For creating review
                 rating: 5,
+                colours: ["#FFFFFF", "#FEED97", "#FBE166", "#FAD74A", "#F5C84B", "#F8C139", "#E79E12", "#E07D1F", "#D55530", "#B63426", "#AA1F22", "#702C1C", "#4A1C0C", "#000000"],
+                selectedColour:"",
 
                 // matched user
                 matchedUser: {},
@@ -809,6 +817,11 @@
                 if (user) {
                     return user["photo"];
                 }
+            },
+
+            displaySelectColour(colour){
+                console.log(colour)
+                this.selectedColour = colour
             }
         }
     };
