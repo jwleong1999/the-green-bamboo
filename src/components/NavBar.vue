@@ -88,6 +88,13 @@
                 this.filteredListings = this.listings;
             },
 
+            // logout function
+            logout() {
+                localStorage.removeItem('88B_accID');
+                localStorage.removeItem('88B_accType');
+                this.$router.push({name: 'login'});
+            }
+
         }
     }
 </script>
