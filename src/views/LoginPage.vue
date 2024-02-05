@@ -212,7 +212,7 @@
                                 accountExists = true
                                 if (this.users[i].hashedPassword == hashedPassword) {
                                     passwordMatch = true
-                                    this.accountID = this.users[i]._id
+                                    this.accountID = this.users[i]._id["$oid"]
                                 }
                                 break
                             }
@@ -225,7 +225,7 @@
                                 accountExists = true
                                 if (this.producers[i].hashedPassword == hashedPassword) {
                                     passwordMatch = true
-                                    this.accountID = this.producers[i]._id
+                                    this.accountID = this.producers[i]._id["$oid"]
                                 }
                                 break
                             }
@@ -238,7 +238,7 @@
                                 accountExists = true
                                 if (this.venues[i].hashedPassword == hashedPassword) {
                                     passwordMatch = true
-                                    this.accountID = this.venues[i]._id
+                                    this.accountID = this.venues[i]._id["$oid"]
                                 }
                                 break
                             }
