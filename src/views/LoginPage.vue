@@ -109,6 +109,7 @@
                 producers: [],
                 users: [],
                 venues: [],
+                accountID: {},
 
                 // form values
                 ID: '',
@@ -119,9 +120,19 @@
             };
         },
         mounted() {
-            this.loadData();
+            this.loginCheck();
         },
         methods: {
+            loginCheck() {
+                // Check if user is already logged in
+                if (localStorage.getItem("88B_accID") != null) {
+                    this.accountID = localStorage.getItem("88B_accID");
+                    this.role = localStorage.getItem("88B_accType");
+                    this.redirectPage();
+                } else {
+                    this.loadData();
+                }
+            },
             // load data from database
             async loadData() {
                 // producers
@@ -201,6 +212,7 @@
                                 accountExists = true
                                 if (this.users[i].hashedPassword == hashedPassword) {
                                     passwordMatch = true
+                                    this.accountID = this.users[i]._id
                                 }
                                 break
                             }
@@ -213,6 +225,7 @@
                                 accountExists = true
                                 if (this.producers[i].hashedPassword == hashedPassword) {
                                     passwordMatch = true
+                                    this.accountID = this.producers[i]._id
                                 }
                                 break
                             }
@@ -225,6 +238,7 @@
                                 accountExists = true
                                 if (this.venues[i].hashedPassword == hashedPassword) {
                                     passwordMatch = true
+                                    this.accountID = this.venues[i]._id
                                 }
                                 break
                             }
@@ -238,6 +252,8 @@
 
                 // no errors
                 if (this.errors.length == 0) {
+                    localStorage.setItem("88B_accID", this.accountID);
+                    localStorage.setItem("88B_accType", this.role);
                     this.redirectPage()
                 }
 
@@ -260,12 +276,11 @@
             redirectPage() {
                 // Redirect for selected roles 
                 
-                // [TODO] change to correct page
+                // [TODO] change to correct page and use router pushing
 
                 // [User]
                 if (this.role == "user") {
                     window.location.href = "../Users/Bottle-Listings";
-                    localStorage.setItem("data", this.ID);
                     }
                 // [Producer]
                 if (this.role == "producer") {
