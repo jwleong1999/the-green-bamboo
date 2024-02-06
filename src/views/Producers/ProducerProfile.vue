@@ -177,7 +177,7 @@
                                     <input type="text" class="form-control mb-3" id="producerNameInput" aria-describedby="producerDesc" v-model="edit_producerName">
                                 </div>
                                 <!-- [else] not editing -->
-                                <h3 v-else class="text-body-secondary"> <b> {{ getProducerName(producer_id) }} </b> </h3>
+                                <h3 v-else class="text-body-secondary"> <b> {{ specified_producer["producerName"] }} </b> </h3>
                             </div>
                             <!-- description -->
                             <div class="row">
@@ -243,7 +243,7 @@
                         <h3 class="text-body-secondary text-start"> 
                             <b> 
                                 Latest Updates From
-                                {{ getProducerName(producer_id) }} 
+                                {{ specified_producer["producerName"] }} 
                             </b> 
                         </h3>
                     </div>
@@ -285,7 +285,7 @@
                                     <!-- [if] user type is producer -->
                                     <input v-if="userType == 'producer'" class="search-bar form-control rounded fst-italic" type="text" placeholder="Say hi to your patrons!" style="height: 50px;" v-model="producerhi"> 
                                     <!-- [else] userType is NOT producer -->
-                                    <input v-else class="search-bar form-control rounded fst-italic" type="text" :placeholder="'Reply to ' + getProducerName(producer_id) + '!'" style="height: 50px;" v-model="userhi"> 
+                                    <input v-else class="search-bar form-control rounded fst-italic" type="text" :placeholder="'Reply to ' + specified_producer.producerName + '!'" style="height: 50px;" v-model="userhi"> 
 
                                     <!-- [if] user type is producer -->
                                     <div v-if="userType == 'producer'" v-on:click="producerGreetings" class="send-icon ps-1">
@@ -499,7 +499,7 @@
                                 <!-- [if] user type producer -->
                                 <h4 v-if="userType == 'producer'" class="mr-auto"> Q&A for You! </h4>
                                 <!-- [else] user type is NOT producer -->
-                                <h4 v-else class="mr-auto"> Q&As for {{ getProducerName(producer_id) }} </h4>
+                                <h4 v-else class="mr-auto"> Q&As for {{ specified_producer["producerName"] }} </h4>
                             </div>
                             <!-- body -->
                             <div class="text-start pt-2">
@@ -604,7 +604,6 @@
                 // specified producer
                 producer_id: null,
                 specified_producer: {},
-                specified_producer_id: '',
 
                 // saying hi
                 producerhi: '',
@@ -677,13 +676,7 @@
                 try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
                         this.producers = response.data;
-                        for (const i in this.producers) {
-                            let producer_id = this.producers[i]._id["$oid"]
-                            if (producer_id == this.producer_id) {
-                                this.specified_producer = this.producers[i];
-                                this.specified_producer_id = producer_id;
-                            }
-                        }
+                        this.specified_producer = this.producers.find(producer => producer._id.$oid == this.producer_id); // find specified producer
                     } 
                     catch (error) {
                         console.error(error);
@@ -760,18 +753,6 @@
                     // catch (error) {
                     //     console.error(error);
                     // }
-            },
-
-            // get producerName for a listing based on producerID
-            getProducerName(producerID) {
-                let producer_name = ""
-                for (const i in this.producers) {
-                    let producer_id = this.producers[i]._id["$oid"]
-                    if (producer_id == producerID) {
-                        producer_name = this.producers[i].producerName;
-                    }
-                }
-                return producer_name;
             },
 
             // get all drinks that a producer has
