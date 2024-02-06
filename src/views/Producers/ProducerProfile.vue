@@ -146,7 +146,7 @@
                                         <div class="col-6 d-grid no-padding">
                                             <!-- if not editing -->
                                             <button v-if="editing == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
-                                                <a class="reverse-clickable-text" v-bind:href="'../Producer/Producer-Create-Listing?id=' + `${specified_producer_id}`">
+                                                <a class="reverse-clickable-text" v-bind:href="'../Producer/Producer-Create-Listing?id=' + `${producer_id}`">
                                                     Add Listing
                                                 </a>
                                             </button>
@@ -372,7 +372,7 @@
                                 </div>
                                 <div class="col-3 d-grid no padding">
                                     <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text">
-                                        <a class="default-clickable-text" v-bind:href="'../Producer/Producer-Create-Listing?id=' + `${specified_producer_id}`">
+                                        <a class="default-clickable-text" v-bind:href="'../Producer/Producer-Create-Listing?id=' + `${producer_id}`">
                                             Add Listing
                                         </a>
                                     </button>
