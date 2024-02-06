@@ -203,7 +203,9 @@
                     // Check login validity
                     let accountExists = false
                     let passwordMatch = false
-                    let hashedPassword = this.hashPassword(this.ID, this.password)
+                    let id = this.ID
+                    let password = this.password
+                    let hashedPassword = this.hashPassword(id, password)
 
                     // [user]
                     if (this.role == "user") {
