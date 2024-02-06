@@ -134,7 +134,11 @@
                             <div class="row">
                                 <!-- producer -->
                                 <div class="col-5">
-                                    <h5 class="text-body-secondary"> <u> {{ getProducerName(specified_listing["producerID"]) }} </u> </h5>
+                                    <h5 class="text-body-secondary">
+                                        <a class="default-text-no-background" v-bind:href="'../Producers/Profile-Page?id=' + `${this.producer_id}`">
+                                            <p> {{ getProducerName(specified_listing["producerID"]) }} </p>
+                                        </a>
+                                    </h5>
                                 </div>
                                 <!-- bottler -->
                                 <div class="col-4">
@@ -597,6 +601,9 @@
                 listing_id: null,
                 specified_listing: {},
 
+                // specified producer
+                producer_id: null,
+
                 // where to buy
                 producerListings: [],
 
@@ -671,6 +678,8 @@
                         this.listings = response.data;
                         this.filteredListings = this.listings; // originally, make filtered listings the entire collection of listings
                         this.specified_listing = this.listings.find(listing => listing._id.$oid == this.listing_id); // find specified listing
+                        this.producer_id = this.specified_listing.producerID.$oid // find specified producer
+                        console.log(this.producer_id)
                         this.whereToBuy(); // find where to buy specified listing
                         this.getReviewsForListing(this.specified_listing);
                     } 
