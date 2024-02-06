@@ -247,8 +247,11 @@
                         }
                     }
 
-                    if (!accountExists || !passwordMatch) {
-                        this.errors.push("Invalid username or password")
+                    if (!accountExists) {
+                        this.errors.push("An account of this type and username does not exist!")
+                    }
+                    else if (!passwordMatch) {
+                        this.errors.push("Invalid username or password!")
                     }
                 }
 
