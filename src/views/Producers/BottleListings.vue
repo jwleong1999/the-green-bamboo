@@ -250,8 +250,8 @@
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <!-- change modal header colour -->
-                                <div class="modal-header" style="background-color: #0480be">
-                                    <h5 class="modal-title" id="reviewModalLabel">Modal title</h5>
+                                <div class="modal-header" style="background-color: #535C72">
+                                    <h5 class="modal-title" id="reviewModalLabel" style="color: white;">Add Your Review</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
 
@@ -290,11 +290,11 @@
                                             <div class = 'row justify-content-start mb-3 text-start'>
                                                 <div class = "col-md-12">
                                                     <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" v-model="wouldRecommend" value="option1">
                                                         <label class="form-check-label text-start fw-bold" for="inlineCheckbox1">Would Recommend</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
+                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" v-model="wouldDrinkAgain" value="option2">
                                                         <label class="form-check-label text-start fw-bold" for="inlineCheckbox2">Would Drink Again</label>
                                                     </div>                                                                                                   
                                                 </div>                                         
@@ -302,18 +302,18 @@
                                             <!-- End of checkboxes -->
 
                                             <!-- Buttons to expand -->
-                                            <div class = 'row justify-content-start mb-3 text-start'>
+                                            <div v-if="!extendReview" class = 'row justify-content-start mb-3 text-start'>
                                                 <div class = "col-md-12 text-center">
-                                                    <button class="btn primary-btn-less-round btn-lg"> 
+                                                    <button class="btn primary-btn-less-round btn-sm" @click="controlModal"> 
                                                         Extend Review
                                                     </button>                                                                  
                                                 </div>                                         
                                             </div>
 
                                             <!-- Button to collapse -->
-                                            <div class = 'row justify-content-start mb-3 text-start'>
+                                            <div v-if="extendReview" class = 'row justify-content-start mb-3 text-start'>
                                                 <div class = "col-md-12 text-center">
-                                                    <button class="btn primary-btn-less-round btn-lg"> 
+                                                    <button class="btn primary-btn-less-round btn-sm" @click="controlModal"> 
                                                         Condense Review
                                                     </button>                                                                  
                                                 </div>                                         
@@ -330,26 +330,27 @@
                                             <!-- end of dash line -->
 
 
-                                            <!-- TODO: Make a colour grid/tables containing all the colour -->
+                                            <!-- DONE: Make a colour grid/tables containing all the colour -->
                                             <!-- TODO: Make 6 special colour gradient? -->
-                                            <p class="text-start mb-1 fw-bold">Colour:</p>                                            
-                                            <div class="row justify-content-start mb-1 text-start">
-                                                <div class="col-md-12 text-center">
-                                                    <button @click="displaySelectColour(colour)" v-for="(colour, i) in colours" :key="i" type="button" :value="colour" class="btn m-0" data-bs-toggle="button" :style="{ width: '50px', height: '50px', backgroundColor: colour, color: colour, borderRadius: '0', borderColor:'grey', borderWidth:'1px'}">                                
-                                                    </button>
+                                            <div v-if="extendReview">
+                                                <p class="text-start mb-1 fw-bold">Colour:</p>                                            
+                                                <div class="row justify-content-start mb-1 text-start">
+                                                    <div class="col-md-12 text-center">
+                                                        <button @click="displaySelectColour(colour)" v-for="(colour, i) in colours" :key="i" type="button" :value="colour" class="btn m-0" data-bs-toggle="button" :style="{ width: '30px', height: '30px', backgroundColor: colour, color: colour, borderRadius: '0', borderColor:'grey', borderWidth:'1px'}">                                
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
-
                                             <!-- Aroma taste and finish inputs -->
-                                            <div class="form-group mb-3">
+                                            <div v-if="extendReview" class="form-group mb-3">
                                                 <p class="text-start mb-1 fw-bold">Aroma:</p>
                                                 <input type="text" class="form-control" id="aroma">
                                             </div>
-                                            <div class="form-group mb-3">
+                                            <div v-if="extendReview" class="form-group mb-3">
                                                 <p class="text-start mb-1 fw-bold">Taste:</p>
                                                 <input type="text" class="form-control" id="taste">
                                             </div>
-                                            <div class="form-group mb-3">
+                                            <div v-if="extendReview" class="form-group mb-3">
                                                 <p class="text-start mb-1 fw-bold">Finish:</p>
                                                 <input type="text" class="form-control" id="finish">
                                             </div>
@@ -380,7 +381,7 @@
 
                                             <!-- Start of observation tags -->
                                             <!-- Make this a search/dropdown -->
-                                            <div class="form-group mb-3">
+                                            <div v-if="extendReview" class="form-group mb-3">
                                                 <p class="text-start mb-1 fw-bold">Observation Tags</p>
                                                 <input type="text" class="form-control" id="observationTag">
                                             </div>
@@ -392,28 +393,13 @@
 
                                     <!-- Start of right side elements, photo, location and friend tags -->
                                     <div class="col-md-3">
-                                        <p class = 'text-start mb-2 fw-bold'>Add Photo <span class="text-danger">*</span></p>
+                                        <p class = 'text-start mb-2 fw-bold'>Add Photo</p>
                                         <div class="mb-3">
-                                            <!-- TODO v:model here the file -->
+                                            <!-- DONE v:model here the file -->
                                             <input class="form-control mb-2" @change="onFileChange" type="file" id="formFile">
                                             <div class = "row">
                                             <img :src="selectedImage ? selectedImage : 'none'" alt="" id="output">
                                             </div>
-                                            <!-- <section class="h-100 h-custom bg-light min-h-content" >
-                                                
-                                                        <div class="col d-flex justify-content-center align-items-center">
-                                                                
-                                                            <div class="card border-0 " style="width:100%">
-                                                                <div class="card-body">
-                                                                    <h3 class="mb-4">Upload file</h3>
-                                                                    <hr/>
-                                                                    <DropZone paramName="thefile"/>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                            
-                                            </section> -->
-                                            <!-- TODO Display the file here -->
                                         </div>
                                         
                                         <div class="form-group mb-3">
@@ -421,6 +407,7 @@
                                             <input type="text" class="form-control" id="friendTag">
                                         </div>
                                         
+                                        <!-- TODO filter search for location. As they type, select narrows -->
                                         <div class="form-group mb-3">
                                             <p class="text-start mb-1 fw-bold">Location</p>
                                             <input type="text" class="form-control" id="locationTag">
@@ -437,11 +424,12 @@
                                 <!-- End of modal body -->
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">Submit Review</button>
+                                    <button type="button" @click="addReview" class="btn btn-primary">Submit Review</button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- END OF MODAL -->
 
 
                 <hr>
@@ -631,7 +619,7 @@
                 finish:"",
                 wouldRecommend:false,
                 wouldDrinkAgain:false,
-                extendReview:false,
+                extendReview:true,
 
                 // matched user
                 matchedUser: {},
@@ -866,7 +854,7 @@
                 console.log(colour)
                 this.selectedColour = colour
             },
-
+            // function to display submitted image
             onFileChange(event){
                 const file = event.target.files[0];
                 const reader = new FileReader();
@@ -878,6 +866,23 @@
                     console.log(this.image64)
                 };
                 reader.readAsDataURL(file);
+            },
+
+            // Function to add review
+            addReview(){
+                console.log(this.wouldDrinkAgain)
+                console.log(this.wouldRecommend)
+            },
+
+            // Function to expand/contract the modal
+            controlModal(){
+                console.log(this.extendReview)
+                if(this.extendReview){
+                    this.extendReview = false
+                }
+                else{
+                    this.extendReview = true
+                }
             }
         }
     };
