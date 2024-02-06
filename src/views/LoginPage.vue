@@ -234,7 +234,7 @@
                         }
                     }
                     // [venue]
-                    else if (this.role == "venue") {
+                    if (this.role == "venue") {
                         for (let i = 0; i < this.venues.length; i++) {
                             if (this.venues[i].venueName == this.ID) {
                                 accountExists = true
