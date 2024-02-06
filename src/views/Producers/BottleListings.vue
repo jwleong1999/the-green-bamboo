@@ -327,6 +327,7 @@
 
 
                                             <!-- TODO: Make a colour grid/tables containing all the colour -->
+                                            <!-- TODO: Make 6 special colour gradient? -->
                                             <p class="text-start mb-1 fw-bold">Colour:</p>                                            
                                             <div class="row justify-content-start mb-1 text-start">
                                                 <div class="col-md-12 text-center">
@@ -387,10 +388,27 @@
 
                                     <!-- Start of right side elements, photo, location and friend tags -->
                                     <div class="col-md-3">
-                                        <p class = 'text-start mb-2 fw-bold'>Photo <span class="text-danger">*</span></p>
+                                        <p class = 'text-start mb-2 fw-bold'>Add Photo <span class="text-danger">*</span></p>
                                         <div class="mb-3">
                                             <!-- TODO v:model here the file -->
-                                            <input class="form-control" type="file" id="formFile">
+                                            <input class="form-control mb-2" @change="onFileChange" type="file" id="formFile">
+                                            <div class = "row">
+                                            <img :src="selectedImage ? selectedImage : 'none'" alt="" id="output">
+                                            </div>
+                                            <!-- <section class="h-100 h-custom bg-light min-h-content" >
+                                                
+                                                        <div class="col d-flex justify-content-center align-items-center">
+                                                                
+                                                            <div class="card border-0 " style="width:100%">
+                                                                <div class="card-body">
+                                                                    <h3 class="mb-4">Upload file</h3>
+                                                                    <hr/>
+                                                                    <DropZone paramName="thefile"/>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                            
+                                            </section> -->
                                             <!-- TODO Display the file here -->
                                         </div>
                                         
@@ -547,8 +565,12 @@
 
 <!-- JavaScript -->
 <script>
-
+    // import DropZone from '@/components/Dropzone.vue'
     export default {
+        // setup(){
+
+        // },
+        // components:{DropZone},
         data() {
             return {
                 // data from database
@@ -588,9 +610,21 @@
                 wantToTry: false,
 
                 // For creating review
+                language:"",
+                review:"",
                 rating: 5,
                 colours: ["#FFFFFF", "#FEED97", "#FBE166", "#FAD74A", "#F5C84B", "#F8C139", "#E79E12", "#E07D1F", "#D55530", "#B63426", "#AA1F22", "#702C1C", "#4A1C0C", "#000000"],
                 selectedColour:"",
+                selectedImage: null,
+                image64: null,
+                observationTags: [],
+                flavourTags: [],
+                aroma:"",
+                taste:"",
+                finish:"",
+                wouldRecommend:false,
+                wouldDrinkAgain:false,
+                extendReview:false,
 
                 // matched user
                 matchedUser: {},
@@ -822,6 +856,19 @@
             displaySelectColour(colour){
                 console.log(colour)
                 this.selectedColour = colour
+            },
+
+            onFileChange(event){
+                const file = event.target.files[0];
+                const reader = new FileReader();
+
+                reader.onloadend = async () => {
+                    this.selectedImage = reader.result;
+                    const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+                    this.image64 = base64String;
+                    console.log(this.image64)
+                };
+                reader.readAsDataURL(file);
             }
         }
     };
