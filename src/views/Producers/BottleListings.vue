@@ -409,8 +409,8 @@
                                             <!-- Start of flavour tag -->
                                             <!-- Make this a search/dropdown -->
                                             <div class="form-group mb-3">
-                                                <p class="text-start mb-1 fw-bold">Flavour Tags</p>
-                                                <input type="text" class="form-control" id="flavourTag">
+                                                <p class="text-start mb-1 fw-bold">Flavour Tags</p> 
+                                                <button class="btn mb-2 me-2" v-for="family in flavourTags" v-bind:key="family['_id']" :style="{ color:'white', backgroundColor: family['hexcode'], borderColor:'grey', borderWidth:'1px' }">{{ family['familyTag'] }}</button>
                                             </div>
 
                                             <!-- Start of observation tags -->
