@@ -669,8 +669,10 @@
                 selectedColour:"",
                 selectedImage: null,
                 image64: null,
-                observationTags: [],
+                observationTags: ["Beginner Friendly", "Recommended for Enthusiasts", "Good for Gifts", "Cool Packaging", "Acquired Taste", "Easy to Drink", "Good for Cocktails", "Good for Sipping", "Good for Highballs", "Unique Expression", "For My Worst Enemy", "Overhyped!", "More Complex Than Inception", "What Just Hit Me", "Is This Water?", "Try Once", "Daily Drinker","Sharp Like a Toothpick","Hot Like Hell", "Ticket to Funkytown", "Food Pairing Friendly", "Netflx & Chill", "Broke the Bank", "Smooth Criminal", "Grail"],
+                selectedObservation:"",
                 flavourTags: [],
+                selectedFlavourTag:"",
                 aroma:"",
                 taste:"",
                 finish:"",
@@ -819,6 +821,16 @@
                     try {
                             const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
                             this.modRequests = response.data;
+                        } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                // flavourTags
+                // _id, hexcode, familyTag, subtag
+                    try {
+                            const response = await this.$axios.get('http://127.0.0.1:5000/getFlavourTags');
+                            this.flavourTags = response.data;
+                            console.log(this.flavourTags)
                         } 
                     catch (error) {
                         console.error(error);

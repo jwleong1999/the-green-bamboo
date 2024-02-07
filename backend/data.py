@@ -67,6 +67,7 @@ class reviews:
     taste: Optional[str] = None
     taggedUsers: Optional[list] = None
     flavorTag: Optional[list] = None
+    observationTag: Optional[list] = None
     
 
 # Dataclass (users)
@@ -141,6 +142,13 @@ class modRequests:
     userID: object
     drinkType: str
     modDesc: str
+
+# Dataclass (flavourTags)
+@dataclass
+class modRequests:
+    hexcode: str
+    familyTag: str
+    subtag: list
 
 def convert_to_json(data):
     return json.dumps(data.__dict__)

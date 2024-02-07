@@ -196,5 +196,20 @@ def getModRequests():
         allModRequests.append(doc)
     return allModRequests
 
+# [GET] flavourTags
+@app.route("/getFlavourTags")
+def getFlavourTags():
+    #this step finds all the items in the collection, specifying Mod Requests
+    data = db.flavourTags.find({})
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+    allFlavourTags = []
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allFlavourTags.append(doc)
+    return allFlavourTags
+
 if __name__ == "__main__":
     app.run(debug=True, port = 5000)
