@@ -296,3 +296,7 @@ body {
 .dotted-line {
     border-bottom: thin grey dotted;;
 }
+
+.carousel-control-prev, .carousel-control-next {
+    width: 5%;
+}
