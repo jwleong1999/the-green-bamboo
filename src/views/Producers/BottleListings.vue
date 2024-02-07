@@ -135,9 +135,9 @@
                                 <!-- producer -->
                                 <div class="col-5">
                                     <h5 class="text-body-secondary">
-                                        <a class="default-text-no-background" v-bind:href="'../Producers/Profile-Page?id=' + `${this.producer_id}`">
+                                        <router-link :to="{ path: '/Producers/Profile-Page/' + this.producer_id }" class="default-text-no-background">
                                             <p> {{ getProducerName(specified_listing["producerID"]) }} </p>
-                                        </a>
+                                        </router-link>
                                     </h5>
                                 </div>
                                 <!-- bottler -->
@@ -540,12 +540,12 @@
                             <h4 class="mr-auto"> Where to Buy </h4>
                         </div>
                         <!-- body -->
-                        <div class="text-start pt-2"> <!-- TODO: add hyperlink to link to producer page-->
+                        <div class="text-start pt-2">
                             <!-- [function] where to buy -->
                             <div v-for="producer in producerListings" v-bind:key="producer._id">
-                                <a class="primary-clickable-text" v-bind:href="'../Producers/Profile-Page?id=' + `${producer.$oid}`">
-                                    <p class="reverse-clickable-text no-margin"> {{ getProducerName(producer) }} </p>
-                                </a>
+                                <router-link :to="{ path: '/Producers/Profile-Page/' + producer.$oid }" class="reverse-clickable-text">
+                                    <p> {{ getProducerName(producer) }} </p>
+                                </router-link>
                             </div>
                         </div>
                         <div class="py-5"></div>
@@ -666,8 +666,7 @@
             async created() {
                 try {
                     // Get the query string parameters (listing ID) from the URL
-                    const urlParams = new URLSearchParams(window.location.search);
-                    this.listing_id = urlParams.get('id');
+                    this.listing_id = this.$route.params.id;
                     if (this.listing_id == null) {
                         // redirect to page
                         this.$router.push('/Users/Bottle-Listings');

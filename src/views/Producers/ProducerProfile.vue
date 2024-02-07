@@ -643,8 +643,7 @@
             // fetch specific producer data
             async created() {
                 // Get the query string parameters (listing ID) from the URL
-                const urlParams = new URLSearchParams(window.location.search);
-                this.producer_id = urlParams.get('id');
+                this.producer_id = this.$route.params.id;
                 if (this.producer_id == null) {
                     // redirect to page
                     this.$router.push('/Users/Bottle-Listings');

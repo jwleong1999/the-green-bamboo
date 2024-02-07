@@ -49,13 +49,13 @@ const routes = [
     component: () => import('../views/UserProfile.vue')
   },
   {
-    path: '/Producers/Profile-Page',
+    path: '/Producers/Profile-Page/:id',
     name: 'producersprofilepage',
     component: () => import('../views/Producers/ProducerProfile.vue')
   },
 
   {
-    path: '/Producers/Bottle-Listings',
+    path: '/Producers/Bottle-Listings/:id',
     name: 'producersbottlelistings',
     component: () => import('../views/Producers/BottleListings.vue')
   },

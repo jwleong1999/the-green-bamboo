@@ -249,21 +249,21 @@
                                         <div class="col-8 ps-5">
                                             <!-- expression name -->
                                             <div class="row pt-1">
-                                                <a class="primary-clickable-text" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
+                                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="primary-clickable-text">
                                                     <h4> <b> {{ listing["listingName"] }} </b> </h4>
-                                                </a>
+                                                </router-link>
                                             </div>
                                             <!-- producer -->
                                             <div class="row">
-                                                <a class="primary-clickable-text" v-bind:href="'../Producers/Profile-Page?id=' + `${listing.producerID.$oid}`">
+                                                <router-link :to="{ path: '/Producers/Profile-Page/' + listing.producerID.$oid }" class="primary-clickable-text">
                                                     <h5> <b> {{ getProducerName(listing) }} </b> </h5>
-                                                </a>
+                                                </router-link>
                                             </div>
                                             <!-- review -->
                                             <div class="row pt-3">
-                                                <a class="default-clickable-text fst-italic scrollable" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`">
+                                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="default-clickable-text fst-italic scrollable">
                                                     <h5> {{ listing["officialDesc"] }}. </h5>
-                                                </a>
+                                                </router-link>
                                             </div>
                                             <!-- rating -->
                                             <div class="row pt-4"> 
@@ -277,7 +277,9 @@
                                                 </div>
                                                 <div class="col-6">
                                                     <div class="d-grid gap-5">
-                                                        <a class="btn secondary-btn btn-md" v-bind:href="'../Producers/Bottle-Listings?id=' + `${listing._id.$oid}`"> Read what the crowd thinks </a>
+                                                        <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="primary-clickable-text">
+                                                            <a class="btn secondary-btn btn-md"> Read what the crowd thinks </a>
+                                                        </router-link>
                                                     </div>
                                                 </div>
                                             </div>
