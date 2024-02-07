@@ -305,7 +305,7 @@
                                             <div v-if="!extendReview" class = 'row justify-content-start mb-3 text-start'>
                                                 <div class = "col-md-12 text-center">
                                                     <button class="btn primary-btn-less-round btn-sm" @click="controlModal"> 
-                                                        Extend Review
+                                                        Extend Review <span style="color: white;">&#9660;</span>
                                                     </button>                                                                  
                                                 </div>                                         
                                             </div>
@@ -314,7 +314,7 @@
                                             <div v-if="extendReview" class = 'row justify-content-start mb-3 text-start'>
                                                 <div class = "col-md-12 text-center">
                                                     <button class="btn primary-btn-less-round btn-sm" @click="controlModal"> 
-                                                        Condense Review
+                                                        Condense Review <span style="color: white;">&#9650;</span>
                                                     </button>                                                                  
                                                 </div>                                         
                                             </div>
@@ -335,7 +335,7 @@
                                             <div v-if="extendReview">
                                                 <p class="text-start mb-1 fw-bold">Colour:</p>                                            
                                                 <div class="row justify-content-start mb-1 text-start">
-                                                    <div class="col-md-12 text-center">
+                                                    <div class="col-md-12 text-start">
                                                         <button @click="displaySelectColour(colour)" v-for="(colour, i) in colours" :key="i" type="button" :value="colour" class="btn m-0" data-bs-toggle="button" :style="{ width: '30px', height: '30px', backgroundColor: colour, color: colour, borderRadius: '0', borderColor:'grey', borderWidth:'1px'}">                                
                                                         </button>
                                                     </div>
@@ -409,8 +409,28 @@
                                         
                                         <!-- TODO filter search for location. As they type, select narrows -->
                                         <div class="form-group mb-3">
-                                            <p class="text-start mb-1 fw-bold">Location</p>
-                                            <input type="text" class="form-control" id="locationTag">
+                                            <p class="text-start mb-1 fw-bold">Location</p>                                            
+                                            <input type="text" class="form-control" v-model="locationSearchTerm" @input="filterOptions">
+                                            
+                                            <!-- TODO: enable filter function for venue and mnake it bookstrap -->
+                                            <select v-model="selectedOption">
+                                                <option disabled value="">Select an option</option>
+                                                <option v-for="option in filteredOptions" v-bind:key="option" :value="option">{{ option }}</option>
+                                            </select>
+                                            <!-- <div class="d-grid gap-2 dropdown">
+                                                <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    {{ selectedDrinkType ? selectedDrinkType['drinkType'] : 'Filter by drink type' }}
+                                                    <span class="cross-icon" @click="clearSelection">&#10005;</span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    Filter button for drink type
+
+                                                    <li v-for="drinkType in drinkTypes" v-bind:key="drinkType._id" class= "p-3">
+                                                    <a class="dropdown-item" @click="selectDrinkType(drinkType)"> {{ drinkType['drinkType'] }} </a>
+                                                    </li>       
+                                                </ul>
+                                            </div> -->
+
                                         </div>
 
 
@@ -620,6 +640,9 @@
                 wouldRecommend:false,
                 wouldDrinkAgain:false,
                 extendReview:true,
+                options: ["Option 1", "Option 2", "Option 3", "Option 4", "Option 5"], // Your list of options
+                locationSearchTerm: "",
+                selectedOption: "",
 
                 // matched user
                 matchedUser: {},
@@ -630,6 +653,13 @@
         mounted() {
             this.created()
             this.loadData();
+        },
+        computed: {
+            filteredOptions() {
+            return this.options.filter(option =>
+                option.toLowerCase().includes(this.locationSearchTerm.toLowerCase())
+            );
+            }
         },
         methods: {
             // fetch specific listing data
@@ -883,7 +913,8 @@
                 else{
                     this.extendReview = true
                 }
-            }
+            },
+            
         }
     };
 </script>
