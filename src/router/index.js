@@ -65,7 +65,7 @@ const routes = [
     component: () => import('../views/Producers/ProducerListings.vue')
   },
   {
-    path: '/Producer/Producer-Create-Listing',
+    path: '/Producer/Producer-Create-Listing/:id',
     name: 'producercreatelistings',
     component: () => import('../views/Producers/CreateListing.vue')
   },  
