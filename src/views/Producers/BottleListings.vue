@@ -335,8 +335,42 @@
                                             <div v-if="extendReview">
                                                 <p class="text-start mb-1 fw-bold">Colour:</p>                                            
                                                 <div class="row justify-content-start mb-1 text-start">
-                                                    <div class="col-md-12 text-start">
-                                                        <button @click="displaySelectColour(colour)" v-for="(colour, i) in colours" :key="i" type="button" :value="colour" class="btn m-0" data-bs-toggle="button" :style="{ width: '30px', height: '30px', backgroundColor: colour, color: colour, borderRadius: '0', borderColor:'grey', borderWidth:'1px'}">                                
+                                                    <div class="col-md-5 mr-0 text-start">
+                                                        <div class="row">
+                                                            <div class="col">
+                                                            <button @click="displaySelectColour(colour)" v-for="(colour, i) in colours.slice(0, 7)" :key="i" type="button" :value="colour" class="btn" data-bs-toggle="button"
+                                                                    :style="{ 
+                                                                        width: '30px', 
+                                                                        height: '30px', 
+                                                                        backgroundColor: colour, 
+                                                                        color: colour, 
+                                                                        borderRadius: '0', 
+                                                                        borderColor:'grey', 
+                                                                        borderWidth:'1px'
+                                                                    }">                                
+                                                            </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col">
+                                                            <button @click="displaySelectColour(colour)" v-for="(colour, i) in colours.slice(7, 14)" :key="i" type="button" :value="colour" class="btn" data-bs-toggle="button" 
+                                                                    :style="{ 
+                                                                        width: '30px', 
+                                                                        height: '30px', 
+                                                                        backgroundColor: colour, 
+                                                                        color: colour, 
+                                                                        borderRadius: '0', 
+                                                                        borderColor:'grey', 
+                                                                        borderWidth:'1px'
+                                                                    }">                                
+                                                            </button>
+                                                            </div>
+                                                        </div>
+                                                        </div>
+
+                                                    <!-- Special gradient -->
+                                                    <div class="col-md-5 ml-0 text-start">
+                                                        <button @click="displaySelectColour(key)" v-for="(value, key) in specialColours" :key="key" type="button" :value="key" class="btn" data-bs-toggle="button" :style="{ width: '30px', height: '30px', borderRadius: '0', borderColor:'grey', borderWidth:'1px', backgroundImage: `linear-gradient(to bottom right, ${value[0]}, ${value[1]}`}">                                
                                                         </button>
                                                     </div>
                                                 </div>
@@ -409,28 +443,23 @@
                                         
                                         <!-- TODO filter search for location. As they type, select narrows -->
                                         <div class="form-group mb-3">
-                                            <p class="text-start mb-1 fw-bold">Location</p>                                            
-                                            <input type="text" class="form-control" v-model="locationSearchTerm" @input="filterOptions">
+                                            <p class="text-start mb-1 fw-bold">Location</p>
                                             
                                             <!-- TODO: enable filter function for venue and mnake it bookstrap -->
-                                            <select v-model="selectedOption">
-                                                <option disabled value="">Select an option</option>
-                                                <option v-for="option in filteredOptions" v-bind:key="option" :value="option">{{ option }}</option>
-                                            </select>
-                                            <!-- <div class="d-grid gap-2 dropdown">
-                                                <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    {{ selectedDrinkType ? selectedDrinkType['drinkType'] : 'Filter by drink type' }}
-                                                    <span class="cross-icon" @click="clearSelection">&#10005;</span>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    Filter button for drink type
-
-                                                    <li v-for="drinkType in drinkTypes" v-bind:key="drinkType._id" class= "p-3">
-                                                    <a class="dropdown-item" @click="selectDrinkType(drinkType)"> {{ drinkType['drinkType'] }} </a>
-                                                    </li>       
-                                                </ul>
-                                            </div> -->
-
+                                            
+                                            <!-- Link filteredOptions to venues location -->
+                                            <div class="input-group">
+                                                <select class="form-control" v-model="selectedLocation" @input="filterOptions">
+                                                    <option v-for="option in filteredOptions" :key="option" :value="option">{{ option }}</option>
+                                                </select>
+                                            </div>
+                                            <!-- <div class="input-group">
+                                                <input type="text" class="form-control" name="locations" list="locationNames">
+                                                <datalist id="locationNames">
+                                                    <option v-for="option in filteredOptions" v-bind:key="option" :value="option">{{ option }}</option>
+                                                </datalist>                                             
+                                            </div>       -->
+                                            
                                         </div>
 
 
@@ -629,6 +658,14 @@
                 review:"",
                 rating: 5,
                 colours: ["#FFFFFF", "#FEED97", "#FBE166", "#FAD74A", "#F5C84B", "#F8C139", "#E79E12", "#E07D1F", "#D55530", "#B63426", "#AA1F22", "#702C1C", "#4A1C0C", "#000000"],
+                specialColours: {
+                                    "red":['#FF0F0F', '#69140F'],
+                                    "green":['#24FF00', '#074202'],
+                                    "lightBlue":['#82E3E9', '#0A7E97'],
+                                    "darkBlue":['#8F8DF3', '#051B6B'],
+                                    "purple":['#CBA4E3', '#5B0E8A'],
+                                    "pink":['#FDC1FE', '#AD1181'],
+                                },
                 selectedColour:"",
                 selectedImage: null,
                 image64: null,
@@ -640,9 +677,9 @@
                 wouldRecommend:false,
                 wouldDrinkAgain:false,
                 extendReview:true,
-                options: ["Option 1", "Option 2", "Option 3", "Option 4", "Option 5"], // Your list of options
+                locationOptions: [], // Your list of options
                 locationSearchTerm: "",
-                selectedOption: "",
+                selectedLocation: "",
 
                 // matched user
                 matchedUser: {},
@@ -656,7 +693,7 @@
         },
         computed: {
             filteredOptions() {
-            return this.options.filter(option =>
+            return this.locationOptions.filter(option =>
                 option.toLowerCase().includes(this.locationSearchTerm.toLowerCase())
             );
             }
@@ -735,6 +772,8 @@
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
                         this.venues = response.data;
+                        this.locationOptions = response.data.map(item => item.venueName);
+                        console.log(this.locationOptions)
                     } 
                     catch (error) {
                         console.error(error);
@@ -912,6 +951,10 @@
                 else{
                     this.extendReview = true
                 }
+            },
+
+            filterOptions(event) {
+                this.selectedLocation = event.target.value;
             },
             
         }
