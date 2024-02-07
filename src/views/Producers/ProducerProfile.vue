@@ -502,22 +502,22 @@
                                 <h4 v-else class="mr-auto"> Q&As for {{ specified_producer["producerName"] }} </h4>
                             </div>
                             <!-- show buttons for answered & unanswered questions -->
-                            <div class="row text-center px-2">
-                                    <div class="col-6 d-grid gap-0 no-padding">
-                                        <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
-                                            <a class="reverse-clickable-text" v-on:click="showAnswered()">
-                                                Answered
-                                            </a>
-                                        </button>
-                                    </div>
-                                    <div class="col-6 d-grid gap-0 no-padding">
-                                        <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
-                                            <a class="reverse-clickable-text" v-on:click="showUnanswered()">
-                                                Unanswered
-                                            </a>
-                                        </button>
-                                    </div>
-                                    </div>
+                            <div v-if="userType == 'producer'" class="row text-center px-2">
+                                <div class="col-6 d-grid gap-0 no-padding">
+                                    <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
+                                        <a class="reverse-clickable-text" v-on:click="showAnswered()">
+                                            Answered
+                                        </a>
+                                    </button>
+                                </div>
+                                <div class="col-6 d-grid gap-0 no-padding">
+                                    <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
+                                        <a class="reverse-clickable-text" v-on:click="showUnanswered()">
+                                            Unanswered
+                                        </a>
+                                    </button>
+                                </div>
+                            </div>
                             <!-- body -->
                             <div class="text-start pt-2">
                                 <!-- responses to q&a -->
@@ -629,7 +629,7 @@
 
                 // define user type here 
                 // [TODO] to fetch user type once login function is implemented
-                userType: 'producer',
+                userType: 'user',
 
                 // check if user is editing
                 editing: false,
