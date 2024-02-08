@@ -407,17 +407,33 @@
                                             </div>
 
                                             <!-- Start of flavour tag -->
-                                            <!-- Make this a search/dropdown -->
                                             <div class="form-group mb-3">
                                                 <p class="text-start mb-1 fw-bold">Flavour Tags</p> 
-                                                <button class="btn mb-2 me-2" v-for="family in flavourTags" v-bind:key="family['_id']" :style="{ color:'white', backgroundColor: family['hexcode'], borderColor:'grey', borderWidth:'1px' }">{{ family['familyTag'] }}</button>
+
+                                                <div class ='container'>
+                                                    <button class="btn mb-2 me-2" @click="toggleBox(family)" v-for="family in flavourTags" v-bind:key="family['_id']" :style="{ color:'white', backgroundColor: family['hexcode'], borderColor:family['hexcode'], borderWidth:'1px' }">{{ family['familyTag'] }}</button>
+                                                    
+                                                    <!-- This is the conatiner/dropdown box for the subtags -->
+                                                    <div v-for="family in flavourTags" :key="family['_id']">
+                                                        <div v-if="family.showBox" class="border rounded p-3" style="border-color: red;">
+                                                            <div class="row">
+                                                                <div class="col-3" v-for="(element, index) in family.subtag" :key="index">
+                                                                    <button class="btn mb-2" :style="{ width: '100px', height: '60px',color:'white', backgroundColor: family['hexcode'], borderColor: family['hexcode'], borderWidth:'1px' }">{{ element }}</button>
+                                                                </div>                        
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- End of dropdown -->
+                                                </div>
                                             </div>
+                                            <!-- End of flavour tag -->
 
                                             <!-- Start of observation tags -->
                                             <!-- Make this a search/dropdown -->
-                                            <div v-if="extendReview" class="form-group mb-3">
+                                            <div class="form-group mb-3">
                                                 <p class="text-start mb-1 fw-bold">Observation Tags</p>
                                                 <input type="text" class="form-control" id="observationTag">
+                                                <button class="btn mb-2 me-2" v-for="observation in observationTags" v-bind:key="observation" :style="{ color:'white', backgroundColor: 'grey', borderColor:'grey', borderWidth:'1px' }">{{ observation }}</button>
                                             </div>
 
 
@@ -826,10 +842,13 @@
                         console.error(error);
                     }
                 // flavourTags
-                // _id, hexcode, familyTag, subtag
+                // _id, hexcode, familyTag, subtag, showbox
                     try {
                             const response = await this.$axios.get('http://127.0.0.1:5000/getFlavourTags');
-                            this.flavourTags = response.data;
+                            this.flavourTags = response.data.map(item => {
+                                return { ...item, showBox: false }; // Add the showBox property with initial value of false
+                            });
+                            // this.flavourTags = response.data;
                             console.log(this.flavourTags)
                         } 
                     catch (error) {
@@ -969,6 +988,13 @@
                 this.selectedLocation = event.target.value;
             },
             
+            toggleBox(family) {
+                let tempShowBox = family.showBox
+                this.flavourTags.forEach(item => {
+                    item.showBox = false;
+                });
+                family.showBox = !tempShowBox; // Toggle the visibility of the box
+            },
         }
     };
 </script>
