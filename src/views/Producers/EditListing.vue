@@ -118,8 +118,6 @@
                                                     </div>
                                                     
                                                 </div>
-                                                
-      
 
                                                 <div v-if="independentStatus" class="row">
                                                     <label for="input">Enter Producer Name:<span class="text-danger">*</span></label>
@@ -130,10 +128,11 @@
                                                     
                                                     <label for="checkbox">Is the producer independent?</label>
                                                     <div class="mb-3">
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" id="checkbox" v-model="independentStatus" @change="independentBottler">
-                                                            <label class="form-check-label" for="checkbox">
-                                                                Independent
+                                                        <!-- Toggle Switch -->
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="toggleSwitch" v-model="independentStatus" @change="independentBottler">
+                                                            <label class="form-check-label" for="toggleSwitch">
+                                                                Yes
                                                             </label>
                                                         </div>
                                                     </div>
@@ -145,10 +144,10 @@
                                                     </div>
                                                     <label for="checkbox">Is the producer independent?</label>
                                                     <div class="mb-3">
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox" id="checkbox" v-model="independentStatus" @change="independentBottler">
-                                                            <label class="form-check-label" for="checkbox">
-                                                                Independent
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="toggleSwitch" v-model="independentStatus" @change="independentBottler">
+                                                            <label class="form-check-label" for="toggleSwitch">
+                                                                No
                                                             </label>
                                                         </div>
                                                     </div>
@@ -204,10 +203,29 @@
                                                             
                                                         </div>
                                                     </div>
+
+                                                    <div v-else class="col-md-6 mb-3"  >
+                                                        <label for="dropdown">Select Drink Type Category:</label><span class="text-danger">*</span>
+                                                        <div class="col-md-6 mb-3">
+                                                            <div class="input-group">
+                                                                <select class="form-select" id="inputGroupSelect01" v-model="tempTypeCategory" disabled>
+                                                                    <option v-for="cat in tempTypeCategoryList.sort()" :key="cat" :value="cat" >
+                                                                        {{ cat }}
+                                                                    </option>
+                                                                    
+                                                                </select>
+                                                                <span v-if="missingTypeCategory" class="text-danger">Please select a type category.</span>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 
                                                 <div class="row">
-                                                    <label for="input">Enter Bottle Age :</label>
+                                                    <label for="input" v-if="tempDrinkType == 'Wine'">Enter Vintage:</label>
+                                                    
+                                                    <label for="input" v-else>Enter Bottle Age:</label>
+
                                                     <div class="col-md-6 mb-3">
                                                         <input type="Expression Name" class="form-control" id="age" v-model="tempAge">
                                                     </div>
@@ -286,7 +304,7 @@
                 updateStatus: false,
                 tempExpressionName: '',
                 tempProducerID: '',
-                tempProducer: '',
+                // tempProducer: '',
                 tempCountry: '',
                 tempDrinkType: '',
                 tempTypeCategory:"",
@@ -320,6 +338,7 @@
         mounted() {
             this.loadData();
             this.created();
+            
             
         },
         
@@ -381,12 +400,12 @@
                     const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
                     this.producers = response.data;
 
-                    for (let producer of this.producers) {
-                    if (JSON.stringify(producer._id) == JSON.stringify(this.tempProducerID)) {
-                        this.tempProducer = producer.producerName;
-                        
-                    }
-                    }
+                    // for (let producer of this.producers) {
+                    // if (JSON.stringify(producer._id) == JSON.stringify(this.tempProducerID)) {
+                    //     this.tempProducer = producer.producerName;  
+                    // }
+                    // }
+                    // this.tempProducer=this.producers.find(producer => producer._id == this.tempProducerID);
                     
                 } 
                 catch (error) {
