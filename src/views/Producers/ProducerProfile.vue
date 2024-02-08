@@ -590,9 +590,9 @@
                             </div>
                             <div class="py-2 text-start">
                                 <!-- [TODO] link to deep dive article-->
-                                <!-- <a :href="" class="text-left default-text-no-background">
-                                    
-                                </a> -->
+                                <a v-for="article in deepDiveArticles" class="text-left default-text-no-background" v-bind:key="article._id" :href="article">
+                                    {{ article }}
+                                </a>
                             </div>
                             <div class="py-2"></div>
                         </div>
@@ -653,6 +653,9 @@
                 // specified producer
                 producer_id: null,
                 specified_producer: {},
+
+                // to store deep dive articles
+                deepDiveArticles: [],
 
                 // saying hi
                 producerhi: '',
@@ -723,6 +726,10 @@
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
                         this.listings = response.data;
+                        // using filter to get listings with matching producerID.$oid
+                        const filteredListings = this.listings.filter(listing => listing.producerID.$oid === this.producer_id);
+                        // extracting reviewLink from filtered listings
+                        this.deepDiveArticles = filteredListings.map(listing => listing.reviewLink);
                     } 
                     catch (error) {
                         console.error(error);
