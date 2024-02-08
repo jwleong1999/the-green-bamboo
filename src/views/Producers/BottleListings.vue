@@ -415,7 +415,7 @@
                                                     
                                                     <!-- This is the conatiner/dropdown box for the subtags -->
                                                     <div v-for="family in flavourTags" :key="family['_id']">
-                                                        <div v-if="family.showBox" class="border rounded p-3" style="border-color: red;">
+                                                        <div v-if="family.showBox" class="border rounded p-3" :style="{borderColor:family['hexcode'], borderWidth:'5px'}">
                                                             <div class="row">
                                                                 <div class="col-3" v-for="(element, index) in family.subtag" :key="index">
                                                                     <button class="btn mb-2" :style="{ width: '100px', height: '60px',color:'white', backgroundColor: family['hexcode'], borderColor: family['hexcode'], borderWidth:'1px' }">{{ element }}</button>
@@ -432,8 +432,10 @@
                                             <!-- Make this a search/dropdown -->
                                             <div class="form-group mb-3">
                                                 <p class="text-start mb-1 fw-bold">Observation Tags</p>
-                                                <input type="text" class="form-control" id="observationTag">
-                                                <button class="btn mb-2 me-2" v-for="observation in observationTags" v-bind:key="observation" :style="{ color:'white', backgroundColor: 'grey', borderColor:'grey', borderWidth:'1px' }">{{ observation }}</button>
+                                                <button v-for="observation in observationTags.slice(0, 8)" v-bind:key="observation" class="btn mb-2 me-2" data-bs-toggle="button" :style="{ color:'white', backgroundColor: 'grey', borderColor:'grey', borderWidth:'1px' }">{{ observation }}</button>
+                                                <button class = "btn" style="color:black; background-color:white; border-color:black; border-width: 1px;">View All</button>
+                                                <button class="btn mb-2 me-2" v-for="observation in observationTags.slice(8)" v-bind:key="observation" :style="{ color:'white', backgroundColor: 'grey', borderColor:'grey', borderWidth:'1px' }">{{ observation }}</button>
+                                                <button class = "btn" style="color:black; background-color:white; border-color:black; border-width: 1px;">View Less</button>
                                             </div>
 
 
