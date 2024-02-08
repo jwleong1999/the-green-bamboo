@@ -74,5 +74,52 @@ def editDetails():
             }
         ), 500
 
+@app.route('/addUpdates', methods=['POST'])
+def addUpdates():
+
+    # fetch sent data
+    data = request.get_json()
+    print(data)
+
+    # extract components of the data
+    producerID = data['producerID']
+
+    # if data contains image64
+    if 'image64' in data:
+        image64 = data['image64']
+        producerName = data['producerName']
+        producerDesc = data['producerDesc']
+        originCountry = data['originCountry']
+        # drinkChoice = data['drinkChoice']
+
+    try: 
+        if 'image64' in data:
+            updateImage = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'photo': image64}})
+            updateName = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'producerName': producerName}})
+            updateDesc = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'producerDesc': producerDesc}})
+            updateCountry = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'originCountry': originCountry}})
+            # updateDrinkChoice = db.users.update_one({'_id': ObjectId(userID)}, {'$set': {'choiceDrinks': drinkChoice}})
+
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Updated profile successfully!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "image": image64[:8],
+                    "name": producerName,
+                    "desc": producerDesc,
+                    "country": originCountry,
+                },
+                "message": "An error occurred updating profile!"
+            }
+        ), 500
+
 if __name__ == '__main__':
     app.run(debug=True, port=5200)
