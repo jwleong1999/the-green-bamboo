@@ -211,5 +211,20 @@ def getFlavourTags():
         allFlavourTags.append(doc)
     return allFlavourTags
 
+# [GET] Languages
+@app.route("/getLanguages")
+def getLanguages():
+    #this step finds all the items in the collection, specifying Mod Requests
+    data = db.languages.find({})
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+    languages = []
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        languages.append(doc)
+    return languages
+
 if __name__ == "__main__":
     app.run(debug=True, port = 5000)
