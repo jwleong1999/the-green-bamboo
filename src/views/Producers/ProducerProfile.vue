@@ -629,7 +629,7 @@
 
                 // define user type here 
                 // [TODO] to fetch user type once login function is implemented
-                userType: 'user',
+                userType: 'producer',
 
                 // check if user is editing
                 editing: false,

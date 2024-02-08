@@ -415,7 +415,7 @@
                                                     
                                                     <!-- This is the conatiner/dropdown box for the subtags -->
                                                     <div v-for="family in flavourTags" :key="family['_id']">
-                                                        <div v-if="family.showBox" class="border rounded p-3" :style="{borderColor:family['hexcode'], borderWidth:'5px'}">
+                                                        <div v-if="family.showBox" class="rounded p-3" :style="{border: '3px solid ' + family['hexcode'] }">
                                                             <div class="row">
                                                                 <div class="col-3" v-for="(element, index) in family.subtag" :key="index">
                                                                     <button class="btn mb-2" :style="{ width: '100px', height: '60px',color:'white', backgroundColor: family['hexcode'], borderColor: family['hexcode'], borderWidth:'1px' }">{{ element }}</button>
