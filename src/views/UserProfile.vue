@@ -633,6 +633,7 @@ export default {
         checkItem(listing) {
             this.bookmarkModalItem = listing;
             // if item is in userbookmark list, push the bookmark into the selectedBookmarkList
+            this.selectedBookmarkList = [];
             for (const listName in this.userBookmarks) {
                 if (Object.hasOwnProperty.call(this.userBookmarks, listName)) {
                     const bookmarkItems = this.userBookmarks[listName].listItems;
@@ -642,12 +643,7 @@ export default {
                                 this.selectedBookmarkList.push(listName);
                             }
                         }
-                    } else {
-                        if (this.selectedBookmarkList.includes(listName)) {
-                            const index = this.selectedBookmarkList.indexOf(listName);
-                            this.selectedBookmarkList.splice(index, 1);
-                        }
-                    }
+                    } 
                 }
             }
         },
@@ -775,9 +771,6 @@ export default {
                 .filter(review => review.reviewType === "Listing" && 
                     review.userID.$oid === this.displayUserID)
                 .sort((a, b) => {
-                    // Assuming createdDate is a Date object
-                    console.log("Comparing dates:", a.createdDate, b.createdDate);
-
                     return new Date(b.createdDate) - new Date(a.createdDate);
                 })
                 .reverse()
