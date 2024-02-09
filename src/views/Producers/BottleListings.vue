@@ -234,6 +234,7 @@
                     </div>
 
                     <!-- add your review -->
+                    <!-- replace below line with <ChildComponent :showReviewButton="userID.$oid !== 'defaultUser'" /> -->
                     <div v-if="userID.$oid !== 'defaultUser'" class="col-5">
                         <div class="d-grid gap-2">
                             <button class="btn primary-btn-less-round btn-lg" data-bs-toggle="modal" data-bs-target="#reviewModal"> 
@@ -253,13 +254,14 @@
                     </div>
                 </div>
                     
-                <!-- Modal -->
+                    <!-- Modal -->
+                    <!-- TODO component for modal <ReviewModal :isEditing='false' :reviewData="reviewData" :showReviewButton="userID.$oid !== 'defaultUser'" /> -->
                     <div v-if="userID.$oid !== 'defaultUser'" class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-lg">
                             <div class="text-success fst-italic fw-bold fs-3 modal-content" v-if='successSubmission'>
                                 <span>Your review has successfully been submitted!</span>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-secondary" @click="reloadRoute" data-bs-dismiss="modal">Close</button>
                                 </div>
                             </div>
 
@@ -614,8 +616,9 @@
                 <hr>
 
                 <!-- reviews -->
+                <!-- TODO  EDIT MODAL IF NOT DOING COMPONENT-->
                 <div>
-                    <div class="row" v-for="review in getReviewsForListing(specified_listing)" v-bind:key="review._id">
+                    <div class="row" v-for="review in filteredReviews" v-bind:key="review._id">
                         <!-- profile photo -->
                         <div class="col-1">
                             <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromReview(review) || defaultProfilePhoto)" alt="" class="profile-image">
@@ -624,8 +627,59 @@
                         <div class="col-10">
                             <div class="row">
                                 {{ getUsernameFromReview(review) }}
+                                {{ review['reviewDesc'] }}
                             </div>
                         </div>
+                        <!-- Delete review modal -->
+                        <div v-if="review.userID['$oid'] === userID['$oid']">
+                            <button class="btn btn-danger" @click="setDeleteID(review)" data-bs-toggle="modal" data-bs-target="#deleteReview">Delete</button>
+                        </div>
+                        <div class="modal fade" id="deleteReview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                
+                                <!-- DELETE SUCCESS -->
+                                <div class="text-success fst-italic fw-bold fs-3 modal-content" v-if='successDelete'>
+                                    <span>Your review has successfully been deleted!</span>
+                                    <div class="modal-footer">
+                                        <button type="button" @click="reloadRoute" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                                <!-- DELETE ERROR -->
+                                <div class="text-danger fst-italic fw-bold fs-3 modal-content" v-if="errorDelete"> 
+                                    <div v-if="errorDeleteMessage" class = "row"> 
+                                        <span >An error occurred while attempting to delete, please try again!</span>
+                                        <br>
+                                        <button class="btn primary-btn btn-sm" @click="reset">
+                                            <span class="fs-5 fst-italic"> Retry your delete request here! </span>
+                                        </button>
+                                    </div>
+                                    
+                                    <span v-if="notExist">There is no review by you for this bottle listing!</span>
+                                    <br>
+
+                                
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+
+                                <!-- DELETE IN PROGRESS MODAL -->
+                                <div v-if="deletingReview" class="modal-content">
+                                    <div class="modal-header" style="background-color: #535C72">
+                                        <h5 class="modal-title" id="deleteReview" style="color: white;">Delete Review</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete your review?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-danger" @click="deleteReview">Delete Review</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END of delete review modal -->
 
                         <!-- review photo -->
                         <div class="col-2">
@@ -686,12 +740,12 @@
 
 <!-- JavaScript -->
 <script>
-    // import DropZone from '@/components/Dropzone.vue'
+    // import ReviewModal from '@/components/EditReview.vue'
     export default {
         // setup(){
 
         // },
-        // components:{DropZone},
+        // components:{ReviewModal},
         data() {
             return {
                 // data from database
@@ -714,6 +768,7 @@
                 searchTerm: '',
                 searchResults: [],
                 filteredListings: [],
+                filteredReviews:[],
 
                 // specified listing lisitng_id used for createReview
                 listing_id: null,
@@ -776,7 +831,14 @@
                 successSubmission: false,
                 errorMessage: false,
                 duplicateEntry: false,
+                errorSubmission:false,
 
+                // To delete review
+                deleteID :null,
+                successDelete:false,
+                deletingReview:true,
+                errorDelete:false,
+                errorDeleteMessage:false,
 
                 // matched user
                 matchedUser: {},
@@ -825,15 +887,24 @@
 
             // load data from database
             async loadData() {
-                // countries
-                // _id, originCountry
-                try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
-                        this.countries = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // countries
+                    // _id, originCountry
+                        try {
+                                const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
+                                this.countries = response.data;
+                            } 
+                            catch (error) {
+                                console.error(error);
+                        }
+                    // reviews
+                    // _id, userID, reviewTarget, date, rating, reviewDesc, taggedUsers, reviewTitle, reviewType, flavorTag, photo
+                        try {
+                            const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
+                            this.reviews = response.data;
+                        }
+                        catch (error) {
+                            console.error(error);
+                        }
                 // listings
                 // _id, listingName, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, officialDesc, sourceLink, photo
                     try {
@@ -842,9 +913,10 @@
                         this.filteredListings = this.listings; // originally, make filtered listings the entire collection of listings
                         this.specified_listing = this.listings.find(listing => listing._id.$oid == this.listing_id); // find specified listing
                         this.producer_id = this.specified_listing.producerID.$oid // find specified producer
-                        console.log(this.producer_id)
+                        console.log(this.specified_listing)
+                        console.log('here')
                         this.whereToBuy(); // find where to buy specified listing
-                        this.getReviewsForListing(this.specified_listing);
+                        this.filteredReviews = this.getReviewsForListing(this.specified_listing);
                     } 
                     catch (error) {
                         console.error(error);
@@ -864,15 +936,6 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
                         this.producers = response.data;
                     } 
-                    catch (error) {
-                        console.error(error);
-                    }
-                // reviews
-                // _id, userID, reviewTarget, date, rating, reviewDesc, taggedUsers, reviewTitle, reviewType, flavorTag, photo
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
-                        this.reviews = response.data;
-                    }
                     catch (error) {
                         console.error(error);
                     }
@@ -1024,9 +1087,17 @@
             },
 
             getReviewsForListing(listing) {
+                // console.log("here")
+                // console.log(listing._id)
+                // console.log(this.reviews)
+                // console.log("andhere")
                 const reviews = this.reviews.filter((review) => {
-                    return review["reviewTarget"] == listing["listingName"];
+                    // console.log('wraap')
+                    // console.log(review)
+                    return review["reviewTarget"]['$oid'] == listing._id['$oid'];
                 });
+                // console.log(reviews)
+                // console.log("before this")
                 return reviews;
             },
 
@@ -1050,7 +1121,6 @@
 
             displaySelectColour(colour){
                 this.selectedColour = colour
-                console.log(this.selectedColour)
             },
             // function to display submitted image
             onFileChange(event){
@@ -1061,7 +1131,6 @@
                     this.selectedImage = reader.result;
                     const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
                     this.image64 = base64String;
-                    console.log(this.image64)
                 };
                 reader.readAsDataURL(file);
             },
@@ -1206,6 +1275,43 @@
                 this.selectedImage = null
                 document.getElementById('reviewPhoto').value = '';
             },
+
+            async deleteReview(){
+                let deleteAPI = "http://127.0.0.1:5006/deleteReview/" + this.deleteID
+                // console.log(deleteAPI)
+                const response = await this.$axios.delete(deleteAPI)
+                .then((response)=>{
+                    this.deleteReviewCode = response.data.code
+                })
+                .catch((error)=>{
+                    console.log(error);
+                    this.deleteReviewCode = error.response.data.code
+                });
+                // console.log(this.reviewResponseCode)
+                if(this.deleteReviewCode==200){
+                    this.successDelete=true; // Display success message
+                    this.deletingReview=false; // Hide submission in progress message
+                }else{
+                    this.errorDelete=true; // Display error message
+                    this.deletingReview=false; // Hide submission in progress message
+                    if(this.reviewResponseCode==400){
+                        this.notExist = true // Display duplicate entry message
+                    }else{
+                        this.errorDeleteMessage = true // Display generic error message
+                    }
+                }
+                return response
+                
+            },
+
+            setDeleteID(review){
+                console.log(review._id['$oid'])
+                this.deleteID = review._id['$oid']
+            },
+
+            reloadRoute() {
+                this.$router.go(); // Reloads the current route
+            }
         }
     };
 </script>
