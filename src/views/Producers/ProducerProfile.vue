@@ -1205,16 +1205,53 @@
                 alert("userGreetings function not yet implemented!")
             },
 
-            // send answer that producers give to users
-            sendAnswer (qa) {
-                alert("sendAnswer function not yet implemented!")
-                let q_and_a_id = qa._id.$oid;
-                console.log(q_and_a_id)
+            // send questions that users ask to producers
+            async sendQuestion () {
+                try {
+                    const response = await this.$axios.post('http://127.0.0.1:5200/sendQuestions', 
+                        {
+                            producerID: this.producer_id,
+                            question: this.question,
+                            answer: "",
+                        },
+                        {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    console.log(response.data);
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+
+                // force page to reload
+                window.location.reload();
             },
 
-            // send questions that users ask to producers
-            sendQuestion () {
-                alert("sendQuestion function not yet implemented!")
+            // send answer that producers give to users
+            async sendAnswer (qa) {
+                let q_and_a_id = qa._id.$oid;
+                try {
+                    const response = await this.$axios.post('http://127.0.0.1:5200/sendAnswers', 
+                        {
+                            producerID: this.producer_id,
+                            questionsAnswersID: q_and_a_id,
+                            answer: this.answer,
+                        },
+                        {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    console.log(response.data);
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+
+                // force page to reload
+                window.location.reload();
             },
 
             // for user to edit their catalogue
@@ -1319,7 +1356,6 @@
 
             // for producer to add updates
             async addUpdates() {
-                console.log(this.producer_id)
                 try {
                     const response = await this.$axios.post('http://127.0.0.1:5200/addUpdates', 
                         {

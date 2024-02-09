@@ -14,10 +14,10 @@ from pymongo.errors import DuplicateKeyError, OperationFailure
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
-
 from bson.objectid import ObjectId
 from gridfs import GridFS
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -83,7 +83,7 @@ def addUpdates():
 
     # extract components of the data
     producerID = data['producerID']
-    date = data['date']
+    date = datetime.strptime(data['date'], "%Y-%m-%dT%H:%M:%S.%fZ")
     text = data['text']
     image64 = data['image64']
 
@@ -115,7 +115,80 @@ def addUpdates():
                 "message": "An error occurred creating the update."
             }
         ), 500
+
+@app.route('/sendQuestions', methods=['POST'])
+def sendQuestions():
+
+    # fetch sent data
+    data = request.get_json()
+    print(data)
+
+    # extract components of the data
+    producerID = data['producerID']
+    question = data['question']
+    answer = data['answer']
+
+    try:
+        submitReq = db.producers.update_one(
+            {'_id': ObjectId(producerID)},
+            {'$push': {'questionsAnswers': 
+                        {
+                            '_id': ObjectId(),
+                            'question': question,
+                            'answer': answer
+                        }
+                    }
+            }
+        )
+
+        return jsonify( 
+            {   
+                "code": 201,
+                "data": producerID
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": producerID,
+                "message": "An error occurred creating the update."
+            }
+        ), 500
     
+@app.route('/sendAnswers', methods=['POST'])
+def sendAnswers():
+
+    # fetch sent data
+    data = request.get_json()
+    print(data)
+
+    # extract components of the data
+    producerID = data['producerID']
+    questionsAnswersID = data['questionsAnswersID']
+    answer = data['answer']
+
+    try:
+        submitReq = db.producers.update_one(
+            {'_id': ObjectId(producerID), 'questionsAnswers._id': ObjectId(questionsAnswersID)},
+            {'$set': {'questionsAnswers.$.answer': answer}}
+        )
+        return jsonify( 
+            {   
+                "code": 201,
+                "data": producerID
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": producerID,
+                "message": "An error occurred creating the update."
+            }
+        ), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5200)
