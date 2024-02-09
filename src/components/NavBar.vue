@@ -92,7 +92,7 @@
             logout() {
                 localStorage.removeItem('88B_accID');
                 localStorage.removeItem('88B_accType');
-                this.$router.push({name: 'login'});
+                this.$router.push({path: '/login'});
             }
 
         }
