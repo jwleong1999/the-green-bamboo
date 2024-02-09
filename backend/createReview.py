@@ -1,5 +1,3 @@
-# Marked for deletion: route has been moved to editListing.py
-
 import bson
 import json
 from bson import json_util
@@ -28,13 +26,11 @@ def parse_json(data):
 @app.route("/createReview", methods= ['POST'])
 def createReviews():
     rawReview = request.get_json()
-    rawReviewBottle = rawReview["listing_id"]
-    rawReviewUserID = rawReview["userID"]
-
+    rawReviewBottle = rawReview["reviewTarget"]['$oid']
+    rawReviewUserID = rawReview["userID"]['$oid']
 
     existingReview = db.reviews.find_one({"reviewTarget": rawReviewBottle, "userID": rawReviewUserID})
-
-    # Check whether review with the same userID and reviewTarget exists in the database
+    # # Check whether review with the same userID and reviewTarget exists in the database
     if(existingReview != None):
         return jsonify(
             {   
@@ -47,10 +43,10 @@ def createReviews():
         ), 400
     
     
-    newReview = data.listings(**rawReview)
+    newReview = data.reviews(**rawReview)
 
     try:
-        insertResult = db.listings.insert_one(data.asdict(newReview))
+        insertResult = db.reviews.insert_one(data.asdict(newReview))
 
         return jsonify( 
             {   
@@ -72,4 +68,4 @@ def createReviews():
     
 
 if __name__ == "__main__":
-    app.run(debug=True, port = 5001)
+    app.run(debug=True, port = 5005)

@@ -234,7 +234,7 @@
                     </div>
 
                     <!-- add your review -->
-                    <div class="col-5">
+                    <div v-if="userID.$oid !== 'defaultUser'" class="col-5">
                         <div class="d-grid gap-2">
                             <button class="btn primary-btn-less-round btn-lg" data-bs-toggle="modal" data-bs-target="#reviewModal"> 
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
@@ -244,11 +244,42 @@
                             </button>
                         </div>
                     </div>
+                    <div v-else class="col-5">
+                        <div class="d-grid gap-2">
+                            <button class="btn primary-btn-less-round btn-lg"> 
+                                Login to leave a Review
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                    <!-- Modal -->
-                    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true" data-bs-backdrop="static">
+                    
+                <!-- Modal -->
+                    <div v-if="userID.$oid !== 'defaultUser'" class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
+                            <div class="text-success fst-italic fw-bold fs-3 modal-content" v-if='successSubmission'>
+                                <span>Your review has successfully been submitted!</span>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+
+                            <div class="text-danger fst-italic fw-bold fs-3 modal-content" v-if="errorSubmission"> 
+                                <div v-if="errorMessage" class = "row"> 
+                                    <span >An error occurred while attempting to submit, please try again!</span>
+                                    <br>
+                                    <button class="btn primary-btn btn-sm" @click="reset">
+                                        <span class="fs-5 fst-italic"> Retry your submission here! </span>
+                                    </button>
+                                </div>
+                                
+                                <span v-if="duplicateEntry">You've already submitted a review for this bottle listing!</span>
+                                <br>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+
+                            <div v-if='addingReview' class="modal-content">
                                 <!-- change modal header colour -->
                                 <div class="modal-header" style="background-color: #535C72">
                                     <h5 class="modal-title" id="reviewModalLabel" style="color: white;">Add Your Review</h5>
@@ -281,7 +312,10 @@
                                             <div class = 'row justify-content-start mb-3'>
                                                 <div class = "col-md-12">
                                                     <p class='text-start mb-2 fw-bold'>Review <span class="text-danger">*</span></p>
-                                                    <textarea v-model="review" class="form-control" id="reviewTextarea" rows="3" placeholder="Min 20 characters"></textarea>
+                                                    <textarea v-model="reviewDesc" class="form-control" id="reviewTextarea" rows="3" placeholder="Min 20 characters"></textarea>
+                                                </div>
+                                                <div v-if="reviewDescError!==''" class ="col-md-12">
+                                                    <p class='text-danger text-start mb-2 fw-bold'>{{ reviewDescError }}</p>
                                                 </div>
                                             </div>
 
@@ -293,8 +327,8 @@
                                                         <label class="form-check-label text-start fw-bold" for="inlineCheckbox1">Would Recommend</label>
                                                     </div>
                                                     <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" v-model="wouldDrinkAgain" value="option2">
-                                                        <label class="form-check-label text-start fw-bold" for="inlineCheckbox2">Would Drink Again</label>
+                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" v-model="wouldBuyAgain" value="option2">
+                                                        <label class="form-check-label text-start fw-bold" for="inlineCheckbox2">Would Buy Again</label>
                                                     </div>                                                                                                   
                                                 </div>                                         
                                             </div>
@@ -441,7 +475,7 @@
                                                         <div v-if="family.showBox" class="rounded p-3" :style="{border: '3px solid ' + family['hexcode'] }">
                                                             <div class="row">
                                                                 <div class="col-3" v-for="(element, index) in family.subtag" :key="index">
-                                                                    <button @click="toggleFlavourSelection(element)" class="btn mb-2" :style="{ width: '100px', height: '60px',color:'white', backgroundColor: selectedFlavourTags.includes(element) ? 'grey' :family['hexcode'], borderColor: family['hexcode'], borderWidth:'1px' }">{{ element }}</button>
+                                                                    <button @click="toggleFlavourSelection(element, family['hexcode'])" class="btn mb-2" :style="{ width: '100px', height: '60px',color:'white', backgroundColor: selectedFlavourTags.includes(element+family['hexcode']) ? 'grey' :family['hexcode'], borderColor: family['hexcode'], borderWidth:'1px' }">{{ element }}</button>
                                                                 </div>                        
                                                             </div>
                                                         </div>
@@ -483,10 +517,11 @@
                                         <p class = 'text-start mb-2 fw-bold'>Add Photo</p>
                                         <div class="mb-3">
                                             <!-- DONE v:model here the file -->
-                                            <input class="form-control mb-2" @change="onFileChange" type="file" id="formFile">
+                                            <input class="form-control mb-2" @change="onFileChange" type="file" id="reviewPhoto">
                                             <div class = "row">
-                                            <img :src="selectedImage ? selectedImage : 'none'" alt="" id="output">
+                                                <img :src="selectedImage ? selectedImage : 'none'" alt="" id="output">
                                             </div>
+                                            <button v-if="selectedImage!==null" class="btn text-start mb-1" style="background-color: #535C72;color: white;" @click="clearPhoto">Clear Photo</button>
                                         </div>
                                         
                                         <div class="form-group mb-3">
@@ -500,8 +535,8 @@
                                                                
                                             <!-- Link filteredOptions to venues location -->
                                             <div class="input-group">
-                                                <select class="form-control" v-model="selectedLocation" @input="filterOptions">
-                                                    <option v-for="option in filteredOptions" :key="option" :value="option">{{ option }}</option>
+                                                <select class="form-control" v-model="selectedLocation" @input="filterOptions($event)">
+                                                    <option v-for="option in filteredOptions" :key="option.id" :value="option.name">{{ option.name }}</option>
                                                 </select>
                                             </div>
                                             <button v-if="selectedLocation!==''" class="btn text-start mb-1" style="background-color: #535C72;color: white;" @click="clearLocation">Clear Selection</button>
@@ -523,7 +558,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- END OF MODAL -->
+                <!-- END OF MODAL -->
 
 
                 <hr>
@@ -702,7 +737,7 @@
                 // For creating review
                 languages:[],
                 selectedLanguage:"English",
-                review:"",
+                reviewDesc:"",
                 rating: 5,
                 colours: ["#FFFFFF", "#FEED97", "#FBE166", "#FAD74A", "#F5C84B", "#F8C139", "#E79E12", "#E07D1F", "#D55530", "#B63426", "#AA1F22", "#702C1C", "#4A1C0C", "#000000"],
                 specialColours: {
@@ -724,16 +759,24 @@
                 taste:"",
                 finish:"",
                 wouldRecommend:false,
-                wouldDrinkAgain:false,
+                wouldBuyAgain:false,
                 extendReview:true,
                 locationOptions: [], // Your list of options
                 locationSearchTerm: "",
                 selectedLocation: "",
+                selectedLocationId: "",
                 extendObservation: false,
                 loggedIn:false,
                 userID: {
                         "$oid": "defaultUser"
                     },
+                reviewDescError:'',
+                reviewResponseCode:'',
+                addingReview: true,
+                successSubmission: false,
+                errorMessage: false,
+                duplicateEntry: false,
+
 
                 // matched user
                 matchedUser: {},
@@ -760,7 +803,7 @@
         computed: {
             filteredOptions() {
             return this.locationOptions.filter(option =>
-                option.toLowerCase().includes(this.locationSearchTerm.toLowerCase())
+                option.name.toLowerCase().includes(this.locationSearchTerm.toLowerCase())
             );
             }
         },
@@ -847,7 +890,7 @@
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
                         this.venues = response.data;
-                        this.locationOptions = response.data.map(item => item.venueName);
+                        this.locationOptions = response.data.map(item => ({name: item.venueName, id:item._id}));
                         console.log(this.locationOptions)
                     } 
                     catch (error) {
@@ -905,7 +948,6 @@
                             this.flavourTags = response.data.map(item => {
                                 return { ...item, showBox: false }; // Add the showBox property with initial value of false
                             });
-                            // this.flavourTags = response.data;
                             console.log(this.flavourTags)
                         } 
                     catch (error) {
@@ -1026,13 +1068,85 @@
 
             // Function to add review
             addReview(){
-                console.log(this.wouldDrinkAgain)
+                console.log(this.wouldBuyAgain)
                 console.log(this.wouldRecommend)
+                // let errorPhrase = "Your completion is incomplete"
+                // form validation
+                if(this.reviewDesc.length < 20){
+                    this.reviewDescError ="Character count is less than 20, please write more for a more detailed review."
+                    alert("Submission has error, please fill in the required fields properly")
+                    return "Submission error"
+                }
+                let createdDate = new Date().toISOString() + '+00:00';
+                if (this.reviewDesc !== "") {
+                    this.reviewDesc = this.reviewDesc.trim();
+                }
+                if (this.photo !== null) {
+                    this.reviewDesc = this.reviewDesc.trim();
+                }
+                if (this.aroma !== "") {
+                    this.reviewDesc = this.reviewDesc.trim();
+                }
+                if (this.taste !== "") {
+                    this.reviewDesc = this.reviewDesc.trim();
+                }
+                if (this.finish !== "") {
+                    this.reviewDesc = this.reviewDesc.trim();
+                }
+                let submitAPI = "http://127.0.0.1:5005/createReview"
+                let submitData = {
+                    "userID" : this.userID,
+                    "reviewTarget" : {
+                        "$oid": this.listing_id
+                    },
+                    "rating" : this.rating,
+                    "reviewDesc": this.reviewDesc.trim(),
+                    "reviewType": "Listing",
+                    "flavorTag" : this.selectedFlavourTags,
+                    "photo" : this.selectedImage.trim(),
+                    "colour" : this.selectedColour,
+                    "language" : this.selectedLanguage,
+                    "aroma" : this.aroma.trim(),
+                    "taste" : this.taste.trim(),
+                    "finish" : this.finish.trim(),
+                    "location" :this.selectedLocationId,
+                    "willRecommend": this.wouldRecommend,
+                    "wouldBuyAgain": this.wouldBuyAgain,
+                    "observationTag": this.selectedObservations,
+                    "createdDate": createdDate
+                }
+                console.log( submitData)
+                this.writeReview(submitAPI, submitData)
+                
+            },
+
+            async writeReview(submitAPI, submitData){
+                const response = await this.$axios.post(submitAPI, submitData)
+                .then((response)=>{
+                    this.reviewResponseCode = response.data.code
+                })
+                .catch((error)=>{
+                    console.log(error);
+                    this.reviewResponseCode = error.response.data.code
+                });
+                console.log(this.reviewResponseCode)
+                if(this.reviewResponseCode==201){
+                    this.successSubmission=true; // Display success message
+                    this.addingReview=false; // Hide submission in progress message
+                }else{
+                    this.errorSubmission=true; // Display error message
+                    this.addingReview=false; // Hide submission in progress message
+                    if(this.reviewResponseCode==400){
+                        this.duplicateEntry = true // Display duplicate entry message
+                    }else{
+                        this.errorMessage = true // Display generic error message
+                    }
+                }
+                return response
             },
 
             // Function to expand/contract the modal
             controlModal(){
-                console.log(this.extendReview)
                 if(this.extendReview){
                     this.extendReview = false
                 }
@@ -1042,7 +1156,8 @@
             },
 
             filterOptions(event) {
-                this.selectedLocation = event.target.value;
+                const selectedOption = this.filteredOptions.find(option => option.name === event.target.value);
+                this.selectedLocationId = selectedOption.id;
             },
             
             toggleBox(family) {
@@ -1068,16 +1183,15 @@
                 }
             },
 
-            toggleFlavourSelection(flavour) {
-                const index = this.selectedFlavourTags.indexOf(flavour);
+            toggleFlavourSelection(flavour, hexcode) {
+                const index = this.selectedFlavourTags.indexOf(flavour+hexcode);
                 if (index === -1) {
                     // Observation is not selected, so add it to the array
-                    this.selectedFlavourTags.push(flavour);
+                    this.selectedFlavourTags.push(flavour+hexcode);
                 } else {
                     // Observation is selected, so remove it from the array
                     this.selectedFlavourTags.splice(index, 1);
                 }
-                console.log(this.selectedFlavourTags)
             },
 
             clearColour(){
@@ -1086,6 +1200,11 @@
 
             clearLocation(){
                 this.selectedLocation = ''
+            },
+
+            clearPhoto(){
+                this.selectedImage = null
+                document.getElementById('reviewPhoto').value = '';
             },
         }
     };

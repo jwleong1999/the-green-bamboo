@@ -46,6 +46,7 @@
             <div class="col-4">
                 <div class="d-grid gap-2">
                     <!-- <router-link to="/Producer/Producer-Listings">Producer Listings</router-link> | -->
+                    <!-- TODO add producer ID here -->
                     <router-link :to="{ path: '/Producer/Producer-Create-Listing' }">
                         <button class="btn primary-btn btn-sm">
                             <h4> Create bottle listing here! </h4>

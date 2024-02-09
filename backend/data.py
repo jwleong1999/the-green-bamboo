@@ -53,7 +53,6 @@ class reviews:
     reviewTarget: object
     rating: int
     reviewDesc: str
-    reviewTitle: str
     reviewType: str
     createdDate: datetime
     language: str
