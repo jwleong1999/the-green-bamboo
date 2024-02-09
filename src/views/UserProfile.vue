@@ -189,38 +189,40 @@
                     <div class="tab-pane fade show active" id="reviews">
                         <h4 class="mt-3">Favourite Drinks</h4>
                         <div>
-                            <div class="image-container">
-                                <img :src=" 'data:image/png;base64,' + (photo || defaultDrinkImage)" alt="" class="rounded border border-dark-subtle border-2 bottle-img me-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon">
+                            <div class="image-container" v-for="(listing, index) in favouriteListings" :key="index" >
+                                <img :src=" 'data:image/png;base64,' + (listing.photo || defaultDrinkImage)" alt="" class="rounded border border-dark-subtle border-2 bottle-img me-3">
+                                <!-- svg for bookmarked -->
+                                <svg v-if="bookmarkStatus[listing.listingName]" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
+                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="checkItem(listing.listingName)">
+                                    <path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/>
+                                </svg>
+                                <!-- svg for not bookmarked -->
+                                <svg v-else xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
+                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="checkItem(listing.listingName)">
                                     <path d="M0 48C0 21.5 21.5 0 48 0l0 48V441.4l130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4V48H48V0H336c26.5 0 48 21.5 48 48V488c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488V48z"/>
                                 </svg>
-                            </div>
-
-                            <div class="image-container">
-                                <img :src=" 'data:image/png;base64,' + (photo || defaultDrinkImage)" alt="" class="rounded border border-dark-subtle border-2 bottle-img me-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon">
-                                    <path d="M0 48C0 21.5 21.5 0 48 0l0 48V441.4l130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4V48H48V0H336c26.5 0 48 21.5 48 48V488c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488V48z"/>
-                                </svg>
+                                <br/>
+                                {{ listing.listingName }}
                             </div>
                         </div>
 
                         <h4 class="mt-4">Recent Activity</h4>
                         <div>
 
-                            <div class="image-container" v-for="(listing, index) in recentActivity" :key="index" >
-                                <img :src=" 'data:image/png;base64,' + (photo || defaultDrinkImage)" alt="" class="rounded border border-dark-subtle border-2 bottle-img me-3">
+                            <div class="image-container" v-for="(review, index) in recentActivity" :key="index" >
+                                <img :src=" 'data:image/png;base64,' + (review.photo || defaultDrinkImage)" alt="" class="rounded border border-dark-subtle border-2 bottle-img me-3">
                                 <!-- svg for bookmarked -->
-                                <svg v-if="bookmarkStatus[listing]" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
-                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="checkItem(listing)">
+                                <svg v-if="bookmarkStatus[review.listingName]" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
+                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="checkItem(review.listingName)">
                                     <path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/>
                                 </svg>
                                 <!-- svg for not bookmarked -->
                                 <svg v-else xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
-                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="checkItem(listing)">
+                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="checkItem(review.listingName)">
                                     <path d="M0 48C0 21.5 21.5 0 48 0l0 48V441.4l130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4V48H48V0H336c26.5 0 48 21.5 48 48V488c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488V48z"/>
                                 </svg>
                                 <br/>
-                                {{ listing }}
+                                {{ review.listingName }}
                             </div>
                         </div>
 
@@ -418,7 +420,8 @@ export default {
             defaultProfilePhoto: "/9j/4AAQSkZJRgABAQEASABIAAD/4Qm+aHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCI/PiA8eDp4bXBtZXRhIHhtbG5zOng9ImFkb2JlOm5zOm1ldGEvIiB4OnhtcHRrPSJYTVAgQ29yZSA0LjQuMC1FeGl2MiI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyI+IDxkYzpjcmVhdG9yPiA8cmRmOlNlcT4gPHJkZjpsaT5WZWN0b3JTdG9jay5jb20vNDI0MTE1NDA8L3JkZjpsaT4gPC9yZGY6U2VxPiA8L2RjOmNyZWF0b3I+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDw/eHBhY2tldCBlbmQ9InciPz7/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAD6APkDAREAAhEBAxEB/8QAHAABAAIDAQEBAAAAAAAAAAAAAAMGBAUH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",
             // user detail [TODO: CHANGE BASED ON USER]
             // user
-            userID: "65b327d5687b64f8302d56ee",
+            userID: "65b327d5687b64f8302d56ef",
+            // userID: "65b327d5687b64f8302d56ee",
             user: {},
 
             // user being viewed
@@ -446,6 +449,8 @@ export default {
             selectedDrinks: [],
             image64: null,
             // others
+            favouriteListings: {},
+            recentActivity: {},
             bookmarkStatus: {},
             bookmarkModalItem: "",
             selectedBookmarkList: [],
@@ -453,7 +458,6 @@ export default {
             newListName: "",
             newListDesc: "",
             // to change
-            recentActivity: ["Ube Cream Liqueur", "Nikka From The Barrel"],
             ownProfile: false,
             drinkSearch: "",
             drinkSearchResults: [],
@@ -479,6 +483,8 @@ export default {
             try {
                 const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
                 this.reviews = response.data;
+                this.getUserFavourite();
+                this.getRecentActivity();
             }
             catch (error) {
                 console.error(error);
@@ -512,9 +518,12 @@ export default {
                 this.selectedDrinks = this.user.choiceDrinks;
                 this.displayUserBookmarks = this.displayUser.drinkLists;
                 this.userBookmarks = this.user.drinkLists;
-                this.recentActivity.forEach((listing) => {
-                this.fetchBookmarkStatus(listing);
-        });
+                this.recentActivity.forEach((review) => {
+                    this.fetchBookmarkStatus(review.listingName);
+                });
+                this.favouriteListings.forEach((listing) => {
+                    this.fetchBookmarkStatus(listing.listingName);
+                });
             } 
             catch (error) {
                 console.error(error);
@@ -738,6 +747,43 @@ export default {
         getListingName(listingID) {
             if (this.listings) {
                 return this.listings.find(listing => listing._id.$oid === listingID.$oid).listingName;
+            }
+        },
+        getUserFavourite() {
+            const favouriteListingReviews = this.reviews
+                .filter(review => review.reviewType === "Listing" && 
+                    review.userID.$oid === this.displayUserID &&
+                    review.rating >= 4)
+                .sort((a, b) => b.rating - a.rating);
+
+            const favouriteListingIds = favouriteListingReviews
+                .map(review => review.reviewTarget['$oid'])
+
+            this.favouriteListings = this.listings
+                .filter(listing => favouriteListingIds.includes(listing._id.$oid))
+                .sort((a, b) => {
+                    // Get the indices of the IDs in favouriteIdList
+                    const indexA = favouriteListingIds.indexOf(a._id.$oid);
+                    const indexB = favouriteListingIds.indexOf(b._id.$oid);
+                    
+                    // Sort based on the indices in favouriteIdList
+                    return indexA - indexB;
+                });
+        },
+        getRecentActivity() {
+            this.recentActivity = this.reviews
+                .filter(review => review.reviewType === "Listing" && 
+                    review.userID.$oid === this.displayUserID)
+                .sort((a, b) => {
+                    // Assuming createdDate is a Date object
+                    console.log("Comparing dates:", a.createdDate, b.createdDate);
+
+                    return new Date(b.createdDate) - new Date(a.createdDate);
+                })
+                .reverse()
+                .slice(0, 5);
+            for (const review of this.recentActivity) {
+                review.listingName = this.getListingName(review.reviewTarget);
             }
         }
         
