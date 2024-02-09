@@ -131,7 +131,7 @@ def deleteListing(id):
                 {
                     "code": 500,
                     "data": {
-                        "id": listingID
+                        "id": id
                     },
                     "message": "An error occurred deleting listing!"
                 }
