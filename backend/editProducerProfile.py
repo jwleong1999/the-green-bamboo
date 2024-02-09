@@ -88,8 +88,8 @@ def addUpdates():
     image64 = data['image64']
 
     try:
-        submitReq = db.producers.insert_one(
-            {'producerID': ObjectId(producerID)},
+        submitReq = db.producers.update_one(
+            {'_id': ObjectId(producerID)},
             {'$push': {'updates': 
                         {
                             'date': date,
