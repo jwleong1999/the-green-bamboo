@@ -272,7 +272,7 @@
                     "reviewLink": "",
                     "producerID": {
                         "$oid": "defaultProducer"
-                    }, // TODO: Fill in producerID with producerID of specified producer. May be blank for request: new producer.
+                    }, // Fill in producerID with producerID of specified producer. May be blank for request: new producer.
                     "bottler": "",
                     "originCountry": "",
                     "abv": "",
@@ -306,7 +306,7 @@
             }
         },
         mounted() {
-            this.userID = {
+            this.form['userID'] = {
                 "$oid": localStorage.getItem('88B_accID')
             };
             this.loadData();
@@ -347,8 +347,8 @@
 
                     // Check if user is a producer
                     if (localStorage.getItem('88B_accType') == "producer") {
-                        this.isProducer = this.producerList.find(producer => producer._id["$oid"] == this.userID["$oid"]).producerName;
-                        this.producerID = this.userID;
+                        this.isProducer = this.producerList.find(producer => producer._id["$oid"] == this.form['userID']["$oid"]).producerName;
+                        this.form['producerID'] = this.form['userID'];
                     }
                 } 
                 catch (error) {
@@ -367,7 +367,7 @@
             },
             getProducerID() {
                 if(this.tempProducer!= 'Other'){
-                    this.form['producerID']=this.producerList.find(producer => producer.producerName == this.tempProducer)._id;
+                    this.form['producerID'] = this.producerList.find(producer => producer.producerName == this.tempProducer)._id;
                 }
 
             },
