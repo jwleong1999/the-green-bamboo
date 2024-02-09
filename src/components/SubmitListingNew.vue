@@ -377,30 +377,31 @@
             },
 
             reset(){
-                this.indOperator = true
-                this.submitForm = false
-                this.successSubmission = false
-                this.errorSubmission = false
-                this.errorMessage = false
-                this.duplicateEntry = false
-                this.fillForm = true
-                this.responseCode= ""
-                this.tempTypeCategory = ""
-                this.tempProducer = ""
-                this.tempDrinkType = ""
+                this.$router.go(0) // check if refreshing the page just works as well
+                // this.indOperator = true
+                // this.submitForm = false
+                // this.successSubmission = false
+                // this.errorSubmission = false
+                // this.errorMessage = false
+                // this.duplicateEntry = false
+                // this.fillForm = true
+                // this.responseCode= ""
+                // this.tempTypeCategory = ""
+                // this.tempProducer = ""
+                // this.tempDrinkType = ""
 
-                for (const key in this.form) {
-                    this.form[key] = "";
-                }
-                this.form["brandRelation"] = "Others"
-                this.form["reviewStatus"] = false
+                // for (const key in this.form) {
+                //     this.form[key] = "";
+                // }
+                // this.form["brandRelation"] = "Others"
+                // this.form["reviewStatus"] = false
 
-                this.form["producerID"] = {
-                    "$oid": "defaultProducer"
-                } // temporary until we have a way to get producerID
-                this.form["userID"] = {
-                    "$oid": "defaultUser"
-                } // temporary until we have a way to get userID
+                // this.form["producerID"] = {
+                //     "$oid": "defaultProducer"
+                // } // temporary until we have a way to get producerID
+                // this.form["userID"] = {
+                //     "$oid": "defaultUser"
+                // } // temporary until we have a way to get userID
             },
 
             handleFileSelect(event){
