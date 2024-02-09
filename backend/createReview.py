@@ -23,39 +23,39 @@ def parse_json(data):
     return json.loads(json_util.dumps(data))
 
 #[POST]
-# require bottle name, producer ID, bottler, country of origin, drink type, ABV, official description, photo
-# optional drink category, age, source link, review link
+# require 
+# optional 
 @app.route("/createReview", methods= ['POST'])
 def createReviews():
-    rawBottle = request.get_json()
-    rawBottleName = rawBottle["listingName"]
+    rawReview = request.get_json()
+    rawReviewBottle = rawReview["listing_id"]
+    rawReviewUserID = rawReview["userID"]
 
 
-    # existingBottle = db.Listings.find_one({"Expression Name": rawBottleName})
-    existingBottle = db.listings.find_one({"listingName": rawBottleName})
+    existingReview = db.reviews.find_one({"reviewTarget": rawReviewBottle, "userID": rawReviewUserID})
 
-    # Check whether bottle with the same name exists in the database
-    if(existingBottle != None):
+    # Check whether review with the same userID and reviewTarget exists in the database
+    if(existingReview != None):
         return jsonify(
             {   
                 "code": 400,
                 "data": {
-                    "listingName": rawBottleName
+                    "listingName": rawReview['reviewDesc']
                 },
-                "message": "Bottle already exists."
+                "message": "Review already exists."
             }
         ), 400
     
     
-    newBottle = data.listings(**rawBottle)
+    newReview = data.listings(**rawReview)
 
     try:
-        insertResult = db.listings.insert_one(data.asdict(newBottle))
+        insertResult = db.listings.insert_one(data.asdict(newReview))
 
         return jsonify( 
             {   
                 "code": 201,
-                "data": rawBottleName
+                "data": rawReview['reviewDesc']
             }
         ), 201
     except Exception as e:
@@ -64,7 +64,7 @@ def createReviews():
             {
                 "code": 500,
                 "data": {
-                    "listingName": rawBottleName
+                    "listingName": rawReview['reviewDesc']
                 },
                 "message": "An error occurred creating the listing."
             }

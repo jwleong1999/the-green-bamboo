@@ -74,5 +74,45 @@ def editDetails():
             }
         ), 500
 
+@app.route('/addUpdates', methods=['POST'])
+def addUpdates():
+
+    # fetch sent data
+    data = request.get_json()
+    print(data)
+
+    # extract components of the data
+    producerID = data['producerID']
+    date = data['date']
+    text = data['text']
+    image64 = data['image64']
+
+    try:
+        submitReq = db.listings.insert_one(
+            {'producerID': ObjectId(producerID)},
+            {'$push': {'updates': {
+                'date': date,
+                'text': text,
+                'photo': image64
+            }}}
+        )
+
+        return jsonify( 
+            {   
+                "code": 201,
+                "data": data
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "An error occurred creating the update."
+            }
+        ), 500
+    
+
 if __name__ == '__main__':
     app.run(debug=True, port=5200)
