@@ -19,6 +19,11 @@
             components: {
                 NavBar,
                 SubmitListingNew
-            }
+            },
+            mounted() {
+                if (localStorage.getItem('88B_accType') != "user") {
+                    this.$router.push({path: '/login'});
+                }
+            },
         }
 </script>

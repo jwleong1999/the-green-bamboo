@@ -667,9 +667,8 @@
                 requestEdits: [],
                 modRequests: [],
 
-                // define user type here 
-                // [TODO] to fetch user type once login function is implemented
-                userType: 'producer',
+                // define user type here (defined on mounted() function)
+                userType: "",
 
                 // check if user is editing
                 editing: false,
@@ -742,6 +741,7 @@
             };
         },
         async mounted() {
+            this.userType = localStorage.getItem('88B_accType');
             await this.loadData();
         },
         methods: {

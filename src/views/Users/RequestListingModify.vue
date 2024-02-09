@@ -2,7 +2,6 @@
 
 <!--
     TODO:
-    - [Access Control] Make accessible to only users within application
     - [Access Control] This form should only be accessible from a Bottle Listing page's "Suggest Edit" / "Report Duplicate" button
     --- This form should only function if a bottle listing information is parsed into the form. Show bottle listing information in the form.
     --- If no bottle listing information is parsed into the form, error message should be displayed. Redirect to previous page after short delay.
@@ -140,6 +139,11 @@
                     invalidListing: false,
                     fillForm: true,
                     responseCode: ""
+                }
+            },
+            mounted() {
+                if (localStorage.getItem('88B_accType') != "user") {
+                    this.$router.push({path: '/login'});
                 }
             },
             methods: {
