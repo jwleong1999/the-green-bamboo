@@ -83,27 +83,24 @@ def addUpdates():
 
     # extract components of the data
     producerID = data['producerID']
+    date = data['date']
+    text = data['text']
+    image64 = data['image64']
 
-    # if data contains image64
-    if 'image64' in data:
-        image64 = data['image64']
-        producerName = data['producerName']
-        producerDesc = data['producerDesc']
-        originCountry = data['originCountry']
-        # drinkChoice = data['drinkChoice']
+    try:
+        submitReq = db.listings.insert_one(
+            {'producerID': ObjectId(producerID)},
+            {'$push': {'updates': {
+                'date': date,
+                'text': text,
+                'photo': image64
+            }}}
+        )
 
-    try: 
-        if 'image64' in data:
-            updateImage = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'photo': image64}})
-            updateName = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'producerName': producerName}})
-            updateDesc = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'producerDesc': producerDesc}})
-            updateCountry = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'originCountry': originCountry}})
-            # updateDrinkChoice = db.users.update_one({'_id': ObjectId(userID)}, {'$set': {'choiceDrinks': drinkChoice}})
-
-        return jsonify(
+        return jsonify( 
             {   
                 "code": 201,
-                "message": "Updated profile successfully!"
+                "data": data
             }
         ), 201
     except Exception as e:
@@ -111,15 +108,11 @@ def addUpdates():
         return jsonify(
             {
                 "code": 500,
-                "data": {
-                    "image": image64[:8],
-                    "name": producerName,
-                    "desc": producerDesc,
-                    "country": originCountry,
-                },
-                "message": "An error occurred updating profile!"
+                "data": data,
+                "message": "An error occurred creating the update."
             }
         ), 500
+    
 
 if __name__ == '__main__':
     app.run(debug=True, port=5200)
