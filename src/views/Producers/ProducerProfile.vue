@@ -1324,6 +1324,7 @@
 
             // for producer to add updates
             async addUpdates() {
+                console.log(this.producer_id)
                 try {
                     const response = await this.$axios.post('http://127.0.0.1:5200/addUpdates', 
                         {

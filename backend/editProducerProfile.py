@@ -88,13 +88,16 @@ def addUpdates():
     image64 = data['image64']
 
     try:
-        submitReq = db.listings.insert_one(
+        submitReq = db.producers.insert_one(
             {'producerID': ObjectId(producerID)},
-            {'$push': {'updates': {
-                'date': date,
-                'text': text,
-                'photo': image64
-            }}}
+            {'$push': {'updates': 
+                        {
+                            'date': date,
+                            'text': text,
+                            'photo': image64
+                        }
+                    }
+            }
         )
 
         return jsonify( 
