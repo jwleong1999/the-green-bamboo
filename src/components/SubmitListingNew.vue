@@ -391,6 +391,14 @@
                             this.$router.go(-1);
                         }
 
+                        // If user is a producer, check if request producerID is the same as user producerID
+                        if (this.isProducer != false) {
+                            if (previousData.producerID["$oid"] != this.form['userID']["$oid"]) {
+                                alert("This request is specified for a different producer!");
+                                this.$router.go(-1);
+                            }
+                        }
+
                         // Fill form with previous data
                         this.form["listingName"] = previousData.listingName;
                         this.tempDrinkType = previousData.drinkType;
@@ -401,10 +409,16 @@
                         this.form["photo"] = previousData.photo;
                         this.form["producerID"] = previousData.producerID;
 
-                        // If producerID is blank, fill in producerNew
+                        // Check if producerID is blank
                         if (this.form["producerID"]["$oid"] == "") {
-                            this.form["producerNew"] = previousData.producerNew;
-                            this.tempProducer = "Other";
+                            // In request mode, fill in producerNew
+                            if (this.mode == "user") {
+                                this.form["producerNew"] = previousData.producerNew;
+                                this.tempProducer = "Other";
+                            } else if (this.mode == "power") {
+                                // In creation mode, fill in tempProducer
+                                this.tempProducer = previousData.producerNew;
+                            }
                         } else {
                             this.tempProducer = this.producerList.find(producer => producer._id["$oid"] == previousData.producerID["$oid"]).producerName;
                         }
