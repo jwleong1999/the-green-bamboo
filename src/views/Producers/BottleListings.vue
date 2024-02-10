@@ -1048,10 +1048,11 @@
                     .map(listing => listing["producerID"]);
             },
 
-            // view which venues have specified listing
+            // view which venues have specified listing, sort by alphabetical order of venue name
             whereToTry() {
                 this.venueListings = this.venues
                     .filter(venue => venue["menu"].includes(this.specified_listing._id["$oid"]))
+                    .sort((a, b) => a["venueName"].localeCompare(b["venueName"]));
             },
 
             // get producerName for a listing based on producerID
