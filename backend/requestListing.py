@@ -70,6 +70,52 @@ def requestListing():
             }
         ), 500
 
+# [POST] Edit submitted request for listing creation
+# require bottle name, bottler, drink type, website/source link, producer (id OR name), brand relationship, review status, user ID, photo
+# optional country of origin, drink category, ABV, age, review link
+@app.route("/requestListingModify/<String:listingID>", methods= ['POST'])
+def requestListing(listingID):
+    rawRequest = request.get_json()
+    rawRequestName = rawRequest["listingName"]
+
+    # Check if bottle with the same name already exists in the database
+    existingBottle = db.listings.find_one({"listingName": rawRequestName})
+    if (existingBottle != None):
+        return jsonify(
+            {
+                "code": 400,
+                "data": {
+                    "listingName": rawRequestName
+                },
+                "message": "Bottle with the same name already exists."
+            }
+        ), 400
+    
+    # Update existing request in database
+    updateRequest = data.requestListings(**rawRequest)
+    try:
+        updateResult = db.requestListings.update_one({"_id": ObjectId(listingID)}, {"$set": data.asdict(updateRequest)})
+
+        return jsonify(
+            {
+                "code": 201,
+                "data": rawRequestName
+            }
+        ), 201
+    
+    except Exception as e:
+        print(str(e))
+
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "listingName": rawRequestName
+                },
+                "message": "An error occurred while submitting the request."
+            }
+        ), 500
+
 # [POST] Request for listing modification
 # require proposed edits, brand relationship, original listing ID, user ID, review status
 # optional source link, duplicate link

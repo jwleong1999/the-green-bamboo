@@ -605,6 +605,10 @@
                             "userID": this.form["userID"]
                         }
 
+                        if (this.prevListing) {
+                            submitAPI = "http://127.0.0.1:5002/requestListingModify/" + this.$route.params.id
+                        }
+
                     } else if (this.mode == "power") {
                         submitAPI = "http://127.0.0.1:5001/createListing"
 
