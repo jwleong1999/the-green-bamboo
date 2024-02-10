@@ -286,29 +286,46 @@
                         "$oid": "defaultUser"
                     }
                 },
-                indOperator: true,
+                // Pre-check form variables
+                listingID: this.$route.params.id,
+                dataLoaded: false,
                 isProducer: false,
+
+                // Dropdown variables
+                countries: [],
+                drinkCategoriesList: [],
+                producerList: [],
+
+                // Form variables
+                tempDrinkType: "",
+                tempTypeCategoryList: [],
+                tempTypeCategory: "",
+                tempProducer: "",
+                indOperator: true,
+
+                // Submission variables
                 submitForm: false,
                 successSubmission: false,
                 errorSubmission: false,
                 errorMessage: false,
                 duplicateEntry: false,
                 fillForm: false,
-                dataLoaded: false,
                 responseCode: "",
-                countries: [],
-                tempTypeCategory:"",
-                tempTypeCategoryList: [],
-                drinkCategoriesList: [],
-                producerList: [],
-                tempProducer: "",
-                tempDrinkType: "",
             }
         },
         mounted() {
+
+            // Get userID
             this.form['userID'] = {
                 "$oid": localStorage.getItem('88B_accID')
             };
+
+            // Check if listingID is present
+            if (this.listingID != "" && this.listingID != undefined) {
+                console.log("existing listing")
+            }
+
+            // Load data
             this.loadData();
         },
         methods:{
