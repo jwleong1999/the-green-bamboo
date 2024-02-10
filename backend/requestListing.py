@@ -73,7 +73,7 @@ def requestListing():
 # [POST] Edit submitted request for listing creation
 # require bottle name, bottler, drink type, website/source link, producer (id OR name), brand relationship, review status, user ID, photo
 # optional country of origin, drink category, ABV, age, review link
-@app.route("/requestListingModify/<String:requestID>", methods= ['POST'])
+@app.route("/requestListingModify/<string:requestID>", methods= ['POST'])
 def requestListingModify(requestID):
     rawRequest = request.get_json()
     rawRequestName = rawRequest["listingName"]
@@ -166,7 +166,7 @@ def requestEdits():
 # [POST] Edit submitted request for listing modification
 # require proposed edits, brand relationship, original listing ID, user ID, review status
 # optional source link, duplicate link
-@app.route("/requestEditsModify/<String:requestID>", methods= ['POST'])
+@app.route("/requestEditsModify/<string:requestID>", methods= ['POST'])
 def requestEditsModify(requestID):
     rawRequest = request.get_json()
     rawListingID = rawRequest["listingID"]["$oid"]
