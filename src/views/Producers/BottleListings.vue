@@ -624,10 +624,50 @@
                             <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromReview(review) || defaultProfilePhoto)" alt="" class="profile-image">
                         </div>
                         <!-- user reviews -->
-                        <div class="col-10">
+                        <div class="col-9">
                             <div class="row">
-                                {{ getUsernameFromReview(review) }}
-                                {{ review['reviewDesc'] }}
+                                <div style="display: inline;" class="text-start mb-2">
+                                    @{{ getUsernameFromReview(review) }} rated {{ review['rating'] }} 
+                                    <!-- star icon -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill me-5" viewBox="0 0 16 16">
+                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                    </svg>
+                                </div>
+                                <div class="text-start mb-3">
+                                    {{ review['reviewDesc'] }}
+                                </div>
+                                <!-- flavour tag -->
+                                <div class="text-start mb-1">
+                                    <span class="badge rounded-pill text-bg-primary me-2">Primary</span>
+                                    <span class="badge rounded-pill text-bg-success me-2">Success</span>
+                                </div>
+                                <div style="display: inline;" class="text-start">
+                                    <!-- upvote -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-up" viewBox="0 0 16 16">
+                                        <path d="M3.204 11h9.592L8 5.519zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659"/>
+                                    </svg>
+                                    <!-- upvoted -->
+                                    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                        <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                                    </svg> -->
+                                    <!-- stats -->
+                                    <span class="mx-2">15</span>
+                                    <!-- downvote -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down me-3" viewBox="0 0 16 16">
+                                        <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659"/>
+                                    </svg>
+                                    <!-- downvoted -->
+                                    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down-fill me-3" viewBox="0 0 16 16">
+                                        <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                                    </svg> -->
+                                    <a href="#" class="text-decoration-underline text-secondary">Detailed Review ></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="text-end">
+                                <!-- review photo -->
+                                <img :src=" 'data:image/jpeg;base64,' + (review['photo'] || defaultProfilePhoto)" alt="" class="review-image" style="width: 125px; height: 125px">
                             </div>
                         </div>
                         <!-- Delete review modal -->
