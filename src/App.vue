@@ -9,8 +9,8 @@
     <br>
     <router-link to="/Users/Bottle-Listings">(Users) Bottle Listings</router-link> |
     <router-link to="/Users/request/new">(Users) Request Listing [New]</router-link> |
-    <router-link to="/Users/request/modify?mode=edit">(Users) Request Listing [Modify]</router-link> |
-    <router-link to="/Users/request/modify?mode=duplicate">(Users) Request Listing [Duplicate]</router-link> |
+    <router-link to="/Users/request/modify/edit">(Users) Request Listing [Modify]</router-link> |
+    <router-link to="/Users/request/modify/duplicate">(Users) Request Listing [Duplicate]</router-link> |
     <router-link to="/userprofile">User Profile</router-link>
     <br>
     <router-link to="/Producers/Bottle-Listings">(Producers) Bottle Listings</router-link> |

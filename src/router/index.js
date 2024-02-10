@@ -39,7 +39,7 @@ const routes = [
     component: () => import('../views/Users/RequestListingNew.vue')
   },
   {
-    path: '/Users/request/modify',
+    path: '/Users/request/modify/:mode?',
     name: 'usersrequestlistingmodify',
     component: () => import('../views/Users/RequestListingModify.vue')
   },
@@ -65,7 +65,7 @@ const routes = [
     component: () => import('../views/Producers/ProducerListings.vue')
   },
   {
-    path: '/Producer/Producer-Create-Listing/:id',
+    path: '/Producer/Producer-Create-Listing/:id?',
     name: 'producercreatelistings',
     component: () => import('../views/Producers/CreateListing.vue')
   },  

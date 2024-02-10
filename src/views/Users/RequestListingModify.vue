@@ -118,7 +118,7 @@
             },
             data() {
                 return {
-                    mode: this.$route.query.mode,
+                    mode: this.$route.params.mode,
                     form: {
                         editDesc: '',
                         sourceLink: '',
