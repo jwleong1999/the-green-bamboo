@@ -119,6 +119,8 @@
             data() {
                 return {
                     mode: this.$route.params.mode,
+                    prevListing: false,
+                    targetListing: {}, // TODO: Display linked bottle listing information
                     form: {
                         editDesc: '',
                         sourceLink: '',
@@ -145,6 +147,7 @@
 
                 // Access Control: Redirect to login page if user is not logged in
                 if (localStorage.getItem('88B_accType') != "user") {
+                    alert("You are not logged in. Please log in to access this page.")
                     this.$router.push({path: '/login'});
                 } else {
                     // Get userID
@@ -152,8 +155,70 @@
                         "$oid": localStorage.getItem('88B_accID')
                     };
                 }
+
+                // Check if route params "requestID" is present
+                if (this.$route.params.requestID != "" && this.$route.params.requestID != undefined) {
+                    this.prevListing = true;
+                }
+
+                // Load data
+                this.loadData();
             },
             methods: {
+                async loadData() {
+
+                    // Get target listing
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
+                        this.targetListing = response.data.find(listing => listing._id["$oid"] == this.$route.params.listingID);
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
+
+                    // Only run when route params "requestID" is present (modifying previously submitted request)
+                    if (this.prevListing) {
+                        try {
+                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdits');
+                            let previousData = response.data.find(listing => listing._id["$oid"] == this.$route.params.requestID);
+
+                            // Check if user is the same as the one who submitted the request
+                            if (previousData['userID']['$oid'] != this.form['userID']['$oid']) {
+                                alert("You can only edit requests that you have submitted!");
+                                this.$router.go(-1);
+                            }
+
+                            // Check if request is already reviewed
+                            if (previousData['reviewStatus'] == true) {
+                                alert("Your request has already been reviewed, and can no longer be edited!\nPlease submit a new request!");
+                                this.$router.go(-1);
+                            }
+
+                            // If set to duplicate mode, but duplicate link is not present, redirect to edit mode
+                            if (this.mode == "duplicate" && !previousData["duplicateLink"].trim()) {
+                                alert("This request is not a duplicate report!\nRedirecting to edit mode...\nNOTE: Please reload the page after redirection.");
+                                this.$router.replace({path: '/Users/request/modify/edit/' + this.$route.params.listingID + '/' + this.$route.params.requestID});
+                            }
+
+                            // If set to edit mode, but duplicate link is present, redirect to duplicate mode
+                            if (this.mode == "edit" && previousData["duplicateLink"].trim()) {
+                                alert("This request is not a proposed edit!\nRedirecting to duplicate mode...\nNOTE: Please reload the page after redirection.");
+                                this.$router.replace({path: '/Users/request/modify/duplicate/' + this.$route.params.listingID + '/' + this.$route.params.requestID});
+                            }
+
+                            this.form['listingID'] = previousData['listingID'];
+                            this.form['editDesc'] = previousData['editDesc'];
+                            this.form['sourceLink'] = previousData['sourceLink'];
+                            this.form['duplicateLink'] = previousData['duplicateLink'];
+                            this.form['brandRelation'] = previousData['brandRelation'];
+                        }
+                        catch (error) {
+                            console.error(error);
+                        }
+                    }
+
+                },
+
                 goBack() {
                     this.$router.go(-1)
                 },
@@ -212,7 +277,12 @@
                     this.fillForm = false; // Hide form
                     this.submitForm = true; // Display submission in progress message
 
-                    const response = await this.$axios.post("http://127.0.0.1:5002/requestEdits", this.form)
+                    let submitAPI = "http://127.0.0.1:5002/requestEdits";
+                    if (this.prevListing) {
+                        submitAPI = "http://127.0.0.1:5002/requestEditsModify/" + this.$route.params.requestID;
+                    }
+
+                    const response = await this.$axios.post(submitAPI, this.form)
                     .then((response)=>{
                         this.responseCode = response.data.code
                     })

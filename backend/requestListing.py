@@ -73,8 +73,8 @@ def requestListing():
 # [POST] Edit submitted request for listing creation
 # require bottle name, bottler, drink type, website/source link, producer (id OR name), brand relationship, review status, user ID, photo
 # optional country of origin, drink category, ABV, age, review link
-@app.route("/requestListingModify/<String:listingID>", methods= ['POST'])
-def requestListing(listingID):
+@app.route("/requestListingModify/<String:requestID>", methods= ['POST'])
+def requestListingModify(requestID):
     rawRequest = request.get_json()
     rawRequestName = rawRequest["listingName"]
 
@@ -94,7 +94,7 @@ def requestListing(listingID):
     # Update existing request in database
     updateRequest = data.requestListings(**rawRequest)
     try:
-        updateResult = db.requestListings.update_one({"_id": ObjectId(listingID)}, {"$set": data.asdict(updateRequest)})
+        updateResult = db.requestListings.update_one({"_id": ObjectId(requestID)}, {"$set": data.asdict(updateRequest)})
 
         return jsonify(
             {
@@ -142,6 +142,53 @@ def requestEdits():
     newRequest = data.requestEdits(**rawRequest)
     try:
         insertResult = db.requestEdits.insert_one(data.asdict(newRequest))
+
+        return jsonify(
+            {
+                "code": 201,
+                "data": rawListingID
+            }
+        ), 201
+    
+    except Exception as e:
+        print(str(e))
+
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "listingName": rawListingID
+                },
+                "message": "An error occurred while submitting the request."
+            }
+        ), 500
+
+# [POST] Edit submitted request for listing modification
+# require proposed edits, brand relationship, original listing ID, user ID, review status
+# optional source link, duplicate link
+@app.route("/requestEditsModify/<String:requestID>", methods= ['POST'])
+def requestEditsModify(requestID):
+    rawRequest = request.get_json()
+    rawListingID = rawRequest["listingID"]["$oid"]
+
+    # Check if edit request is linked to a listing that exists in the database
+    existingListing = db.listings.find_one({"_id": ObjectId(rawListingID)})
+
+    if (existingListing == None):
+        return jsonify(
+            {
+                "code": 400,
+                "data": {
+                    "listingID": rawListingID
+                },
+                "message": "Linked listing is not valid!"
+            }
+        ), 400
+
+    # Update existing request in database
+    updateRequest = data.requestEdits(**rawRequest)
+    try:
+        updateResult = db.requestEdits.update_one({"_id": ObjectId(requestID)}, {"$set": data.asdict(updateRequest)})
 
         return jsonify(
             {
