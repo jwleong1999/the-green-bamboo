@@ -1,10 +1,5 @@
 <!-- User Form: Request for New Bottle Listing -->
 
-<!--
-    TODO:
-    - [Access Control] Make accessible to only users within application
--->
-
 <template>
     <NavBar />
     <SubmitListingNew mode="user" />
@@ -22,6 +17,7 @@
             },
             mounted() {
                 if (localStorage.getItem('88B_accType') != "user") {
+                    alert("This page is only accessible to users! Please log in as a user to access this page.")
                     this.$router.push({path: '/login'});
                 }
             },
