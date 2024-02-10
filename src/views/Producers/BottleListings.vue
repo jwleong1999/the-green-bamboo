@@ -693,7 +693,7 @@
                 
             </div> <!-- end of producer information -->
             
-            <!-- where to buy & 88 bamboo's review -->
+            <!-- where to buy & where to try & 88 bamboo's review -->
             <div class="col-3">
                 <!-- where to buy -->
                 <div class="row">
@@ -708,6 +708,25 @@
                             <div v-for="producer in producerListings" v-bind:key="producer._id">
                                 <router-link :to="{ path: '/Producers/Profile-Page/' + producer.$oid }" class="reverse-clickable-text">
                                     <p> {{ getProducerName(producer) }} </p>
+                                </router-link>
+                            </div>
+                        </div>
+                        <div class="py-5"></div>
+                    </div>
+                </div>
+                <!-- where to try -->
+                <div class="row">
+                    <div class="square primary-square rounded p-3 mb-3">
+                        <!-- header text -->
+                        <div class="square-inline text-start">
+                            <h4 class="mr-auto"> Where to Try </h4>
+                        </div>
+                        <!-- body -->
+                        <div class="text-start pt-2">
+                            <!-- [function] where to try -->
+                            <div v-for="venue in venueListings" v-bind:key="venue._id">
+                                <router-link :to="{ path: '/Venues/Profile-Page/' + venue.$oid }" class="reverse-clickable-text">
+                                    <p> {{ venue.venueName }} </p>
                                 </router-link>
                             </div>
                         </div>
@@ -779,6 +798,9 @@
 
                 // where to buy
                 producerListings: [],
+
+                // where to try
+                venueListings: [],
 
                 // customization for drinkLists buttons
                 // [TODO] get drink list of user, for now is hardcoded
@@ -955,6 +977,7 @@
                         this.venues = response.data;
                         this.locationOptions = response.data.map(item => ({name: item.venueName, id:item._id}));
                         console.log(this.locationOptions)
+                        // this.whereToTry(); // find where to try specified listing [RE-ENABLE WHEN VENUES HAVE MENU ATTRIBUTE]
                     } 
                     catch (error) {
                         console.error(error);
@@ -1023,6 +1046,12 @@
                 this.producerListings = this.listings
                     .filter(listing => listing["listingName"] == this.specified_listing["listingName"])
                     .map(listing => listing["producerID"]);
+            },
+
+            // view which venues have specified listing
+            whereToTry() {
+                this.venueListings = this.venues
+                    .filter(venue => venue["menu"].includes(this.specified_listing._id["$oid"]))
             },
 
             // get producerName for a listing based on producerID
