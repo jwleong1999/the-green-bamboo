@@ -126,8 +126,8 @@
                                 </div>
                                 <!-- suggest edit & report duplicate -->
                                 <div class="col-3">
-                                    <p class="text-body-secondary no-margin text-decoration-underline fst-italic"> Suggest Edit </p>
-                                    <p class="text-body-secondary no-margin text-decoration-underline fst-italic"> Report Duplicate </p>
+                                    <p class="text-body-secondary no-margin text-decoration-underline fst-italic" @click="this.$router.push(`/Users/request/modify/edit/${this.listing_id}`)"> Suggest Edit </p>
+                                    <p class="text-body-secondary no-margin text-decoration-underline fst-italic" @click="this.$router.push(`/Users/request/modify/duplicate/${this.listing_id}`)"> Report Duplicate </p>
                                 </div>
                             </div>
                             <!-- producer & bottler -->

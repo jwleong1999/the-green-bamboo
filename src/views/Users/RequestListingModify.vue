@@ -125,11 +125,11 @@
                         duplicateLink: '',
                         brandRelation: 'Others',
                         listingID: {
-                            "$oid": "65b34a06915a4e4e9e08876d"
-                        }, // TODO: Fill in listingID with listingID of linked listing (where user clicked from)
+                            "$oid": this.$route.params.listingID
+                        },
                         userID: {
                             "$oid": "defaultUser"
-                        }, // TODO: Fill in userID with userID of user submitting form
+                        },
                         reviewStatus: false
                     },
                     submitForm: false,
@@ -142,8 +142,15 @@
                 }
             },
             mounted() {
+
+                // Access Control: Redirect to login page if user is not logged in
                 if (localStorage.getItem('88B_accType') != "user") {
                     this.$router.push({path: '/login'});
+                } else {
+                    // Get userID
+                    this.form['userID'] = {
+                        "$oid": localStorage.getItem('88B_accID')
+                    };
                 }
             },
             methods: {
@@ -152,26 +159,27 @@
                 },
 
                 reset() {
-                    this.submitForm = false;
-                    this.successSubmission = false;
-                    this.errorSubmission = false;
-                    this.errorMessage = false;
-                    this.invalidListing = false;
-                    this.fillForm = true;
-                    this.responseCode = "";
+                    this.$router.go(0) // check if refreshing the page just works as well
+                    // this.submitForm = false;
+                    // this.successSubmission = false;
+                    // this.errorSubmission = false;
+                    // this.errorMessage = false;
+                    // this.invalidListing = false;
+                    // this.fillForm = true;
+                    // this.responseCode = "";
 
-                    for (const key in this.form) {
-                        this.form[key] = "";
-                    }
-                    this.form["brandRelation"] = "Others";
-                    this.form["reviewStatus"] = false;
+                    // for (const key in this.form) {
+                    //     this.form[key] = "";
+                    // }
+                    // this.form["brandRelation"] = "Others";
+                    // this.form["reviewStatus"] = false;
 
-                    this.form["listingID"] = {
-                        "$oid": "65b26ac6d583c059ba33ff10"
-                    }; // temporary until we can get listingID from linked listing
-                    this.form["userID"] = {
-                        "$oid": "defaultUser"
-                    }; // temporary until we can get userID from user
+                    // this.form["listingID"] = {
+                    //     "$oid": "65b26ac6d583c059ba33ff10"
+                    // }; // temporary until we can get listingID from linked listing
+                    // this.form["userID"] = {
+                    //     "$oid": "defaultUser"
+                    // }; // temporary until we can get userID from user
                 },
 
                 submitEdit() {
