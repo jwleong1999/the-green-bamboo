@@ -34,12 +34,12 @@ const routes = [
     component: () => import('../views/Users/BottleListings.vue')
   },
   {
-    path: '/Users/request/new',
+    path: '/Users/request/new/:id?',
     name: 'usersrequestlistingnew',
     component: () => import('../views/Users/RequestListingNew.vue')
   },
   {
-    path: '/Users/request/modify/:mode?',
+    path: '/Users/request/modify/:mode/:listingID/:requestID?',
     name: 'usersrequestlistingmodify',
     component: () => import('../views/Users/RequestListingModify.vue')
   },
