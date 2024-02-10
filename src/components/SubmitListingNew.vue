@@ -386,8 +386,8 @@
                         }
 
                         // Check if request is already reviewed (for request only)
-                        if (previousData.reviewStatus == true && this.mode == "user") {
-                            alert("Your request has already been reviewed, and can no longer be edited!\nPlease submit a new request!");
+                        if (previousData.reviewStatus != false && this.mode == "user") {
+                            alert("Your request is already under review, and can no longer be edited!\nPlease submit a new request!");
                             this.$router.go(-1);
                         }
 
