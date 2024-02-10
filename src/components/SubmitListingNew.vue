@@ -271,7 +271,7 @@
                     "sourceLink": "",
                     "reviewLink": "",
                     "producerID": {
-                        "$oid": "defaultProducer"
+                        "$oid": ""
                     }, // Fill in producerID with producerID of specified producer. May be blank for request: new producer.
                     "bottler": "",
                     "originCountry": "",
@@ -287,7 +287,7 @@
                     }
                 },
                 // Pre-check form variables
-                listingID: this.$route.params.id,
+                prevListing: false,
                 dataLoaded: false,
                 isProducer: false,
 
@@ -320,9 +320,9 @@
                 "$oid": localStorage.getItem('88B_accID')
             };
 
-            // Check if listingID is present
-            if (this.listingID != "" && this.listingID != undefined) {
-                console.log("existing listing")
+            // Check if route params "id" is present
+            if (this.$route.params.id != "" && this.$route.params.id != undefined) {
+                this.prevListing = true;
             }
 
             // Load data
@@ -372,6 +372,72 @@
                     console.error(error);
                 }
 
+                // Only run when route params "id" is present (modifying previously submitted request)
+                // TODO (Probably): Modify to allow for edit listing as well
+                if (this.prevListing) {
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
+                        let previousData = response.data.find(listing => listing._id["$oid"] == this.$route.params.id);
+
+                        // Check if user is the owner of the request (for request only)
+                        if (previousData.userID["$oid"] != this.form['userID']["$oid"] && this.mode == "user") {
+                            alert("You can only edit requests that you have submitted!");
+                            this.$router.go(-1);
+                        }
+
+                        // Check if request is already reviewed (for request only)
+                        if (previousData.reviewStatus == true && this.mode == "user") {
+                            alert("Your request has already been reviewed, and can no longer be edited!\nPlease submit a new request!");
+                            this.$router.go(-1);
+                        }
+
+                        // Fill form with previous data
+                        this.form["listingName"] = previousData.listingName;
+                        this.tempDrinkType = previousData.drinkType;
+                        this.getDrinkCategoryList();
+                        this.tempTypeCategory = previousData.typeCategory;
+                        this.form["sourceLink"] = previousData.sourceLink;
+                        this.form["reviewLink"] = previousData.reviewLink;
+                        this.form["photo"] = previousData.photo;
+                        this.form["producerID"] = previousData.producerID;
+
+                        // If producerID is blank, fill in producerNew
+                        if (this.form["producerID"]["$oid"] == "") {
+                            this.form["producerNew"] = previousData.producerNew;
+                            this.tempProducer = "Other";
+                        } else {
+                            this.tempProducer = this.producerList.find(producer => producer._id["$oid"] == previousData.producerID["$oid"]).producerName;
+                        }
+
+                        // If independent bottler, fill in bottler
+                        if (previousData.bottler != "OB") {
+                            this.indOperator = true;
+                            this.form["bottler"] = previousData.bottler;
+                        } else {
+                            this.indOperator = false;
+                        }
+
+                        this.form["originCountry"] = previousData.originCountry;
+
+                        // If abv has % sign, remove it. Change abv to number.
+                        if (previousData.abv.includes("%")) {
+                            this.form["abv"] = parseFloat(previousData.abv.slice(0, -1));
+                        } else {
+                            this.form["abv"] = previousData.abv;
+                        }
+
+                        // If age has value, change age to number.
+                        if (previousData.age) {
+                            this.form["age"] = parseInt(previousData.age);
+                        }
+
+                        this.form["brandRelation"] = previousData.brandRelation;
+                    }
+                    catch (error) {
+                        console.error(error);
+                    }
+                }
+
                 this.fillForm = true;
                 this.dataLoaded = true;
             },
@@ -385,6 +451,10 @@
             getProducerID() {
                 if(this.tempProducer!= 'Other'){
                     this.form['producerID'] = this.producerList.find(producer => producer.producerName == this.tempProducer)._id;
+                } else {
+                    this.form['producerID'] = {
+                        "$oid": ""
+                    }
                 }
 
             },
