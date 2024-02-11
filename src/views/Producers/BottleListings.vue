@@ -642,22 +642,18 @@
                                     <span class="badge rounded-pill text-bg-success me-2">Success</span>
                                 </div>
                                 <div style="display: inline;" class="text-start">
-                                    <!-- upvote -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-up" viewBox="0 0 16 16">
+                                    <!-- voting -->
+                                    <!-- <svg v-if="!JSON.stringify(review.userVotes.upvotes).includes(JSON.stringify(userID))" @click="voteReview(review, 'upvote')" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-up" viewBox="0 0 16 16">
                                         <path d="M3.204 11h9.592L8 5.519zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659"/>
                                     </svg>
-                                    <!-- upvoted -->
-                                    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                                    <svg v-else @click="voteReview(review, 'unupvote')" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
                                         <path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
-                                    </svg> -->
-                                    <!-- stats -->
-                                    <span class="mx-2">15</span>
-                                    <!-- downvote -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down me-3" viewBox="0 0 16 16">
+                                    </svg>
+                                    <span class="mx-2">{{ review.userVotes.upvotes.length - review.userVotes.downvotes.length }}</span>
+                                    <svg v-if="!JSON.stringify(review.userVotes.downvotes).includes(JSON.stringify(userID))" @click="voteReview(review, 'downvote')" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down me-3" viewBox="0 0 16 16">
                                         <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659"/>
                                     </svg>
-                                    <!-- downvoted -->
-                                    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down-fill me-3" viewBox="0 0 16 16">
+                                    <svg v-else @click="voteReview(review, 'undownvote')" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down-fill me-3" viewBox="0 0 16 16">
                                         <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
                                     </svg> -->
                                     <a href="#" class="text-decoration-underline text-secondary">Detailed Review ></a>
@@ -1377,6 +1373,40 @@
             setDeleteID(review){
                 console.log(review._id['$oid'])
                 this.deleteID = review._id['$oid']
+            },
+
+            async voteReview(review, vote){
+                console.log(review);
+                if (vote == "upvote") {
+                    review.userVotes.upvotes.push(this.userID);
+                    if (review.userVotes.downvotes.some(vote => JSON.stringify(vote) === JSON.stringify(this.userID))) {
+                        review.userVotes.downvotes = review.userVotes.downvotes.filter(vote => JSON.stringify(vote) !== JSON.stringify(this.userID));
+                    } 
+                } else if (vote == "downvote") {
+                    review.userVotes.downvotes.push(this.userID);
+                    if (review.userVotes.upvotes.some(vote => JSON.stringify(vote) === JSON.stringify(this.userID))) {
+                        review.userVotes.upvotes = review.userVotes.upvotes.filter(vote => JSON.stringify(vote) !== JSON.stringify(this.userID));
+                    }
+                } else if (vote == "unupvote") {
+                    review.userVotes.upvotes = review.userVotes.upvotes.filter(vote => JSON.stringify(vote) !== JSON.stringify(this.userID));
+                } else if (vote == "undownvote") {
+                    review.userVotes.downvotes = review.userVotes.downvotes.filter(vote => JSON.stringify(vote) !== JSON.stringify(this.userID));
+                }
+
+                try {
+                    const response = await this.$axios.post('http://127.0.0.1:5200/voteReview', 
+                        {
+                            reviewID: review._id,
+                            userVotes: review.userVotes
+                        }, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    console.log(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
             },
 
             reloadRoute() {
