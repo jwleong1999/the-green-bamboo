@@ -251,13 +251,33 @@
                     </div>
                     <!-- information -->
                     <div class="row">
-                        <!-- profile photo & post timestamp -->
+                        <!-- profile photo & post timestamp & # of likes -->
                         <div class="col-2">
                             <img :src=" 'data:image/jpeg;base64,' + (specified_producer['photo'] || defaultProfilePhoto)" alt="" class="profile-image-lg">
                             <p class="text-decoration-underline">
                                 Posted on:
                                 {{ latestUpdate.date }}
                             </p>
+                            <!-- # of likes -->
+                            <div class="row"> 
+                                <div class="col-6 text-end">
+                                    <!-- [if] liked -->
+                                    <div v-if="likeStatus" style="display: inline-block;"  v-on:click="unlikeUpdates">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                        </svg>
+                                    </div>
+                                    <!-- [else] not liked -->
+                                    <div v-else style="display: inline-block;" v-on:click="likeUpdates">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.090.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="col-6 text-start">
+                                    <h4> {{ updateLikes.length }} </h4>
+                                </div>
+                            </div>
                         </div>
                         <!-- description & image-->
                         <div class="col-10">
@@ -647,6 +667,7 @@
                 modRequests: [],
 
                 // define user type here (defined on mounted() function)
+                user_id: "65b327d5687b64f8302d56ef",
                 userType: "",
 
                 // check if user is editing
@@ -675,10 +696,6 @@
                 // to store deep dive articles
                 deepDiveArticles: [],
 
-                // saying hi
-                producerhi: '',
-                userhi: '',
-
                 // q&a
                 question: '',
                 answer: '',
@@ -702,7 +719,10 @@
                 editingCatalogue: false,
 
                 // to fetch producer's latest updates
+                update_id: null,
                 latestUpdate: {},
+                updateLikes: [],
+                likeStatus: false,
 
                 // to get producer's answered questions
                 answeredQuestions: [],
@@ -1175,11 +1195,6 @@
                 window.location.reload();
             },
 
-            // users saying hi
-            userGreetings () {
-                alert("userGreetings function not yet implemented!")
-            },
-
             // send questions that users ask to producers
             async sendQuestion () {
                 try {
@@ -1282,9 +1297,16 @@
                     let formattedDate = this.formatDate(dateTimeString)
                     this.latestUpdate["date"] = formattedDate;
 
+                    // add id
+                    this.update_id = latestUpdate["_id"]["$oid"];
+
                     // add text and photo
                     this.latestUpdate["text"] = latestUpdate["text"]
                     this.latestUpdate["photo"] = latestUpdate["photo"]
+
+                    // add likes
+                    this.updateLikes = latestUpdate["likes"];
+                    this.checkLiked();
                 } 
             },
 
@@ -1325,7 +1347,6 @@
                     const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
 
                     this.updateImage64 = base64String;
-
                 };
                 reader.readAsDataURL(file);
             },
@@ -1339,6 +1360,63 @@
                             date: this.currDate,
                             text: this.updateText,
                             image64: this.updateImage64,
+                        },
+                        {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    console.log(response.data);
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+
+                // force page to reload
+                window.location.reload();
+            },
+
+            // check if user liked the post
+            checkLiked() {
+                for (let i in this.updateLikes) {
+                    if (this.updateLikes[i]["$oid"] == this.user_id) {
+                        this.likeStatus = true;
+                    }
+                }
+            },
+
+            // like updates
+            async likeUpdates() {
+                try {
+                    const response = await this.$axios.post('http://127.0.0.1:5200/likeUpdates', 
+                        {
+                            producerID: this.producer_id,
+                            updateID: this.update_id,
+                            userID: this.user_id,
+                        },
+                        {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    console.log(response.data);
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+
+                // force page to reload
+                window.location.reload();
+            },
+
+            // unlike updates
+            async unlikeUpdates() {
+                try {
+                    const response = await this.$axios.post('http://127.0.0.1:5200/unlikeUpdates', 
+                        {
+                            producerID: this.producer_id,
+                            updateID: this.update_id,
+                            userID: this.user_id,
                         },
                         {
                         headers: {

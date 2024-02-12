@@ -190,5 +190,67 @@ def sendAnswers():
             }
         ), 500
 
+@app.route('/likeUpdates', methods=['POST'])
+def likeUpdates():
+    data = request.get_json()
+    print(data)
+    producerID = data['producerID']
+    updateID = data['updateID']
+    userID = data['userID']
+
+    try: 
+        likeUpdate = db.producers.update_one(
+            {'_id': ObjectId(producerID), 'updates._id': ObjectId(updateID)},
+            {'$push': {'updates.$.likes': ObjectId(userID)}}
+        )
+        return jsonify(
+            {   
+                "code": 201,
+                "data": producerID
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "data": producerID
+                },
+                "message": "An error occurred liking the update."
+            }
+        ), 500
+
+@app.route('/unlikeUpdates', methods=['POST'])
+def unlikeUpdates():
+    data = request.get_json()
+    print(data)
+    producerID = data['producerID']
+    updateID = data['updateID']
+    userID = data['userID']
+
+    try: 
+        unlikeUpdate = db.producers.update_one(
+            {'_id': ObjectId(producerID), 'updates._id': ObjectId(updateID)},
+            {'$pull': {'updates.$.likes': ObjectId(userID)}}
+        )
+        return jsonify(
+            {   
+                "code": 201,
+                "data": producerID
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "data": producerID
+                },
+                "message": "An error occurred liking the update."
+            }
+        ), 500
+
 if __name__ == '__main__':
     app.run(debug=True, port=5200)
