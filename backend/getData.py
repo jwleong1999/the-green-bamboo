@@ -50,7 +50,7 @@ def getCountries():
 @app.route("/getListings")
 def getListings():
     #this step finds all the items in the collection, specifying Listings
-    data = db.listings.find({})
+    data = db.listingsNew.find({})
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
     allListings = []
@@ -65,7 +65,7 @@ def getListings():
 @app.route("/getProducers")
 def getProducers():
     #this step finds all the items in the collection, specifying Producers
-    data = db.producers.find({})
+    data = db.producersNew.find({})
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
     allProducers = []

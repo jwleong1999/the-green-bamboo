@@ -275,7 +275,7 @@
                                     </div>
                                 </div>
                                 <div class="col-6 text-start">
-                                    <h4> {{ updateLikes.length }} </h4>
+                                    <h4> {{ updateLikesCount }} </h4>
                                 </div>
                             </div>
                         </div>
@@ -293,50 +293,6 @@
                                 <div class="col-3 image-container text-end">
                                     <!-- [TODO] edit photo of this update -->
                                     <img :src=" 'data:image/jpeg;base64,' + (latestUpdate['photo'] || defaultProfilePhoto)" alt="" style="width: 150px; height: 150px;"> 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- reply / send to producer -->
-                    <div class="row pt-3">
-                        <!-- [if] user type is producer -->
-                        <div v-if="userType == 'producer'">
-                            <div class="row">
-                                <div class="input-group centered">
-                                    <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Say hi to your patrons!" style="height: 50px;" v-model="updateText"> 
-                                    <div class="ps-2">
-                                        <label for="file">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-camera" viewBox="0 0 16 16">
-                                                <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4z"/>
-                                                <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5m0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>
-                                            </svg>
-                                        </label>
-                                        <input id="file" type="file" v-on:change="loadUpdateFile" style="display: none;" ref="fileInput">
-                                    </div>
-                                    <div v-on:click="addUpdates" class="send-icon ps-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                                            <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row pt-1 ps-3" v-if="updateFileName != ''">
-                                The selected file is: {{ updateFileName }}
-                            </div>
-                        </div>
-                        <!-- [else] userType is NOT producer -->
-                        <div v-else>
-                            <div class="input-group-prepend pe-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                </svg>
-                                <div class="input-group centered">
-                                    <input class="search-bar form-control rounded fst-italic" type="text" :placeholder="'Reply to ' + specified_producer.producerName + '!'" style="height: 50px;" v-model="userhi"> 
-                                    <div class="send-icon ps-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                                        </svg>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -631,6 +587,7 @@
                                 <!-- [TODO] link to deep dive article-->
                                 <a v-for="article in deepDiveArticles" class="text-left default-text-no-background" v-bind:key="article._id" :href="article">
                                     {{ article }}
+                                    <br><br>
                                 </a>
                             </div>
                             <div class="py-2"></div>
@@ -723,6 +680,7 @@
                 latestUpdate: {},
                 updateLikes: [],
                 likeStatus: false,
+                updateLikesCount: 0,
 
                 // to get producer's answered questions
                 answeredQuestions: [],
@@ -798,6 +756,7 @@
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
                         this.reviews = response.data;
+                        console.log(this.reviews)
                     }
                     catch (error) {
                         console.error(error);
@@ -872,7 +831,9 @@
                 let allDrinks = [];
                 for (const i in this.listings) {
                     let listing_producerID = this.listings[i].producerID["$oid"];
+                    console.log(listing_producerID)
                     if (listing_producerID == producerID) {
+                        console.log("match")
                         let drink = this.listings[i];
                         if (drink) {
                             allDrinks.push(drink);
@@ -898,10 +859,10 @@
             getNumberOfReviews(producerID) {
                 let num_reviews = 0;
                 for (const i in this.reviews) {
-                    let review_target = this.reviews[i].reviewTarget;
+                    let review_target = this.reviews[i].reviewTarget["$oid"];
                     let all_drinks = this.getAllDrinks(producerID);
                     for (const j in all_drinks) {
-                        let drink_name = all_drinks[j].listingName;
+                        let drink_name = all_drinks[j]._id["$oid"];
                         if (review_target == drink_name) {
                             num_reviews += 1;
                         }
@@ -914,10 +875,10 @@
             getAllReviews(producerID) {
                 let allReviews = [];
                 for (const i in this.reviews) {
-                    let review_target = this.reviews[i].reviewTarget;
+                    let review_target = this.reviews[i].reviewTarget["$oid"];
                     let all_drinks = this.getAllDrinks(producerID);
                     for (const j in all_drinks) {
-                        let drink_name = all_drinks[j].listingName;
+                        let drink_name = all_drinks[j]._id["$oid"];
                         if (review_target == drink_name) {
                             let review = this.reviews[i];
                             allReviews.push(review);
@@ -934,7 +895,7 @@
                 // for each drink, add the rating to a list
                 for (let i in allReviews) {
                     let review = allReviews[i];
-                    let drink_name = review["reviewTarget"];
+                    let drink_name = this.listings.find(listing => listing._id["$oid"] == review.reviewTarget["$oid"]).listingName;
                     let rating = review["rating"];
                     if (drinkRatings[drink_name]) {
                         drinkRatings[drink_name].push(rating);
@@ -953,7 +914,7 @@
                 // for each drink, add the rating to a list
                 for (let i in allReviews) {
                     let review = allReviews[i];
-                    let drink_name = review["reviewTarget"];
+                    let drink_name = this.listings.find(listing => listing._id["$oid"] == review.reviewTarget["$oid"]).listingName;
                     if (drinkCount[drink_name]) {
                         drinkCount[drink_name] += 1;
                     }
@@ -1306,6 +1267,13 @@
 
                     // add likes
                     this.updateLikes = latestUpdate["likes"];
+                    try {
+                        this.updateLikesCount = this.updateLikes.length;
+                    }
+                    catch {
+                        this.updateLikesCount = 0;
+                    }
+
                     this.checkLiked();
                 } 
             },

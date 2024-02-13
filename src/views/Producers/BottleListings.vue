@@ -108,7 +108,7 @@
                 <div class="row">
                     <!-- image -->
                     <div class="col-3 image-container">
-                        <img :src=" 'data:image/jpeg;base64,' + (specified_listing['photo'] || defaultProfilePhoto)" style="width: 200px; height: 200px;">
+                        <img :src=" 'data:image/jpeg;base64,' + ( defaultProfilePhoto)" style="width: 200px; height: 200px;">
                     </div>
                     <!-- details -->
                     <div class="col-9 text-start">
@@ -905,16 +905,28 @@
             };
         },
         mounted() {
-            this.created()
+            try {
+                    // Get the query string parameters (listing ID) from the URL
+                    this.listing_id = this.$route.params.id;
+                    console.log(this.listing_id)
+                    if (this.listing_id == null) {
+                        // redirect to page
+                        this.$router.push('/Users/Bottle-Listings');
+                    }
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+            
             this.loadData();
             // Load local storage variables
-            const accID = localStorage.getItem("88B_accID");
-            if(accID !== null){
-                this.userID = {
-                "$oid": localStorage.getItem('88B_accID')
-            };
-                this.loggedIn = true
-            }
+            // const accID = localStorage.getItem("88B_accID");
+            // if(accID !== null){
+            //     this.userID = {
+            //     "$oid": localStorage.getItem('88B_accID')
+            // };
+            //     this.loggedIn = true
+            // }
             const accType = localStorage.getItem("88B_accType");
             if(accType !==null){
                 this.acctype = accType
@@ -929,18 +941,8 @@
         },
         methods: {
             // fetch specific listing data
-            async created() {
-                try {
-                    // Get the query string parameters (listing ID) from the URL
-                    this.listing_id = this.$route.params.id;
-                    if (this.listing_id == null) {
-                        // redirect to page
-                        this.$router.push('/Users/Bottle-Listings');
-                    }
-                } 
-                catch (error) {
-                    console.error(error);
-                }
+            created() {
+                
             },
 
             // load data from database
