@@ -159,7 +159,7 @@
                                                     </div>
 
                                                 </div>
-
+                                                
                                                 <!-- to input checkbox to indicate producer is independent or dependent -->
                                                 <div class="row">
                                                     
@@ -396,21 +396,21 @@
                     console.error(error);
                 }
                 // Producers
-                try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
-                    this.producers = response.data;
+                // try {
+                //     const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
+                //     this.producers = response.data;
 
-                    // for (let producer of this.producers) {
-                    // if (JSON.stringify(producer._id) == JSON.stringify(this.tempProducerID)) {
-                    //     this.tempProducer = producer.producerName;  
-                    // }
-                    // }
-                    // this.tempProducer=this.producers.find(producer => producer._id == this.tempProducerID);
+                //     // for (let producer of this.producers) {
+                //     // if (JSON.stringify(producer._id) == JSON.stringify(this.tempProducerID)) {
+                //     //     this.tempProducer = producer.producerName;  
+                //     // }
+                //     // }
+                //     // this.tempProducer=this.producers.find(producer => producer._id == this.tempProducerID);
                     
-                } 
-                catch (error) {
-                    console.error(error);
-                }
+                // } 
+                // catch (error) {
+                //     console.error(error);
+                // }
                 // Reviews
                 try {
                     const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
