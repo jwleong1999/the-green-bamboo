@@ -203,7 +203,7 @@
                             <!-- expressions -->
                             <div class="col-6 text-start">
                                 <h4 class="text-body-secondary rating-text mb-2"> 
-                                    <b> {{ getNumberOfExpressions(producer_id) }}  </b> 
+                                    <b> {{ allDrinksCount }}  </b> 
                                     &nbsp;
                                     <u v-on:click="showAllListings()"> Expressions </u> 
                                 </h4>
@@ -211,7 +211,7 @@
                             <!-- reviews -->
                             <div class="col-6 text-start">
                                 <h4 class="text-body-secondary rating-text mb-2"> 
-                                    <b> {{ getNumberOfReviews(producer_id) }} </b> 
+                                    <b> {{ allReviewsCount }} </b> 
                                     &nbsp;
                                     <u v-on:click="showAllReviews()"> Reviews </u> 
                                 </h4>
@@ -310,7 +310,7 @@
                     </h3>
                     <div class="container">
                         <div class="row">
-                            <div v-for="drinkInfo in getMostPopular()" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container">
+                            <div v-for="drinkInfo in mostPopular" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container">
                                 <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromDrink(drinkInfo[0]) || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon" viewBox="0 0 16 16">
                                     <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
@@ -325,7 +325,7 @@
                     </h3>
                     <div class="container">
                         <div class="row">
-                            <div v-for="drinkInfo in getMostDiscussed()" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container">
+                            <div v-for="drinkInfo in mostDiscussed" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container">
                                 <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromDrink(drinkInfo[0]) || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon" viewBox="0 0 16 16">
                                     <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
@@ -338,6 +338,16 @@
                     <h3 class="text-body-secondary text-start"> 
                         <b> Recently Added </b> 
                     </h3>
+                    <div class="container">
+                        <div class="row">
+                            <div v-for="drinkInfo in recentlyAdded" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container">
+                                <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromDrink(drinkInfo[0]) || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon" viewBox="0 0 16 16">
+                                    <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
                 </div> <!-- end of main page (hide all listings) -->
 
                 <!-- show all listings-->
@@ -606,6 +616,8 @@
 
 <!-- JavaScript -->
 <script>
+// import { all } from 'axios';
+
 
     export default {
         data() {
@@ -626,6 +638,21 @@
                 // define user type here (defined on mounted() function)
                 user_id: "65b327d5687b64f8302d56ef",
                 userType: "",
+
+                // all drinks that producer has
+                allDrinks: [],
+                allDrinksCount: 0,
+                drinkCounts: {},
+                sortedDrinksCounts: {},
+                mostDiscussed: [],
+                recentlyAdded: [],
+
+                // all reviews for producer's drinks
+                allReviews: [],
+                allReviewsCount: 0,
+                drinkRatings: {},
+                sortedAverageRatings: {},
+                mostPopular: [],
 
                 // check if user is editing
                 editing: false,
@@ -656,9 +683,6 @@
                 // q&a
                 question: '',
                 answer: '',
-
-                // all drinks that producer has
-                allDrinks: [],
 
                 // status to indicate whether to show listings or not
                 showListings: false,
@@ -747,6 +771,12 @@
                         });
                         // converting Set to array if needed
                         this.deepDiveArticles = [...uniqueReviewLinks];
+                        // get all drinks
+                        this.getAllDrinks()
+                        this.getCountsByType()
+                        this.getTotalCounts()
+                        this.getMostDiscussed()
+                        this.getRecentlyAdded()
                     } 
                     catch (error) {
                         console.error(error);
@@ -756,7 +786,11 @@
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
                         this.reviews = response.data;
-                        console.log(this.reviews)
+                        // get all reviews
+                        this.getAllReviews()
+                        this.getRatingsByType()
+                        this.getAverageRatings()
+                        this.getMostPopular()
                     }
                     catch (error) {
                         console.error(error);
@@ -827,172 +861,105 @@
             },
 
             // get all drinks that a producer has
-            getAllDrinks(producerID) {
-                let allDrinks = [];
-                for (const i in this.listings) {
-                    let listing_producerID = this.listings[i].producerID["$oid"];
-                    console.log(listing_producerID)
-                    if (listing_producerID == producerID) {
-                        console.log("match")
-                        let drink = this.listings[i];
-                        if (drink) {
-                            allDrinks.push(drink);
-                        }
-                    }
-                }
-                return allDrinks;
-            },
-
-            // get number of expressions that a producer has
-            getNumberOfExpressions(producerID) {
-                let num_expressions = 0;
-                for (const i in this.listings) {
-                    let listing_producerID = this.listings[i].producerID["$oid"];
-                    if (listing_producerID == producerID) {
-                        num_expressions += 1;
-                    }
-                }
-                return num_expressions;
-            },
-
-            // get number of reviews that a producer has
-            getNumberOfReviews(producerID) {
-                let num_reviews = 0;
-                for (const i in this.reviews) {
-                    let review_target = this.reviews[i].reviewTarget["$oid"];
-                    let all_drinks = this.getAllDrinks(producerID);
-                    for (const j in all_drinks) {
-                        let drink_name = all_drinks[j]._id["$oid"];
-                        if (review_target == drink_name) {
-                            num_reviews += 1;
-                        }
-                    }
-                }
-                return num_reviews;
+            async getAllDrinks() {
+                let allProducerDrinks = this.listings.filter(listing => listing.producerID["$oid"] == this.producer_id);
+                this.allDrinks = allProducerDrinks;
+                this.allDrinksCount = allProducerDrinks.length
             },
 
             // get all reviews that a producer has
-            getAllReviews(producerID) {
-                let allReviews = [];
-                for (const i in this.reviews) {
-                    let review_target = this.reviews[i].reviewTarget["$oid"];
-                    let all_drinks = this.getAllDrinks(producerID);
-                    for (const j in all_drinks) {
-                        let drink_name = all_drinks[j]._id["$oid"];
-                        if (review_target == drink_name) {
-                            let review = this.reviews[i];
-                            allReviews.push(review);
-                        }
-                    }
-                }
-                return allReviews;
+            async getAllReviews() {
+                let allProducerReviews = this.reviews.filter(review => {
+                    let review_target = review.reviewTarget["$oid"];
+                    let all_drinks = this.allDrinks;
+                    return all_drinks.some(drink => drink._id["$oid"] === review_target);
+                });
+                console.log(allProducerReviews);
+                this.allReviews = allProducerReviews;
+                this.allReviewsCount = allProducerReviews.length
+            },
+
+            // find drink name given reviewTarget
+            findDrinkNameForReview(reviewTarget) {
+                let drink_name = this.listings.find(listing => listing._id["$oid"] == reviewTarget["$oid"]).listingName;
+                return drink_name;
+            },
+
+            // find drink name given listing
+            findDrinkNameForListing(listing) {
+                let drink_name = listing.listingName;
+                return drink_name;
             },
 
             // get compiled dictionary of ratings of each type of drink
             getRatingsByType() {
-                let allReviews = this.getAllReviews(this.producer_id);
-                let drinkRatings = {}
-                // for each drink, add the rating to a list
-                for (let i in allReviews) {
-                    let review = allReviews[i];
-                    let drink_name = this.listings.find(listing => listing._id["$oid"] == review.reviewTarget["$oid"]).listingName;
+                let allProducerDrinkRatings = {};
+                this.allReviews.forEach(review => {
+                    let drink_name = this.findDrinkNameForReview(review.reviewTarget);
                     let rating = review["rating"];
-                    if (drinkRatings[drink_name]) {
-                        drinkRatings[drink_name].push(rating);
-                    }
-                    else {
-                        drinkRatings[drink_name] = [rating];
-                    }
-                }
-                return drinkRatings;
+                    allProducerDrinkRatings[drink_name] = allProducerDrinkRatings[drink_name] || [];
+                                                            allProducerDrinkRatings[drink_name].push(rating);
+                });
+                this.drinkRatings = allProducerDrinkRatings;
             },
 
             // get compiled dictionary of count of each type of drink
             getCountsByType() {
-                let allReviews = this.getAllReviews(this.producer_id);
-                let drinkCount = {}
-                // for each drink, add the rating to a list
-                for (let i in allReviews) {
-                    let review = allReviews[i];
-                    let drink_name = this.listings.find(listing => listing._id["$oid"] == review.reviewTarget["$oid"]).listingName;
-                    if (drinkCount[drink_name]) {
-                        drinkCount[drink_name] += 1;
-                    }
-                    else {
-                        drinkCount[drink_name] = 1;
-                    }
-                }
-                return drinkCount;
+                let allProducerDrinkCounts = {};
+                this.allDrinks.forEach(listing => {
+                    let drink_name = this.findDrinkNameForListing(listing);
+                    allProducerDrinkCounts[drink_name] = allProducerDrinkCounts[drink_name] ? 
+                                                            allProducerDrinkCounts[drink_name] + 1 : 1;
+                });
+                this.drinkCounts = allProducerDrinkCounts;
+                console.log(allProducerDrinkCounts);
             },
 
             // get average ratings for each listing
             getAverageRatings() {
-                // create a new object to store the average rating for each drink
                 const averageRatings = {};
-
-                // access all ratings
-                let drinkRatings = this.getRatingsByType(this.producer_id);
-
-                // iterate through each drink and its ratings
-                for (const [drink, ratings] of Object.entries(drinkRatings)) {
-                    // filter out "-" values and convert the rest to numbers
+                for (const [drink, ratings] of Object.entries(this.drinkRatings)) {
                     const filteredRatings = ratings.filter(value => value !== "-").map(Number);
-                    // check if there are valid ratings to calculate the average
                     if (filteredRatings.length > 0) {
-                        // calculate the average rating for each drink
                         const averageRating = filteredRatings.reduce((sum, rating) => sum + rating, 0) / filteredRatings.length;
-                        // store the average rating in the new object
                         averageRatings[drink] = averageRating;
                     }
                 }
-
-                // convert averageRatings object to an array of [key, value] pairs
-                const averageRatingsArray = Object.entries(averageRatings);
-
-                // sort the array based on the average ratings in descending order
-                averageRatingsArray.sort((a, b) => b[1] - a[1]);
-
-                // convert the sorted array back to an object
-                const sortedAverageRatings = Object.fromEntries(averageRatingsArray);
-
-                return sortedAverageRatings;
+                const sortedProducerAverageRatings = Object.fromEntries(Object.entries(averageRatings)
+                                                        .sort((a, b) => b[1] - a[1]));
+                this.sortedAverageRatings = sortedProducerAverageRatings;
             },
 
+            // get total counts for each listing
             getTotalCounts() {
-                let drinkCounts = this.getCountsByType()
-
-                // convert drinkCountsArray object to an array of [key, value] pairs
-                const drinkCountsArray = Object.entries(drinkCounts);
-
-                // sort the array based on the average ratings in descending order
+                const drinkCountsArray = Object.entries(this.drinkCounts);
                 drinkCountsArray.sort((a, b) => b[1] - a[1]);
-
-                // convert the sorted array back to an object
-                const sortedDrinkCounts = Object.fromEntries(drinkCountsArray);
-
-                return sortedDrinkCounts;
+                const sortedProducerDrinkCounts = Object.fromEntries(drinkCountsArray);
+                this.sortedDrinksCounts = sortedProducerDrinkCounts;
             },
 
             // get the most popular drinks
             getMostPopular() {
                 // get the average ratings
-                const averageRatings = this.getAverageRatings();
-
+                const averageRatings = this.sortedAverageRatings;
                 // get the first 5 items from the average ratings
                 const firstFiveItems = Object.entries(averageRatings).slice(0, 5);
+                this.mostPopular = firstFiveItems;
+            },
 
-                return firstFiveItems;
+            // get most recently added drinks
+            getRecentlyAdded() {
+                const firstFiveItems = this.allDrinks.slice(0, 5);
+                this.recentlyAdded = firstFiveItems;
             },
 
             // get the most discussed drinks
             getMostDiscussed() {
                 // get the drink counts
-                const drinkCounts = this.getTotalCounts();
-
+                const drinkCounts = this.sortedDrinksCounts;
                 // get the first 5 items from the drink counts
                 const firstFiveItems = Object.entries(drinkCounts).slice(0, 5);
-
-                return firstFiveItems;
+                this.mostDiscussed = firstFiveItems;
             },
 
             // get photo from drink
@@ -1010,7 +977,7 @@
             // show all listings that a producer has
             showAllListings() {
                 this.showListings = true;
-                this.filteredListings = this.getAllDrinks(this.producer_id); // initially set filtered drinks to all drinks
+                this.filteredListings = this.allDrinks; // initially set filtered drinks to all drinks
             },
 
             // show all reviews that a producer has
@@ -1066,7 +1033,7 @@
                 this.searchTerm = this.searchExpressions;
 
                 // get all listings to search from
-                const listings = this.getAllDrinks(this.producer_id);
+                const listings = this.allDrinks;
 
                 // if there is something searched
                 const searchResults = listings.filter((listing) => {
@@ -1091,7 +1058,7 @@
             // for resetting listings (show full listings)
             resetListings() {
                 this.searchExpressions = '';
-                this.filteredListings = this.getAllDrinks(this.producer_id);
+                this.filteredListings = this.allDrinks;
             },
 
             // when user click on "edit profile"
