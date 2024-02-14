@@ -594,10 +594,8 @@
                                 <h4 class="square-inline-text-start mr-auto"> 88 Bamboo's Deepdive </h4>
                             </div>
                             <div class="py-2 text-start">
-                                <!-- [TODO] link to deep dive article-->
-                                <a v-for="article in deepDiveArticles" class="text-left default-text-no-background" v-bind:key="article._id" :href="article">
-                                    {{ article }}
-                                    <br><br>
+                                <a class="text-left default-text-no-background" :href="specified_producer['88B Deepdive']">
+                                    {{ specified_producer["88B Deepdive"] }}
                                 </a>
                             </div>
                             <div class="py-2"></div>
@@ -676,9 +674,6 @@
                 // specified producer
                 producer_id: null,
                 specified_producer: {},
-
-                // to store deep dive articles
-                deepDiveArticles: [],
 
                 // q&a
                 question: '',
@@ -762,15 +757,6 @@
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
                         this.listings = response.data;
-                        // using filter to get listings with matching producerID.$oid
-                        const filteredListings = this.listings.filter(listing => listing.producerID["$oid"] == this.producer_id);
-                        // extracting unique reviewLink from filtered listings
-                        const uniqueReviewLinks = new Set();
-                        filteredListings.forEach(listing => {
-                            uniqueReviewLinks.add(listing.reviewLink);
-                        });
-                        // converting Set to array if needed
-                        this.deepDiveArticles = [...uniqueReviewLinks];
                         // get all drinks
                         this.getAllDrinks()
                         this.getCountsByType()

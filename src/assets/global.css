@@ -212,6 +212,13 @@ body {
     margin: 20px;
 }
 
+.add-drink-photo-container-close {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    margin: 10px;
+}
+
 .add-drink-photo-background {
     width: 150px;
     height: 150px;            
