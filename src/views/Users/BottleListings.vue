@@ -294,13 +294,58 @@
                             <h3 class="text-body-secondary text-start pt-3"> 
                                 <b> Most Reviews </b> 
                             </h3>
-                            <div class="container">
-                                <div class="row">
-                                    <div v-for="listing in mostReviews" v-bind:key="listing._id"  class="add-drink-photo-container-close">
-                                        <img :src=" 'data:image/jpeg;base64,' + (listing['photo'] || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon" viewBox="0 0 16 16">
-                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
-                                        </svg>
+                            <!-- v-loop for each listing -->
+                            <div class="container text-start">
+                                <div v-for="listing in mostReviews" v-bind:key="listing._id" class="p-3">
+
+                                    <div class="row">
+                                        <!-- image -->
+                                        <div class="col-4 image-container">
+                                            <img v-if="listing['photo']" :src="'data:image/png;base64,'+listing['photo']" style="width: 300px; height: 300px;" class="img-border">
+                                            <img v-else src="../../../Images/Drinks/Placeholder.png" style="width: 300px; height: 300px;" class="img-border">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon" viewBox="0 0 16 16">
+                                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                                            </svg>
+                                        </div>
+                                        <!-- details -->
+                                        <div class="col-8 ps-5">
+                                            <!-- expression name -->
+                                            <div class="row pt-1">
+                                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="primary-clickable-text">
+                                                    <h4> <b> {{ listing["listingName"] }} </b> </h4>
+                                                </router-link>
+                                            </div>
+                                            <!-- producer -->
+                                            <div class="row">
+                                                <router-link :to="{ path: '/Producers/Profile-Page/' + listing.producerID.$oid }" class="primary-clickable-text">
+                                                    <h5> <b> {{ getProducerName(listing) }} </b> </h5>
+                                                </router-link>
+                                            </div>
+                                            <!-- review -->
+                                            <div class="row pt-3">
+                                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="default-clickable-text fst-italic scrollable">
+                                                    <h5> {{ listing["officialDesc"] }}. </h5>
+                                                </router-link>
+                                            </div>
+                                            <!-- rating -->
+                                            <div class="row pt-4"> 
+                                                <div class="col-6">
+                                                    <h1 class="rating-text">
+                                                        {{ getRatings(listing) }}
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                        </svg>
+                                                    </h1>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="d-grid gap-5">
+                                                        <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="primary-clickable-text">
+                                                            <a class="btn secondary-btn btn-md"> Read what the crowd thinks </a>
+                                                        </router-link>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -312,13 +357,58 @@
                             <h3 class="text-body-secondary text-start pt-3"> 
                                 <b> Recently Added </b> 
                             </h3>
-                            <div class="container">
-                                <div class="row">
-                                    <div v-for="listing in recentlyAdded" v-bind:key="listing._id"  class="add-drink-photo-container-close">
-                                        <img :src=" 'data:image/jpeg;base64,' + (listing['photo'] || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon" viewBox="0 0 16 16">
-                                            <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
-                                        </svg>
+                            <!-- v-loop for each listing -->
+                            <div class="container text-start">
+                                <div v-for="listing in recentlyAdded" v-bind:key="listing._id" class="p-3">
+
+                                    <div class="row">
+                                        <!-- image -->
+                                        <div class="col-4 image-container">
+                                            <img v-if="listing['photo']" :src="'data:image/png;base64,'+listing['photo']" style="width: 300px; height: 300px;" class="img-border">
+                                            <img v-else src="../../../Images/Drinks/Placeholder.png" style="width: 300px; height: 300px;" class="img-border">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon" viewBox="0 0 16 16">
+                                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                                            </svg>
+                                        </div>
+                                        <!-- details -->
+                                        <div class="col-8 ps-5">
+                                            <!-- expression name -->
+                                            <div class="row pt-1">
+                                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="primary-clickable-text">
+                                                    <h4> <b> {{ listing["listingName"] }} </b> </h4>
+                                                </router-link>
+                                            </div>
+                                            <!-- producer -->
+                                            <div class="row">
+                                                <router-link :to="{ path: '/Producers/Profile-Page/' + listing.producerID.$oid }" class="primary-clickable-text">
+                                                    <h5> <b> {{ getProducerName(listing) }} </b> </h5>
+                                                </router-link>
+                                            </div>
+                                            <!-- review -->
+                                            <div class="row pt-3">
+                                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="default-clickable-text fst-italic scrollable">
+                                                    <h5> {{ listing["officialDesc"] }}. </h5>
+                                                </router-link>
+                                            </div>
+                                            <!-- rating -->
+                                            <div class="row pt-4"> 
+                                                <div class="col-6">
+                                                    <h1 class="rating-text">
+                                                        {{ getRatings(listing) }}
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                        </svg>
+                                                    </h1>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="d-grid gap-5">
+                                                        <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="primary-clickable-text">
+                                                            <a class="btn secondary-btn btn-md"> Read what the crowd thinks </a>
+                                                        </router-link>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

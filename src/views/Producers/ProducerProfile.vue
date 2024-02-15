@@ -929,14 +929,17 @@
                 // get the average ratings
                 const averageRatings = this.sortedAverageRatings;
                 // get the first 5 items from the average ratings
-                const firstFiveItems = Object.entries(averageRatings).slice(0, 5);
+                let firstFiveItems = Object.entries(averageRatings).slice(0, 5);
+                // if firstFiveItems is less than 5, get the remaining from this.allDrinks
+                if (firstFiveItems.length < 5) {
+                    this.allDrinks.forEach(drink => {
+                        if (!firstFiveItems.some(item => item[0] == drink.listingName)) {
+                            firstFiveItems.push(drink);
+                        }
+                    });
+                }
+                firstFiveItems = firstFiveItems.slice(0,5)
                 this.mostPopular = firstFiveItems;
-            },
-
-            // get most recently added drinks
-            getRecentlyAdded() {
-                const firstFiveItems = this.allDrinks.slice(0, 5);
-                this.recentlyAdded = firstFiveItems;
             },
 
             // get the most discussed drinks
@@ -944,8 +947,23 @@
                 // get the drink counts
                 const drinkCounts = this.sortedDrinksCounts;
                 // get the first 5 items from the drink counts
-                const firstFiveItems = Object.entries(drinkCounts).slice(0, 5);
+                let firstFiveItems = Object.entries(drinkCounts).slice(0, 5);
+                // if firstFiveItems is less than 5, get the remaining from this.allDrinks
+                if (firstFiveItems.length < 5) {
+                    this.allDrinks.forEach(drink => {
+                        if (!firstFiveItems.some(item => item[0] == drink.listingName)) {
+                            firstFiveItems.push(drink);
+                        }
+                    });
+                }
+                firstFiveItems = firstFiveItems.slice(0,5)
                 this.mostDiscussed = firstFiveItems;
+            },
+
+            // get most recently added drinks
+            getRecentlyAdded() {
+                const firstFiveItems = this.allDrinks.slice(0, 5);
+                this.recentlyAdded = firstFiveItems;
             },
 
             // get photo from drink
