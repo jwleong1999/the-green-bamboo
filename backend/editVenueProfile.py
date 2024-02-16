@@ -1,5 +1,5 @@
 # Flask backend for editing producer profile
-# Port: 5200
+# Port: 5300
 # Routes: /editDetails (POST)
 
 import bson
@@ -35,17 +35,17 @@ def editDetails():
     print(data)
 
     # extract components of the data
-    producerID = data['producerID']
+    venueID = data['venueID']
+    venueName = data['venueName']
+    venueDesc = data['venueDesc']
+    originLocation = data['originLocation']
     image64 = data['image64']
-    producerName = data['producerName']
-    producerDesc = data['producerDesc']
-    originCountry = data['originCountry']
 
     try: 
-        updateImage = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'photo': image64}})
-        updateName = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'producerName': producerName}})
-        updateDesc = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'producerDesc': producerDesc}})
-        updateCountry = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'originCountry': originCountry}})
+        updateImage = db.venuesNew.update_one({'_id': ObjectId(venueID)}, {'$set': {'photo': image64}})
+        updateName = db.venuesNew.update_one({'_id': ObjectId(venueID)}, {'$set': {'venueName': venueName}})
+        updateDesc = db.venuesNew.update_one({'_id': ObjectId(venueID)}, {'$set': {'venueDesc': venueDesc}})
+        updateCountry = db.venuesNew.update_one({'_id': ObjectId(venueID)}, {'$set': {'originLocation': originLocation}})
 
         return jsonify(
             {   
@@ -60,9 +60,9 @@ def editDetails():
                 "code": 500,
                 "data": {
                     "image": image64[:8],
-                    "name": producerName,
-                    "desc": producerDesc,
-                    "country": originCountry,
+                    "name": venueName,
+                    "desc": venueDesc,
+                    "country": originLocation,
                 },
                 "message": "An error occurred updating profile!"
             }
@@ -76,19 +76,21 @@ def addUpdates():
     print(data)
 
     # extract components of the data
-    producerID = data['producerID']
+    venueID = data['venueID']
     date = datetime.strptime(data['date'], "%Y-%m-%dT%H:%M:%S.%fZ")
     text = data['text']
     image64 = data['image64']
 
     try:
-        submitReq = db.producers.update_one(
-            {'_id': ObjectId(producerID)},
+        submitReq = db.venuesNew.update_one(
+            {'_id': ObjectId(venueID)},
             {'$push': {'updates': 
                         {
+                            "_id": ObjectId(),
                             'date': date,
                             'text': text,
-                            'photo': image64
+                            'photo': image64,
+                            'likes': []
                         }
                     }
             }
@@ -118,13 +120,13 @@ def sendQuestions():
     print(data)
 
     # extract components of the data
-    producerID = data['producerID']
+    venueID = data['venueID']
     question = data['question']
     answer = data['answer']
 
     try:
-        submitReq = db.producers.update_one(
-            {'_id': ObjectId(producerID)},
+        submitReq = db.venuesNew.update_one(
+            {'_id': ObjectId(venueID)},
             {'$push': {'questionsAnswers': 
                         {
                             '_id': ObjectId(),
@@ -138,7 +140,7 @@ def sendQuestions():
         return jsonify( 
             {   
                 "code": 201,
-                "data": producerID
+                "data": venueID
             }
         ), 201
     except Exception as e:
@@ -146,7 +148,7 @@ def sendQuestions():
         return jsonify(
             {
                 "code": 500,
-                "data": producerID,
+                "data": venueID,
                 "message": "An error occurred creating the update."
             }
         ), 500
@@ -159,19 +161,19 @@ def sendAnswers():
     print(data)
 
     # extract components of the data
-    producerID = data['producerID']
+    venueID = data['venueID']
     questionsAnswersID = data['questionsAnswersID']
     answer = data['answer']
 
     try:
-        submitReq = db.producers.update_one(
-            {'_id': ObjectId(producerID), 'questionsAnswers._id': ObjectId(questionsAnswersID)},
+        submitReq = db.venuesNew.update_one(
+            {'_id': ObjectId(venueID), 'questionsAnswers._id': ObjectId(questionsAnswersID)},
             {'$set': {'questionsAnswers.$.answer': answer}}
         )
         return jsonify( 
             {   
                 "code": 201,
-                "data": producerID
+                "data": venueID
             }
         ), 201
     except Exception as e:
@@ -179,7 +181,7 @@ def sendAnswers():
         return jsonify(
             {
                 "code": 500,
-                "data": producerID,
+                "data": venueID,
                 "message": "An error occurred creating the update."
             }
         ), 500
@@ -188,19 +190,19 @@ def sendAnswers():
 def likeUpdates():
     data = request.get_json()
     print(data)
-    producerID = data['producerID']
+    venueID = data['venueID']
     updateID = data['updateID']
     userID = data['userID']
 
     try: 
-        likeUpdate = db.producers.update_one(
-            {'_id': ObjectId(producerID), 'updates._id': ObjectId(updateID)},
+        likeUpdate = db.venuesNew.update_one(
+            {'_id': ObjectId(venueID), 'updates._id': ObjectId(updateID)},
             {'$push': {'updates.$.likes': ObjectId(userID)}}
         )
         return jsonify(
             {   
                 "code": 201,
-                "data": producerID
+                "data": venueID
             }
         ), 201
     except Exception as e:
@@ -209,7 +211,7 @@ def likeUpdates():
             {
                 "code": 500,
                 "data": {
-                    "data": producerID
+                    "data": venueID
                 },
                 "message": "An error occurred liking the update."
             }
@@ -219,19 +221,19 @@ def likeUpdates():
 def unlikeUpdates():
     data = request.get_json()
     print(data)
-    producerID = data['producerID']
+    venueID = data['venueID']
     updateID = data['updateID']
     userID = data['userID']
 
     try: 
-        unlikeUpdate = db.producers.update_one(
-            {'_id': ObjectId(producerID), 'updates._id': ObjectId(updateID)},
+        unlikeUpdate = db.venuesNew.update_one(
+            {'_id': ObjectId(venueID), 'updates._id': ObjectId(updateID)},
             {'$pull': {'updates.$.likes': ObjectId(userID)}}
         )
         return jsonify(
             {   
                 "code": 201,
-                "data": producerID
+                "data": venueID
             }
         ), 201
     except Exception as e:
@@ -240,11 +242,11 @@ def unlikeUpdates():
             {
                 "code": 500,
                 "data": {
-                    "data": producerID
+                    "data": venueID
                 },
                 "message": "An error occurred liking the update."
             }
         ), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5200)
+    app.run(debug=True, port=5300)

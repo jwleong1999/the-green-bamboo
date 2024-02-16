@@ -108,10 +108,11 @@
                 <div class="row">
                     <!-- image -->
                     <div class="col-3 image-container">
+
                         <!-- [if] editing -->
                         <div v-if="editing" style="position: relative; text-align: center;">
                             <!-- image -->
-                            <img :src="selectedImage || 'data:image/jpeg;base64,' + (specified_producer['photo'] || defaultProfilePhoto)" 
+                            <img :src="selectedImage || 'data:image/jpeg;base64,' + (specified_venue['photo'] || defaultProfilePhoto)" 
                                 alt="" style="width: 200px; height: 200px; z-index: 1; opacity: 50%">
                             <!-- change option -->
                             <label for="file" class="btn primary-light-dropdown mt-3" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose file</label>
@@ -120,7 +121,7 @@
                         </div>
                         <!-- [else] not editing -->
                         <div v-else>
-                            <img :src="selectedImage || 'data:image/jpeg;base64,' + (specified_producer['photo'] || defaultProfilePhoto)" 
+                            <img :src="selectedImage || 'data:image/jpeg;base64,' + (specified_venue['photo'] || defaultProfilePhoto)" 
                                 alt="" style="width: 200px; height: 200px; z-index: 1;">
                         </div>
                     </div>
@@ -132,27 +133,19 @@
                                 <div class="col-8">
                                     <!-- [if] editing -->
                                     <div v-if="editing">
-                                        <label for="originCountryInput "> Country of origin </label>
-                                        <input type="text" class="form-control mb-3" id="originCountryInput" aria-describedby="originCountry" v-model="edit_originCountry">
+                                        <label for="originLocationInput "> Country of origin </label>
+                                        <input type="text" class="form-control mb-3" id="originLocationInput" aria-describedby="originLocation" v-model="edit_originLocation">
                                     </div>
                                     <!-- [else] not editing -->
-                                    <h5 v-else class="text-body-secondary fs"> {{ specified_producer["originCountry"] }} </h5>
+                                    <h5 v-else class="text-body-secondary fs"> {{ specified_venue["originLocation"] }} </h5>
                                 </div>
                                 <!-- claim this listing / add listing & edit profile -->
                                 <div class="col-4">
-                                    <!-- [if] user type is producer -->
-                                    <span v-if="userType == 'producer'" class="row"> 
-                                        <!-- add listing-->
-                                        <div class="col-6 d-grid no-padding">
-                                            <!-- if not editing -->
-                                            <button v-if="editing == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
-                                                <a class="reverse-clickable-text" v-bind:href="'/Producer/Producer-Create-Listing/' + `${producer_id}`">
-                                                    Add Listing
-                                                </a>
-                                            </button>
-                                        </div>
+                                    <!-- [if] user type is venue -->
+                                    <span v-if="userType == 'venue'" class="row"> 
                                         <!-- edit profile -->
-                                        <div class="col-6 d-grid no-padding">
+                                        <div class="col-6"></div>
+                                        <div class="col-6 d-grid no-padding text-end">
                                             <!-- [if] not editing -->
                                             <button v-if="editing == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" v-on:click="editProfile()">
                                                 Edit profile
@@ -173,11 +166,11 @@
                             <div class="row">
                                 <!-- [if] editing -->
                                 <div v-if="editing">
-                                    <label for="producerNameInput"> Producer name </label>
-                                    <input type="text" class="form-control mb-3" id="producerNameInput" aria-describedby="producerDesc" v-model="edit_producerName">
+                                    <label for="venueNameInput"> Venue name </label>
+                                    <input type="text" class="form-control mb-3" id="venueNameInput" aria-describedby="venueName" v-model="edit_venueName">
                                 </div>
                                 <!-- [else] not editing -->
-                                <h3 v-else class="text-body-secondary"> <b> {{ specified_producer["producerName"] }} </b> </h3>
+                                <h3 v-else class="text-body-secondary"> <b> {{ specified_venue["venueName"] }} </b> </h3>
                             </div>
                             <!-- description -->
                             <div class="row">
@@ -185,48 +178,43 @@
                                     <div class="py-2"></div>
                                     <!-- [if] editing -->
                                     <div v-if="editing">
-                                        <label for="producerDescInput"> Producer description </label>
-                                        <textarea type="text" class="form-control mb-3" id="producerDescInput" aria-describedby="producerDesc" v-model="edit_producerDesc"> </textarea>
+                                        <label for="venueDescInput"> Venue description </label>
+                                        <textarea type="text" class="form-control mb-3" id="venueDescInput" aria-describedby="venueDesc" v-model="edit_venueDesc"> </textarea>
                                     </div>
                                     <!-- [else] not editing -->
-                                    <p v-else class="text-body-secondary fs"> {{ specified_producer["producerDesc"] }} </p>
+                                    <p v-else class="text-body-secondary fs"> {{ specified_venue["venueDesc"] }} </p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- more information (expressions, reviews) -->
+                <!-- more information (bar overview, bar menu) -->
                 <div class="row p-3">
                     <div class="col-7">
                         <div class="row">
-                            <!-- expressions -->
-                            <div class="col-6 text-start">
-                                <h4 class="text-body-secondary rating-text mb-2"> 
-                                    <b> {{ allDrinksCount }}  </b> 
-                                    &nbsp;
-                                    <u v-on:click="showAllListings()"> Expressions </u> 
-                                </h4>
+                            <!-- bar overview -->
+                            <div class="col-6 d-grid">
+                                <button class="btn primary-btn-less-round btn-lg" v-on:click="showBarOverview()"> 
+                                    Bar Overview
+                                </button>
                             </div>
                             <!-- reviews -->
-                            <div class="col-6 text-start">
-                                <h4 class="text-body-secondary rating-text mb-2"> 
-                                    <b> {{ allReviewsCount }} </b> 
-                                    &nbsp;
-                                    <u v-on:click="showAllReviews()"> Reviews </u> 
-                                </h4>
+                            <div class="col-6 d-grid">
+                                <button class="btn primary-btn-less-round btn-lg" v-on:click="showBarMenu()"> 
+                                    Bar Menu
+                                </button>
                             </div>
                         </div>
                     </div>
-
                     <!-- follow this distillery -->
                     <div class="col-5">
-                        <div v-if="userType != 'producer'" class="d-grid gap-2">
+                        <div v-if="userType != 'venue'" class="d-grid gap-2">
                             <button class="btn primary-btn-less-round btn-lg"> 
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
                                 </svg>
-                                Follow this distillery
+                                Follow this venue
                             </button>
                         </div>
                     </div>
@@ -244,7 +232,7 @@
                             <h3 class="text-body-secondary text-start"> 
                                 <b> 
                                     Latest Updates From
-                                    {{ specified_producer["producerName"] }} 
+                                    {{ specified_venue["venueName"] }} 
                                 </b> 
                             </h3>
                         </div>
@@ -253,7 +241,7 @@
                     <div class="row">
                         <!-- profile photo & post timestamp & # of likes -->
                         <div class="col-2">
-                            <img :src=" 'data:image/jpeg;base64,' + (specified_producer['photo'] || defaultProfilePhoto)" alt="" class="profile-image-lg">
+                            <img :src=" 'data:image/jpeg;base64,' + (specified_venue['photo'] || defaultProfilePhoto)" alt="" class="profile-image-lg">
                             <p class="text-decoration-underline">
                                 Posted on:
                                 {{ latestUpdate.date }}
@@ -297,10 +285,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- reply / send to producer -->
+                    <!-- reply / send to venue -->
                     <div class="row pt-3">
-                        <!-- [if] user type is producer -->
-                        <div v-if="userType == 'producer'">
+                        <!-- [if] user type is venue -->
+                        <div v-if="userType == 'venue'">
                             <div class="row">
                                 <div class="input-group centered">
                                     <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Say hi to your patrons!" style="height: 50px;" v-model="updateText"> 
@@ -378,150 +366,18 @@
                     </div>
                 </div> <!-- end of main page (hide all listings) -->
 
-                <!-- show all listings-->
+                <!-- show all menu items-->
                 <div v-else>
-                    <!-- search & sort by -->
-                    <div class="row">
-                        <!-- back button -->
-                        <div class="col-1 centered">
-                            <!-- back button -->
-                            <span style="display: inline-block;">
-                                <span class="pe-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16" v-on:click="resetListings()">
-                                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
-                                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
-                                    </svg>
-                                </span>
-                            </span>
-                        </div>
-                        <!-- search -->
-                        <div class="col-9">
-                            <!-- [if] user type is producer -->
-                            <div v-if="userType == 'producer'" class="row">
-                                <div class="col-3 d-grid no padding">
-                                    <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text" v-on:click="editCatalogue()">
-                                        Edit catalogue
-                                    </button>
-                                </div>
-                                <div class="col-3 d-grid no padding">
-                                    <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text">
-                                        <a class="default-clickable-text" v-bind:href="'/Producer/Producer-Create-Listing/' + `${producer_id}`">
-                                            Add Listing
-                                        </a>
-                                    </button>
-                                </div>
-                                <div class="col-6 d-grid no padding">
-                                    <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Search for expressions" style="height: 50px;" v-model="searchExpressions" v-on:keyup.enter="searchForExpressions()">
-                                </div>
-                            </div>
-                            <!-- [else] user type is NOT producer -->
-                            <input v-else class="search-bar form-control rounded fst-italic" type="text" placeholder="Search for expressions" style="height: 50px;" v-model="searchExpressions" v-on:keyup.enter="searchForExpressions()">
-                        </div>
-                
-                        <!-- sort by -->
-                        <div class="col-2">
-                            <div class="d-grid gap-2 dropdown">
-                                <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Sort By
-                                </button>
-                                <ul class="dropdown-menu"> <!-- TODO: sort button to be implemented -->
-                                    <li><a class="dropdown-item" href="#">Action</a></li>
-                                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <!-- v-loop for each listing -->
-                        <div class="container text-start">
-                            <div v-for="listing in filteredListings" v-bind:key="listing._id" class="p-3">
-                                <div class="row">
-                                    <!-- image -->
-                                    <div class="col-2 image-container text-center mx-auto">
-                                        <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="default-text-no-background">
-                                            <img :src=" 'data:image/jpeg;base64,' + (listing['photo'] || defaultProfilePhoto)" style="width: 150px; height: 150px;">
-                                        </router-link>
-                                        <!-- edit listing -->
-                                        <button v-if="editingCatalogue == true" type="button" class="btn tertiary-btn reverse-clickable-text m-1">
-                                            <a class="reverse-clickable-text" v-bind:href="'/Producer/Producer-Edit-Listing/' + `${listing._id.$oid}`">
-                                                Edit Listing
-                                            </a>
-                                        </button>
-                                        <!-- delete listing -->
-                                        <button v-if="editingCatalogue == true" type="button" class="btn btn-danger reverse-clickable-text p-1" v-on:click="deleteListings(listing)">
-                                            <a class="reverse-clickable-text">
-                                                Delete Listing
-                                            </a>
-                                        </button>
-                                    </div>
-                                    <!-- details -->
-                                    <div class="col-10 ps-5">
-                                        <!-- expression name, have tried & want to try & bookmark buttons -->
-                                        <div class="row">
-                                            <!-- expression name -->
-                                            <div class="col-7">
-                                                <div class="row pt-2">
-                                                    <h4 class="default-text"> 
-                                                        <u> <b> {{ listing["listingName"] }}  </b> </u>
-                                                    </h4> 
-                                                </div>
-                                            </div>
-
-                                            <!-- have tried button -->
-                                            <div class="col-2 pe-0">
-                                                <div v-html="checkDrinkLists(listing).buttons.haveTried" class="d-grid"> </div>
-                                            </div>
-                                            <!-- want to try button -->
-                                            <div class="col-2 ps-0">
-                                                <div v-html="checkDrinkLists(listing).buttons.wantToTry" class="d-grid"> </div>
-                                            </div>
-                                            <!-- bookmark button -->
-                                            <div class="col-1 text-end">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
-                                                    <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
-                                                </svg>
-                                            </div>
-                                        </div>
-                                        <div class="row py-2">
-                                            <!-- official description -->
-                                            <div class="col-10">
-                                                <div class="row pt-2 pb-5">
-                                                    <h5 class="fst-italic scrollable-long"> {{ listing["officialDesc"] }} </h5>
-                                                </div>
-                                            </div>
-                                            <!-- rating -->
-                                            <div class="col-2">
-                                                <h1 class="rating-text text-end">
-                                                    {{ getRatings(listing) }}
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                                                    </svg>
-                                                </h1>
-                                            </div>
-                                        </div>
-                                        <!-- release date -->
-                                        <!-- NOTE: can exclude for now (no data) -->
-                                        <!-- <div class="row pt-5"> 
-                                            <h5> 
-                                                <b> Release Date:</b>
-                                                date
-                                            </h5>
-                                        </div> -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> <!-- end of listings -->
+                    
                 </div>
 
             </div> <!-- end of producer information -->
             
-            <!-- view analytics & q&a for producer & 88 bamboo's deepdive -->
+            <!-- view analytics & q&a for producer & opening hours and reservation details -->
             <div class="col-3">
                 <div class="row">
                     <!-- view analytics -->
-                    <div v-if="userType == 'producer'" class="col-12 d-grid gap-2 pb-3">
+                    <div v-if="userType == 'venue'" class="col-12 d-grid gap-2 pb-3">
                         <button class="btn secondary-btn-not-rounded rounded-0" type="button"> View My Analytics </button>
                     </div>
                     <!-- q&a -->
@@ -529,13 +385,13 @@
                         <div class="square primary-square rounded p-3 mb-3">
                             <!-- header text -->
                             <div class="square-inline text-start">
-                                <!-- [if] user type producer -->
-                                <div v-if="userType == 'producer'" class="mr-auto"> <h4> Q&A for You! </h4> </div>
+                                <!-- [if] user type venue -->
+                                <div v-if="userType == 'venue'" class="mr-auto"> <h4> Q&A for You! </h4> </div>
                                 <!-- [else] user type is NOT producer -->
-                                <h4 v-else class="mr-auto"> Q&As for {{ specified_producer["producerName"] }} </h4>
+                                <h4 v-else class="mr-auto"> Q&As for {{ specified_venue["venueName"] }} </h4>
                             </div>
                             <!-- show buttons for answered & unanswered questions -->
-                            <div v-if="userType == 'producer'" class="row text-center px-2">
+                            <div v-if="userType == 'venue'" class="row text-center px-2">
                                 <div class="col-6 d-grid gap-0 no-padding">
                                     <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
                                         <a class="reverse-clickable-text" v-on:click="showAnswered()">
@@ -556,8 +412,8 @@
                                 <!-- responses to q&a -->
                                 <div id="carouselExample" class="carousel slide">
                                     <div class="carousel-inner px-4">
-                                        <!-- [if] user type is producer -->
-                                        <div v-if="userType == 'producer'">
+                                        <!-- [if] user type is venue -->
+                                        <div v-if="userType == 'venue'">
                                             <!-- show answered questions -->
                                             <div v-if="answerStatus">
                                                 <div class="carousel-item" v-for="(qa, index) in answeredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
@@ -622,16 +478,16 @@
                             <div class="py-1"></div>
                         </div>
                     </div>
-                    <!-- 88 bamboo's deepdive -->
+                    <!-- opening hours and reservation details-->
                     <div class="col-12">
                         <div class="square secondary-square rounded p-3 mb-3">
                             <!-- header text -->
                             <div class="square-inline">
-                                <h4 class="square-inline text-start mr-auto"> 88 Bamboo's Deepdive </h4>
+                                <h4 class="square-inline text-start mr-auto"> Opening Hours and Reservation Details </h4>
                             </div>
                             <div class="py-2 text-start">
-                                <a class="text-left default-text-no-background" :href="specified_producer['88B Deepdive']">
-                                    {{ specified_producer["88B Deepdive"] }}
+                                <a class="text-left default-text-no-background">
+                                    <!-- [TODO] opening hours and reservation -->
                                 </a>
                             </div>
                             <div class="py-2"></div>
@@ -644,6 +500,7 @@
         </div> <!-- end of row -->
     </div> <!-- end of main content -->
 
+    
 </template>
 
 <!-- ---------------------------------------------------------------------------------------------------------------------------------------------------------- -->
@@ -671,7 +528,7 @@
 
                 // define user type here (defined on mounted() function)
                 user_id: "65b327d5687b64f8302d56ef",
-                userType: "producer",
+                userType: "e",
 
                 // all drinks that producer has
                 allDrinks: [],
@@ -698,18 +555,14 @@
                 // edit other fields
                 edit_producerName: '',
                 edit_producerDesc: '',
-                edit_originCountry: '',
+                edit_originLocation: '',
 
                 // search
                 searchInput: '',
-                searchExpressions: '',
-                searchTerm: '',
-                searchResults: [],
-                filteredListings: [],
 
-                // specified producer
-                producer_id: null,
-                specified_producer: {},
+                // specified venue
+                venue_id: null,
+                specified_venue: {},
 
                 // q&a
                 question: '',
@@ -761,8 +614,9 @@
             // load data from database
             async loadData() {
                 // Get the query string parameters (listing ID) from the URL
-                this.producer_id = this.$route.params.id;
-                    if (this.producer_id == null) {
+                this.venue_id = this.$route.params.id;
+                console.log(this.venue_id);
+                    if (this.venue_id == null) {
                         // redirect to page
                         this.$router.push('/Users/Bottle-Listings');
                     }
@@ -780,9 +634,6 @@
                 try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
                         this.producers = response.data;
-                        this.specified_producer = this.producers.find(producer => producer["_id"]["$oid"] == this.producer_id); // find specified producer
-                        this.getLatestUpdates()
-                        this.checkProducerAnswered()
                     } 
                     catch (error) {
                         console.error(error);
@@ -792,27 +643,7 @@
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
                         this.listings = response.data;
-                        // get all drinks
-                        this.getAllDrinks()
-                        this.getCountsByType()
-                        this.getTotalCounts()
-                        this.getMostDiscussed()
-                        this.getRecentlyAdded()
                     } 
-                    catch (error) {
-                        console.error(error);
-                    }
-                // reviews
-                // _id, userID, reviewTarget, date, rating, reviewDesc, taggedUsers, reviewTitle, reviewType, flavorTag, photo
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
-                        this.reviews = response.data;
-                        // get all reviews
-                        this.getAllReviews()
-                        this.getRatingsByType()
-                        this.getAverageRatings()
-                        this.getMostPopular()
-                    }
                     catch (error) {
                         console.error(error);
                     }
@@ -830,7 +661,30 @@
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
                         this.venues = response.data;
+                        this.specified_venue = this.venues.find(venue => venue["_id"]["$oid"] == this.venue_id); // find specified venue
+                        this.getLatestUpdates()
+                        this.checkVenueAnswered()
+                        // get all drinks
+                        this.getAllDrinks()
+                        this.getCountsByType()
+                        this.getTotalCounts()
+                        this.getMostDiscussed()
+                        this.getRecentlyAdded()
                     } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                // reviews
+                // _id, userID, reviewTarget, date, rating, reviewDesc, taggedUsers, reviewTitle, reviewType, flavorTag, photo
+                try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
+                        this.reviews = response.data;
+                        // get all reviews
+                        this.getAllReviews()
+                        this.getRatingsByType()
+                        this.getAverageRatings()
+                        this.getMostPopular()
+                    }
                     catch (error) {
                         console.error(error);
                     }
@@ -881,24 +735,26 @@
                     // }
             },
 
-            // get all drinks that a producer has
+            // get all drinks that a venue has
             async getAllDrinks() {
-                let allProducerDrinks = this.listings.filter(listing => listing.producerID["$oid"] == this.producer_id);
-                this.allDrinks = allProducerDrinks;
-                console.log(allProducerDrinks)
-                this.allDrinksCount = allProducerDrinks.length
+                let allMenuItems = this.specified_venue["menu"];
+                let allVenueDrinks = this.listings.filter(listing => {
+                    let listing_id = listing._id["$oid"];
+                    return allMenuItems.some(menuItem => menuItem["$oid"] == listing_id);
+                });
+                this.allDrinks = allVenueDrinks;
+                this.allDrinksCount = allVenueDrinks.length
             },
 
-            // get all reviews that a producer has
+            // get all reviews that a venue has
             async getAllReviews() {
-                let allProducerReviews = this.reviews.filter(review => {
+                let allVenueReviews = this.reviews.filter(review => {
                     let review_target = review.reviewTarget["$oid"];
                     let all_drinks = this.allDrinks;
                     return all_drinks.some(drink => drink._id["$oid"] === review_target);
                 });
-                console.log(allProducerReviews);
-                this.allReviews = allProducerReviews;
-                this.allReviewsCount = allProducerReviews.length
+                this.allReviews = allVenueReviews;
+                this.allReviewsCount = allVenueReviews.length
             },
 
             // find drink name given reviewTarget
@@ -915,26 +771,25 @@
 
             // get compiled dictionary of ratings of each type of drink
             getRatingsByType() {
-                let allProducerDrinkRatings = {};
+                let allVenueDrinkRatings = {};
                 this.allReviews.forEach(review => {
                     let drink_name = this.findDrinkNameForReview(review.reviewTarget);
                     let rating = review["rating"];
-                    allProducerDrinkRatings[drink_name] = allProducerDrinkRatings[drink_name] || [];
-                                                            allProducerDrinkRatings[drink_name].push(rating);
+                    allVenueDrinkRatings[drink_name] = allVenueDrinkRatings[drink_name] || [];
+                    allVenueDrinkRatings[drink_name].push(rating);
                 });
-                this.drinkRatings = allProducerDrinkRatings;
+                this.drinkRatings = allVenueDrinkRatings;
             },
 
             // get compiled dictionary of count of each type of drink
             getCountsByType() {
-                let allProducerDrinkCounts = {};
+                let allVenueDrinkCounts = {};
                 this.allDrinks.forEach(listing => {
                     let drink_name = this.findDrinkNameForListing(listing);
-                    allProducerDrinkCounts[drink_name] = allProducerDrinkCounts[drink_name] ? 
-                                                            allProducerDrinkCounts[drink_name] + 1 : 1;
+                    allVenueDrinkCounts[drink_name] = allVenueDrinkCounts[drink_name] ? 
+                    allVenueDrinkCounts[drink_name] + 1 : 1;
                 });
-                this.drinkCounts = allProducerDrinkCounts;
-                console.log(allProducerDrinkCounts);
+                this.drinkCounts = allVenueDrinkCounts;
             },
 
             // get average ratings for each listing
@@ -947,17 +802,17 @@
                         averageRatings[drink] = averageRating;
                     }
                 }
-                const sortedProducerAverageRatings = Object.fromEntries(Object.entries(averageRatings)
+                const sortedVenueAverageRatings = Object.fromEntries(Object.entries(averageRatings)
                                                         .sort((a, b) => b[1] - a[1]));
-                this.sortedAverageRatings = sortedProducerAverageRatings;
+                this.sortedAverageRatings = sortedVenueAverageRatings;
             },
 
             // get total counts for each listing
             getTotalCounts() {
                 const drinkCountsArray = Object.entries(this.drinkCounts);
                 drinkCountsArray.sort((a, b) => b[1] - a[1]);
-                const sortedProducerDrinkCounts = Object.fromEntries(drinkCountsArray);
-                this.sortedDrinksCounts = sortedProducerDrinkCounts;
+                const sortedVenueDrinkCounts = Object.fromEntries(drinkCountsArray);
+                this.sortedDrinksCounts = sortedVenueDrinkCounts;
             },
 
             // get the most popular drinks
@@ -1014,15 +869,14 @@
                 return photo;
             },
 
-            // show all listings that a producer has
-            showAllListings() {
-                this.showListings = true;
-                this.filteredListings = this.allDrinks; // initially set filtered drinks to all drinks
+            // show bar overview
+            showBarOverview() {
+                this.showListings = false;
             },
 
-            // show all reviews that a producer has
-            showAllReviews() {
-                this.showListings = false;
+            // show bar menu
+            showBarMenu() {
+                this.showListings = true;
             },
 
             // get ratings for a listing
@@ -1066,50 +920,15 @@
                 }
             },
 
-            // for searching for expressions
-            searchForExpressions() {
-                // flag to check if there are search inputs
-                const searchExpressions = this.searchExpressions.toLowerCase();
-                this.searchTerm = this.searchExpressions;
-
-                // get all listings to search from
-                const listings = this.allDrinks;
-
-                // if there is something searched
-                const searchResults = listings.filter((listing) => {
-                    const expressionName = listing["listingName"].toLowerCase();
-                    return expressionName.includes(searchExpressions);
-                });
-
-                // if nothing found
-                if (searchResults.length == 0) {
-                    this.filteredListings = [];
-                } 
-                else {
-                    this.filteredListings = searchResults;
-                }
-
-                // if there is nothing searched
-                if (this.searchExpressions == '') {
-                    this.resetListings();
-                }
-            },
-
-            // for resetting listings (show full listings)
-            resetListings() {
-                this.searchExpressions = '';
-                this.filteredListings = this.allDrinks;
-            },
-
             // when user click on "edit profile"
             editProfile() {
                 // set editing status to true
                 this.editing = true;
 
                 // set the current details to the edit details
-                this.edit_producerName = this.specified_producer["producerName"];
-                this.edit_producerDesc = this.specified_producer["producerDesc"];
-                this.edit_originCountry = this.specified_producer["originCountry"];
+                this.edit_venueName = this.specified_venue["venueName"];
+                this.edit_venueDesc = this.specified_venue["venueDesc"];
+                this.edit_originLocation = this.specified_venue["originLocation"];
             },
 
             // edit profile photo
@@ -1136,17 +955,17 @@
                 // check if image is uploaded
                 if (this.image64 == null) {
                     // set default image
-                    this.image64 = this.specified_producer["photo"];
+                    this.image64 = this.specified_venue["photo"];
                 }
                 
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5200/editDetails', 
+                    const response = await this.$axios.post('http://127.0.0.1:5300/editDetails', 
                         {
-                            producerID: this.producer_id,
+                            venueID: this.venue_id,
                             image64: this.image64,
-                            producerName: this.edit_producerName,
-                            producerDesc: this.edit_producerDesc,
-                            originCountry: this.edit_originCountry
+                            venueName: this.edit_venueName,
+                            venueDesc: this.edit_venueDesc,
+                            originLocation: this.edit_originLocation
                         },
                         {
                         headers: {
@@ -1166,9 +985,9 @@
             // send questions that users ask to producers
             async sendQuestion () {
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5200/sendQuestions', 
+                    const response = await this.$axios.post('http://127.0.0.1:5300/sendQuestions', 
                         {
-                            producerID: this.producer_id,
+                            venueID: this.venue_id,
                             question: this.question,
                             answer: "",
                         },
@@ -1191,9 +1010,9 @@
             async sendAnswer (qa) {
                 let q_and_a_id = qa._id.$oid;
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5200/sendAnswers', 
+                    const response = await this.$axios.post('http://127.0.0.1:5300/sendAnswers', 
                         {
-                            producerID: this.producer_id,
+                            venueID: this.venue_id,
                             questionsAnswersID: q_and_a_id,
                             answer: this.answer,
                         },
@@ -1253,9 +1072,9 @@
                 return formattedTime;
             },
 
-            // get producer's latest updates
+            // get venue's latest updates
             getLatestUpdates() {
-                let updatesList = this.specified_producer["updates"];
+                let updatesList = this.specified_venue["updates"];
 
                 if (updatesList.length > 0) {
                     let latestUpdate = updatesList[updatesList.length - 1];
@@ -1285,9 +1104,9 @@
                 } 
             },
 
-            // get producer's answered questions (to be displayed to the users/venues)
-            checkProducerAnswered() {
-                let answeredQuestions = this.specified_producer["questionsAnswers"];
+            // get venue's answered questions (to be displayed to the users/venues)
+            checkVenueAnswered() {
+                let answeredQuestions = this.specified_venue["questionsAnswers"];
                 if (answeredQuestions.length > 0) {
                     for (let qa in answeredQuestions) {
                         let answer = answeredQuestions[qa]["answer"];
@@ -1329,9 +1148,9 @@
             // for producer to add updates
             async addUpdates() {
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5200/addUpdates', 
+                    const response = await this.$axios.post('http://127.0.0.1:5300/addUpdates', 
                         {
-                            producerID: this.producer_id,
+                            venueID: this.venue_id,
                             date: this.currDate,
                             text: this.updateText,
                             image64: this.updateImage64,
@@ -1363,9 +1182,9 @@
             // like updates
             async likeUpdates() {
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5200/likeUpdates', 
+                    const response = await this.$axios.post('http://127.0.0.1:5300/likeUpdates', 
                         {
-                            producerID: this.producer_id,
+                            venueID: this.venue_id,
                             updateID: this.update_id,
                             userID: this.user_id,
                         },
@@ -1387,9 +1206,9 @@
             // unlike updates
             async unlikeUpdates() {
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5200/unlikeUpdates', 
+                    const response = await this.$axios.post('http://127.0.0.1:5300/unlikeUpdates', 
                         {
-                            producerID: this.producer_id,
+                            venueID: this.venue_id,
                             updateID: this.update_id,
                             userID: this.user_id,
                         },

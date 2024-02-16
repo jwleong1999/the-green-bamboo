@@ -19,6 +19,8 @@
     <router-link to="/Producer/Producer-Create-Listing">(Producers) Create Listings</router-link> |
     <router-link to="/Producer/Producer-Edit-Listing">(Producers) Edit Listings</router-link> |
     <router-link to="/producers/requests">(Producers) View Requests</router-link>
+    <br>
+    <router-link to="/Venues/Profile-Page">(Venues) Profile Page </router-link> |
   </nav>
   <hr style="margin: 0;">
   <router-view/>

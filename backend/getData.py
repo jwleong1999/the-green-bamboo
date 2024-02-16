@@ -110,7 +110,7 @@ def getUsers():
 @app.route("/getVenues")
 def getVenues():
     #this step finds all the items in the collection, specifying Venues
-    data = db.venues.find({})
+    data = db.venuesNew.find({})
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
     allVenues = []

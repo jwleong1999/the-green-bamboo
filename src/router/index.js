@@ -53,7 +53,6 @@ const routes = [
     name: 'producersprofilepage',
     component: () => import('../views/Producers/ProducerProfile.vue')
   },
-
   {
     path: '/Producers/Bottle-Listings/:id',
     name: 'producersbottlelistings',
@@ -89,7 +88,11 @@ const routes = [
     name: 'venuesbottlelistings',
     component: () => import('../views/Venues/BottleListings.vue')
   },
-  
+  {
+    path: '/Venues/Profile-Page/:id',
+    name: 'venuesprofilepage',
+    component: () => import('../views/Venues/VenueProfile.vue')
+  },
 
 ]
 
