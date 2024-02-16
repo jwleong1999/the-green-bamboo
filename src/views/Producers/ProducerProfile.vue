@@ -405,7 +405,7 @@
                                 </div>
                                 <div class="col-3 d-grid no padding">
                                     <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text">
-                                        <a class="default-clickable-text" v-bind:href="'/Producer/Producer-Create-Listing/' + `${producer_id}`">
+                                        <a v-bind:href="'/Producer/Producer-Create-Listing/' + `${producer_id}`">
                                             Add Listing
                                         </a>
                                     </button>

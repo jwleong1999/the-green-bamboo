@@ -368,10 +368,144 @@
 
                 <!-- show all menu items-->
                 <div v-else>
-                    
-                </div>
+                    <!-- # of drinks on the menu, edit and share menu -->
+                    <div class="row p-2">
+                        <div class="col-6">
+                            <h4 class="text-body-secondary text-start rating-text mb-2"> 
+                                <b> {{ allDrinksCount }} </b> 
+                                &nbsp;
+                                <u>Drinks On The Menu </u> 
+                            </h4>
+                        </div>
+                        <!-- edit menu -->
+                        <div class="col-3 d-grid no padding">
+                            <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text" v-on:click="editCatalogue()">
+                                Edit menu
+                            </button>
+                        </div>
+                        <div class="col-3 d-grid no padding">
+                            <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text">
+                                Share menu
+                            </button>
+                        </div>
+                    </div>
+                    <!-- search & sort by -->
+                    <div class="row">
+                        <!-- back button -->
+                        <div class="col-1 centered">
+                            <!-- back button -->
+                            <span style="display: inline-block;">
+                                <span class="pe-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16" v-on:click="resetListings()">
+                                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+                                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+                                    </svg>
+                                </span>
+                            </span>
+                        </div>
+                        <!-- search -->
+                        <div class="col-9">
+                            <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Search for expressions" style="height: 50px;" v-model="searchExpressions" v-on:keyup.enter="searchForExpressions()">
+                        </div>
+                
+                        <!-- sort by -->
+                        <div class="col-2">
+                            <div class="d-grid gap-2 dropdown">
+                                <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Sort By
+                                </button>
+                                <ul class="dropdown-menu"> <!-- TODO: sort button to be implemented -->
+                                    <li><a class="dropdown-item" href="#">Action</a></li>
+                                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- v-loop for each listing -->
+                        <div class="container text-start">
+                            <div v-for="listing in filteredListings" v-bind:key="listing._id" class="p-3">
+                                <div class="row">
+                                    <!-- image -->
+                                    <div class="col-2 image-container text-center mx-auto">
+                                        <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="default-text-no-background">
+                                            <img :src=" 'data:image/jpeg;base64,' + (listing['photo'] || defaultProfilePhoto)" style="width: 150px; height: 150px;">
+                                        </router-link>
+                                        <!-- edit listing -->
+                                        <button v-if="editingCatalogue == true" type="button" class="btn tertiary-btn reverse-clickable-text m-1">
+                                            <a class="reverse-clickable-text" v-bind:href="'/Producer/Producer-Edit-Listing/' + `${listing._id.$oid}`">
+                                                Edit Listing
+                                            </a>
+                                        </button>
+                                        <!-- delete listing -->
+                                        <button v-if="editingCatalogue == true" type="button" class="btn btn-danger reverse-clickable-text p-1" v-on:click="deleteListings(listing)">
+                                            <a class="reverse-clickable-text">
+                                                Delete Listing
+                                            </a>
+                                        </button>
+                                    </div>
+                                    <!-- details -->
+                                    <div class="col-10 ps-5">
+                                        <!-- expression name, have tried & want to try & bookmark buttons -->
+                                        <div class="row">
+                                            <!-- expression name -->
+                                            <div class="col-7">
+                                                <div class="row pt-2">
+                                                    <h4 class="default-text"> 
+                                                        <u> <b> {{ listing["listingName"] }}  </b> </u>
+                                                    </h4> 
+                                                </div>
+                                            </div>
 
-            </div> <!-- end of producer information -->
+                                            <!-- have tried button -->
+                                            <div class="col-2 pe-0">
+                                                <div v-html="checkDrinkLists(listing).buttons.haveTried" class="d-grid"> </div>
+                                            </div>
+                                            <!-- want to try button -->
+                                            <div class="col-2 ps-0">
+                                                <div v-html="checkDrinkLists(listing).buttons.wantToTry" class="d-grid"> </div>
+                                            </div>
+                                            <!-- bookmark button -->
+                                            <div class="col-1 text-end">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
+                                                    <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="row py-2">
+                                            <!-- official description -->
+                                            <div class="col-10">
+                                                <div class="row pt-2 pb-5">
+                                                    <h5 class="fst-italic scrollable-long"> {{ listing["officialDesc"] }} </h5>
+                                                </div>
+                                            </div>
+                                            <!-- rating -->
+                                            <div class="col-2">
+                                                <h1 class="rating-text text-end">
+                                                    {{ getRatings(listing) }}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                                    </svg>
+                                                </h1>
+                                            </div>
+                                        </div>
+                                        <!-- release date -->
+                                        <!-- NOTE: can exclude for now (no data) -->
+                                        <!-- <div class="row pt-5"> 
+                                            <h5> 
+                                                <b> Release Date:</b>
+                                                date
+                                            </h5>
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- end of listings -->
+                </div> <!-- end of show all menu items -->
+
+            </div> <!-- end of venue information -->
             
             <!-- view analytics & q&a for producer & opening hours and reservation details -->
             <div class="col-3">
@@ -559,6 +693,10 @@
 
                 // search
                 searchInput: '',
+                searchExpressions: '',
+                searchTerm: '',
+                searchResults: [],
+                filteredListings: [],
 
                 // specified venue
                 venue_id: null,
@@ -877,6 +1015,7 @@
             // show bar menu
             showBarMenu() {
                 this.showListings = true;
+                this.filteredListings = this.allDrinks; // initially set filtered drinks to all drinks
             },
 
             // get ratings for a listing
@@ -918,6 +1057,41 @@
                         wantToTry: wantToTryButton,
                     }
                 }
+            },
+
+            // for searching for expressions
+            searchForExpressions() {
+                // flag to check if there are search inputs
+                const searchExpressions = this.searchExpressions.toLowerCase();
+                this.searchTerm = this.searchExpressions;
+
+                // get all listings to search from
+                const listings = this.allDrinks;
+
+                // if there is something searched
+                const searchResults = listings.filter((listing) => {
+                    const expressionName = listing["listingName"].toLowerCase();
+                    return expressionName.includes(searchExpressions);
+                });
+
+                // if nothing found
+                if (searchResults.length == 0) {
+                    this.filteredListings = [];
+                } 
+                else {
+                    this.filteredListings = searchResults;
+                }
+
+                // if there is nothing searched
+                if (this.searchExpressions == '') {
+                    this.resetListings();
+                }
+            },
+
+            // for resetting listings (show full listings)
+            resetListings() {
+                this.searchExpressions = '';
+                this.filteredListings = this.allDrinks;
             },
 
             // when user click on "edit profile"
