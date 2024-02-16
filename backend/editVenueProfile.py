@@ -42,10 +42,10 @@ def editDetails():
     image64 = data['image64']
 
     try: 
-        updateImage = db.venuesNew.update_one({'_id': ObjectId(venueID)}, {'$set': {'photo': image64}})
-        updateName = db.venuesNew.update_one({'_id': ObjectId(venueID)}, {'$set': {'venueName': venueName}})
-        updateDesc = db.venuesNew.update_one({'_id': ObjectId(venueID)}, {'$set': {'venueDesc': venueDesc}})
-        updateCountry = db.venuesNew.update_one({'_id': ObjectId(venueID)}, {'$set': {'originLocation': originLocation}})
+        updateImage = db.venues.update_one({'_id': ObjectId(venueID)}, {'$set': {'photo': image64}})
+        updateName = db.venues.update_one({'_id': ObjectId(venueID)}, {'$set': {'venueName': venueName}})
+        updateDesc = db.venues.update_one({'_id': ObjectId(venueID)}, {'$set': {'venueDesc': venueDesc}})
+        updateCountry = db.venues.update_one({'_id': ObjectId(venueID)}, {'$set': {'originLocation': originLocation}})
 
         return jsonify(
             {   
@@ -82,7 +82,7 @@ def addUpdates():
     image64 = data['image64']
 
     try:
-        submitReq = db.venuesNew.update_one(
+        submitReq = db.venues.update_one(
             {'_id': ObjectId(venueID)},
             {'$push': {'updates': 
                         {
@@ -125,7 +125,7 @@ def sendQuestions():
     answer = data['answer']
 
     try:
-        submitReq = db.venuesNew.update_one(
+        submitReq = db.venues.update_one(
             {'_id': ObjectId(venueID)},
             {'$push': {'questionsAnswers': 
                         {
@@ -166,7 +166,7 @@ def sendAnswers():
     answer = data['answer']
 
     try:
-        submitReq = db.venuesNew.update_one(
+        submitReq = db.venues.update_one(
             {'_id': ObjectId(venueID), 'questionsAnswers._id': ObjectId(questionsAnswersID)},
             {'$set': {'questionsAnswers.$.answer': answer}}
         )
@@ -195,7 +195,7 @@ def likeUpdates():
     userID = data['userID']
 
     try: 
-        likeUpdate = db.venuesNew.update_one(
+        likeUpdate = db.venues.update_one(
             {'_id': ObjectId(venueID), 'updates._id': ObjectId(updateID)},
             {'$push': {'updates.$.likes': ObjectId(userID)}}
         )
@@ -226,7 +226,7 @@ def unlikeUpdates():
     userID = data['userID']
 
     try: 
-        unlikeUpdate = db.venuesNew.update_one(
+        unlikeUpdate = db.venues.update_one(
             {'_id': ObjectId(venueID), 'updates._id': ObjectId(updateID)},
             {'$pull': {'updates.$.likes': ObjectId(userID)}}
         )
