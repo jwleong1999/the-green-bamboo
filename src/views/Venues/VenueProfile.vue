@@ -876,12 +876,16 @@
             // get all drinks that a venue has
             async getAllDrinks() {
                 let allMenuItems = this.specified_venue["menu"];
+                let allListingsIDs = allMenuItems.reduce((acc, menuItem) => {
+                    return acc.concat(menuItem.listingsID);
+                }, []);
+                let uniqueListingsIDs = [...new Set(allListingsIDs.map(item => item["$oid"]))];
                 let allVenueDrinks = this.listings.filter(listing => {
                     let listing_id = listing._id["$oid"];
-                    return allMenuItems.some(menuItem => menuItem["$oid"] == listing_id);
+                    return uniqueListingsIDs.includes(listing_id);
                 });
                 this.allDrinks = allVenueDrinks;
-                this.allDrinksCount = allVenueDrinks.length
+                this.allDrinksCount = allVenueDrinks.length;
             },
 
             // get all reviews that a venue has

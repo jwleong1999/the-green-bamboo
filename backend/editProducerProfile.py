@@ -86,6 +86,7 @@ def addUpdates():
             {'_id': ObjectId(producerID)},
             {'$push': {'updates': 
                         {
+                            '_id': ObjectId(),
                             'date': date,
                             'text': text,
                             'photo': image64
