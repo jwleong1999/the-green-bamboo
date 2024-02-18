@@ -26,11 +26,12 @@ def parse_json(data):
 @app.route("/createReview", methods= ['POST'])
 def createReviews():
     rawReview = request.get_json()
-    rawReviewBottle = rawReview["reviewTarget"]['$oid']
-    rawReviewUserID = rawReview["userID"]['$oid']
-
+    rawReview['reviewTarget'] = ObjectId(rawReview['reviewTarget'])  # Convert reviewTarget to ObjectId
+    rawReview['userID'] = ObjectId(rawReview['userID'])  # Convert location to ObjectId
+    rawReviewBottle = rawReview["reviewTarget"]
+    rawReviewUserID = rawReview["userID"]
     existingReview = db.reviews.find_one({"reviewTarget": rawReviewBottle, "userID": rawReviewUserID})
-    # # Check whether review with the same userID and reviewTarget exists in the database
+    # Check whether review with the same userID and reviewTarget exists in the database
     if(existingReview != None):
         return jsonify(
             {   
@@ -43,8 +44,8 @@ def createReviews():
         ), 400
     
     
-    newReview = data.reviews(**rawReview)
 
+    newReview = data.reviews(**rawReview)
     try:
         insertResult = db.reviews.insert_one(data.asdict(newReview))
 

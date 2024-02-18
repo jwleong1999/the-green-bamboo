@@ -667,7 +667,8 @@
                             </div>
                         </div>
                         <!-- Delete review modal -->
-                        <div v-if="review.userID === userID">
+                        <!-- <div v-if="checkUserID(review.userID)"> -->
+                        <div v-if="review.userID['$oid'] === userID">
                             <button class="btn btn-danger" @click="setDeleteID(review)" data-bs-toggle="modal" data-bs-target="#deleteReview">Delete</button>
                         </div>
                         <div class="modal fade" id="deleteReview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -796,6 +797,7 @@
 <!-- JavaScript -->
 <script>
     // import ReviewModal from '@/components/EditReview.vue'
+    
     export default {
         // setup(){
 
@@ -864,6 +866,7 @@
                 selectedColour:"",
                 selectedImage: null,
                 image64: null,
+                photo: null,
                 observationTags: ["Beginner Friendly", "Recommended for Enthusiasts", "Good for Gifts", "Cool Packaging", "Acquired Taste", "Easy to Drink", "Good for Cocktails", "Good for Sipping", "Good for Highballs", "Unique Expression", "For My Worst Enemy", "Overhyped!", "More Complex Than Inception", "What Just Hit Me", "Is This Water?", "Try Once", "Daily Drinker","Sharp Like a Toothpick","Hot Like Hell", "Ticket to Funkytown", "Food Pairing Friendly", "Netflx & Chill", "Broke the Bank", "Smooth Criminal", "Grail"],
                 selectedObservations:[],
                 flavourTags: [],
@@ -1012,7 +1015,6 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
                         this.venues = response.data;
                         this.locationOptions = response.data.map(item => ({name: item.venueName, id:item._id}));
-                        console.log(this.locationOptions)
                         // this.whereToTry(); // find where to try specified listing [RE-ENABLE WHEN VENUES HAVE MENU ATTRIBUTE]
                     } 
                     catch (error) {
@@ -1070,7 +1072,6 @@
                             this.flavourTags = response.data.map(item => {
                                 return { ...item, showBox: false }; // Add the showBox property with initial value of false
                             });
-                            console.log(this.flavourTags)
                         } 
                     catch (error) {
                         console.error(error);
@@ -1153,17 +1154,9 @@
             },
 
             getReviewsForListing(listing) {
-                // console.log("here")
-                // console.log(listing._id)
-                // console.log(this.reviews)
-                // console.log("andhere")
                 const reviews = this.reviews.filter((review) => {
-                    // console.log('wraap')
-                    // console.log(review)
                     return review["reviewTarget"]['$oid'] == listing._id['$oid'];
                 });
-                // console.log(reviews)
-                // console.log("before this")
                 return reviews;
             },
 
@@ -1203,8 +1196,6 @@
 
             // Function to add review
             addReview(){
-                console.log(this.wouldBuyAgain)
-                console.log(this.wouldRecommend)
                 // let errorPhrase = "Your completion is incomplete"
                 // form validation
                 if(this.reviewDesc.length < 20){
@@ -1217,40 +1208,37 @@
                     this.reviewDesc = this.reviewDesc.trim();
                 }
                 if (this.photo !== null) {
-                    this.reviewDesc = this.reviewDesc.trim();
+                    this.photo = this.photo.trim();
                 }
                 if (this.aroma !== "") {
-                    this.reviewDesc = this.reviewDesc.trim();
+                    this.aroma = this.aroma.trim();
                 }
                 if (this.taste !== "") {
-                    this.reviewDesc = this.reviewDesc.trim();
+                    this.taste = this.taste.trim();
                 }
                 if (this.finish !== "") {
-                    this.reviewDesc = this.reviewDesc.trim();
+                    this.finish = this.finish.trim();
                 }
                 let submitAPI = "http://127.0.0.1:5005/createReview"
                 let submitData = {
                     "userID" : this.userID,
-                    "reviewTarget" : {
-                        "$oid": this.listing_id
-                    },
+                    "reviewTarget" :this.listing_id,
                     "rating" : this.rating,
-                    "reviewDesc": this.reviewDesc.trim(),
+                    "reviewDesc": this.reviewDesc,
                     "reviewType": "Listing",
                     "flavorTag" : this.selectedFlavourTags,
-                    "photo" : this.selectedImage.trim(),
+                    "photo" : this.selectedImage,
                     "colour" : this.selectedColour,
                     "language" : this.selectedLanguage,
-                    "aroma" : this.aroma.trim(),
-                    "taste" : this.taste.trim(),
-                    "finish" : this.finish.trim(),
+                    "aroma" : this.aroma,
+                    "taste" : this.taste,
+                    "finish" : this.finish,
                     "location" :this.selectedLocationId,
                     "willRecommend": this.wouldRecommend,
                     "wouldBuyAgain": this.wouldBuyAgain,
                     "observationTag": this.selectedObservations,
                     "createdDate": createdDate
                 }
-                console.log( submitData)
                 this.writeReview(submitAPI, submitData)
                 
             },
@@ -1264,7 +1252,6 @@
                     console.log(error);
                     this.reviewResponseCode = error.response.data.code
                 });
-                console.log(this.reviewResponseCode)
                 if(this.reviewResponseCode==201){
                     this.successSubmission=true; // Display success message
                     this.addingReview=false; // Hide submission in progress message
@@ -1343,8 +1330,8 @@
             },
 
             async deleteReview(){
-                let deleteAPI = "http://127.0.0.1:5006/deleteReview/" + this.deleteID
-                // console.log(deleteAPI)
+                let deleteAPI = "http://127.0.0.1:5006/deleteReview/" + this.deleteID['$oid']
+                console.log(this.deleteID)
                 const response = await this.$axios.delete(deleteAPI)
                 .then((response)=>{
                     this.deleteReviewCode = response.data.code
@@ -1353,7 +1340,6 @@
                     console.log(error);
                     this.deleteReviewCode = error.response.data.code
                 });
-                // console.log(this.reviewResponseCode)
                 if(this.deleteReviewCode==200){
                     this.successDelete=true; // Display success message
                     this.deletingReview=false; // Hide submission in progress message
@@ -1371,12 +1357,10 @@
             },
 
             setDeleteID(review){
-                console.log(review._id['$oid'])
-                this.deleteID = review._id['$oid']
+                this.deleteID = review._id
             },
 
             async voteReview(review, vote){
-                console.log(review);
                 if (vote == "upvote") {
                     review.userVotes.upvotes.push(this.userID);
                     if (review.userVotes.downvotes.some(vote => JSON.stringify(vote) === JSON.stringify(this.userID))) {
@@ -1411,6 +1395,11 @@
 
             reloadRoute() {
                 this.$router.go(); // Reloads the current route
+            },
+
+            checkUserID(review){
+                console.log(review)
+                console.log(this.userID)
             }
         }
     };
