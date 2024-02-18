@@ -235,7 +235,7 @@
 
                     <!-- add your review -->
                     <!-- replace below line with <ChildComponent :showReviewButton="userID.$oid !== 'defaultUser'" /> -->
-                    <div v-if="userID.$oid !== 'defaultUser'" class="col-5">
+                    <div v-if="userID !== 'defaultUser'" class="col-5">
                         <div class="d-grid gap-2">
                             <button class="btn primary-btn-less-round btn-lg" data-bs-toggle="modal" data-bs-target="#reviewModal"> 
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
@@ -256,7 +256,7 @@
                     
                     <!-- Modal -->
                     <!-- TODO component for modal <ReviewModal :isEditing='false' :reviewData="reviewData" :showReviewButton="userID.$oid !== 'defaultUser'" /> -->
-                    <div v-if="userID.$oid !== 'defaultUser'" class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true" data-bs-backdrop="static">
+                    <div v-if="userID !== 'defaultUser'" class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-lg">
                             <div class="text-success fst-italic fw-bold fs-3 modal-content" v-if='successSubmission'>
                                 <span>Your review has successfully been submitted!</span>
@@ -667,7 +667,7 @@
                             </div>
                         </div>
                         <!-- Delete review modal -->
-                        <div v-if="review.userID['$oid'] === userID['$oid']">
+                        <div v-if="review.userID === userID">
                             <button class="btn btn-danger" @click="setDeleteID(review)" data-bs-toggle="modal" data-bs-target="#deleteReview">Delete</button>
                         </div>
                         <div class="modal fade" id="deleteReview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -880,9 +880,7 @@
                 selectedLocationId: "",
                 extendObservation: false,
                 loggedIn:false,
-                userID: {
-                        "$oid": "defaultUser"
-                    },
+                userID: "defaultUser",
                 reviewDescError:'',
                 reviewResponseCode:'',
                 addingReview: true,
@@ -920,17 +918,17 @@
             
             this.loadData();
             // Load local storage variables
-            // const accID = localStorage.getItem("88B_accID");
-            // if(accID !== null){
-            //     this.userID = {
-            //     "$oid": localStorage.getItem('88B_accID')
-            // };
+            const accID = localStorage.getItem("88B_accID");
+            if(accID !== null){
+                this.userID = localStorage.getItem('88B_accID')
+            }
             //     this.loggedIn = true
             // }
             const accType = localStorage.getItem("88B_accType");
             if(accType !==null){
                 this.acctype = accType
             }
+            console.log(this.userID, "herehere")
         },
         computed: {
             filteredOptions() {
