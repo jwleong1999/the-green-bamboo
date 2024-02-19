@@ -1,4 +1,6 @@
-# Port: 6000
+# Port: 5200
+# Routes: /voteReview (POST)
+# -----------------------------------------------------------------------------------------
 
 import bson
 import json
@@ -12,7 +14,6 @@ from pymongo.errors import DuplicateKeyError, OperationFailure
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
-from bson.objectid import ObjectId
 from gridfs import GridFS
 import os
 from datetime import datetime
@@ -25,6 +26,10 @@ db = PyMongo(app).db
 mongo = PyMongo(app)
 fs = GridFS(mongo.db)
 
+# -----------------------------------------------------------------------------------------
+# [POST] Vote review
+# - Update review with new votes
+# - Possible return codes: 201 (Updated), 500 (Error during update)
 @app.route('/voteReview', methods=['POST'])
 def voteReview():
     data = request.get_json()
@@ -53,7 +58,6 @@ def voteReview():
             }
         ), 500
 
-
-
+# -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(debug=True, port=5200)

@@ -1,7 +1,8 @@
-# Flask backend to get data from MongoDB
 # Port: 5000
 # Routes: /getCountries (GET), /getListings (GET), /getProducers (GET), /getReviews (GET), /getUsers (GET),
-#        /getVenues (GET), /getVenuesAPI (GET), /getDrinkTypes (GET), /getRequestListings (GET), /getRequestEdits (GET), /getModRequests (GET)
+#           /getVenues (GET), /getVenuesAPI (GET), /getDrinkTypes (GET), /getRequestListings (GET), /getRequestEdits (GET),
+#           /getModRequests (GET), /getFlavourTags (GET), /getLanguages (GET)
+# -----------------------------------------------------------------------------------------
 
 # pip install python-bsonjs
 # pip install Flask
@@ -31,6 +32,7 @@ db = PyMongo(app).db
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
+# -----------------------------------------------------------------------------------------
 # [GET] Countries
 @app.route("/getCountries")
 def getCountries():
@@ -46,6 +48,7 @@ def getCountries():
         allCountries.append(doc)
     return allCountries
 
+# -----------------------------------------------------------------------------------------
 # [GET] Listings
 @app.route("/getListings")
 def getListings():
@@ -61,6 +64,7 @@ def getListings():
         allListings.append(doc)
     return allListings
 
+# -----------------------------------------------------------------------------------------
 # [GET] Producers
 @app.route("/getProducers")
 def getProducers():
@@ -76,6 +80,7 @@ def getProducers():
         allProducers.append(doc)
     return allProducers
 
+# -----------------------------------------------------------------------------------------
 # [GET] Reviews
 @app.route("/getReviews")
 def getReviews():
@@ -91,6 +96,7 @@ def getReviews():
         allReviews.append(doc)
     return allReviews
 
+# -----------------------------------------------------------------------------------------
 # [GET] Users
 @app.route("/getUsers")
 def getUsers():
@@ -106,6 +112,7 @@ def getUsers():
         allUsers.append(doc)
     return allUsers
 
+# -----------------------------------------------------------------------------------------
 # [GET] Venues
 @app.route("/getVenues")
 def getVenues():
@@ -121,6 +128,7 @@ def getVenues():
         allVenues.append(doc)
     return allVenues
 
+# -----------------------------------------------------------------------------------------
 # [GET] VenuesAPI
 @app.route("/getVenuesAPI")
 def getVenuesAPI():
@@ -136,6 +144,7 @@ def getVenuesAPI():
         allVenuesAPI.append(doc)
     return allVenuesAPI
 
+# -----------------------------------------------------------------------------------------
 # [GET] DrinkTypes
 @app.route("/getDrinkTypes")
 def getDrinkTypes():
@@ -151,6 +160,7 @@ def getDrinkTypes():
         allDrinkTypes.append(doc)
     return allDrinkTypes
 
+# -----------------------------------------------------------------------------------------
 # [GET] RequestListings
 @app.route("/getRequestListings")
 def getRequestListings():
@@ -166,6 +176,7 @@ def getRequestListings():
         allRequestListings.append(doc)
     return allRequestListings
 
+# -----------------------------------------------------------------------------------------
 # [GET] RequestEdits
 @app.route("/getRequestEdits")
 def getRequestEdits():
@@ -181,6 +192,7 @@ def getRequestEdits():
         allRequestEdits.append(doc)
     return allRequestEdits
 
+# -----------------------------------------------------------------------------------------
 # [GET] modRequests
 @app.route("/getModRequests")
 def getModRequests():
@@ -196,10 +208,11 @@ def getModRequests():
         allModRequests.append(doc)
     return allModRequests
 
+# -----------------------------------------------------------------------------------------
 # [GET] flavourTags
 @app.route("/getFlavourTags")
 def getFlavourTags():
-    #this step finds all the items in the collection, specifying Mod Requests
+    #this step finds all the items in the collection, specifying Flavour Tags
     data = db.flavourTags.find({})
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
@@ -211,10 +224,11 @@ def getFlavourTags():
         allFlavourTags.append(doc)
     return allFlavourTags
 
+# -----------------------------------------------------------------------------------------
 # [GET] Languages
 @app.route("/getLanguages")
 def getLanguages():
-    #this step finds all the items in the collection, specifying Mod Requests
+    #this step finds all the items in the collection, specifying Languages
     data = db.languages.find({})
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
@@ -226,5 +240,6 @@ def getLanguages():
         languages.append(doc)
     return languages
 
+# -----------------------------------------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, port = 5000)

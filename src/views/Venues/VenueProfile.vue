@@ -378,15 +378,24 @@
                             </h4>
                         </div>
                         <!-- edit menu -->
-                        <div class="col-3 d-grid no padding">
-                            <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text" v-on:click="editCatalogue()">
-                                Edit menu
-                            </button>
+                        <!-- [if] user type is venue -->
+                        <div v-if="userType == 'venue'" class="col-6 d-grid no padding">
+                            <div class="row">
+                                <div class="col-6 d-grid no padding">
+                                    <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text" v-on:click="editCatalogue()">
+                                        Edit menu
+                                    </button>
+                                </div>
+                                <div class="col-6 d-grid no padding">
+                                    <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text">
+                                        Share menu
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-3 d-grid no padding">
-                            <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text">
-                                Share menu
-                            </button>
+                        <!-- [else] user type not venue -->
+                        <div v-else>
+                            <div class="col-6"></div>
                         </div>
                     </div>
                     <!-- search & sort by -->
@@ -662,7 +671,7 @@
 
                 // define user type here (defined on mounted() function)
                 user_id: "65b327d5687b64f8302d56ef",
-                userType: "e",
+                userType: "venue",
 
                 // all drinks that producer has
                 allDrinks: [],

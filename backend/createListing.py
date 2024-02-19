@@ -1,4 +1,6 @@
-# Marked for deletion: route has been moved to editListing.py
+# Port: 5001
+# Routes: /createListing (POST)
+# -----------------------------------------------------------------------------------------
 
 import bson
 import json
@@ -22,19 +24,18 @@ db = PyMongo(app).db
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
-#[POST]
-# require bottle name, producer ID, bottler, country of origin, drink type, ABV, official description, photo
-# optional drink category, age, source link, review link
+# -----------------------------------------------------------------------------------------
+# [POST] Creates a listing
+# - Insert entry into the "listings" collection. Follows listings dataclass requirements.
+# - Duplicate listing check: If a listing with the same name exists, reject the request
+# - Possible return codes: 201 (Created), 400 (Duplicate Detected), 500 (Error during creation)
 @app.route("/createListing", methods= ['POST'])
 def createListings():
     rawBottle = request.get_json()
+
+    # Duplicate listing check: Reject if listing with the same bottle name already exists in the database
     rawBottleName = rawBottle["listingName"]
-
-
-    # existingBottle = db.Listings.find_one({"Expression Name": rawBottleName})
     existingBottle = db.listings.find_one({"listingName": rawBottleName})
-
-    # Check whether bottle with the same name exists in the database
     if(existingBottle != None):
         return jsonify(
             {   
@@ -47,8 +48,8 @@ def createListings():
         ), 400
     
     
+    # Insert new listing into database
     newBottle = data.listings(**rawBottle)
-
     try:
         insertResult = db.listings.insert_one(data.asdict(newBottle))
 
@@ -69,7 +70,7 @@ def createListings():
                 "message": "An error occurred creating the listing."
             }
         ), 500
-    
 
+# -----------------------------------------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, port = 5001)

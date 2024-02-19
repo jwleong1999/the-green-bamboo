@@ -1,6 +1,6 @@
-# Flask backend for editing user profile
 # Port: 5100
-# Routes: /editDetails (POST), /editBookmark (POST)
+# Routes: /editDetails (POST), /updateBookmark (POST), /submitModRequest (POST)
+# -----------------------------------------------------------------------------------------
 
 import bson
 import json
@@ -14,8 +14,6 @@ from pymongo.errors import DuplicateKeyError, OperationFailure
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
-
-from bson.objectid import ObjectId
 from gridfs import GridFS
 import os
 
@@ -27,6 +25,10 @@ db = PyMongo(app).db
 mongo = PyMongo(app)
 fs = GridFS(mongo.db)
 
+# -----------------------------------------------------------------------------------------
+# [POST] Edit user profile
+# - Update user profile with new details
+# - Possible return codes: 201 (Updated), 500 (Error during update)
 @app.route('/editDetails', methods=['POST'])
 def editDetails():
     data = request.get_json()
@@ -60,7 +62,10 @@ def editDetails():
             }
         ), 500
     
-
+# -----------------------------------------------------------------------------------------
+# [POST] Update user bookmark
+# - Update user bookmark with new details
+# - Possible return codes: 201 (Updated), 500 (Error during update)
 @app.route('/updateBookmark', methods=['POST'])
 def updateBookmark():
     data = request.get_json()
@@ -88,7 +93,11 @@ def updateBookmark():
                 "message": "An error occurred updating the image."
             }
         ), 500
-    
+
+# -----------------------------------------------------------------------------------------
+# [POST] Submit mod request
+# - Submit mod request with new details
+# - Possible return codes: 201 (Updated), 500 (Error during update)
 @app.route('/submitModRequest', methods=['POST'])
 def submitModRequest():
     data = request.get_json()
@@ -122,5 +131,6 @@ def submitModRequest():
             }
         ), 500
 
+# -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(debug=True, port=5100)

@@ -630,8 +630,8 @@
                                 <h4 class="square-inline text-start mr-auto"> 88 Bamboo's Deepdive </h4>
                             </div>
                             <div class="py-2 text-start">
-                                <a class="text-left default-text-no-background" :href="specified_producer['88B Deepdive']">
-                                    {{ specified_producer["88B Deepdive"] }}
+                                <a class="text-left default-text-no-background" :href="specified_producer['producerLink']">
+                                    {{ specified_producer["producerLink"] }}
                                 </a>
                             </div>
                             <div class="py-2"></div>
@@ -670,7 +670,7 @@
                 modRequests: [],
 
                 // define user type here (defined on mounted() function)
-                user_id: "65b327d5687b64f8302d56ef",
+                user_id: "65b327d5687b64f8302d56ef", // 65b327d5687b64f8302d56ee | 65b327d5687b64f8302d56ef
                 userType: "producer",
 
                 // all drinks that producer has

@@ -1,6 +1,6 @@
-# Flask backend for handling user-submitted requests for new listings and edits to existing listings.
 # Port: 5002
-# Routes: /requestListing (POST), /requestEdits (POST)
+# Routes: /requestListing (POST), /requestListingModify/<requestID> (POST), /requestEdits (POST), /requestEditsModify/<requestID> (POST)
+# -----------------------------------------------------------------------------------------
 
 import bson
 import json
@@ -24,15 +24,17 @@ db = PyMongo(app).db
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
+# -----------------------------------------------------------------------------------------
 # [POST] Request for listing creation
-# require bottle name, bottler, drink type, website/source link, producer (id OR name), brand relationship, review status, user ID, photo
-# optional country of origin, drink category, ABV, age, review link
+# - Insert entry into the "requestListings" collection. Follows requestListings dataclass requirements.
+# - Duplicate listing check: If a listing with the same name exists, reject the request
+# - Possible return codes: 201 (Created), 400 (Duplicate Detected), 500 (Error during creation)
 @app.route("/requestListing", methods= ['POST'])
 def requestListing():
     rawRequest = request.get_json()
-    rawRequestName = rawRequest["listingName"]
 
-    # Check if bottle with the same name already exists in the database
+    # Duplicate listing check: Reject if listing with the same bottle name already exists in the "listings" collection
+    rawRequestName = rawRequest["listingName"]
     existingBottle = db.listings.find_one({"listingName": rawRequestName})
     if (existingBottle != None):
         return jsonify(
@@ -70,15 +72,17 @@ def requestListing():
             }
         ), 500
 
+# -----------------------------------------------------------------------------------------
 # [POST] Edit submitted request for listing creation
-# require bottle name, bottler, drink type, website/source link, producer (id OR name), brand relationship, review status, user ID, photo
-# optional country of origin, drink category, ABV, age, review link
+# - Update entry with specified id from the "requestListings" collection. Follows requestListings dataclass requirements.
+# - Duplicate listing check: If a listing with the same name exists, reject the request
+# - Possible return codes: 201 (Updated), 400 (Duplicate Detected), 500 (Error during update)
 @app.route("/requestListingModify/<string:requestID>", methods= ['POST'])
 def requestListingModify(requestID):
     rawRequest = request.get_json()
-    rawRequestName = rawRequest["listingName"]
 
-    # Check if bottle with the same name already exists in the database
+    # Duplicate listing check: Reject if listing with the same bottle name already exists in the "listings" collection
+    rawRequestName = rawRequest["listingName"]
     existingBottle = db.listings.find_one({"listingName": rawRequestName})
     if (existingBottle != None):
         return jsonify(
@@ -116,15 +120,16 @@ def requestListingModify(requestID):
             }
         ), 500
 
+# -----------------------------------------------------------------------------------------
 # [POST] Request for listing modification
-# require proposed edits, brand relationship, original listing ID, user ID, review status
-# optional source link, duplicate link
+# - Insert entry into the "requestEdits" collection. Follows requestEdits dataclass requirements.
+# - Possible return codes: 201 (Created), 400 (Invalid Listing), 500 (Error during creation)
 @app.route("/requestEdits", methods= ['POST'])
 def requestEdits():
     rawRequest = request.get_json()
-    rawListingID = rawRequest["listingID"]["$oid"]
 
     # Check if edit request is linked to a listing that exists in the database
+    rawListingID = rawRequest["listingID"]["$oid"]
     existingListing = db.listings.find_one({"_id": ObjectId(rawListingID)})
 
     if (existingListing == None):
@@ -163,15 +168,16 @@ def requestEdits():
             }
         ), 500
 
+# -----------------------------------------------------------------------------------------
 # [POST] Edit submitted request for listing modification
-# require proposed edits, brand relationship, original listing ID, user ID, review status
-# optional source link, duplicate link
+# - Update entry with specified id from the "requestEdits" collection. Follows requestEdits dataclass requirements.
+# - Possible return codes: 201 (Updated), 400 (Invalid Listing), 500 (Error during update)
 @app.route("/requestEditsModify/<string:requestID>", methods= ['POST'])
 def requestEditsModify(requestID):
     rawRequest = request.get_json()
-    rawListingID = rawRequest["listingID"]["$oid"]
 
     # Check if edit request is linked to a listing that exists in the database
+    rawListingID = rawRequest["listingID"]["$oid"]
     existingListing = db.listings.find_one({"_id": ObjectId(rawListingID)})
 
     if (existingListing == None):
@@ -210,5 +216,6 @@ def requestEditsModify(requestID):
             }
         ), 500
 
+# -----------------------------------------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, port = 5002)
