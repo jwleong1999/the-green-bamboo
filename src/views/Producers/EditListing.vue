@@ -222,7 +222,7 @@
                                                 </div>
                                                 
                                                 <div class="row">
-                                                    <label for="input" v-if="tempDrinkType == 'Wine'">Enter Vintage:</label>
+                                                    <label for="input" v-if="tempDrinkType == 'Wine (Grape wine)'">Enter Vintage:</label>
                                                     
                                                     <label for="input" v-else>Enter Bottle Age:</label>
 
@@ -533,7 +533,7 @@
                     "bottler": this.tempBottler.trim(),
                     "originCountry": this.tempCountry.trim(),
                     "drinkType": this.tempDrinkType.trim(),
-                    "abv": this.tempABV,
+                    "abv": this.tempABV.trim(),
                     "officialDesc": this.tempDescription.trim(),
                     "photo": this.image64.trim(),
                     "age":this.tempAge.trim(),
