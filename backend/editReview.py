@@ -59,5 +59,48 @@ def voteReview():
         ), 500
 
 # -----------------------------------------------------------------------------------------
+    
+# [POST] Vote review
+# - Update review with new votes
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/updateReview/<id>', methods=['PUT'])
+def updateReview(id):
+    data = request.get_json()
+    existingReview = db.reviews.find_one({'_id': ObjectId(id)})
+    data['reviewTarget'] = ObjectId(data['reviewTarget'])  # Convert reviewTarget to ObjectId
+    data['userID'] = ObjectId(data['userID'])  # Convert userID to ObjectId
+    if(existingReview == None):
+        return jsonify(
+            {   
+                "code": 400,
+                "data": {
+                    "listingName": data['reviewDesc']
+                },
+                "message": "Review does not exist."
+            }
+        ), 400
+
+    try: 
+        voteReview = db.reviews.update_one({'_id': ObjectId(id)}, {'$set': data})
+
+        return jsonify(
+            {   
+                "code": 200,
+                "data": data['reviewDesc']
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "data": data['reviewDesc']
+                },
+                "message": "An error occurred updating the review."
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(debug=True, port=5200)

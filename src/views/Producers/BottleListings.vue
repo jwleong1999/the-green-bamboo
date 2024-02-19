@@ -234,9 +234,9 @@
                     </div>
 
                     <!-- add your review -->
-                    <!-- replace below line with <ChildComponent :showReviewButton="userID.$oid !== 'defaultUser'" /> -->
+                    <!-- Display Add review or Review already added accordingly to whether user already left review -->
                     <div v-if="userID !== 'defaultUser'" class="col-5">
-                        <div class="d-grid gap-2">
+                        <div v-if="!inEdit" class="d-grid gap-2">
                             <button class="btn primary-btn-less-round btn-lg" data-bs-toggle="modal" data-bs-target="#reviewModal"> 
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
@@ -244,6 +244,12 @@
                                 Add Your Review
                             </button>
                         </div>
+                        <div v-else class="d-grid gap-2">
+                            <button class="btn primary-btn-less-round btn-lg"> 
+                                Review already added
+                            </button>
+                        </div>
+
                     </div>
                     <div v-else class="col-5">
                         <div class="d-grid gap-2">
@@ -259,7 +265,8 @@
                     <div v-if="userID !== 'defaultUser'" class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-lg">
                             <div class="text-success fst-italic fw-bold fs-3 modal-content" v-if='successSubmission'>
-                                <span>Your review has successfully been submitted!</span>
+                                <span v-if="!inEdit">Your review has successfully been submitted!</span>
+                                <span v-else>Your review has successfully been updated!</span>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" @click="reloadRoute" data-bs-dismiss="modal">Close</button>
                                 </div>
@@ -267,14 +274,17 @@
 
                             <div class="text-danger fst-italic fw-bold fs-3 modal-content" v-if="errorSubmission"> 
                                 <div v-if="errorMessage" class = "row"> 
-                                    <span >An error occurred while attempting to submit, please try again!</span>
+                                    <span v-if="!inEdit">An error occurred while attempting to submit, please try again!</span>
+                                    <span v-else>An error occurred while attempting to update, please try again!</span>
                                     <br>
                                     <button class="btn primary-btn btn-sm" @click="reset">
                                         <span class="fs-5 fst-italic"> Retry your submission here! </span>
                                     </button>
                                 </div>
-                                
-                                <span v-if="duplicateEntry">You've already submitted a review for this bottle listing!</span>
+                                <div v-if="duplicateEntry">
+                                    <span v-if="!inEdit">You've already submitted a review for this bottle listing!</span>
+                                    <span v-else>There is no review for this bottle listing!</span>
+                                </div>
                                 <br>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -284,7 +294,9 @@
                             <div v-if='addingReview' class="modal-content">
                                 <!-- change modal header colour -->
                                 <div class="modal-header" style="background-color: #535C72">
-                                    <h5 class="modal-title" id="reviewModalLabel" style="color: white;">Add Your Review</h5>
+                                    <!-- V-if to edit or add review -->
+                                    <h5 v-if="!inEdit" class="modal-title" id="reviewModalLabel" style="color: white;">Add Your Review</h5>
+                                    <h5 v-else class="modal-title" id="reviewModalLabel" style="color: white;">Edit Your Review</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
 
@@ -521,9 +533,9 @@
                                             <!-- DONE v:model here the file -->
                                             <input class="form-control mb-2" @change="onFileChange" type="file" id="reviewPhoto">
                                             <div class = "row">
-                                                <img :src="selectedImage ? selectedImage : 'none'" alt="" id="output">
+                                                <img :src="image64 ? 'data:image/jpeg;base64,' + image64 : 'none'" alt="" id="output">
                                             </div>
-                                            <button v-if="selectedImage!==null" class="btn text-start mb-1" style="background-color: #535C72;color: white;" @click="clearPhoto">Clear Photo</button>
+                                            <button v-if="image64!==null" class="btn text-start mb-1" style="background-color: #535C72;color: white;" @click="clearPhoto">Clear Photo</button>
                                         </div>
                                         
                                         <div class="form-group mb-3">
@@ -555,7 +567,8 @@
                                 <!-- End of modal body -->
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" @click="addReview" class="btn btn-primary">Submit Review</button>
+                                    <button v-if="!inEdit" type="button" @click="addReview" class="btn btn-primary">Submit Review</button>
+                                    <button v-else type="button" @click="editReview" class="btn btn-primary">Update Review</button>
                                 </div>
                             </div>
                         </div>
@@ -626,12 +639,18 @@
                         <!-- user reviews -->
                         <div class="col-9">
                             <div class="row">
-                                <div style="display: inline;" class="text-start mb-2">
+                                <div class="d-flex align-items-center text-start mb-2">
                                     @{{ getUsernameFromReview(review) }} rated {{ review['rating'] }} 
                                     <!-- star icon -->
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill me-5" viewBox="0 0 16 16">
                                         <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                     </svg>
+                                    <!-- Insert Edit modal here -->
+
+                                    <div v-if="review.userID['$oid'] === userID" class="ms-2 ml-auto">
+                                        <button class="btn btn-warning me-1" @click="setUpdateID(review)" data-bs-toggle="modal" data-bs-target="#reviewModal">Edit</button>
+                                        <button class="btn btn-danger ms-1" @click="setDeleteID(review)" data-bs-toggle="modal" data-bs-target="#deleteReview">Delete</button>
+                                    </div>
                                 </div>
                                 <div class="text-start mb-3">
                                     {{ review['reviewDesc'] }}
@@ -668,9 +687,9 @@
                         </div>
                         <!-- Delete review modal -->
                         <!-- <div v-if="checkUserID(review.userID)"> -->
-                        <div v-if="review.userID['$oid'] === userID">
+                        <!-- <div v-if="review.userID['$oid'] === userID">
                             <button class="btn btn-danger" @click="setDeleteID(review)" data-bs-toggle="modal" data-bs-target="#deleteReview">Delete</button>
-                        </div>
+                        </div> -->
                         <div class="modal fade" id="deleteReview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 
@@ -864,7 +883,6 @@
                                     "pink":['#FDC1FE', '#AD1181'],
                                 },
                 selectedColour:"",
-                selectedImage: null,
                 image64: null,
                 photo: null,
                 observationTags: ["Beginner Friendly", "Recommended for Enthusiasts", "Good for Gifts", "Cool Packaging", "Acquired Taste", "Easy to Drink", "Good for Cocktails", "Good for Sipping", "Good for Highballs", "Unique Expression", "For My Worst Enemy", "Overhyped!", "More Complex Than Inception", "What Just Hit Me", "Is This Water?", "Try Once", "Daily Drinker","Sharp Like a Toothpick","Hot Like Hell", "Ticket to Funkytown", "Food Pairing Friendly", "Netflx & Chill", "Broke the Bank", "Smooth Criminal", "Grail"],
@@ -899,6 +917,10 @@
                 errorDelete:false,
                 errorDeleteMessage:false,
 
+                // To edit review
+                inEdit:false,
+                specificReview:[],
+                
                 // matched user
                 matchedUser: {},
 
@@ -931,7 +953,6 @@
             if(accType !==null){
                 this.acctype = accType
             }
-            console.log(this.userID, "herehere")
         },
         computed: {
             filteredOptions() {
@@ -966,6 +987,28 @@
                         catch (error) {
                             console.error(error);
                         }
+                    // flavourTags
+                    // _id, hexcode, familyTag, subtag, showbox
+                    try {
+                                const response = await this.$axios.get('http://127.0.0.1:5000/getFlavourTags');
+                                this.flavourTags = response.data.map(item => {
+                                    return { ...item, showBox: false }; // Add the showBox property with initial value of false
+                                });
+                            } 
+                        catch (error) {
+                            console.error(error);
+                        }
+                    // venues
+                    // _id, venueName, venueDesc, originCountry, address, openingHours
+                        try {
+                            const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
+                            this.venues = response.data;
+                            this.locationOptions = response.data.map(item => ({name: item.venueName, id:item._id}));
+                            // this.whereToTry(); // find where to try specified listing [RE-ENABLE WHEN VENUES HAVE MENU ATTRIBUTE]
+                        } 
+                        catch (error) {
+                            console.error(error);
+                        }
                 // listings
                 // _id, listingName, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, officialDesc, sourceLink, photo
                     try {
@@ -975,9 +1018,9 @@
                         this.specified_listing = this.listings.find(listing => listing._id.$oid == this.listing_id); // find specified listing
                         this.producer_id = this.specified_listing.producerID.$oid // find specified producer
                         console.log(this.specified_listing)
-                        console.log('here')
                         this.whereToBuy(); // find where to buy specified listing
                         this.filteredReviews = this.getReviewsForListing(this.specified_listing);
+                        this.specificReview = this.getLoggedUserReview();
                     } 
                     catch (error) {
                         console.error(error);
@@ -1009,17 +1052,7 @@
                     catch (error) {
                         console.error(error);
                     }
-                // venues
-                // _id, venueName, venueDesc, originCountry, address, openingHours
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
-                        this.venues = response.data;
-                        this.locationOptions = response.data.map(item => ({name: item.venueName, id:item._id}));
-                        // this.whereToTry(); // find where to try specified listing [RE-ENABLE WHEN VENUES HAVE MENU ATTRIBUTE]
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                
                 // venuesAPI
                 // _id, venueName, venueDesc, originCountry
                 try {
@@ -1061,17 +1094,6 @@
                     try {
                             const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
                             this.modRequests = response.data;
-                        } 
-                    catch (error) {
-                        console.error(error);
-                    }
-                // flavourTags
-                // _id, hexcode, familyTag, subtag, showbox
-                    try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getFlavourTags');
-                            this.flavourTags = response.data.map(item => {
-                                return { ...item, showBox: false }; // Add the showBox property with initial value of false
-                            });
                         } 
                     catch (error) {
                         console.error(error);
@@ -1160,6 +1182,33 @@
                 return reviews;
             },
 
+            getLoggedUserReview(){
+                const specificReview = this.filteredReviews.filter((review) => {
+                    return review["userID"]['$oid'] == this.userID;
+                });
+                if(specificReview.length!=0){
+                    this.inEdit=true
+                    this.selectedLanguage= specificReview[0].language
+                    this.selectedColour= specificReview[0].colour
+                    this.reviewDesc= specificReview[0].reviewDesc
+                    this.wouldRecommend= specificReview[0].willRecommend
+                    this.wouldBuyAgain= specificReview[0].wouldBuyAgain
+                    this.aroma= specificReview[0].aroma
+                    this.taste= specificReview[0].taste
+                    this.finish= specificReview[0].finish
+                    this.rating= specificReview[0].rating
+                    this.selectedFlavourTags= specificReview[0].flavorTag
+                    this.selectedObservations= specificReview[0].observationTag
+                    this.image64= specificReview[0].photo
+                    const selectedLocation = this.locationOptions.filter((location)=>{
+                        return location['id']['$oid'] == specificReview[0].location['$oid']
+                    })
+                    this.selectedLocation = selectedLocation[0].name
+                }
+
+                return specificReview
+            },
+
             getUsernameFromReview(review) {
                 const user = this.users.find((user) => {
                     return user["_id"]["$oid"] == review["userID"]["$oid"];
@@ -1187,7 +1236,6 @@
                 const reader = new FileReader();
 
                 reader.onloadend = async () => {
-                    this.selectedImage = reader.result;
                     const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
                     this.image64 = base64String;
                 };
@@ -1227,7 +1275,7 @@
                     "reviewDesc": this.reviewDesc,
                     "reviewType": "Listing",
                     "flavorTag" : this.selectedFlavourTags,
-                    "photo" : this.selectedImage,
+                    "photo" : this.image64,
                     "colour" : this.selectedColour,
                     "language" : this.selectedLanguage,
                     "aroma" : this.aroma,
@@ -1241,6 +1289,74 @@
                 }
                 this.writeReview(submitAPI, submitData)
                 
+            },
+
+            editReview(){
+                if(this.reviewDesc.length < 20){
+                    this.reviewDescError ="Character count is less than 20, please write more for a more detailed review."
+                    alert("Submission has error, please fill in the required fields properly")
+                    return "Submission error"
+                }
+                if (this.reviewDesc !== "") {
+                    this.reviewDesc = this.reviewDesc.trim();
+                }
+                if (this.photo !== null) {
+                    this.photo = this.photo.trim();
+                }
+                if (this.aroma !== "") {
+                    this.aroma = this.aroma.trim();
+                }
+                if (this.taste !== "") {
+                    this.taste = this.taste.trim();
+                }
+                if (this.finish !== "") {
+                    this.finish = this.finish.trim();
+                }
+                let submitAPI = "http://127.0.0.1:5200/updateReview/" + this.specificReview[0]._id['$oid']
+                let submitData = {
+                    "userID" : this.userID,
+                    "reviewTarget" :this.listing_id,
+                    "rating" : this.rating,
+                    "reviewDesc": this.reviewDesc,
+                    "reviewType": "Listing",
+                    "flavorTag" : this.selectedFlavourTags,
+                    "photo" : this.image64,
+                    "colour" : this.selectedColour,
+                    "language" : this.selectedLanguage,
+                    "aroma" : this.aroma,
+                    "taste" : this.taste,
+                    "finish" : this.finish,
+                    "location" :this.selectedLocationId,
+                    "willRecommend": this.wouldRecommend,
+                    "wouldBuyAgain": this.wouldBuyAgain,
+                    "observationTag": this.selectedObservations,
+                    "createdDate": this.specificReview[0].createdDate
+                }
+                this.updateReview(submitAPI, submitData)
+            },
+
+            async updateReview(submitAPI, submitData){
+                const response = await this.$axios.put(submitAPI, submitData)
+                .then((response)=>{
+                    this.reviewResponseCode = response.data.code
+                })
+                .catch((error)=>{
+                    console.log(error);
+                    this.reviewResponseCode = error.response.data.code
+                });
+                if(this.reviewResponseCode==200){
+                    this.successSubmission=true; // Display success message
+                    this.addingReview=false; // Hide submission in progress message
+                }else{
+                    this.errorSubmission=true; // Display error message
+                    this.addingReview=false; // Hide submission in progress message
+                    if(this.reviewResponseCode==400){
+                        this.duplicateEntry = true // Display duplicate entry message
+                    }else{
+                        this.errorMessage = true // Display generic error message
+                    }
+                }
+                return response
             },
 
             async writeReview(submitAPI, submitData){
@@ -1325,7 +1441,7 @@
             },
 
             clearPhoto(){
-                this.selectedImage = null
+                this.image64 = null
                 document.getElementById('reviewPhoto').value = '';
             },
 
@@ -1358,6 +1474,10 @@
 
             setDeleteID(review){
                 this.deleteID = review._id
+            },
+
+            setUpdateID(review){
+                this.updateID = review._id
             },
 
             async voteReview(review, vote){
