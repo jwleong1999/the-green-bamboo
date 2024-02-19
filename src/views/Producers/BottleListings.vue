@@ -657,12 +657,12 @@
                                 </div>
                                 <!-- flavour tag -->
                                 <div class="text-start mb-1">
-                                    <span class="badge rounded-pill text-bg-primary me-2">Primary</span>
-                                    <span class="badge rounded-pill text-bg-success me-2">Success</span>
+                                    <!-- flavor tag -->
+                                        <span v-for="(tag, index) in review.flavorTag" :key="index" class="badge rounded-pill me-2" :style="{ backgroundColor: getTagColor(tag) }">{{ getTagName(tag) }}</span>
                                 </div>
                                 <div style="display: inline;" class="text-start">
                                     <!-- voting -->
-                                    <!-- <svg v-if="!JSON.stringify(review.userVotes.upvotes).includes(JSON.stringify(userID))" @click="voteReview(review, 'upvote')" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-up" viewBox="0 0 16 16">
+                                    <svg v-if="!JSON.stringify(review.userVotes.upvotes).includes(JSON.stringify(userID))" @click="voteReview(review, 'upvote')" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-up" viewBox="0 0 16 16">
                                         <path d="M3.204 11h9.592L8 5.519zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659"/>
                                     </svg>
                                     <svg v-else @click="voteReview(review, 'unupvote')" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
@@ -674,7 +674,7 @@
                                     </svg>
                                     <svg v-else @click="voteReview(review, 'undownvote')" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down-fill me-3" viewBox="0 0 16 16">
                                         <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
-                                    </svg> -->
+                                    </svg>
                                     <a href="#" class="text-decoration-underline text-secondary">Detailed Review ></a>
                                 </div>
                             </div>
@@ -1520,7 +1520,16 @@
             checkUserID(review){
                 console.log(review)
                 console.log(this.userID)
-            }
+            },
+            getTagName(tag) {
+            const tagParts = tag.split("#");
+            return tagParts[0];
+            },
+            getTagColor(tag) {
+                const tagParts = tag.split("#");
+                console.log("#" + tagParts[1]);
+                return "#" + tagParts[1];
+            },
         }
     };
 </script>

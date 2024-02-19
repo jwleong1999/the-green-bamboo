@@ -78,6 +78,19 @@ body {
     border-radius: 10px;
 }
 
+.primary-btn-outline-less-round {
+    color: #535C72;
+    background-color: whitesmoke;
+    border: 4px solid #535C72;
+}
+
+/* .primary-btn-outline-less-round:hover,
+.primary-btn-outline-less-round:active {
+    color: whitesmoke;
+    background-color: #535C72;
+    cursor: pointer; 
+}  */
+
 .primary-square {
     color: whitesmoke;
     background-color: #535C72;

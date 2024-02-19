@@ -1,5 +1,5 @@
 <template>
-  <div v-if="user" class="userprofile">
+  <div v-if="user" class="userprofile mt-3">
 
     <div class="container text-start">
         <div class="row">
@@ -35,17 +35,17 @@
 
                     <!-- buttons -->
                     <div class="row mt-3">
-                        <button v-if="ownProfile" type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
+                        <button v-if="ownProfile" type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal" style="color: #535C72; background-color: whitesmoke; border: 1px solid #535C72;">Edit Profile</button>
                         <button v-else type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">+ Follow User</button>
                         <button v-if="ownProfile" class="btn btn-warning mt-3">View My Analytics</button>
                         <button v-else-if="displayUser.modType != ''" class="btn btn-warning mt-3">★ Certified Moderator</button> 
-                        <button v-else class="btn btn-warning mt-3">Not a moderator yet</button>
+                        <!-- <button v-else class="btn btn-warning mt-3">Not a moderator yet</button> -->
                         <a href="#" class="mt-3" data-bs-toggle="modal" data-bs-target="#applyModerator">Want to be a moderator? Apply here!</a>
                     </div>
 
                     <!-- editProfileModal start -->
                     <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
                             <div class="modal-content">
                             <div class="modal-header">
                                 <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Profile</h1> 
@@ -81,7 +81,7 @@
                                             <!-- checkbox to choose drinks -->
                                             <div v-for="(type, index) in drinkType" :key="index" class="m-1" style="display: inline-block">
                                                 <input type="checkbox" class="btn-check" :id="index" autocomplete="off" v-model="selectedDrinks" :value="type">
-                                                <label class="btn btn-primary" :for="index">{{type}}</label>
+                                                <label class="btn primary-btn-outline-less-round" :for="index">{{type}}</label>
                                             </div>
 
                                            
@@ -130,7 +130,11 @@
                         <h3>Badges Unlocked</h3>
                         <hr>
 
-                        <div class="container text-center">
+                        <div v-if="true">
+                            You have no badges yet.
+                        </div>
+
+                        <div v-else class="container text-center mb-3">
                             <div class="row">
                                 <div class="col">
                                     <img src="https://img.freepik.com/free-vector/realistic-vector-icon-golden-king-queen-crown-isolated-white-background_134830-2012.jpg" 
@@ -161,7 +165,7 @@
                             </div>
                         </div>
                         
-                        <div class="mt-3">
+                        <div>
                             <a href="#">Learn more about badges.</a>
                         </div>
 
@@ -174,7 +178,7 @@
             <!-- reviews and lists -->
             <div class="col-12 col-md-8">
 
-                <ul class="nav nav-pills">
+                <!-- <ul class="nav nav-pills">
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" data-bs-toggle="pill" href="#reviews">Reviews</a>
                     </li>
@@ -182,7 +186,12 @@
                         <a v-if="ownProfile" class="nav-link" data-bs-toggle="pill" href="#lists">My Drink Lists</a>
                         <a v-else class="nav-link" data-bs-toggle="pill" href="#lists">Drink Lists</a>
                     </li>
-                </ul>
+                </ul> -->
+                <div class="nav">
+                    <button id="reviewsButton" class="btn active" aria-current="page" data-bs-toggle="pill" data-bs-target="#reviews" style="color: #535C72; background-color: whitesmoke; border-radius: 30px; border: 4px solid #535C72;" @click="switchTab('reviews')">Reviews</button>
+                    <button id="ownListsButton" v-if="ownProfile" class="btn primary-btn ms-2" data-bs-toggle="pill" data-bs-target="#lists" style="color: whitesmoke; background-color: #535C72; border-radius: 30px;" @click="switchTab('lists')">My Drink Lists</button>
+                    <button id="listsButton" v-else class="btn primary-btn ms-2" data-bs-toggle="pill" data-bs-target="#lists" style="color: whitesmoke; background-color: #535C72; border-radius: 30px;" @click="switchTab('lists')">Drink Lists</button>
+                </div>
 
                 <div class="tab-content container mt-2">
                     <!-- reviews tab -->
@@ -202,7 +211,9 @@
                                     <path d="M0 48C0 21.5 21.5 0 48 0l0 48V441.4l130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4V48H48V0H336c26.5 0 48 21.5 48 48V488c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488V48z"/>
                                 </svg>
                                 <br/>
-                                {{ listing.listingName }}
+                                <span style="display: inline-block; max-width: 150px;">
+                                    {{ listing.listingName }}
+                                </span>
                             </div>
                         </div>
 
@@ -222,7 +233,9 @@
                                     <path d="M0 48C0 21.5 21.5 0 48 0l0 48V441.4l130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4V48H48V0H336c26.5 0 48 21.5 48 48V488c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488V48z"/>
                                 </svg>
                                 <br/>
-                                {{ review.listingName }}
+                                <span style="display: inline-block; max-width: 150px;">
+                                    {{ review.listingName }}
+                                </span>
                             </div>
                         </div>
 
@@ -241,8 +254,8 @@
                                             <b>{{ review.reviewTitle }}</b> <br v-if="review.reviewTitle">
                                             {{ review.reviewDesc }}
                                         </p>
-                                        <span class="badge rounded-pill text-bg-primary me-2">Primary</span>
-                                        <span class="badge rounded-pill text-bg-success me-2">Success</span>
+                                        <!-- flavor tag -->
+                                        <span v-for="(tag, index) in review.flavorTag" :key="index" class="badge rounded-pill me-2" :style="{ backgroundColor: getTagColor(tag) }">{{ getTagName(tag) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -255,7 +268,7 @@
                         <!-- drink lists -->
                         <div v-if="showCurrentContent" class="mt-3">
 
-                            <button v-if="ownProfile" type="button" class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#createNewListModal">Create New List</button>
+                            <button v-if="ownProfile" type="button" class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#createNewListModal"  style="color: #535C72; background-color: whitesmoke; border: 1px solid #535C72;">Create New List</button>
 
                             <!-- create new list modal -->
                             <div class="modal fade" id="createNewListModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -329,15 +342,15 @@
                                             <input type="text" class="form-control" placeholder="Search for drink" aria-label="Recipient's username" aria-describedby="button-addon2" v-model="drinkSearch" @keyup="searchResult">
                                         </div>
                                             <div class="form-check" v-for="(drinkName, index) in drinkSearchResults" :key="index">
-                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                <label class="form-check-label" for="flexCheckDefault">
+                                                <input class="form-check-input" type="checkbox" :value="drinkName" :id="'drinkCheckbox' + index" v-model="drinksToAdd">
+                                                <label class="form-check-label" :for="'drinkCheckbox' + index">
                                                     {{ drinkName }}
                                                 </label>
                                             </div>
 
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary">Add to List</button>
+                                        <button type="button" class="btn btn-primary" @click="addDrinkToList(currentList)">Add to List</button>
                                     </div>
                                     </div>
                                 </div>
@@ -457,6 +470,7 @@ export default {
             currentList: "",
             newListName: "",
             newListDesc: "",
+            drinksToAdd: [],
             // to change
             ownProfile: false,
             drinkSearch: "",
@@ -691,6 +705,30 @@ export default {
 
 
         },
+        async addDrinkToList(listName) {
+            for (const drink of this.drinksToAdd) {
+                if (!this.userBookmarks[listName].listItems.includes(drink)) {
+                    this.userBookmarks[listName].listItems.push(drink);
+                }
+            }
+
+            try {
+                const response = await this.$axios.post('http://127.0.0.1:5100/updateBookmark', 
+                    {
+                        userID: this.userID,
+                        bookmark: this.userBookmarks,
+                    }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                console.log(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+            
+            window.location.reload();
+        },
         async addNewList() {
             // take the new list name and new list description, and post it to the database
             this.userBookmarks[this.newListName] = {};
@@ -783,6 +821,45 @@ export default {
             const listing = this.listings.find(listing => listing._id.$oid === listingID.$oid);
             return listing.photo;
         },
+        getTagName(tag) {
+            const tagParts = tag.split("#");
+            return tagParts[0];
+        },
+        getTagColor(tag) {
+            const tagParts = tag.split("#");
+            return "#" + tagParts[1];
+        },
+        switchTab(currentTab) {
+            
+            if (currentTab === "lists") {
+                document.getElementById("reviewsButton").style.color = "whitesmoke";
+                document.getElementById("reviewsButton").style.backgroundColor = "#535C72";
+                if (this.ownProfile) {
+                    document.getElementById("ownListsButton").style.color = "#535C72";
+                    document.getElementById("ownListsButton").style.backgroundColor = "whitesmoke";
+                    document.getElementById("ownListsButton").style.border = "4px solid #535C72";
+                }
+                else {
+                    document.getElementById("listsButton").style.color = "#535C72";
+                    document.getElementById("listsButton").style.backgroundColor = "whitesmoke";
+                    document.getElementById("listsButton").style.border = "4px solid #535C72";
+                }
+                
+            }
+            else {
+                document.getElementById("reviewsButton").style.color = "#535C72";
+                document.getElementById("reviewsButton").style.backgroundColor = "whitesmoke";
+                document.getElementById("reviewsButton").style.border = "4px solid #535C72";
+                if (this.ownProfile) {
+                    document.getElementById("ownListsButton").style.color = "whitesmoke";
+                    document.getElementById("ownListsButton").style.backgroundColor = "#535C72";
+                }
+                else {
+                    document.getElementById("listsButton").style.color = "whitesmoke";
+                    document.getElementById("listsButton").style.backgroundColor = "#535C72";
+                }
+            }
+        }
         
     },
 };
