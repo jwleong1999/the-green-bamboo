@@ -1,3 +1,7 @@
+# Port: 5006
+# Routes: /deleteReview/<id> (DELETE)
+# -----------------------------------------------------------------------------------------
+
 import bson
 import json
 from bson import json_util
@@ -20,14 +24,15 @@ db = PyMongo(app).db
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
-#[POST]
-# require 
-# optional 
+# -----------------------------------------------------------------------------------------
+# [DELETE] Deletes a review
+# - Delete entry with specified id from the "reviews" collection.
+# - Possible return codes: 201 (Deleted), 400 (Review doesn't exist), 500 (Error during deletion)
 @app.route("/deleteReview/<id>", methods= ['DELETE'])
 def deleteReview(id):
 
+    # Find the review entry with the specified id
     existingReview = db.reviews.find_one({"_id": ObjectId(id)})
-    # # Check whether review with the same userID and reviewTarget exists in the database
     if(existingReview == None):
         return jsonify(
             {   
@@ -40,6 +45,7 @@ def deleteReview(id):
         ), 400
     
 
+    # Delete the review entry with the specified id
     try:
         deleteResult = db.reviews.delete_one({"_id": ObjectId(id)})
 
@@ -60,7 +66,7 @@ def deleteReview(id):
                 "message": "An error occurred deleting the listing."
             }
         ), 500
-    
 
+# -----------------------------------------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, port = 5006)

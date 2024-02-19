@@ -1,6 +1,6 @@
-# Flask backend for editing producer profile
 # Port: 5200
-# Routes: /editDetails (POST)
+# Routes: /editDetails (POST), /addUpdates (POST), /sendQuestions (POST), /sendAnswers (POST), /likeUpdates (POST), /unlikeUpdates (POST)
+# -----------------------------------------------------------------------------------------
 
 import bson
 import json
@@ -14,7 +14,6 @@ from pymongo.errors import DuplicateKeyError, OperationFailure
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
-from bson.objectid import ObjectId
 from gridfs import GridFS
 import os
 from datetime import datetime
@@ -27,6 +26,10 @@ db = PyMongo(app).db
 mongo = PyMongo(app)
 fs = GridFS(mongo.db)
 
+# -----------------------------------------------------------------------------------------
+# [POST] Edit producer profile
+# - Update producer profile with new details
+# - Possible return codes: 201 (Updated), 500 (Error during update)
 @app.route('/editDetails', methods=['POST'])
 def editDetails():
 
@@ -68,6 +71,10 @@ def editDetails():
             }
         ), 500
 
+# -----------------------------------------------------------------------------------------
+# [POST] Add updates to producer profile
+# - Add updates to producer profile
+# - Possible return codes: 201 (Updated), 500 (Error during update)
 @app.route('/addUpdates', methods=['POST'])
 def addUpdates():
 
@@ -111,6 +118,10 @@ def addUpdates():
             }
         ), 500
 
+# -----------------------------------------------------------------------------------------
+# [POST] Send questions to producer
+# - Send questions to producer
+# - Possible return codes: 201 (Updated), 500 (Error during update)
 @app.route('/sendQuestions', methods=['POST'])
 def sendQuestions():
 
@@ -151,7 +162,11 @@ def sendQuestions():
                 "message": "An error occurred creating the update."
             }
         ), 500
-    
+
+# -----------------------------------------------------------------------------------------
+# [POST] Send answers to questions
+# - Send answers to questions
+# - Possible return codes: 201 (Updated), 500 (Error during update)
 @app.route('/sendAnswers', methods=['POST'])
 def sendAnswers():
 
@@ -185,6 +200,10 @@ def sendAnswers():
             }
         ), 500
 
+# -----------------------------------------------------------------------------------------
+# [POST] Like updates
+# - Like updates
+# - Possible return codes: 201 (Updated), 500 (Error during update)
 @app.route('/likeUpdates', methods=['POST'])
 def likeUpdates():
     data = request.get_json()
@@ -216,6 +235,10 @@ def likeUpdates():
             }
         ), 500
 
+# -----------------------------------------------------------------------------------------
+# [POST] Unlike updates
+# - Unlike updates
+# - Possible return codes: 201 (Updated), 500 (Error during update)
 @app.route('/unlikeUpdates', methods=['POST'])
 def unlikeUpdates():
     data = request.get_json()
@@ -247,5 +270,6 @@ def unlikeUpdates():
             }
         ), 500
 
+# -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(debug=True, port=5200)

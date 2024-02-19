@@ -1,3 +1,7 @@
+# Port: 5005
+# Routes: /createReview (POST)
+# -----------------------------------------------------------------------------------------
+
 import bson
 import json
 from bson import json_util
@@ -20,18 +24,21 @@ db = PyMongo(app).db
 def parse_json(data):
     return json.loads(json_util.dumps(data))
 
-#[POST]
-# require 
-# optional 
+# -----------------------------------------------------------------------------------------
+# [POST] Creates a review
+# - Insert entry into the "reviews" collection. Follows reviews dataclass requirements.
+# - Duplicate review check: If a review with the same userID and reviewTarget exists, reject the request
+# - Possible return codes: 201 (Created), 400 (Duplicate Detected), 500 (Error during creation)
 @app.route("/createReview", methods= ['POST'])
 def createReviews():
     rawReview = request.get_json()
     rawReview['reviewTarget'] = ObjectId(rawReview['reviewTarget'])  # Convert reviewTarget to ObjectId
-    rawReview['userID'] = ObjectId(rawReview['userID'])  # Convert location to ObjectId
+    rawReview['userID'] = ObjectId(rawReview['userID'])  # Convert userID to ObjectId
+
+    # Duplicate listing check: Reject if review with the same userID and reviewTarget exists in the database
     rawReviewBottle = rawReview["reviewTarget"]
     rawReviewUserID = rawReview["userID"]
     existingReview = db.reviews.find_one({"reviewTarget": rawReviewBottle, "userID": rawReviewUserID})
-    # Check whether review with the same userID and reviewTarget exists in the database
     if(existingReview != None):
         return jsonify(
             {   
@@ -44,7 +51,7 @@ def createReviews():
         ), 400
     
     
-
+    # Insert new review into database
     newReview = data.reviews(**rawReview)
     try:
         insertResult = db.reviews.insert_one(data.asdict(newReview))
@@ -66,7 +73,7 @@ def createReviews():
                 "message": "An error occurred creating the listing."
             }
         ), 500
-    
 
+# -----------------------------------------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, port = 5005)
