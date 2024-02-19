@@ -16,8 +16,8 @@ function hashPassword(id, password) {
 // let original_passwords = ["orhhorsogao", "datssomegdshit", "lalalamaisonnn~~~~", "aaaalliance", "swansongss12312", "only1cask!", "atlasoratasbar??", "16oz!", "chirpingaway"]
 
 // [PRODUCERS]
-let original_id = ['Ardbeg Distillery', 'Tanglin Gin', 'Malt Grain Cane', 'Nanyang Whisky', 'The Macallan Distillery', 'N.I.P Distilling', 'Brewlander']
-let original_passwords = ['ardddbe33g**!!', 'tanglinggggin@@', 'maltsgrainzz', 'nanyangwhiskeyyyy', 'macallan!d1st1llery', 'snipnipdistil', 'brewlandhere']
+let original_id = ["Little Creatures", "Choya", "Archie Rose Distilling", "Nagahama Distillery", "Fuji Distillery", "Dassai Brewery", "Hampden Estate Rum", "Lion City Meadery", "Orion", "Taiwan Beer", "Glenfiddich Distillery", "Engkanto Brewery", "Alive Brewing", "Seoul Jangsoo Co. Ltd"]
+let original_passwords = ["Littl123", "Choya123", "Archi123", "Nagah123", "Fuji 123", "Dassa123", "Hampd123", "Lion 123", "Orion123", "Taiwa123", "Glenf123", "Engka123", "Alive123", "Seoul123"]
 
 let hashed_passwords = []
 
