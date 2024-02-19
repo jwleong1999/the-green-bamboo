@@ -98,7 +98,7 @@
                                             <!-- image -->
                                             <div class="col-4 image-container">
 
-                                                <img v-if="image!=''" :src="'data:image/png;base64,'+image64"  style="width: 300px; height: 300px;" class="img-border">
+                                                <img v-if="image64!=''" :src="'data:image/png;base64,'+image64"  style="width: 300px; height: 300px;" class="img-border">
                                                 <img v-else src="../../../Images/Drinks/Placeholder.png" style="width: 300px; height: 300px;" class="img-border">
 
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon" viewBox="0 0 16 16">
