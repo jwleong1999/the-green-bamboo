@@ -399,13 +399,13 @@
                             <!-- [if] user type is producer -->
                             <div v-if="userType == 'producer'" class="row">
                                 <div class="col-3 d-grid no padding">
-                                    <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text" v-on:click="editCatalogue()">
-                                        Edit catalogue
+                                    <button type="button" class="btn primary-btn-outline-thick rounded-0" v-on:click="editCatalogue()">
+                                        <a class="default-clickable-text"> Edit catalogue </a> 
                                     </button>
                                 </div>
                                 <div class="col-3 d-grid no padding">
-                                    <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text">
-                                        <a v-bind:href="'/Producer/Producer-Create-Listing/' + `${producer_id}`">
+                                    <button type="button" class="btn primary-btn-outline-thick rounded-0">
+                                        <a v-bind:href="'/Producer/Producer-Create-Listing/' + `${producer_id}`" class="default-clickable-text">
                                             Add Listing
                                         </a>
                                     </button>
@@ -1114,17 +1114,23 @@
 
             // edit profile photo
             async loadFile(event) {
-                const file = event.target.files[0];
-                const reader = new FileReader();
+                try {
+                    const file = event.target.files[0];
+                
+                    const reader = new FileReader();
 
-                reader.onloadend = async () => {
-                    this.selectedImage = reader.result;
-                    const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+                    reader.onloadend = async () => {
+                        this.selectedImage = reader.result;
+                        const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
 
-                    this.image64 = base64String;
+                        this.image64 = base64String;
 
-                };
-                reader.readAsDataURL(file);
+                    };
+                    reader.readAsDataURL(file);
+                } 
+                catch (error) {
+                    console.error(error);
+                }
             
             },
 
