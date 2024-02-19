@@ -60,9 +60,9 @@ def voteReview():
 
 # -----------------------------------------------------------------------------------------
     
-# [POST] Vote review
-# - Update review with new votes
-# - Possible return codes: 201 (Updated), 500 (Error during update)
+# [PUT] Update review
+# - Update review with review metrics
+# - Possible return codes: 200 (Updated), 400(Review not found), 500 (Error during update)
 @app.route('/updateReview/<id>', methods=['PUT'])
 def updateReview(id):
     data = request.get_json()
