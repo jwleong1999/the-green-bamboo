@@ -45,11 +45,14 @@ def editDetails():
     image64 = data['image64']
 
     try: 
-        updateImage = db.venues.update_one({'_id': ObjectId(venueID)}, {'$set': {'photo': image64}})
-        updateName = db.venues.update_one({'_id': ObjectId(venueID)}, {'$set': {'venueName': venueName}})
-        updateDesc = db.venues.update_one({'_id': ObjectId(venueID)}, {'$set': {'venueDesc': venueDesc}})
-        updateCountry = db.venues.update_one({'_id': ObjectId(venueID)}, {'$set': {'originLocation': originLocation}})
-
+        update = db.venues.update_one({'_id': ObjectId(venueID)}, 
+                                        {'$set': {
+                                                    'photo': image64,
+                                                    'venueName': venueName,
+                                                    'venueDesc': venueDesc,
+                                                    'originLocation': originLocation
+                                                    }
+                                            })
         return jsonify(
             {   
                 "code": 201,

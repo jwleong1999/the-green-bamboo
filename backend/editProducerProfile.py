@@ -45,10 +45,14 @@ def editDetails():
     originCountry = data['originCountry']
 
     try: 
-        updateImage = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'photo': image64}})
-        updateName = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'producerName': producerName}})
-        updateDesc = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'producerDesc': producerDesc}})
-        updateCountry = db.producers.update_one({'_id': ObjectId(producerID)}, {'$set': {'originCountry': originCountry}})
+        update = db.producers.update_one({'_id': ObjectId(producerID)}, 
+                                        {'$set': {
+                                                    'photo': image64,
+                                                    'producerName': producerName,
+                                                    'producerDesc': producerDesc,
+                                                    'originCountry': originCountry
+                                                    }
+                                            })
 
         return jsonify(
             {   
