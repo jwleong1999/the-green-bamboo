@@ -80,6 +80,12 @@ def getProducers():
         allProducers.append(doc)
     return allProducers
 
+# [GET] Specific Producer
+@app.route("/getProducer/<id>")
+def getProducer(id):
+    data = db.producers.find_one({"_id": ObjectId(id)})
+    return parse_json(data)
+
 # -----------------------------------------------------------------------------------------
 # [GET] Reviews
 @app.route("/getReviews")
@@ -112,6 +118,12 @@ def getUsers():
         allUsers.append(doc)
     return allUsers
 
+# [GET] Specific User
+@app.route("/getUser/<id>")
+def getUser(id):
+    data = db.users.find_one({"_id": ObjectId(id)})
+    return parse_json(data)
+
 # -----------------------------------------------------------------------------------------
 # [GET] Venues
 @app.route("/getVenues")
@@ -127,6 +139,12 @@ def getVenues():
         # print(doc)
         allVenues.append(doc)
     return allVenues
+
+# [GET] Specific Venue
+@app.route("/getVenue/<id>")
+def getVenue(id):
+    data = db.venues.find_one({"_id": ObjectId(id)})
+    return parse_json(data)
 
 # -----------------------------------------------------------------------------------------
 # [GET] VenuesAPI

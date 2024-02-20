@@ -7,7 +7,6 @@ body {
 }
 
 .navbar-container {
-    display: flex;
     justify-content: center;
     align-items: center;
     border-bottom: 3px solid #535C72;
@@ -15,15 +14,6 @@ body {
 
 .navbar {
     text-align: center;
-    width: 75%;
-}
-
-.navbar-brand {
-    margin-bottom: 10px;
-}
-
-.navbar-inner-container {
-    width: 75%;
 }
 
 .navbar-dropdown {

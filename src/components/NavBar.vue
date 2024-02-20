@@ -7,22 +7,23 @@
 <template>
     <!-- Main NavBar -->
     <div class="navbar-container">
-        <nav class="navbar p-2">
-            <div class="navbar-inner-container container-fluid d-flex align-items-center justify-content-between">
+        <nav class="navbar">
+            <div class="container-fluid align-items-center col-xxl-8 col-xl-9 col-lg-10 col-md-11 col-sm-12">
                 <!-- logo -->
-                <div class="navbar-brand d-flex align-items-center" href="../login/index.html"> 
+                <div class="align-items-center col-3" href="../login/index.html"> 
                     <img src="../../Images/Logo/88 Bamboo.png" style="width: 70px; height: 70px;">
                 </div>
                 <!-- search bar -->
-                <div class="col-md-6">
+                <div class="col-6">
                     <input class="search-bar form-control rounded fst-italic" type="text" placeholder="What are you drinking today?" style="height: 50px;" v-model="searchInput" v-on:keyup.enter="searchListings"> 
                 </div>
-                <div>
+                <div class="col-3">
                     <!-- profile icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                    <svg v-if="photo == ''" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
                         <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
                         <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
                     </svg>
+                    <img v-else :src="'data:image/png;base64,'+ photo"  style="width: 30px; height: 30px;" class="img-border">
                     <!-- collapsible button -->
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -45,10 +46,44 @@
         name: "NavBar",
         data() {
             return {
-                searchInput: ''
+                searchInput: '',
+                photo: '',
+            }
+        },
+        mounted() {
+            // Obtain user's profile picture
+            if (localStorage.getItem('88B_accID') != null) {
+
+                let accType = localStorage.getItem('88B_accType');
+                let accID = localStorage.getItem('88B_accID');
+                let url = 'http://127.0.0.1:5000/get';
+
+                if (accType == 'user') {
+                    url = url + 'User/' + accID;
+                    this.loadData(url);
+                } 
+                else if (accType == 'producer') {
+                    url = url + 'Producer/' + accID;
+                    this.loadData(url);
+                } 
+                else if (accType == 'venue') {
+                    url = url + 'Venue/' + accID;
+                    this.loadData(url);
+                }
             }
         },
         methods: {
+            // load data from database
+            async loadData(url) {
+                    try {
+                        const response = await this.$axios.get(url);
+                        this.photo = response.data["photo"];
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
+            },
+
             // searchListings() {
             //     this.$router.push({name: 'search', query: {input: this.searchInput}})
             // }
