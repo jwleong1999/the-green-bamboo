@@ -1285,7 +1285,11 @@
                     "willRecommend": this.wouldRecommend,
                     "wouldBuyAgain": this.wouldBuyAgain,
                     "observationTag": this.selectedObservations,
-                    "createdDate": createdDate
+                    "createdDate": createdDate,
+                    "userVotes": {
+                        "downvotes":[],
+                        "upvotes":[]
+                    }
                 }
                 this.writeReview(submitAPI, submitData)
                 
