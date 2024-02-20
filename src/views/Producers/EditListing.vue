@@ -39,9 +39,9 @@
         <div class="text-success fst-italic fw-bold fs-3" v-if="successfulUpdate"> 
             <span>The bottle listing has successfully been updated</span> <!-- for user -->
             <br>
-            <router-link :to="{ path: '/Producer/Producer-Edit-Listing/' }" class="text-secondary">
+            <router-link :to="{ path: '/Producers/Bottle-Listings/'+this.producerID }" class="text-secondary">
                 <button class="btn primary-btn btn-sm">
-                    <span class="fs-5 fst-italic"> Go back to listings </span>
+                    <span class="fs-5 fst-italic"> Go back to your listings </span>
                 </button>
             </router-link>
         </div>
@@ -72,13 +72,13 @@
                             <div class="col-4">
                                 <div class="d-grid gap-2">
                                      
-                                    <router-link :to="{ path: '/Producer/Producer-Edit-Listing/' }" class="text-secondary">
+                                    <router-link :to="{ path: '/Producers/Bottle-Listings/'+this.producerID }" class="text-secondary">
                                     <span class="pe-2">
                                         
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16" v-on:click="previousListing">
                                             <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
                                         </svg>
-                                        <h5 style="display: inline-block;"> Back to listings </h5> 
+                                        <h5 style="display: inline-block;"> Back to your listings </h5> 
                                         
                                     </span>
                                     </router-link>
