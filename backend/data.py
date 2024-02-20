@@ -59,6 +59,7 @@ class reviews:
     finish: str
     willRecommend: bool
     wouldBuyAgain: bool
+    userVotes: object
     photo: Optional[str] = None
     colour: Optional[str] = None
     aroma: Optional[str] = None
