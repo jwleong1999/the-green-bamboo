@@ -19,11 +19,13 @@
                 </div>
                 <div class="col-3">
                     <!-- profile icon -->
-                    <svg v-if="photo == ''" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
-                    </svg>
-                    <img v-else :src="'data:image/png;base64,'+ photo"  style="width: 30px; height: 30px;" class="img-border">
+                    <button type="button" class="btn" @click="redirectProfile">
+                        <svg v-if="photo == ''" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                        </svg>
+                        <img v-else :src="'data:image/png;base64,'+ photo"  style="width: 30px; height: 30px;" class="img-border">
+                    </button>
                     <!-- collapsible button -->
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -47,6 +49,7 @@
         data() {
             return {
                 searchInput: '',
+                accType: '',
                 photo: '',
             }
         },
@@ -54,19 +57,19 @@
             // Obtain user's profile picture
             if (localStorage.getItem('88B_accID') != null) {
 
-                let accType = localStorage.getItem('88B_accType');
+                this.accType = localStorage.getItem('88B_accType');
                 let accID = localStorage.getItem('88B_accID');
                 let url = 'http://127.0.0.1:5000/get';
 
-                if (accType == 'user') {
+                if (this.accType == 'user') {
                     url = url + 'User/' + accID;
                     this.loadData(url);
                 } 
-                else if (accType == 'producer') {
+                else if (this.accType == 'producer') {
                     url = url + 'Producer/' + accID;
                     this.loadData(url);
                 } 
-                else if (accType == 'venue') {
+                else if (this.accType == 'venue') {
                     url = url + 'Venue/' + accID;
                     this.loadData(url);
                 }
@@ -82,6 +85,22 @@
                     catch (error) {
                         console.error(error);
                     }
+            },
+
+            // Redirect when clicking on profile picture
+            redirectProfile() {
+                if (this.accType == 'user') {
+                    this.$router.push({path: '/user'});
+                } 
+                else if (this.accType == 'producer') {
+                    this.$router.push({path: '/producer'});
+                } 
+                else if (this.accType == 'venue') {
+                    this.$router.push({path: '/venue'});
+                }
+                else {
+                    this.$router.push({path: '/login'});
+                }
             },
 
             // searchListings() {
