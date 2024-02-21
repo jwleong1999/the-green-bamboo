@@ -35,8 +35,9 @@
 
                     <!-- buttons -->
                     <div class="row mt-3">
-                        <button v-if="ownProfile" type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal" style="color: #535C72; background-color: whitesmoke; border: 1px solid #535C72;">Edit Profile</button>
-                        <button v-else type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">+ Follow User</button>
+                        <button v-if="ownProfile" type="button" class="btn primary-btn-outline-less-round" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
+                        <button v-else-if="following" type="button" class="btn primary-btn-outline-less-round" @click="editFollow('unfollow')">Following</button>
+                        <button v-else type="button" class="btn primary-btn-less-round" @click="editFollow('follow')">+ Follow User</button>
                         <button v-if="ownProfile" class="btn btn-warning mt-3">View My Analytics</button>
                         <button v-else-if="displayUser.modType != ''" class="btn btn-warning mt-3">★ Certified Moderator</button> 
                         <!-- <button v-else class="btn btn-warning mt-3">Not a moderator yet</button> -->
@@ -471,6 +472,7 @@ export default {
             newListName: "",
             newListDesc: "",
             drinksToAdd: [],
+            following: false,
             // to change
             ownProfile: false,
             drinkSearch: "",
@@ -538,6 +540,7 @@ export default {
                 this.favouriteListings.forEach((listing) => {
                     this.fetchBookmarkStatus(listing.listingName);
                 });
+                this.following = JSON.stringify(this.user.followLists.users).includes(JSON.stringify({$oid: this.displayUserID}));
             } 
             catch (error) {
                 console.error(error);
@@ -859,6 +862,30 @@ export default {
                     document.getElementById("listsButton").style.backgroundColor = "#535C72";
                 }
             }
+        }, 
+        async editFollow(action) {
+            if (action === "unfollow") {
+                this.following = false;
+            } else {
+                this.following = true
+            }
+            try {
+                const response = await this.$axios.post('http://127.0.0.1:5100/updateFollowLists', 
+                    {
+                        userID: this.userID,
+                        action: action,
+                        target: "users",
+                        followerID: this.displayUserID,
+                    }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                console.log(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+            
         }
         
     },

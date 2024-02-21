@@ -95,6 +95,49 @@ def updateBookmark():
         ), 500
 
 # -----------------------------------------------------------------------------------------
+# [POST] Update follow lists
+# - Update user follow lists with new details
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/updateFollowLists', methods=['POST'])
+def updateFollowList():
+    data = request.get_json()
+    print(data)
+    userID = data['userID']
+    action = data['action']
+    target = data['target']
+    followerID = data['followerID']
+
+    user_document = db.users.find_one({"_id": ObjectId(userID)})
+    followLists = user_document['followLists']
+
+    if action == "unfollow":
+        followLists[target] = [user for user in user_document['followLists'][target] if user != ObjectId(followerID)]
+    else:
+        followLists[target].append(ObjectId(followerID))
+
+    try: 
+        updateFollowLists = db.users.update_one({'_id': ObjectId(userID)}, {'$set': {'followLists': followLists}})
+
+
+        return jsonify(
+            {   
+                "code": 201,
+                "data": userID
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "data": userID
+                },
+                "message": "An error occurred updating the image."
+            }
+        ), 500
+    
+# -----------------------------------------------------------------------------------------
 # [POST] Submit mod request
 # - Submit mod request with new details
 # - Possible return codes: 201 (Updated), 500 (Error during update)
