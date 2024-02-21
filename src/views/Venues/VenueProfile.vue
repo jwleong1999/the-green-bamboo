@@ -392,9 +392,40 @@
                                     </button>
                                 </div>
                                 <div class="col-6 d-grid no padding">
-                                    <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text">
+                                    <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                         Share menu
                                     </button>
+                                    <!-- modal (QR code) -->
+                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="exampleModalLabel"> Venue QR Code </h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="centered">
+                                                        <qr-code v-bind:text="currentURL"></qr-code>
+                                                    </div>
+                                                    <div class="input-group pt-3">
+                                                        <input type="text" class="form-control" aria-label="Link" aria-describedby="button-addon2" v-bind:value="currentURL" disabled>
+                                                        <button class="btn btn-outline-secondary" type="button" id="button-addon2" v-on:click="copyToClipboard(currentURL)">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                                                <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
+                                                                <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                    <p class="text-start pt-2" v-if="clipboardItem"> 
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
+                                                            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                                                        </svg>
+                                                        Copied to clipboard!
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -674,6 +705,10 @@
                 requestEdits: [],
                 modRequests: [],
 
+                // URL of page
+                currentURL: "",
+                clipboardItem: false,
+
                 // define user type here (defined on mounted() function)
                 user_id: "65b327d5687b64f8302d56ef",
                 userType: "venue",
@@ -764,6 +799,8 @@
         async mounted() {
             // this.userType = localStorage.getItem('88B_accType');
             await this.loadData();
+            // Accessing the current URL
+            this.currentURL = window.location.href;
         },
         methods: {
             // load data from database
@@ -890,6 +927,19 @@
                     // catch (error) {
                     //     console.error(error);
                     // }
+            },
+
+            // copy to clipboard
+            copyToClipboard(item) {
+                navigator.clipboard.writeText(item)
+                .then(() => {
+                    // URL copied to keyboard
+                    this.clipboardItem = true;
+                    })
+                .catch(err => {
+                    // URL not copied to keyboard
+                    console.error('Failed to copy URL: ', err);
+                });
             },
 
             // get all drinks that a venue has
