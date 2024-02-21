@@ -353,10 +353,10 @@
 
                         <!-- [else] following clicked -->
                         <div v-else-if="following">
-                            <!-- most reviews -->
-                            <h3 class="text-body-secondary text-start pt-3"> 
+                            <!-- recently added  -->
+                            <!-- <h3 class="text-body-secondary text-start pt-3"> 
                                 <b> Recently Added </b> 
-                            </h3>
+                            </h3> -->
                             <!-- v-loop for each listing -->
                             <div class="container text-start">
                                 <div v-for="listing in recentlyAdded" v-bind:key="listing._id" class="p-3">
@@ -628,7 +628,9 @@
                 // for following
                 following: false,
                 followedProducers: [],
-                allDrinks: [],
+                followedVenues: [],
+                allProducerDrinks: [],
+                allVenueDrinks: [],
                 recentlyAdded: [],
 
 
@@ -681,27 +683,29 @@
                     catch (error) {
                         console.error(error);
                     }
+                // venues
+                // _id, venueName, venueDesc, originCountry, address, openingHours
+                try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
+                        this.venues = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
                 // users
                 // _id, username, displayName, choiceDrinks, drinkLists, modType, photo
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
                         this.users = response.data;
                         this.getFollowedProducers()
+                        this.getFollowedVenues()
                         this.getListingsByProducer()
+                        this.getListingsByVenue()
                         this.getRecentlyAdded()
                     } 
                     catch (error) {
                         console.error(error);
                     }
-                // venues
-                // _id, venueName, venueDesc, originCountry, address, openingHours
-                    // try {
-                    //     const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
-                    //     this.venues = response.data;
-                    // } 
-                    // catch (error) {
-                    //     console.error(error);
-                    // }
                 // venuesAPI
                 // _id, venueName, venueDesc, originCountry
                 // try {
@@ -1005,13 +1009,11 @@
         getMostReviews() {
             let mostProducerReviews = Object.keys(this.allReviews).sort((a, b) => {
                 return this.allReviews[b] - this.allReviews[a];
-            }).slice(0, 5);
+            }) // to get top five, add .slice(0, 5)
             mostProducerReviews.forEach(drink => {
                 let review = this.getListingByName(drink);
-                console.log(review)
                 this.mostReviews.push(review);
             });
-            console.log(mostProducerReviews);
         },
 
         // get listing by name
@@ -1033,16 +1035,41 @@
         // get listings by producer
         getListingsByProducer() {
             this.followedProducers.forEach(producer => {
-                console.log(producer)
                 const producerListings = this.listings.filter(listing => listing.producerID.$oid == producer.$oid);
-                this.allDrinks  = producerListings;
+                this.allProducerDrinks  = producerListings;
+            });
+        },
+
+        // get venues that user follows
+        getFollowedVenues() {
+            const user = this.users.find(user => {
+                return user["_id"]["$oid"] == this.userID;
+            });
+            this.followedVenues = user.followLists.venues;
+        },
+
+        // get listings by venue
+        getListingsByVenue() {
+            this.followedVenues.forEach(venue => {
+                const venueID = venue.$oid;
+                const venueObject = this.venues.find(v => v._id.$oid === venueID);
+                let allMenuItems = venueObject["menu"];
+                let allListingsIDs = allMenuItems.reduce((acc, menuItem) => {
+                    return acc.concat(menuItem.listingsID);
+                }, []);
+                let uniqueListingsIDs = [...new Set(allListingsIDs.map(item => item["$oid"]))];
+                let allVenueDrinks = this.listings.filter(listing => {
+                    let listing_id = listing._id["$oid"];
+                    return uniqueListingsIDs.includes(listing_id);
+                }).map(listing => ({ ...listing }));
+                this.allVenueDrinks = allVenueDrinks;
             });
         },
 
         // get recently added
         getRecentlyAdded() {
-            let lastFive = this.allDrinks.slice(-5);
-            this.recentlyAdded = lastFive;
+            this.recentlyAdded = [...new Map(this.allProducerDrinks.concat(this.allVenueDrinks).map(item => [item._id.$oid, item])).values()];
+            console.log(this.recentlyAdded)
         },
         
 
