@@ -1,25 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-
-// TODO: Re-route paths to correct views, such as / path to BottleListings.vue
-// TODO: Discuss with team about path names and how to organize them
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
-  },
-  {
-    path: '/about',
-    name: 'about',
+    // path: '/',
+    // name: 'home',
+    path: '/Users/Bottle-Listings',
+    name: 'usersbottlelistings',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Users/BottleListings.vue')
   },
   {
     path: '/login',
+    // name: 'login',
     name: 'loginpage',
     component: () => import('../views/LoginPage.vue')
   },
@@ -28,35 +22,84 @@ const routes = [
     name: 'search',
     component: () => import('../views/SearchView.vue')
   },
+
   {
-    path: '/Users/Bottle-Listings',
-    name: 'usersbottlelistings',
-    component: () => import('../views/Users/BottleListings.vue')
-  },
-  {
-    path: '/Users/request/new/:id?',
-    name: 'usersrequestlistingnew',
-    component: () => import('../views/Users/RequestListingNew.vue')
-  },
-  {
-    path: '/Users/request/modify/:mode/:listingID/:requestID?',
-    name: 'usersrequestlistingmodify',
-    component: () => import('../views/Users/RequestListingModify.vue')
-  },
-  {
+    // path: '/profile/user/:userID?',
+    // name: 'profileuser',
     path: '/userprofile',
     name: 'userprofile',
     component: () => import('../views/UserProfile.vue')
   },
   {
+    // path: '/profile/producer/:producerID?',
+    // name: 'profileproducer',
     path: '/Producers/Profile-Page/:id',
     name: 'producersprofilepage',
     component: () => import('../views/Producers/ProducerProfile.vue')
   },
   {
+    // path: '/profile/venue/:venueID?',
+    // name: 'profilevenue',
+    path: '/Venues/Profile-Page/:id',
+    name: 'venuesprofilepage',
+    component: () => import('../views/Venues/VenueProfile.vue')
+  },
+
+  {
+    // path: '/listing/view/:listingID',
+    // name: 'listingview',
     path: '/Producers/Bottle-Listings/:id',
     name: 'producersbottlelistings',
     component: () => import('../views/Producers/BottleListings.vue')
+  },
+  {
+    // path: '/listing/create/:requestID?',
+    // name: 'listingcreate',
+    path: '/Producer/Producer-Create-Listing/:id?',
+    name: 'producercreatelistings',
+    component: () => import('../views/Producers/CreateListing.vue')
+  },
+  {
+    // path: '/listing/edit',
+    // name: 'listingedithome',
+    path: '/Producer/Producer-Edit-Listing',
+    name: 'producerupdatelistings',
+    component: () => import('../views/Producers/EditHome.vue')
+  },
+  {
+    // path: '/listing/edit/:listingID',
+    // name: 'listingedit',
+    path: '/Producer/Producer-Edit-Listing/:id',
+    name: 'producerupdatelistingsdetails',
+    component: () => import('../views/Producers/EditListing.vue')
+  },
+  
+  {
+    // path: '/request/view',
+    // name: 'requestview',
+    path: '/producers/requests',
+    name: 'producersrequests',
+    component: () => import('../views/Producers/ViewRequests.vue')
+  },
+  {
+    // path: '/request/new/:requestID?',
+    // name: 'requestnew',
+    path: '/Users/request/new/:id?',
+    name: 'usersrequestlistingnew',
+    component: () => import('../views/Users/RequestListingNew.vue')
+  },
+  {
+    // path: '/request/modify/:mode/:listingID/:requestID?',
+    // name: 'requestmodify',
+    path: '/Users/request/modify/:mode/:listingID/:requestID?',
+    name: 'usersrequestlistingmodify',
+    component: () => import('../views/Users/RequestListingModify.vue')
+  },
+  
+  {
+    path: '/Venues/Bottle-Listings',
+    name: 'venuesbottlelistings',
+    component: () => import('../views/Venues/BottleListings.vue')
   },
   {
     path: '/Producer/Producer-Listings',
@@ -64,34 +107,18 @@ const routes = [
     component: () => import('../views/Producers/ProducerListings.vue')
   },
   {
-    path: '/Producer/Producer-Create-Listing/:id?',
-    name: 'producercreatelistings',
-    component: () => import('../views/Producers/CreateListing.vue')
-  },  
-  {
-    path: '/Producer/Producer-Edit-Listing',
-    name: 'producerupdatelistings',
-    component: () => import('../views/Producers/EditHome.vue')
+    // path: '/test/home',
+    // name: 'testhome',
+    path: '/',
+    name: 'home',
+    component: () => import('../views/zToBeDeleted/HomeView.vue')
   },
   {
-    path: '/producers/requests',
-    name: 'producersrequests',
-    component: () => import('../views/Producers/ViewRequests.vue')
-  },
-  {
-    path: '/Producer/Producer-Edit-Listing/:id',
-    name: 'producerupdatelistingsdetails',
-    component: () => import('../views/Producers/EditListing.vue')
-  },
-  {
-    path: '/Venues/Bottle-Listings',
-    name: 'venuesbottlelistings',
-    component: () => import('../views/Venues/BottleListings.vue')
-  },
-  {
-    path: '/Venues/Profile-Page/:id',
-    name: 'venuesprofilepage',
-    component: () => import('../views/Venues/VenueProfile.vue')
+    // path: '/test/about',
+    // name: 'testabout',
+    path: '/about',
+    name: 'about',
+    component: () => import('../views/zToBeDeleted/AboutView.vue')
   },
 
 ]

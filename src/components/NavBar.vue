@@ -2,7 +2,6 @@
 
 <!-- Requires Review. Search function is not complete, and may require modification. -->
 <!-- TODO: Implement this component into all pages that require them, replacing in-built navbar code -->
-<!-- TODO: Check and adjust for responsiveness on mobile devices! -->
 
 <template>
     <!-- Main NavBar -->
@@ -10,12 +9,12 @@
         <nav class="navbar">
             <div class="container-fluid align-items-center col-xxl-8 col-xl-9 col-lg-10 col-md-11 col-sm-12">
                 <!-- logo -->
-                <div class="align-items-center col-3" href="../login/index.html"> 
-                    <img src="../../Images/Logo/88 Bamboo.png" style="width: 70px; height: 70px;">
+                <div class="align-items-center col-3"> 
+                    <img src="../../Images/Logo/88 Bamboo.png" style="width: 70px; height: 70px;" @click="this.$router.push(`/`)">
                 </div>
                 <!-- search bar -->
                 <div class="col-6">
-                    <input class="search-bar form-control rounded fst-italic" type="text" placeholder="What are you drinking today?" style="height: 50px;" v-model="searchInput" v-on:keyup.enter="searchListings"> 
+                    <input class="search-bar form-control rounded fst-italic" type="text" placeholder="What are you drinking today?" style="height: 50px;" v-model="searchInput" v-on:keyup.enter="goSearch">
                 </div>
                 <div class="col-3">
                     <!-- profile icon -->
@@ -90,13 +89,13 @@
             // Redirect when clicking on profile picture
             redirectProfile() {
                 if (this.accType == 'user') {
-                    this.$router.push({path: '/user'});
+                    this.$router.push({path: '/profile/user'});
                 } 
                 else if (this.accType == 'producer') {
-                    this.$router.push({path: '/producer'});
+                    this.$router.push({path: '/profile/producer'});
                 } 
                 else if (this.accType == 'venue') {
-                    this.$router.push({path: '/venue'});
+                    this.$router.push({path: '/profile/venue'});
                 }
                 else {
                     this.$router.push({path: '/login'});
@@ -107,7 +106,7 @@
             //     this.$router.push({name: 'search', query: {input: this.searchInput}})
             // }
             // for search button
-            searchListings() {
+            goSearch() {
                 // flag to check if there are search inputs
                 this.search = true;
 

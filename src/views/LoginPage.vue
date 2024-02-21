@@ -245,15 +245,15 @@
 
                 // [User]
                 if (this.role == "user") {
-                    window.location.href = "../Users/Bottle-Listings";
-                    }
+                    this.$router.push({path: '/'});
+                }
                 // [Producer]
                 if (this.role == "producer") {
-                window.location.href = "../Producer/Producer-Listings"; 
+                    this.$router.push({path: '/profile/producer'});
                 }
                 // [Venue]
                 if (this.role == "venue") {
-                window.location.href = "../Venues/Bottle-Listings";
+                    this.$router.push({path: '/profile/venue'});
                 }
             }
         }
