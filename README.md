@@ -61,7 +61,7 @@ These are the login credentials for test accounts:
 | :---:  | :----: | :---: |
 | User | `111hotpot` | `westlife123` |
 | Producer | `The Macallan Distillery` | `macallan!d1st1llery` |
-| Venue | `GudSht` | `datssomegdshit` |
+| Venue | `Origin Bar` | `Origi456` |
 
 ### Installation
 
