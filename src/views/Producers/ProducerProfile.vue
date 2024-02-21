@@ -754,7 +754,6 @@
                 updateImage64: null, // original image
                 updateText: '',
 
-                deepDiveLinkUnformatted: "https://88bamboo.co/blogs/whisky-rum-gin-vodka-distillery-spotlight/the-islay-malt-with-a-worldwide-secret-society-ardbeg-distillery",
                 deepDiveLinkFormatted: "",
 
                 // to check if user is following producer
