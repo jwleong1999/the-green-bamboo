@@ -439,8 +439,7 @@ export default {
             user: {},
 
             // user being viewed
-            displayUserID: "65b327d5687b64f8302d56ef",
-            // displayUserID: "65b327d5687b64f8302d56ee",
+            displayUserID: null,
             displayUser: {},
 
             drinkChoice: "",
@@ -485,6 +484,16 @@ export default {
     methods: {
         // load data from database
         async loadData() {
+
+            // get displayUserID from URL
+            this.displayUserID = this.$route.params.id;
+            if (this.displayUserID === this.userID) {
+                this.$router.push('/userProfile');
+            }
+            else if (!this.displayUserID) {
+                this.displayUserID = this.userID;
+            }
+
             // Listings
             try {
                 const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
