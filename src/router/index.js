@@ -118,6 +118,11 @@ const routes = [
     name: 'about',
     component: () => import('../views/zToBeDeleted/AboutView.vue')
   },
+  {
+    path: '/signup',
+    name: 'signup',
+    component: () => import('../views/SignUpPage.vue')
+  },
 
 ]
 

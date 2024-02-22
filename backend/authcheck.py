@@ -47,7 +47,7 @@ def authcheckUser():
             ), 400
         
         # User exists, check if password matches
-        if(userExists["hashedPassword"] == str(loginInfo["password"])):
+        if(str(userExists["hashedPassword"]) == str(loginInfo["password"])):
             return jsonify(
                 {   
                     "code": 200,
@@ -97,7 +97,7 @@ def authcheckProducer():
             ), 400
         
         # Producer exists, check if password matches
-        if(producerExists["hashedPassword"] == str(loginInfo["password"])):
+        if(str(producerExists["hashedPassword"]) == str(loginInfo["password"])):
             return jsonify(
                 {   
                     "code": 200,
@@ -147,7 +147,7 @@ def authcheckVenue():
             ), 400
         
         # Venue exists, check if password matches
-        if(venueExists["hashedPassword"] == str(loginInfo["password"])):
+        if(str(venueExists["hashedPassword"]) == str(loginInfo["password"])):
             return jsonify(
                 {   
                     "code": 200,
