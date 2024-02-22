@@ -39,9 +39,9 @@
         <div class="text-success fst-italic fw-bold fs-3" v-if="successfulUpdate"> 
             <span>The bottle listing has successfully been updated</span> <!-- for user -->
             <br>
-            <router-link :to="{ path: '/Producers/Bottle-Listings/'+this.producerID }" class="text-secondary">
+            <router-link :to="{ path: '/Producers/Profile-Page/'+this.tempProducerID.$oid }" class="text-secondary">
                 <button class="btn primary-btn btn-sm">
-                    <span class="fs-5 fst-italic"> Go back to your listings </span>
+                    <span class="fs-5 fst-italic"> Go back to your profile </span>
                 </button>
             </router-link>
         </div>
@@ -72,13 +72,13 @@
                             <div class="col-4">
                                 <div class="d-grid gap-2">
                                      
-                                    <router-link :to="{ path: '/Producers/Bottle-Listings/'+this.producerID }" class="text-secondary">
+                                    <router-link :to="{ path: '/Producers/Profile-Page/'+this.tempProducerID.$oid }" class="text-secondary">
                                     <span class="pe-2">
                                         
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16" v-on:click="previousListing">
                                             <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
                                         </svg>
-                                        <h5 style="display: inline-block;"> Back to your listings </h5> 
+                                        <h5 style="display: inline-block;"> Back to your profile </h5> 
                                         
                                     </span>
                                     </router-link>
@@ -116,6 +116,7 @@
                                                     </div>
                                                     
                                                 </div>
+                                                
 
                                                 <div v-if="independentStatus" class="row">
                                                     <label for="input">Enter Producer Name:<span class="text-danger">*</span></label>
@@ -157,6 +158,7 @@
                                                     </div>
 
                                                 </div>
+                                                
                                                 
                                                 <!-- to input checkbox to indicate producer is independent or dependent -->
                                                 <div class="row">
@@ -232,6 +234,8 @@
                                                     <div class="col-md-6 mb-3">
                                                         <input type="Expression Name" class="form-control" id="abv" v-model="tempABV" >
                                                         <span v-if="missingABV" class="text-danger">Please enter an ABV.</span>
+                                                        <span v-if="invalidABV" class="text-danger">Please enter a valid ABV with a value of 1 d.p.</span>
+
                                                     </div>
                                                     
                                                 </div>
@@ -324,9 +328,9 @@
                 errorMessage:false,
                 missingName:false,
                 missingBottler:false,
-                
                 missingABV:false,
                 missingDescription:false,
+                invalidABV:false,
                 errors:0,
                 
                 // default producer photo
@@ -507,6 +511,12 @@
             
             },
             async updateListing(){
+                this.missingName=false;
+                this.missingBottler=false;
+                this.missingABV=false;
+                this.invalidABV=false;
+                this.missingDescription=false;
+
                 this.errors=0;
                 if(this.tempExpressionName.trim() == ''){
                     this.missingName = true;
@@ -517,10 +527,21 @@
                     this.errors++
                 }
                 
+                
                 if(this.tempABV == '' | this.tempABV == null){
                     this.missingABV = true;
                     this.errors++
                 }
+                if(this.tempABV != '' ){
+                    const regex = /^-?\d+(\.\d{1})?%?$/;
+
+                    // Check if the input value matches the regular expression
+                    if (!regex.test(this.tempABV)){
+                        this.invalidABV = true;
+                        this.errors++
+                    }
+                }
+
                 if(this.tempDescription.trim() == ''){
                     this.missingDescription = true;
                     this.errors++
