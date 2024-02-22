@@ -242,19 +242,20 @@
                 // Redirect for selected roles 
                 
                 // [TODO] change to correct page and use router pushing
+                this.$router.push({path: '/Users/Bottle-Listings'})
 
-                // [User]
-                if (this.role == "user") {
-                    this.$router.push({path: '/'});
-                }
-                // [Producer]
-                if (this.role == "producer") {
-                    this.$router.push({path: '/profile/producer'});
-                }
-                // [Venue]
-                if (this.role == "venue") {
-                    this.$router.push({path: '/profile/venue'});
-                }
+                // // [User]
+                // if (this.role == "user") {
+                //     this.$router.push({path: '/'});
+                // }
+                // // [Producer]
+                // if (this.role == "producer") {
+                //     this.$router.push({path: '/profile/producer'});
+                // }
+                // // [Venue]
+                // if (this.role == "venue") {
+                //     this.$router.push({path: '/profile/venue'});
+                // }
             }
         }
     };
