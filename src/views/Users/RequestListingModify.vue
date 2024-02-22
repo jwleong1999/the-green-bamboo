@@ -50,7 +50,26 @@
                     <p class="fw-bold fs-1" v-if="mode == 'duplicate'">Report Duplicate Bottle Listing</p>
                 </div>
 
-                <!-- TODO: Show Linked Bottle Listing Information -->
+                <!-- Show Linked Bottle Listing Information -->
+                <div class="card mb-3 text-start">
+                    <div class="card-header fst-italic">
+                        <span v-if="mode == 'edit'">Proposing an edit to:</span>
+                        <span v-if="mode == 'duplicate'">Suspected Duplicate:</span>
+                    </div>
+                    <div class="card-body">
+                        <span class="card-title fw-bold fs-5">{{ targetListing.listingName }}</span>
+                        <br>
+                        <span class="card-text">{{ targetListing.drinkType }}<span v-if="targetListing.typeCategory"> / {{ targetListing.typeCategory }}</span></span>
+                        <br>
+                        <span class="card-text fst-italic">{{ targetListing.officialDesc }}</span>
+                    </div>
+                    <div class="card-footer text-body-secondary">
+                        <!-- Link to Bottle Listing Page -->
+                        <router-link :to="'/Producers/Bottle-Listings/' + this.$route.params.listingID" class="text-decoration-none">
+                            <span>View Listing Details</span>
+                        </router-link>
+                    </div>
+                </div>
 
                 <!-- Start of form -->
                 <form v-on:submit.prevent="submitEdit" id="frm">
@@ -120,7 +139,7 @@
                 return {
                     mode: this.$route.params.mode,
                     prevListing: false,
-                    targetListing: {}, // TODO: Display linked bottle listing information
+                    targetListing: {},
                     form: {
                         editDesc: '',
                         sourceLink: '',
