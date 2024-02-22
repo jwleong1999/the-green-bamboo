@@ -2,7 +2,7 @@
 
 <template>
     <NavBar />
-    <SubmitListingNew mode="power" />
+    <SubmitListingNew formType="power" formMode="new" />
 </template>
 
 <script>

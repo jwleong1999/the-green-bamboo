@@ -2,7 +2,7 @@
 
 <template>
     <NavBar />
-    <SubmitListingNew mode="user" />
+    <SubmitListingNew formType="req" formMode="new" />
 </template>
 
 <script>
