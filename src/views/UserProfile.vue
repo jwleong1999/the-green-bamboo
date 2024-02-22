@@ -368,7 +368,7 @@
                                                 <img src="../../Images/Others/cancel.png" alt="" class="rounded-circle border border-dark text-center" style="width: 100px; height: 100px;">
                                                 <h3>Are you sure?</h3>
                                                 <br>
-                                                <p>Do you really want to delete <i>{{ name }}</i>? </p>
+                                                <p>Do you really want to delete <b><i>{{ name }}</i></b>? </p>
                                             </div>
                                             <div style="display: inline" class="text-center mb-4">
                                                 <button type="button" class="btn btn-secondary me-3" data-bs-dismiss="modal">Cancel</button>
