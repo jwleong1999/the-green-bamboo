@@ -159,9 +159,9 @@
                                 <!-- body -->
                                 <div v-if="true">
                                     <div v-for="(update, index) in questionsUpdates" :key="index">
-                                        <span v-if="update.type == ('producerUpdate' || 'venueUpdate')">
+                                        <span v-if="update.type == 'producerUpdate' || update.type == 'venueUpdate'">
                                             <b>{{ update.name }}</b> updated status: "<b>{{ update.text }}</b>"
-                                            {{ getTimeDifference(update.date.$date) }}
+                                            <i>{{ getTimeDifference(update.date.$date) }}</i>
                                             <br><br>
                                         </span>
                                     </div>
