@@ -72,4 +72,4 @@ def createAccount():
 
 # -----------------------------------------------------------------------------------------
 if __name__ == "__main__":
-    app.run(debug=True, port = 5202)
+    app.run(debug=True, port = 5400)
