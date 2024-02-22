@@ -2,11 +2,6 @@
 
 <!--
     TODO:
-    - Accept pre-filled information from user requests to be created by power users, or to allow users to edit their submitted requests.
-    -- Users cannot submit requests for bottle listings that already exist. They should be directed to the edit page instead.
-    -- Different users can submit requests for the same bottle listing. Power users will decide which one to accept.
-    -- The same user cannot submit multiple requests for the same bottle listing.
-    
     - "Return" button may bring user back to same page, but with form cleared. Prevent that by returning to last notable page. (optional)
     - Consider another backend check to ensure that submitter is authorized to submit listing in specified mode, with valid producerID for producers.
     - Should we save the form data for easier retry when invoking reset()? Should reset() just hard refresh the page?

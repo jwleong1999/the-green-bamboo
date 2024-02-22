@@ -1,26 +1,17 @@
-<!-- HTML -->
+<!-- Form: Create New Bottle Listing -->
+
 <template>
-    <!-- navbar-->
     <NavBar />
-    <SubmitListingNew mode = "power" />
-    
-
-
+    <SubmitListingNew mode="power" />
 </template>
 
-<!-- ---------------------------------------------------------------------------------------------------------------------------------------------------------- -->
-
-<!-- CSS -->
-
-<!-- ---------------------------------------------------------------------------------------------------------------------------------------------------------- -->
-
-<!-- JavaScript -->
 <script>
-    // import axios from 'axios'
-    import NavBar from '@/components/NavBar.vue'
-    import SubmitListingNew from '@/components/SubmitListingNew.vue'
+    import NavBar from '@/components/NavBar.vue';
+    import SubmitListingNew from '@/components/SubmitListingNew.vue';
+
     export default {
-        components:{
+        name: 'CreateListing',
+        components: {
             NavBar,
             SubmitListingNew
         },
@@ -31,7 +22,6 @@
             }
         },
     };
-    
 </script>
 
 

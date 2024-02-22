@@ -60,14 +60,7 @@ const routes = [
     component: () => import('../views/Producers/CreateListing.vue')
   },
   {
-    // path: '/listing/edit',
-    // name: 'listingedithome',
-    path: '/Producer/Producer-Edit-Listing',
-    name: 'producerupdatelistings',
-    component: () => import('../views/Producers/EditHome.vue')
-  },
-  {
-    // path: '/listing/edit/:listingID',
+    // path: '/listing/edit/:listingID/:requestID?',
     // name: 'listingedit',
     path: '/Producer/Producer-Edit-Listing/:id',
     name: 'producerupdatelistingsdetails',
@@ -96,6 +89,11 @@ const routes = [
     component: () => import('../views/Users/RequestListingModify.vue')
   },
   
+  {
+    path: '/Producer/Producer-Edit-Listing',
+    name: 'producerupdatelistings',
+    component: () => import('../views/Producers/EditHome.vue')
+  },
   {
     path: '/Venues/Bottle-Listings',
     name: 'venuesbottlelistings',
