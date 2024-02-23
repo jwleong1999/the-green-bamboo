@@ -141,7 +141,7 @@
                                 <!-- claim this listing / add listing & edit profile -->
                                 <div class="col-4">
                                     <!-- [if] user type is producer -->
-                                    <span v-if="userType == 'producer'" class="row"> 
+                                    <span v-if="correctProducer" class="row"> 
                                         <!-- add listing-->
                                         <div class="col-6 d-grid no-padding">
                                             <!-- if not editing -->
@@ -221,7 +221,7 @@
 
                     <!-- follow this distillery -->
                     <div class="col-5">
-                        <div v-if="userType != 'producer' && !following" class="d-grid gap-2">
+                        <div v-if="!correctProducer && !following" class="d-grid gap-2">
                             <button class="btn primary-btn-less-round btn-lg" @click="editFollow('follow')"> 
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
@@ -229,7 +229,7 @@
                                 Follow this distillery
                             </button>
                         </div>
-                        <div v-else-if="userType != 'producer'" class="d-grid gap-2">
+                        <div v-else-if="!correctProducer" class="d-grid gap-2">
                             <button class="btn primary-btn-outline-less-round btn-lg" @click="editFollow('unfollow')"> 
                                 Following
                             </button>
@@ -305,7 +305,7 @@
                     <!-- reply / send to producer -->
                     <div class="row pt-3">
                         <!-- [if] user type is producer -->
-                        <div v-if="userType == 'producer'">
+                        <div v-if="correctProducer">
                             <div class="row">
                                 <div class="input-group centered">
                                     <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Say hi to your patrons!" style="height: 50px;" v-model="updateText"> 
@@ -402,7 +402,7 @@
                         <!-- search -->
                         <div class="col-9">
                             <!-- [if] user type is producer -->
-                            <div v-if="userType == 'producer'" class="row">
+                            <div v-if="correctProducer" class="row">
                                 <div class="col-3 d-grid no padding">
                                     <button type="button" class="btn primary-btn-outline-thick rounded-0" v-on:click="editCatalogue()">
                                         <a class="default-clickable-text"> Edit catalogue </a> 
@@ -526,7 +526,7 @@
             <div class="col-3">
                 <div class="row">
                     <!-- view analytics -->
-                    <div v-if="userType == 'producer'" class="col-12 d-grid gap-2 pb-3">
+                    <div v-if="correctProducer" class="col-12 d-grid gap-2 pb-3">
                         <button class="btn secondary-btn-not-rounded rounded-0" type="button"> View My Analytics </button>
                     </div>
                     <!-- q&a -->
@@ -535,12 +535,12 @@
                             <!-- header text -->
                             <div class="square-inline text-start">
                                 <!-- [if] user type producer -->
-                                <div v-if="userType == 'producer'" class="mr-auto"> <h4> Q&A for You! </h4> </div>
+                                <div v-if="correctProducer" class="mr-auto"> <h4> Q&A for You! </h4> </div>
                                 <!-- [else] user type is NOT producer -->
                                 <h4 v-else class="mr-auto"> Q&As for {{ specified_producer["producerName"] }} </h4>
                             </div>
                             <!-- show buttons for answered & unanswered questions -->
-                            <div v-if="userType == 'producer'" class="row text-center px-2">
+                            <div v-if="correctProducer" class="row text-center px-2">
                                 <div class="col-6 d-grid gap-0 no-padding">
                                     <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
                                         <a class="reverse-clickable-text" v-on:click="showAnswered()">
@@ -562,7 +562,7 @@
                                 <div id="carouselExample" class="carousel slide">
                                     <div class="carousel-inner px-4">
                                         <!-- [if] user type is producer -->
-                                        <div v-if="userType == 'producer'">
+                                        <div v-if="correctProducer">
                                             <!-- show answered questions -->
                                             <div v-if="answerStatus">
                                                 <div class="carousel-item" v-for="(qa, index) in answeredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
@@ -675,8 +675,9 @@
                 modRequests: [],
 
                 // define user type here (defined on mounted() function)
-                user_id: "65b327d5687b64f8302d56ef", // 65b327d5687b64f8302d56ee | 65b327d5687b64f8302d56ef
-                userType: "producer",
+                user_id: "", // 65b327d5687b64f8302d56ee | 65b327d5687b64f8302d56ef
+                userType: "",
+                correctProducer: false,
 
                 // all drinks that producer has
                 allDrinks: [],
@@ -764,7 +765,16 @@
             };
         },
         async mounted() {
-            // this.userType = localStorage.getItem('88B_accType');
+            var userID = localStorage.getItem('88B_accID')
+            if(userID != null){
+                this.user_id = userID;
+            }
+
+            var userType = localStorage.getItem('88B_accType');
+            if(userType != null){
+                this.accType = userType;
+            }
+
             await this.loadData();
         },
         methods: {
@@ -775,6 +785,12 @@
                     if (this.producer_id == null) {
                         // redirect to page
                         this.$router.push('/Users/Bottle-Listings');
+                    }
+                    else {
+                        // check if user_id same as producer_id
+                        if(this.user_id == this.producer_id && this.userType == "producer"){
+                            this.correctProducer = true;
+                        }
                     }
                 // countries
                 // _id, originCountry
