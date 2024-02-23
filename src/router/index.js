@@ -26,7 +26,7 @@ const routes = [
   {
     // path: '/profile/user/:userID?',
     // name: 'profileuser',
-    path: '/userprofile',
+    path: '/userprofile/:id?',
     name: 'userprofile',
     component: () => import('../views/UserProfile.vue')
   },
@@ -55,19 +55,12 @@ const routes = [
   {
     // path: '/listing/create/:requestID?',
     // name: 'listingcreate',
-    path: '/Producer/Producer-Create-Listing/:id?',
+    path: '/Producer/Producer-Create-Listing/:requestID?',
     name: 'producercreatelistings',
     component: () => import('../views/Producers/CreateListing.vue')
   },
   {
-    // path: '/listing/edit',
-    // name: 'listingedithome',
-    path: '/Producer/Producer-Edit-Listing',
-    name: 'producerupdatelistings',
-    component: () => import('../views/Producers/EditHome.vue')
-  },
-  {
-    // path: '/listing/edit/:listingID',
+    // path: '/listing/edit/:listingID/:requestID?',
     // name: 'listingedit',
     path: '/Producer/Producer-Edit-Listing/:id',
     name: 'producerupdatelistingsdetails',
@@ -84,7 +77,7 @@ const routes = [
   {
     // path: '/request/new/:requestID?',
     // name: 'requestnew',
-    path: '/Users/request/new/:id?',
+    path: '/Users/request/new/:requestID?',
     name: 'usersrequestlistingnew',
     component: () => import('../views/Users/RequestListingNew.vue')
   },
@@ -96,6 +89,11 @@ const routes = [
     component: () => import('../views/Users/RequestListingModify.vue')
   },
   
+  {
+    path: '/Producer/Producer-Edit-Listing',
+    name: 'producerupdatelistings',
+    component: () => import('../views/Producers/EditHome.vue')
+  },
   {
     path: '/Venues/Bottle-Listings',
     name: 'venuesbottlelistings',
@@ -119,6 +117,11 @@ const routes = [
     path: '/about',
     name: 'about',
     component: () => import('../views/zToBeDeleted/AboutView.vue')
+  },
+  {
+    path: '/signup',
+    name: 'signup',
+    component: () => import('../views/SignUpPage.vue')
   },
 
 ]

@@ -269,7 +269,7 @@
                         <!-- drink lists -->
                         <div v-if="showCurrentContent" class="mt-3">
 
-                            <button v-if="ownProfile" type="button" class="btn btn-outline-primary mb-3" data-bs-toggle="modal" data-bs-target="#createNewListModal"  style="color: #535C72; background-color: whitesmoke; border: 1px solid #535C72;">Create New List</button>
+                            <button v-if="ownProfile" type="button" class="btn primary-btn-outline-less-round mb-3" data-bs-toggle="modal" data-bs-target="#createNewListModal" >Create New List</button>
 
                             <!-- create new list modal -->
                             <div class="modal fade" id="createNewListModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -285,12 +285,15 @@
                                             <div class="input-group mb-3">
                                                 <input v-model="newListName" type="text" class="form-control" placeholder="List Name" aria-label="Username" aria-describedby="basic-addon1">
                                             </div>
+                                            <div v-if="newListNameError" class="text-danger text-sm">
+                                                *{{ newListNameError }}
+                                            </div>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="basic-url" class="form-label">List Description</label>
                                             <div class="input-group mb-3">
-                                                <input v-model="newListDesc" type="text" class="form-control" placeholder="List Description (Optional)" aria-label="Username" aria-describedby="basic-addon1">
+                                                <textarea v-model="newListDesc" type="text" class="form-control" placeholder="List Description (Optional)" aria-label="Username" aria-describedby="basic-addon1" rows="5"></textarea>
                                             </div>
                                         </div>
 
@@ -303,17 +306,78 @@
                                 </div>
                             </div>
 
-                            <div v-for="(bookmarkList, name) in displayUserBookmarks" :key="name" style="display: flex" class="mb-5">
+                            <div v-for="(bookmarkList, name, index) in displayUserBookmarks" :key="name" style="display: flex" class="mb-5">
                                 <img :src=" 'data:image/png;base64,' + (photo || defaultDrinkImage)" alt="" class="border border-dark-subtle border-2 bottle-img me-3">
                                 <div style="height: 150px; display: flex; flex-direction: column;" >
                                     <h3 class="mt-1">{{ name }} </h3>
+                                    <p v-if="bookmarkList.listItems.length > 1"> {{ bookmarkList.listItems.length }} items in list </p>
+                                    <p v-else> {{ bookmarkList.listItems.length }} item in list </p>
                                     <p> {{ bookmarkList.listDesc }} </p>
-                                    <div style="display: flex; margin-top: auto" class="mb-1">
-                                        <a class="me-4" @click="toggleView(name)" href="#">View List</a>
-                                        <a v-if="ownProfile" class="me-4" href="#">Edit List</a>
-                                        <a v-if="ownProfile" href="#">Delete List</a>
+                                    <div style="display: flex; margin-top: auto;" class="mb-1">
+                                        <a class="me-4" @click="toggleView(name)" href="#" style="color: #535C72;">View List</a>
+                                        <a v-if="ownProfile" class="me-4" href="#" style="color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#editListModal${index}`" @click="resetEditList(name, bookmarkList.listDesc)">Edit List</a>
+                                        <a v-if="ownProfile" href="#" style="color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#deleteListModal${index}`">Delete List</a>
                                     </div>
                                 </div>
+
+                                <!-- edit list modal start -->
+                                <div class="modal fade" :id="`editListModal${index}`" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit List</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="basic-url" class="form-label">List Name</label>
+                                            <div class="input-group mb-3">
+                                                <input v-model="editListName" type="text" class="form-control" :placeholder="name" aria-label="Username" aria-describedby="basic-addon1">
+                                            </div>
+                                            <div v-if="editListNameError" class="text-danger text-sm">
+                                                *{{ editListNameError }}
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="basic-url" class="form-label">List Description</label>
+                                            <div class="input-group mb-3">
+                                                <textarea v-model="editListDesc" type="text" class="form-control" :placeholder="bookmarkList.listDesc" aria-label="Username" aria-describedby="basic-addon1" rows="5"></textarea>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary" @click="editList(name)">Save changes</button>
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
+                                <!-- modal end -->
+
+                                <!-- delete list modal start -->
+                                <div class="modal fade" :id="`deleteListModal${index}`" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="text-end mt-2 me-2">
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+
+                                            <div class="text-center">
+                                                <img src="../../Images/Others/cancel.png" alt="" class="rounded-circle border border-dark text-center" style="width: 100px; height: 100px;">
+                                                <h3>Are you sure?</h3>
+                                                <br>
+                                                <p>Do you really want to delete <b><i>{{ name }}</i></b>? </p>
+                                            </div>
+                                            <div style="display: inline" class="text-center mb-4">
+                                                <button type="button" class="btn btn-secondary me-3" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deleteList(name)">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- modal end -->
                             </div>
 
                             
@@ -326,8 +390,8 @@
                                     <h3>{{currentList}}</h3>
                                 </div>
                                 <div class="col-12 col-md-6 text-end">
-                                    <button @click="toggleView" type="button" class="btn btn-outline-primary">Back to Lists</button>
-                                    <button v-if="ownProfile" type="button" class="btn btn-outline-primary ms-3" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Drink to List</button>
+                                    <button @click="toggleView" type="button" class="btn primary-btn-outline-less-round">Back to Lists</button>
+                                    <button v-if="ownProfile" type="button" class="btn primary-btn-outline-less-round ms-3" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Drink to List</button>
                                 </div>
                             </div>
                             <!-- add drink modal -->
@@ -363,7 +427,7 @@
                                     <h3>{{drinkName}}</h3>
                                     <p>Drink information </p>
                                     <div v-if="ownProfile" style="display: flex; margin-top: auto" class="mb-0">
-                                        <a @click="toggleView" href="#" style="text-decoration: none;">
+                                        <a href="#" style="text-decoration: none; color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#deleteFromListModal${index}`">
                                             <!-- cross icon -->
                                             <svg class=mb-1 xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
                                                 <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
@@ -381,6 +445,29 @@
                                         </svg>
                                     </h2>
                                 </div>
+
+                                <!-- delete from list modal start -->
+                                <div class="modal fade" :id="`deleteFromListModal${index}`" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="text-end mt-2 me-2">
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+
+                                            <div class="text-center mx-2">
+                                                <img src="../../Images/Others/cancel.png" alt="" class="rounded-circle border border-dark text-center" style="width: 100px; height: 100px;">
+                                                <h3>Are you sure?</h3>
+                                                <br>
+                                                <p>Do you really want to delete <b><i>{{ drinkName }}</i></b> from <b><i>{{ currentList }}</i></b>? </p>
+                                            </div>
+                                            <div style="display: inline" class="text-center mb-4">
+                                                <button type="button" class="btn btn-secondary me-3" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deleteFromList(currentList, drinkName)">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- modal end -->
                             </div>
                         </div>
                     </div>
@@ -439,8 +526,7 @@ export default {
             user: {},
 
             // user being viewed
-            displayUserID: "65b327d5687b64f8302d56ef",
-            // displayUserID: "65b327d5687b64f8302d56ee",
+            displayUserID: null,
             displayUser: {},
 
             drinkChoice: "",
@@ -471,8 +557,15 @@ export default {
             currentList: "",
             newListName: "",
             newListDesc: "",
+            newListNameError: "",
             drinksToAdd: [],
             following: false,
+
+            // create and edit list
+            editListName: "",
+            editListDesc: "",
+            editListNameError: "",
+
             // to change
             ownProfile: false,
             drinkSearch: "",
@@ -485,6 +578,16 @@ export default {
     methods: {
         // load data from database
         async loadData() {
+
+            // get displayUserID from URL
+            this.displayUserID = this.$route.params.id;
+            if (this.displayUserID === this.userID) {
+                this.$router.push('/userProfile');
+            }
+            else if (!this.displayUserID) {
+                this.displayUserID = this.userID;
+            }
+
             // Listings
             try {
                 const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
@@ -733,7 +836,15 @@ export default {
             window.location.reload();
         },
         async addNewList() {
-            // take the new list name and new list description, and post it to the database
+            if (this.userBookmarks[this.newListName]) {
+                this.newListNameError = "List name already exists";
+                return;
+            } else if (this.newListName === "") {
+                this.newListNameError = "List name cannot be empty";
+                return;
+            }
+            
+            this.newListNameError = "";
             this.userBookmarks[this.newListName] = {};
             this.userBookmarks[this.newListName].listDesc = this.newListDesc;
             this.userBookmarks[this.newListName].listItems = [];
@@ -886,7 +997,90 @@ export default {
                 console.error(error);
             }
             
+        }, 
+        async deleteFromList(listName, item) {
+            const index = this.userBookmarks[listName].listItems.indexOf(item);
+            this.userBookmarks[listName].listItems.splice(index, 1);
+
+            try {
+                const response = await this.$axios.post('http://127.0.0.1:5100/updateBookmark', 
+                    {
+                        userID: this.userID,
+                        bookmark: this.userBookmarks,
+                    }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                console.log(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async deleteList(listName) {
+            // delete the list from the user's bookmark list
+            delete this.userBookmarks[listName];
+
+            try {
+                const response = await this.$axios.post('http://127.0.0.1:5100/updateBookmark', 
+                    {
+                        userID: this.userID,
+                        bookmark: this.userBookmarks,
+                    }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                console.log(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+
+        }, 
+        resetEditList(listName, listDesc) {
+            this.editListName = listName;
+            this.editListDesc = listDesc;
+            this.editListNameError = "";
+        },
+        async editList(currentListName) {
+            if (this.editListName === "") {
+                this.editListNameError = "List name cannot be empty";
+                return;
+            } else if (this.editListName !== currentListName && this.userBookmarks[this.editListName]) {
+                this.editListNameError = "List name already exists";
+                return;
+            }
+
+            this.listNameError = "";
+
+            if (this.editListName !== currentListName) {
+                this.userBookmarks[this.editListName] = {};
+                this.userBookmarks[this.editListName].listDesc = this.editListDesc;
+                this.userBookmarks[this.editListName].listItems = this.userBookmarks[currentListName].listItems;
+                delete this.userBookmarks[currentListName];
+            } 
+            
+            this.userBookmarks[this.editListName].listDesc = this.editListDesc;
+
+            try {
+                const response = await this.$axios.post('http://127.0.0.1:5100/updateBookmark', 
+                    {
+                        userID: this.userID,
+                        bookmark: this.userBookmarks,
+                    }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                console.log(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+
+            window.location.reload();
+
         }
+
         
     },
 };
