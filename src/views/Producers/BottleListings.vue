@@ -634,13 +634,18 @@
                     <div class="row" v-for="review in filteredReviews" v-bind:key="review._id">
                         <!-- profile photo -->
                         <div class="col-1">
-                            <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromReview(review) || defaultProfilePhoto)" alt="" class="profile-image">
+                            <a :href="`../../userProfile/${review.userID.$oid}`">
+                                <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromReview(review) || defaultProfilePhoto)" alt="" class="profile-image">
+                            </a>
                         </div>
                         <!-- user reviews -->
                         <div class="col-9">
                             <div class="row">
                                 <div class="d-flex align-items-center text-start mb-2">
-                                    @{{ getUsernameFromReview(review) }} rated {{ review['rating'] }} 
+                                    <a :href="`../../userProfile/${review.userID.$oid}`" style="text-decoration: none; color: inherit">
+                                        @{{ getUsernameFromReview(review) }}
+                                    </a> 
+                                    &nbsp;rated {{ review['rating'] }}
                                     <!-- star icon -->
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill me-5" viewBox="0 0 16 16">
                                         <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
