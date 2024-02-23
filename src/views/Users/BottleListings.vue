@@ -129,7 +129,7 @@
                     <div class="row">
                         <!-- your drinks shelf -->
                         <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3">
+                            <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
                                 <!-- header text -->
                                 <div class="square-inline">
                                     <h4 class="square-inline-text-start mr-auto"> Your Drink Shelf </h4>
@@ -138,17 +138,22 @@
                                     </svg>
                                 </div>
                                 <!-- body -->
-                                <div class="py-4"></div>
-                                <div class="py-5">
-                                    <h6 class="fst-italic"> No drinks added yet. </h6>
-                                    <button class="btn secondary-btn-border btn-sm py-2 px-3"> Log in to add a drink to shelf </button>
+                                <div style="height: 85%;">
+                                    <!-- TODO check for drink shelf -->
+                                    <div v-if="false" class="overflow-auto" style="max-height: 100%;">
+                                    </div>
+                                    <div v-else-if="userID" style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                                        <h6 class="fst-italic"> No drinks added yet. </h6>
+                                    </div>
+                                    <div v-else style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                                        <button class="btn secondary-btn-border btn-sm py-2 px-3"> LLog in to add a drink to shelf </button>
+                                    </div>
                                 </div>
-                                <div class="py-4"></div>
                             </div>
                         </div>
                         <!-- brands you follow -->
                         <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3 text-start overflow-auto" style="height: 375px;">
+                            <div class="square primary-square rounded p-3 mb-3 text-start" style="height: 325px;">
                                 <!-- header text -->
                                 <div class="square-inline">
                                     <h4 class="square-inline-text-start mr-auto"> Brands You Follow </h4>
@@ -157,23 +162,22 @@
                                     </svg>
                                 </div>
                                 <!-- body -->
-                                <div v-if="true">
-                                    <div v-for="(update, index) in questionsUpdates" :key="index">
-                                        <span v-if="update.type == 'producerUpdate' || update.type == 'venueUpdate'">
-                                            <b>{{ update.name }}</b> updated status: "<b>{{ update.text }}</b>"
-                                            <i>{{ getTimeDifference(update.date.$date) }}</i>
-                                            <br><br>
-                                        </span>
+                                <div style="height: 85%;">
+                                    <div v-if="questionsUpdates" class="overflow-auto" style="max-height: 100%;">
+                                        <div v-for="(update, index) in questionsUpdates" :key="index">
+                                            <span v-if="update.type == 'producerUpdate' || update.type == 'venueUpdate'">
+                                                <b>{{ update.name }}</b> updated status: "<b>{{ update.text }}</b>"
+                                                <i>{{ getTimeDifference(update.date.$date) }}</i>
+                                                <br><br>
+                                            </span>
+                                        </div>
                                     </div>
-
-                                </div>
-                                <div v-else>
-                                    <div class="py-4"></div>
-                                    <div class="py-5">
+                                    <div v-else-if="userID" style="display: flex; align-items: center; justify-content: center; height: 100%;">
                                         <h6 class="fst-italic"> No brands added yet. </h6>
+                                    </div>
+                                    <div v-else style="display: flex; align-items: center; justify-content: center; height: 100%;">
                                         <button class="btn secondary-btn-border btn-sm py-2 px-3"> Log in to follow your favourite brand </button>
                                     </div>
-                                    <div class="py-4"></div>
                                 </div>
                             </div>
                         </div>
