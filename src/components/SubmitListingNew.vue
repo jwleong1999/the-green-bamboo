@@ -207,8 +207,8 @@
                         <!-- Input: Photo file -->
                         <div class="form-group mb-3">
                             <p class="text-start mb-1">Photo of bottle</p>
-                            <button type="button" class="btn primary-btn btn-sm d-flex mb-1" @click="this.form['photo'] = defaultPhoto">Reset to Default Photo</button>
-                            <img :src="'data:image/jpeg;base64,' + this.form['photo']" class="rounded d-flex mb-3" alt="" style="width: 100px; height: 100px; object-fit: cover;">
+                            <button type="button" class="btn primary-btn btn-sm d-flex mb-1" @click="this.form['photo'] = ''">Reset to Default Photo</button>
+                            <img :src="'data:image/jpeg;base64,' + (this.form['photo'] || defaultPhoto)" class="rounded d-flex mb-3" alt="" style="width: 100px; height: 100px; object-fit: cover;">
                             <input class="form-control" type="file" id="formFile" @change="handleFileSelect">
                         </div>
 
@@ -280,13 +280,13 @@
                                 </div>
                             </div>
                             <div class="form-group col-6">
-                                <p class="text-start mb-1" v-if="tempDrinkType == 'Liqueur'">Vintage (Year Bottled)</p>
+                                <p class="text-start mb-1" v-if="tempDrinkType == 'Wine (Grape wine)'">Vintage (Year Bottled)</p>
                                 <p class="text-start mb-1" v-else>Age</p>
                                 <div class="form-group row">
                                     <div class="col-6 pe-1">
                                         <input type="number" v-model="form['age']" class="form-control" id="age" min="0">
                                     </div>
-                                    <label for="age" class="col-6 col-form-label ps-1 text-start" v-if="tempDrinkType != 'Liqueur'">years old</label>
+                                    <label for="age" class="col-6 col-form-label ps-1 text-start" v-if="tempDrinkType != 'Wine (Grape wine)'">years old</label>
                                 </div>
                             </div>
                         </div>
@@ -418,9 +418,6 @@
             }
         },
         mounted() {
-
-            // Set default photo
-            this.form["photo"] = this.defaultPhoto;
 
             // Get userID
             this.form['userID'] = {
