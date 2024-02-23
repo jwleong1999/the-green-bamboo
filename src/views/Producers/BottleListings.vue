@@ -973,13 +973,13 @@
             async loadData() {
                     // countries
                     // _id, originCountry
-                        try {
-                                const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
-                                this.countries = response.data;
-                            } 
-                            catch (error) {
-                                console.error(error);
-                        }
+                        // try {
+                        //         const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
+                        //         this.countries = response.data;
+                        //     } 
+                        //     catch (error) {
+                        //         console.error(error);
+                        // }
                     // reviews
                     // _id, userID, reviewTarget, date, rating, reviewDesc, taggedUsers, reviewTitle, reviewType, flavorTag, photo
                         try {
@@ -1028,15 +1028,15 @@
                     catch (error) {
                         console.error(error);
                     }
-                    // languages
-                    // _id, language
-                        try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getLanguages');
-                            this.languages = response.data;
-                        } 
-                        catch (error) {
-                            console.error(error);
-                        }
+                // languages
+                // _id, language
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getLanguages');
+                        this.languages = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
                 // producers
                 // _id, producerName, producerDesc, originCountry, statusOB, mainDrinks
                 try {
@@ -1058,49 +1058,49 @@
                 
                 // venuesAPI
                 // _id, venueName, venueDesc, originCountry
-                try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getVenuesAPI');
-                        this.venuesAPI = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                // try {
+                //         const response = await this.$axios.get('http://127.0.0.1:5000/getVenuesAPI');
+                //         this.venuesAPI = response.data;
+                //     } 
+                //     catch (error) {
+                //         console.error(error);
+                //     }
                 // drinkTypes
                 // _id, drinkType, typeCategory
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
-                        this.drinkTypes = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //     const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
+                    //     this.drinkTypes = response.data;
+                    // } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
                 // requestListings
                 // _id, listingName, producerNew, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, sourceLink, brandRelation, reviewStatus, userID, photo
-                    try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
-                            this.requestListings = response.data;
-                        } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
+                    //         this.requestListings = response.data;
+                    //     } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
                 // requestEdits
                 // _id, duplicateLink, editDesc, sourceLink, brandRelation, listingID, userID, reviewStatus
-                    try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdits');
-                            this.requestEdits = response.data;
-                        } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdits');
+                    //         this.requestEdits = response.data;
+                    //     } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
                 // modRequests
                 // _id, userID, drinkType, modDesc
-                    try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
-                            this.modRequests = response.data;
-                        } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
+                    //         this.modRequests = response.data;
+                    //     } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
             },
 
             // view which producers have specified listing

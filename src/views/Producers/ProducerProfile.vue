@@ -1041,7 +1041,7 @@
             // get ratings for a listing
             getRatings(listing) {
                 const ratings = this.reviews.filter((rating) => {
-                    return rating["reviewTarget"] == listing["listingName"];
+                    return rating["reviewTarget"]["$oid"] == listing["_id"]["$oid"];
                 });
                 // if there are no ratings
                 if (ratings.length == 0) {
