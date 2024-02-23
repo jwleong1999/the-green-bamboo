@@ -209,7 +209,7 @@
                     </div>
                     <!-- follow this distillery -->
                     <div class="col-5">
-                        <div v-if="userType != 'venue' && !following" class="d-grid gap-2">
+                        <div v-if="userType == 'user' && !following" class="d-grid gap-2">
                             <button class="btn primary-btn-less-round btn-lg" @click="editFollow('follow')"> 
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
@@ -217,7 +217,7 @@
                                 Follow this venue
                             </button>
                         </div>
-                        <div v-else-if="userType != 'venue'" class="d-grid gap-2">
+                        <div v-else-if="userType == 'user'" class="d-grid gap-2">
                             <button class="btn primary-btn-outline-less-round btn-lg" @click="editFollow('unfollow')">
                                 Following
                             </button>
@@ -857,8 +857,10 @@
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
                         this.users = response.data;
-                        this.user = this.users.find(user => user["_id"]["$oid"] == this.user_id);
-                        // this.following = JSON.stringify(this.user.followLists.venues).includes(JSON.stringify({$oid: this.venue_id}));
+                        if (this.userType == 'user') {
+                            this.user = this.users.find(user => user["_id"]["$oid"] == this.user_id);
+                            this.following = JSON.stringify(this.user.followLists.venues).includes(JSON.stringify({$oid: this.venue_id}));
+                        }
                     } 
                     catch (error) {
                         console.error(error);
