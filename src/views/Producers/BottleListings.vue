@@ -253,9 +253,12 @@
                     </div>
                     <div v-else class="col-5">
                         <div class="d-grid gap-2">
-                            <button class="btn primary-btn-less-round btn-lg"> 
-                                Login to leave a Review
-                            </button>
+                            <router-link :to="{ path: '/login' }" class="reverse-clickable-text">
+                                <button class="btn primary-btn-less-round btn-lg"> 
+                                    Login to leave a Review
+                                </button>
+
+                            </router-link>
                         </div>
                     </div>
                 </div>
