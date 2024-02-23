@@ -165,7 +165,7 @@
                                 </div>
                                 <!-- body -->
                                 <div style="height: 85%;">
-                                    <div v-if="questionsUpdates" class="overflow-auto" style="max-height: 100%;">
+                                    <div v-if="questionsUpdates.length > 0" class="overflow-auto" style="max-height: 100%;">
                                         <div v-for="(update, index) in questionsUpdates" :key="index">
                                             <span v-if="update.type == 'producerUpdate' || update.type == 'venueUpdate'">
                                                 <b>{{ update.name }}</b> updated status: "<b>{{ update.text }}</b>"
