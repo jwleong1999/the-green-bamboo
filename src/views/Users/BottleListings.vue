@@ -222,10 +222,7 @@
                                     </ul>
                                 </div>
                             </div> 
-                        </div>
-                        
-                        <!-- listings -->
-                        <div class="row scrollable-listings">
+
                             <!-- Dropdown based on category--> 
                             <div v-if="selectedDrinkType != ''" class="col-3">
                                 <div class="d-grid gap-2 dropdown">
@@ -245,7 +242,12 @@
                                         <li>There is no category for this</li>       
                                     </ul>
                                 </div>
-                            </div>                            
+                            </div>       
+                        </div>
+                        
+                        <!-- listings -->
+                        <div class="row scrollable-listings">
+                                                 
 
                             <!-- [if] discovery & following not clicked -->
                             <div v-if="discovery == false && following == false">
@@ -316,6 +318,7 @@
                                 </h3>
                                 <!-- v-loop for each listing -->
                                 <div class="container text-start">
+                                    <h5 v-if="mostReviews==''" style="display: inline-block;"> There is no listing available for the selected filter </h5>
                                     <div v-for="listing in mostReviews" v-bind:key="listing._id" class="p-3">
 
                                         <div class="row">
@@ -379,6 +382,7 @@
                                 </h3> -->
                                 <!-- v-loop for each listing -->
                                 <div class="container text-start">
+                                    <h5 v-if="recentlyAdded==''" style="display: inline-block;"> There is no listing available for the selected filter </h5>
                                     <div v-for="listing in recentlyAdded" v-bind:key="listing._id" class="p-3">
 
                                         <div class="row">
@@ -890,6 +894,12 @@
 
             // Handle select of drink type filter option like sake, gin, whiskey
             selectDrinkType(drinkType) {
+
+                // reset most reviews and recently added arrays so that can repeatedly filter
+                this.getMostReviews()
+                this.getRecentlyAdded()
+
+                // Determine selected drink type, and corresponding drink categories
                 this.selectedCategory = null;
                 this.selectedDrinkType = drinkType;
                 for(let drinks of this.drinkTypes){
@@ -898,8 +908,11 @@
                     }
                 }
 
+                // Determine the drinkType searched, might not be neccessary
                 const drinkTypeSearch = this.selectedDrinkType['drinkType'].toLowerCase();
 
+
+                // Search listings for when input is in the searchbar
                 if(this.search){
                     this.searchListings()
                     const searchResults = this.filteredListings.filter((listing) => {
@@ -907,26 +920,63 @@
                         return drinkTypeListing.includes(drinkTypeSearch);
                     });
                     this.filterSearchResult=searchResults
+                    // to set filter message together with search terms when searched listings
                     this.isFilterType = true
                 }
-                
-                // Dropdown for drink category after selecting drink type
+
+                // Filter listings for when discovery mode
+                else if(this.discovery){
+
+                    const searchResults = this.mostReviews.filter((listing) => {
+                        const drinkTypeListing = listing["drinkType"].toLowerCase();
+                        return drinkTypeListing.includes(drinkTypeSearch);
+                    });
+                    console.log(searchResults)
+
+                    // if nothing found
+                    if(searchResults == null){
+                        this.mostReviews = []
+                    }
+                    else{
+                        this.mostReviews=searchResults
+                    }
+
+                }
+
+                // Filter listings for when following mode
+                else if(this.following){
+                    const searchResults = this.recentlyAdded.filter((listing) => {
+                        const drinkTypeListing = listing["drinkType"].toLowerCase();
+                        return drinkTypeListing.includes(drinkTypeSearch);
+                    });
+
+                    // if nothing found
+                    if(searchResults == null){
+                        this.recentlyAdded = []
+                    }
+                    else{
+                        this.recentlyAdded=searchResults
+                    }
+                }
+                // Filter listings for when no input, main listings page
                 else{
                     const searchResults = this.listings.filter((listing) => {
                         const drinkTypeListing = listing["drinkType"].toLowerCase();
                         return drinkTypeListing.includes(drinkTypeSearch);
                     });
                     this.filterSearchResult=searchResults
+
+                    // if nothing found
+                    if (this.filterSearchResult == null) {
+                        this.filteredListings = null;
+                    } 
+                    else {
+                        this.errorFound = false;
+                        this.errorMessage = '';
+                        this.filteredListings = this.filterSearchResult;
+                    }
                 }
-                // if nothing found
-                if (this.filterSearchResult == null) {
-                    this.filteredListings = null;
-                } 
-                else {
-                    this.errorFound = false;
-                    this.errorMessage = '';
-                    this.filteredListings = this.filterSearchResult;
-                }
+
         },
 
             //Select drink category like Blended for whiskey 
@@ -936,20 +986,55 @@
                 this.selectedCategory = drinkCategory;
 
                 const drinkCategorySearch = this.selectedCategory.toLowerCase();
-                const searchResults = this.filteredListings.filter((listing) => {
-                    const drinkCategory = listing["typeCategory"].toLowerCase();
-                    return drinkCategory.includes(drinkCategorySearch);
-                });
-                // if nothing found
-                if (searchResults == null) {
-                    this.errorFound = true;
-                    this.errorMessage = 'No results found, please try again.';
-                    this.filteredListings = null;
-                } 
-                else {
-                    this.errorFound = false;
-                    this.errorMessage = '';
-                    this.filteredListings = searchResults;
+
+                if(this.discovery){
+                    const searchResults = this.mostReviews.filter((listing) => {
+                        const drinkCategory = listing["typeCategory"].toLowerCase();
+                        return drinkCategory.includes(drinkCategorySearch);
+                    });
+                    if (searchResults == null) {
+                        this.errorFound = true;
+                        this.errorMessage = 'No results found, please try again.';
+                        this.mostReviews = [];
+                    } 
+                    else {
+                        this.errorFound = false;
+                        this.errorMessage = '';
+                        this.mostReviews = searchResults;
+                    }
+                }
+                else if(this.following){
+                    const searchResults = this.recentlyAdded.filter((listing) => {
+                        const drinkCategory = listing["typeCategory"].toLowerCase();
+                        return drinkCategory.includes(drinkCategorySearch);
+                    });
+                    if (searchResults == null) {
+                        this.errorFound = true;
+                        this.errorMessage = 'No results found, please try again.';
+                        this.recentlyAdded = [];
+                    } 
+                    else {
+                        this.errorFound = false;
+                        this.errorMessage = '';
+                        this.recentlyAdded = searchResults;
+                    }
+                }
+                else{
+                    const searchResults = this.filteredListings.filter((listing) => {
+                        const drinkCategory = listing["typeCategory"].toLowerCase();
+                        return drinkCategory.includes(drinkCategorySearch);
+                    });
+                    // if nothing found
+                    if (searchResults == null) {
+                        this.errorFound = true;
+                        this.errorMessage = 'No results found, please try again.';
+                        this.filteredListings = null;
+                    } 
+                    else {
+                        this.errorFound = false;
+                        this.errorMessage = '';
+                        this.filteredListings = searchResults;
+                    }
                 }
         },
             clearSelection() {
@@ -958,6 +1043,14 @@
                 this.selectedDrinkType = ''
                 this.selectedCategory = ''
                 this.isFilterType = ''
+                if(this.discovery){
+                    this.mostReviews=[]
+                    this.getMostReviews()
+                    console.log(this.mostReviews)
+                }
+                if(this.following){
+                    this.getRecentlyAdded()
+                }
         },
             clearCategory() {
                 // Handle the click event here
@@ -1001,6 +1094,7 @@
             if (this.following == true) {
                 this.following = false;
             }
+            this.clearSelection()
         },
 
         // change status of following
@@ -1014,6 +1108,7 @@
             if (this.discovery == true) {
                 this.discovery = false;
             }
+            this.clearSelection()
         },
 
         // find drink name given listing
@@ -1035,6 +1130,7 @@
         
         // get top 5 most reviewed items by producer
         getMostReviews() {
+            this.mostReviews = []
             let mostProducerReviews = Object.keys(this.allReviews).sort((a, b) => {
                 return this.allReviews[b] - this.allReviews[a];
             }) // to get top five, add .slice(0, 5)
@@ -1097,7 +1193,7 @@
         // get recently added
         getRecentlyAdded() {
             this.recentlyAdded = [...new Map(this.allProducerDrinks.concat(this.allVenueDrinks).map(item => [item._id.$oid, item])).values()];
-            console.log(this.recentlyAdded)
+            // console.log(this.recentlyAdded)
         },
 
         getQuestionsUpdates() {
