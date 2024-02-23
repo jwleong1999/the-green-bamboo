@@ -89,14 +89,24 @@
             // Redirect when clicking on profile picture
             redirectProfile() {
                 if (this.accType == 'user') {
-                    this.$router.push({path: '/profile/user'});
+                    this.$router.push({path: '/userprofile'});
                 } 
                 else if (this.accType == 'producer') {
-                    this.$router.push({path: '/profile/producer'});
+                    this.$router.push({path: '/Producers/Profile-Page'});
                 } 
                 else if (this.accType == 'venue') {
-                    this.$router.push({path: '/profile/venue'});
+                    this.$router.push({path: '/Venues/Profile-Page'});
                 }
+                // [RE-ROUTE FLAG]
+                // if (this.accType == 'user') {
+                //     this.$router.push({path: '/profile/user'});
+                // } 
+                // else if (this.accType == 'producer') {
+                //     this.$router.push({path: '/profile/producer'});
+                // } 
+                // else if (this.accType == 'venue') {
+                //     this.$router.push({path: '/profile/venue'});
+                // }
                 else {
                     this.$router.push({path: '/login'});
                 }

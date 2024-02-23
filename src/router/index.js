@@ -62,7 +62,7 @@ const routes = [
   {
     // path: '/listing/edit/:listingID/:requestID?',
     // name: 'listingedit',
-    path: '/Producer/Producer-Edit-Listing/:id',
+    path: '/Producer/Producer-Edit-Listing/:listingID/:requestID?',
     name: 'producerupdatelistingsdetails',
     component: () => import('../views/Producers/EditListing.vue')
   },
