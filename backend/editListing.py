@@ -29,7 +29,7 @@ def parse_json(data):
 # - Update entry with specified id from the "listings" collection. Follows listings dataclass requirements.
 # - Duplicate listing check: If a listing with the same name exists, reject the request
 # - Possible return codes: 200 (Updated), 410 (Duplicate Detected), 420 (Invalid ID), 440 (Not Found), 450 (Error during update)
-@app.route("/updateListing/<id>", methods=['PUT'])
+@app.route("/updateListing/<id>", methods=['POST'])
 def updateListing(id):
     listing_id=ObjectId(id)
     updatedListing = request.get_json()
@@ -51,6 +51,7 @@ def updateListing(id):
     
     # Update the listing entry with the specified id
     updatedBottle = data.listings(**updatedListing)
+    print(updatedBottle)
     try:
         result = db.listings.update_one(
             {"_id": listing_id},

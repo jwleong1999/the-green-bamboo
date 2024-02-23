@@ -665,15 +665,27 @@
             },
             // Helper function to handle file selection for photo
             handleFileSelect(event){
-                const file = event.target.files[0];
-                const reader = new FileReader;
+
+
+                try {
+                    const file = event.target.files[0];
                 
-                reader.onload = () => {
-                    const base64String = reader.result.split(',')[1];
-                    this.form["photo"] = base64String
-                };
-                
-                reader.readAsDataURL(file);
+                    const reader = new FileReader();
+
+                    reader.onloadend = async () => {
+                        this.selectedImage = reader.result;
+                        const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
+
+                        this.image64 = base64String;
+
+                    };
+                    reader.readAsDataURL(file);
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+
+
             },
             // Helper function to get producerID from tempProducer
             getProducerID() {
