@@ -1,7 +1,7 @@
 # Port: 5000
-# Routes: /getCountries (GET), /getListings (GET), /getProducers (GET), /getReviews (GET), /getUsers (GET),
-#           /getVenues (GET), /getVenuesAPI (GET), /getDrinkTypes (GET), /getRequestListings (GET), /getRequestEdits (GET),
-#           /getModRequests (GET), /getFlavourTags (GET), /getLanguages (GET)
+# Routes: /getCountries (GET), /getListings (GET), /getListing/<id> (GET), /getProducers (GET), /getProducer/<id> (GET),
+#           /getReviews (GET), /getUsers (GET), /getUser/<id> (GET), /getVenues (GET), /getVenue/<id> (GET), /getVenuesAPI (GET),
+#           /getDrinkTypes (GET), /getRequestListings (GET), /getRequestEdits (GET), /getModRequests (GET), /getFlavourTags (GET), /getLanguages (GET)
 # -----------------------------------------------------------------------------------------
 
 # pip install python-bsonjs
@@ -63,6 +63,12 @@ def getListings():
         # print(doc)
         allListings.append(doc)
     return allListings
+
+# [GET] Specific Listing
+@app.route("/getListing/<id>")
+def getListing(id):
+    data = db.listings.find_one({"_id": ObjectId(id)})
+    return parse_json(data)
 
 # -----------------------------------------------------------------------------------------
 # [GET] Producers

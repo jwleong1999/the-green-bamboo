@@ -492,8 +492,8 @@
 
                     // Get target listing
                     try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
-                        this.targetListing = response.data.find(listing => listing._id["$oid"] == this.$route.params.listingID);
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getListing/' + this.$route.params.listingID);
+                        this.targetListing = response.data;
 
                         if (this.formType == "power") {
                             this.populateForm(this.targetListing);
