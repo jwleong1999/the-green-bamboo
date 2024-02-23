@@ -42,6 +42,11 @@
             <button class="btn primary-btn btn-sm" @click="goBack" v-if="formMode != 'new'">
                 <span class="fs-5 fst-italic"> Return to previous page </span>
             </button>
+            <router-link :to="'/Users/Bottle-Listings'" class="mx-1">
+                <button class="btn primary-btn btn-sm">
+                    <span class="fs-5 fst-italic"> Go to Home page </span>
+                </button>
+            </router-link>
         </div>
         
         <!-- Display when bottle listing submission encounters an error -->
