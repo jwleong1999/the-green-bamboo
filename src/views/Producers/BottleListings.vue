@@ -223,12 +223,12 @@
                             <!-- would recommend -->
                             <div class="col-4 text-start">
                                 <p class="mb-2"> <u> Would Recommend </u> </p>
-                                <h5 class="text-body-secondary rating-text"> <b> 88% </b> </h5>
+                                <h5 class="text-body-secondary rating-text"> <b> {{ willRecommend }}% </b> </h5>
                             </div>
                             <!-- would drink again -->
                             <div class="col-4 text-start">
                                     <p class="mb-2"> <u> Would Drink Again </u> </p>
-                                    <h5 class="text-body-secondary rating-text"> <b> 83% </b> </h5>
+                                    <h5 class="text-body-secondary rating-text"> <b> {{ willDrinkAgain }}% </b> </h5>
                             </div>
                         </div>
                     </div>
@@ -858,6 +858,8 @@
                 listing_id: null,
                 specified_listing: {},
                 specificReviewRating:"",
+                willRecommend: null,
+                willDrinkAgain: null,
 
                 // specified producer
                 producer_id: null,
@@ -1111,6 +1113,8 @@
                     //     console.error(error);
                     // }
                     this.specificReviewRating = this.getRatings(this.specified_listing)
+                    this.willRecommend = this.getWillRecommend(this.specified_listing)
+                    this.willDrinkAgain = this.getWillDrinkAgain(this.specified_listing)
             },
 
             // view which producers have specified listing
@@ -1170,7 +1174,7 @@
             // get ratings for a listing
             getRatings(listing) {
                 const ratings = this.reviews.filter((rating) => {
-                try{
+                try {
                     return rating["reviewTarget"]['$oid'] == listing['_id']['$oid'];
                 }
                 catch(error){console.log(error)}
@@ -1184,6 +1188,46 @@
                     return total + rating["rating"];
                 }, 0) / ratings.length;
                 return averageRating;
+            },
+
+            // get will drink again for a listing
+            getWillRecommend(listing) {
+                const ratings = this.reviews.filter((rating) => {
+                try {
+                    return rating["reviewTarget"]['$oid'] == listing['_id']['$oid'];
+                }
+                catch(error){console.log(error)}
+                });
+                // if there are no ratings
+                if (ratings.length == 0) {
+                    return "-";
+                }
+                // else there are ratings
+                const numberRecommend = ratings.reduce((total, rating) => {
+                    return total + (rating["willRecommend"] ? 1 : 0);
+                }, 0);
+                const averageRecommend = (numberRecommend / ratings.length) * 100;
+                return averageRecommend;
+            },
+
+            // get will drink again for a listing
+            getWillDrinkAgain(listing) {
+                const ratings = this.reviews.filter((rating) => {
+                try {
+                    return rating["reviewTarget"]['$oid'] == listing['_id']['$oid'];
+                }
+                catch(error){console.log(error)}
+                });
+                // if there are no ratings
+                if (ratings.length == 0) {
+                    return "-";
+                }
+                // else there are ratings
+                const numberDrinkAgain = ratings.reduce((total, rating) => {
+                    return total + (rating["wouldBuyAgain"] ? 1 : 0);
+                }, 0);
+                const averageDrinkAgain = (numberDrinkAgain / ratings.length) * 100;
+                return averageDrinkAgain;
             },
 
             // add user's uploaded photo to database (TO BE IMPLEMENTED)
