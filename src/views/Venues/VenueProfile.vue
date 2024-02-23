@@ -858,7 +858,7 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
                         this.users = response.data;
                         this.user = this.users.find(user => user["_id"]["$oid"] == this.user_id);
-                        this.following = JSON.stringify(this.user.followLists.venues).includes(JSON.stringify({$oid: this.venue_id}));
+                        // this.following = JSON.stringify(this.user.followLists.venues).includes(JSON.stringify({$oid: this.venue_id}));
                     } 
                     catch (error) {
                         console.error(error);
@@ -1367,6 +1367,7 @@
             // get venue's answered questions (to be displayed to the users/venues)
             checkVenueAnswered() {
                 let answeredQuestions = this.specified_venue["questionsAnswers"];
+                console.log(answeredQuestions);
                 if (answeredQuestions.length > 0) {
                     for (let qa in answeredQuestions) {
                         let answer = answeredQuestions[qa]["answer"];

@@ -146,7 +146,9 @@
                                         <h6 class="fst-italic"> No drinks added yet. </h6>
                                     </div>
                                     <div v-else style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <button class="btn secondary-btn-border btn-sm py-2 px-3"> LLog in to add a drink to shelf </button>
+                                        <router-link :to="{ path: '/login' }">
+                                            <button class="btn secondary-btn-border btn-sm py-2 px-3"> Log in to add a drink to shelf </button>
+                                        </router-link>
                                     </div>
                                 </div>
                             </div>
@@ -613,7 +615,7 @@
 
                 // for user account credentials
                 // [TODO] for now is hardcoded, will be replaced with user's account details
-                userID: "65b327d5687b64f8302d56ef",
+                userID: "",
 
                 // search
                 search: false,
@@ -658,6 +660,11 @@
         },
         mounted() {
             this.loadData();
+            // Load local storage variables
+            const accID = localStorage.getItem("88B_accID");
+            if(accID !== null){
+                this.userID = localStorage.getItem('88B_accID')
+            }
         },
         methods: {
             // load data from database

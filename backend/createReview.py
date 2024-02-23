@@ -14,6 +14,8 @@ from pymongo.errors import DuplicateKeyError, OperationFailure
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
+from datetime import datetime
+
 import data
 
 app = Flask(__name__)
@@ -34,6 +36,7 @@ def createReviews():
     rawReview = request.get_json()
     rawReview['reviewTarget'] = ObjectId(rawReview['reviewTarget'])  # Convert reviewTarget to ObjectId
     rawReview['userID'] = ObjectId(rawReview['userID'])  # Convert userID to ObjectId
+    rawReview['createdDate'] = datetime.strptime(rawReview['createdDate'], "%Y-%m-%dT%H:%M:%S.%fZ")# convert date to datetime object
 
     # Duplicate listing check: Reject if review with the same userID and reviewTarget exists in the database
     rawReviewBottle = rawReview["reviewTarget"]

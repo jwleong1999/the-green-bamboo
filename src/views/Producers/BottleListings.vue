@@ -1198,7 +1198,7 @@
                 const averageRating = ratings.reduce((total, rating) => {
                     return total + rating["rating"];
                 }, 0) / ratings.length;
-                return averageRating;
+                return averageRating.toFixed(2);
             },
 
             // get will drink again for a listing
@@ -1218,7 +1218,7 @@
                     return total + (rating["willRecommend"] ? 1 : 0);
                 }, 0);
                 const averageRecommend = (numberRecommend / ratings.length) * 100;
-                return averageRecommend;
+                return averageRecommend.toFixed(2);
             },
 
             // get will drink again for a listing
@@ -1238,7 +1238,7 @@
                     return total + (rating["wouldBuyAgain"] ? 1 : 0);
                 }, 0);
                 const averageDrinkAgain = (numberDrinkAgain / ratings.length) * 100;
-                return averageDrinkAgain;
+                return averageDrinkAgain.toFixed(2);
             },
 
             // add user's uploaded photo to database (TO BE IMPLEMENTED)
@@ -1322,7 +1322,7 @@
                     alert("Submission has error, please fill in the required fields properly")
                     return "Submission error"
                 }
-                let createdDate = new Date().toISOString() + '+00:00';
+                let createdDate = new Date().toISOString();
                 if (this.reviewDesc !== "") {
                     this.reviewDesc = this.reviewDesc.trim();
                 }
@@ -1342,7 +1342,7 @@
                 let submitData = {
                     "userID" : this.userID,
                     "reviewTarget" :this.listing_id,
-                    "rating" : this.rating,
+                    "rating" : Number(this.rating),
                     "reviewDesc": this.reviewDesc,
                     "reviewType": "Listing",
                     "flavorTag" : this.selectedFlavourTags,
