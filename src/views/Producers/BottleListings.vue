@@ -849,7 +849,7 @@
                 filteredListings: [],
                 filteredReviews:[],
 
-                // specified listing lisitng_id used for createReview
+                // specified listing listing_id used for createReview
                 listing_id: null,
                 specified_listing: {},
                 specificReviewRating:"",

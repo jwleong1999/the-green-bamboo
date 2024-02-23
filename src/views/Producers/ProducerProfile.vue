@@ -141,7 +141,7 @@
                                 <!-- claim this listing / add listing & edit profile -->
                                 <div class="col-4">
                                     <!-- [if] user type is producer -->
-                                    <span v-if="userType == 'producer'" class="row"> 
+                                    <span v-if="correctProducer" class="row"> 
                                         <!-- add listing-->
                                         <div class="col-6 d-grid no-padding">
                                             <!-- if not editing -->
@@ -305,7 +305,7 @@
                     <!-- reply / send to producer -->
                     <div class="row pt-3">
                         <!-- [if] user type is producer -->
-                        <div v-if="userType == 'producer'">
+                        <div v-if="correctProducer">
                             <div class="row">
                                 <div class="input-group centered">
                                     <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Say hi to your patrons!" style="height: 50px;" v-model="updateText"> 
@@ -402,7 +402,7 @@
                         <!-- search -->
                         <div class="col-9">
                             <!-- [if] user type is producer -->
-                            <div v-if="userType == 'producer'" class="row">
+                            <div v-if="correctProducer" class="row">
                                 <div class="col-3 d-grid no padding">
                                     <button type="button" class="btn primary-btn-outline-thick rounded-0" v-on:click="editCatalogue()">
                                         <a class="default-clickable-text"> Edit catalogue </a> 
@@ -526,7 +526,7 @@
             <div class="col-3">
                 <div class="row">
                     <!-- view analytics -->
-                    <div v-if="userType == 'producer'" class="col-12 d-grid gap-2 pb-3">
+                    <div v-if="correctProducer" class="col-12 d-grid gap-2 pb-3">
                         <button class="btn secondary-btn-not-rounded rounded-0" type="button"> View My Analytics </button>
                     </div>
                     <!-- q&a -->
@@ -535,12 +535,12 @@
                             <!-- header text -->
                             <div class="square-inline text-start">
                                 <!-- [if] user type producer -->
-                                <div v-if="userType == 'producer'" class="mr-auto"> <h4> Q&A for You! </h4> </div>
+                                <div v-if="correctProducer" class="mr-auto"> <h4> Q&A for You! </h4> </div>
                                 <!-- [else] user type is NOT producer -->
                                 <h4 v-else class="mr-auto"> Q&As for {{ specified_producer["producerName"] }} </h4>
                             </div>
                             <!-- show buttons for answered & unanswered questions -->
-                            <div v-if="userType == 'producer'" class="row text-center px-2">
+                            <div v-if="correctProducer" class="row text-center px-2">
                                 <div class="col-6 d-grid gap-0 no-padding">
                                     <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
                                         <a class="reverse-clickable-text" v-on:click="showAnswered()">
@@ -562,7 +562,7 @@
                                 <div id="carouselExample" class="carousel slide">
                                     <div class="carousel-inner px-4">
                                         <!-- [if] user type is producer -->
-                                        <div v-if="userType == 'producer'">
+                                        <div v-if="correctProducer">
                                             <!-- show answered questions -->
                                             <div v-if="answerStatus">
                                                 <div class="carousel-item" v-for="(qa, index) in answeredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
@@ -675,8 +675,9 @@
                 modRequests: [],
 
                 // define user type here (defined on mounted() function)
-                user_id: "65b327d5687b64f8302d56ef", // 65b327d5687b64f8302d56ee | 65b327d5687b64f8302d56ef
-                userType: "producer",
+                user_id: "", // 65b327d5687b64f8302d56ee | 65b327d5687b64f8302d56ef
+                userType: "",
+                correctProducer: false,
 
                 // all drinks that producer has
                 allDrinks: [],
@@ -764,7 +765,17 @@
             };
         },
         async mounted() {
-            // this.userType = localStorage.getItem('88B_accType');
+            var userID = localStorage.getItem('88B_accID')
+            if(userID != null){
+                this.user_id = userID;
+            }
+
+            var userType = localStorage.getItem('88B_accType');
+            if(userType != null){
+                this.userType = userType;
+                console.log(this.userType)
+            }
+
             await this.loadData();
         },
         methods: {
@@ -775,6 +786,12 @@
                     if (this.producer_id == null) {
                         // redirect to page
                         this.$router.push('/Users/Bottle-Listings');
+                    }
+                    else {
+                        // check if user_id same as producer_id
+                        if(this.user_id == this.producer_id && this.userType == "producer"){
+                            this.correctProducer = true;
+                        }
                     }
                 // countries
                 // _id, originCountry
