@@ -200,6 +200,12 @@ def getRequestListings():
         allRequestListings.append(doc)
     return allRequestListings
 
+# [GET] Specific Request Listing
+@app.route("/getRequestListing/<id>")
+def getRequestListing(id):
+    data = db.requestListings.find_one({"_id": ObjectId(id)})
+    return parse_json(data)
+
 # -----------------------------------------------------------------------------------------
 # [GET] RequestEdits
 @app.route("/getRequestEdits")
@@ -215,6 +221,12 @@ def getRequestEdits():
         # print(doc)
         allRequestEdits.append(doc)
     return allRequestEdits
+
+# [GET] Specific Request Edit
+@app.route("/getRequestEdit/<id>")
+def getRequestEdit(id):
+    data = db.requestEdits.find_one({"_id": ObjectId(id)})
+    return parse_json(data)
 
 # -----------------------------------------------------------------------------------------
 # [GET] modRequests
