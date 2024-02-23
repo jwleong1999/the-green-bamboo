@@ -1,5 +1,5 @@
 <template>
-  <div v-if="user" class="userprofile mt-3">
+  <div v-if="displayUser" class="userprofile mt-3">
 
     <div class="container text-start">
         <div class="row">
@@ -35,17 +35,16 @@
 
                     <!-- buttons -->
                     <div class="row mt-3">
-                        <button v-if="ownProfile" type="button" class="btn primary-btn-outline-less-round" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
-                        <button v-else-if="following" type="button" class="btn primary-btn-outline-less-round" @click="editFollow('unfollow')">Following</button>
-                        <button v-else type="button" class="btn primary-btn-less-round" @click="editFollow('follow')">+ Follow User</button>
-                        <button v-if="ownProfile" class="btn btn-warning mt-3">View My Analytics</button>
+                        <button v-if="ownProfile && user" type="button" class="btn primary-btn-outline-less-round" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
+                        <button v-else-if="following && user" type="button" class="btn primary-btn-outline-less-round" @click="editFollow('unfollow')">Following</button>
+                        <button v-else-if="user" type="button" class="btn primary-btn-less-round" @click="editFollow('follow')">+ Follow User</button>
+                        <button v-if="ownProfile && user" class="btn btn-warning mt-3">View My Analytics</button>
                         <button v-else-if="displayUser.modType != ''" class="btn btn-warning mt-3">★ Certified Moderator</button> 
-                        <!-- <button v-else class="btn btn-warning mt-3">Not a moderator yet</button> -->
-                        <a href="#" class="mt-3" data-bs-toggle="modal" data-bs-target="#applyModerator">Want to be a moderator? Apply here!</a>
+                        <a v-if="user" href="#" class="mt-3" data-bs-toggle="modal" data-bs-target="#applyModerator">Want to be a moderator? Apply here!</a>
                     </div>
 
                     <!-- editProfileModal start -->
-                    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div v-if="user" class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-lg">
                             <div class="modal-content">
                             <div class="modal-header">
@@ -100,7 +99,7 @@
                     <!-- editProfileModal end -->
 
                     <!-- applyModerator start -->
-                    <div class="modal fade" id="applyModerator" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div v-if="user" class="modal fade" id="applyModerator" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="text-end me-2 mt-2">
@@ -202,12 +201,12 @@
                             <div class="image-container" v-for="(listing, index) in favouriteListings" :key="index" >
                                 <img :src=" 'data:image/png;base64,' + (listing.photo || defaultDrinkImage)" alt="" class="rounded border border-dark-subtle border-2 bottle-img me-3">
                                 <!-- svg for bookmarked -->
-                                <svg v-if="bookmarkStatus[listing.listingName]" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
+                                <svg v-if="bookmarkStatus[listing.listingName] && user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
                                     data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="checkItem(listing.listingName)">
                                     <path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/>
                                 </svg>
                                 <!-- svg for not bookmarked -->
-                                <svg v-else xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
+                                <svg v-else-if="user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
                                     data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="checkItem(listing.listingName)">
                                     <path d="M0 48C0 21.5 21.5 0 48 0l0 48V441.4l130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4V48H48V0H336c26.5 0 48 21.5 48 48V488c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488V48z"/>
                                 </svg>
@@ -224,12 +223,12 @@
                             <div class="image-container" v-for="(review, index) in recentActivity" :key="index" >
                                 <img :src=" 'data:image/png;base64,' + ( getListingPhoto(review.reviewTarget) || defaultDrinkImage)" alt="" class="rounded border border-dark-subtle border-2 bottle-img me-3">
                                 <!-- svg for bookmarked -->
-                                <svg v-if="bookmarkStatus[review.listingName]" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
+                                <svg v-if="bookmarkStatus[review.listingName] && user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
                                     data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="checkItem(review.listingName)">
                                     <path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/>
                                 </svg>
                                 <!-- svg for not bookmarked -->
-                                <svg v-else xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
+                                <svg v-else-if="user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
                                     data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="checkItem(review.listingName)">
                                     <path d="M0 48C0 21.5 21.5 0 48 0l0 48V441.4l130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4V48H48V0H336c26.5 0 48 21.5 48 48V488c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488V48z"/>
                                 </svg>
@@ -474,7 +473,7 @@
                 </div>
             </div>
             <!-- modal start -->
-            <div class="modal fade" id="bookmarkModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div v-if="user" class="modal fade" id="bookmarkModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                     <div class="modal-header">
@@ -644,25 +643,35 @@ export default {
 
                 this.drinkChoice = this.getDrinkOfChoice();
                 this.drinkCount = this.getDrinkCount();
+                if (this.user) {
+                    // join date
+                    const dateString = this.user.joinDate.$date;
+                    const dateParts = dateString.split('-');
+                    const year = dateParts[0];
+                    const month = new Date(dateString).toLocaleString('default', { month: 'long' });
+                    this.joinDate = `${month} ${year}`;
 
-                const dateString = this.user.joinDate.$date;
-                const dateParts = dateString.split('-');
-                const year = dateParts[0];
-                const month = new Date(dateString).toLocaleString('default', { month: 'long' });
-                this.joinDate = `${month} ${year}`;
+                    this.selectedDrinks = this.user.choiceDrinks;
+                    this.userBookmarks = this.user.drinkLists;
+                    this.following = JSON.stringify(this.user.followLists.users).includes(JSON.stringify({$oid: this.displayUserID}));
+
+                } else {
+                    const dateString = this.displayUser.joinDate.$date;
+                    const dateParts = dateString.split('-');
+                    const year = dateParts[0];
+                    const month = new Date(dateString).toLocaleString('default', { month: 'long' });
+                    this.joinDate = `${month} ${year}`;
+                }
 
                 this.userDrinkChoice = this.getDrinkOfChoice(this.user);
                 this.displayUserDrinkChoice = this.getDrinkOfChoice(this.displayUser);
-                this.selectedDrinks = this.user.choiceDrinks;
                 this.displayUserBookmarks = this.displayUser.drinkLists;
-                this.userBookmarks = this.user.drinkLists;
                 this.recentActivity.forEach((review) => {
                     this.fetchBookmarkStatus(review.listingName);
                 });
                 this.favouriteListings.forEach((listing) => {
                     this.fetchBookmarkStatus(listing.listingName);
                 });
-                this.following = JSON.stringify(this.user.followLists.users).includes(JSON.stringify({$oid: this.displayUserID}));
             } 
             catch (error) {
                 console.error(error);
