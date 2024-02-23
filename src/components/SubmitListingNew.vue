@@ -492,8 +492,8 @@
 
                     // Get target listing
                     try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
-                        this.targetListing = response.data.find(listing => listing._id["$oid"] == this.$route.params.listingID);
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getListing/' + this.$route.params.listingID);
+                        this.targetListing = response.data;
 
                         if (this.formType == "power") {
                             this.populateForm(this.targetListing);
@@ -511,8 +511,8 @@
                     // [REQ / POWER NEW] Retrieve previously submitted new listing request data
                     if (this.formMode == "new") {
                         try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
-                            let previousData = response.data.find(request => request._id["$oid"] == this.$route.params.requestID);
+                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListing/' + this.$route.params.requestID);
+                            let previousData = response.data;
                             this.checkUserPermissions(previousData);
 
                             // If user is a producer, check if request producerID is the same as user producerID
@@ -534,8 +534,8 @@
                     // [REQ EDIT/DUP + POWER EDIT] Retrieve previously submitted request edit/duplicate data
                     if (this.formMode == "edit" || this.formMode == "dup") {
                         try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdits');
-                            let previousData = response.data.find(listing => listing._id["$oid"] == this.$route.params.requestID);
+                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdit/' + this.$route.params.requestID);
+                            let previousData = response.data;
                             this.checkUserPermissions(previousData);
 
                             // For request mode

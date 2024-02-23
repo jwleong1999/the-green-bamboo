@@ -214,7 +214,7 @@
                             <div class="col-4 text-start">
                                 <p class="mb-2"> <u> Average Rating </u> </p>
                                 <h5 class="text-body-secondary rating-text">
-                                    {{ getRatings(specified_listing) }}
+                                    {{ specificReviewRating }}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                         <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                     </svg>
@@ -253,9 +253,12 @@
                     </div>
                     <div v-else class="col-5">
                         <div class="d-grid gap-2">
-                            <button class="btn primary-btn-less-round btn-lg"> 
-                                Login to leave a Review
-                            </button>
+                            <router-link :to="{ path: '/login' }" class="reverse-clickable-text">
+                                <button class="btn primary-btn-less-round btn-lg"> 
+                                    Login to leave a Review
+                                </button>
+
+                            </router-link>
                         </div>
                     </div>
                 </div>
@@ -851,9 +854,10 @@
                 filteredListings: [],
                 filteredReviews:[],
 
-                // specified listing lisitng_id used for createReview
+                // specified listing listing_id used for createReview
                 listing_id: null,
                 specified_listing: {},
+                specificReviewRating:"",
 
                 // specified producer
                 producer_id: null,
@@ -978,13 +982,13 @@
             async loadData() {
                     // countries
                     // _id, originCountry
-                        try {
-                                const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
-                                this.countries = response.data;
-                            } 
-                            catch (error) {
-                                console.error(error);
-                        }
+                        // try {
+                        //         const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
+                        //         this.countries = response.data;
+                        //     } 
+                        //     catch (error) {
+                        //         console.error(error);
+                        // }
                     // reviews
                     // _id, userID, reviewTarget, date, rating, reviewDesc, taggedUsers, reviewTitle, reviewType, flavorTag, photo
                         try {
@@ -1033,15 +1037,15 @@
                     catch (error) {
                         console.error(error);
                     }
-                    // languages
-                    // _id, language
-                        try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getLanguages');
-                            this.languages = response.data;
-                        } 
-                        catch (error) {
-                            console.error(error);
-                        }
+                // languages
+                // _id, language
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getLanguages');
+                        this.languages = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
                 // producers
                 // _id, producerName, producerDesc, originCountry, statusOB, mainDrinks
                 try {
@@ -1063,49 +1067,50 @@
                 
                 // venuesAPI
                 // _id, venueName, venueDesc, originCountry
-                try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getVenuesAPI');
-                        this.venuesAPI = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                // try {
+                //         const response = await this.$axios.get('http://127.0.0.1:5000/getVenuesAPI');
+                //         this.venuesAPI = response.data;
+                //     } 
+                //     catch (error) {
+                //         console.error(error);
+                //     }
                 // drinkTypes
                 // _id, drinkType, typeCategory
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
-                        this.drinkTypes = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //     const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
+                    //     this.drinkTypes = response.data;
+                    // } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
                 // requestListings
                 // _id, listingName, producerNew, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, sourceLink, brandRelation, reviewStatus, userID, photo
-                    try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
-                            this.requestListings = response.data;
-                        } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
+                    //         this.requestListings = response.data;
+                    //     } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
                 // requestEdits
                 // _id, duplicateLink, editDesc, sourceLink, brandRelation, listingID, userID, reviewStatus
-                    try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdits');
-                            this.requestEdits = response.data;
-                        } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdits');
+                    //         this.requestEdits = response.data;
+                    //     } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
                 // modRequests
                 // _id, userID, drinkType, modDesc
-                    try {
-                            const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
-                            this.modRequests = response.data;
-                        } 
-                    catch (error) {
-                        console.error(error);
-                    }
+                    // try {
+                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
+                    //         this.modRequests = response.data;
+                    //     } 
+                    // catch (error) {
+                    //     console.error(error);
+                    // }
+                    this.specificReviewRating = this.getRatings(this.specified_listing)
             },
 
             // view which producers have specified listing
@@ -1165,7 +1170,10 @@
             // get ratings for a listing
             getRatings(listing) {
                 const ratings = this.reviews.filter((rating) => {
-                    return rating["reviewTarget"] == listing["listingName"];
+                try{
+                    return rating["reviewTarget"]['$oid'] == listing['_id']['$oid'];
+                }
+                catch(error){console.log(error)}
                 });
                 // if there are no ratings
                 if (ratings.length == 0) {

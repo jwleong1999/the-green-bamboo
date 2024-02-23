@@ -142,7 +142,7 @@
                                 <!-- claim this listing / add listing & edit profile -->
                                 <div class="col-4">
                                     <!-- [if] user type is venue -->
-                                    <span v-if="userType == 'venue'" class="row"> 
+                                    <span v-if="correctVenue" class="row"> 
                                         <!-- edit profile -->
                                         <div class="col-6"></div>
                                         <div class="col-6 d-grid no-padding text-end">
@@ -293,7 +293,7 @@
                     <!-- reply / send to venue -->
                     <div class="row pt-3">
                         <!-- [if] user type is venue -->
-                        <div v-if="userType == 'venue'">
+                        <div v-if="correctVenue">
                             <div class="row">
                                 <div class="input-group centered">
                                     <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Say hi to your patrons!" style="height: 50px;" v-model="updateText"> 
@@ -384,7 +384,7 @@
                         </div>
                         <!-- edit menu -->
                         <!-- [if] user type is venue -->
-                        <div v-if="userType == 'venue'" class="col-6 d-grid no padding">
+                        <div v-if="correctVenue" class="col-6 d-grid no padding">
                             <div class="row">
                                 <div class="col-6 d-grid no padding">
                                     <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text" v-on:click="editCatalogue()">
@@ -556,7 +556,7 @@
             <div class="col-3">
                 <div class="row">
                     <!-- view analytics -->
-                    <div v-if="userType == 'venue'" class="col-12 d-grid gap-2 pb-3">
+                    <div v-if="correctVenue" class="col-12 d-grid gap-2 pb-3">
                         <button class="btn secondary-btn-not-rounded rounded-0" type="button"> View My Analytics </button>
                     </div>
                     <!-- q&a -->
@@ -565,12 +565,12 @@
                             <!-- header text -->
                             <div class="square-inline text-start">
                                 <!-- [if] user type venue -->
-                                <div v-if="userType == 'venue'" class="mr-auto"> <h4> Q&A for You! </h4> </div>
+                                <div v-if="correctVenue" class="mr-auto"> <h4> Q&A for You! </h4> </div>
                                 <!-- [else] user type is NOT producer -->
                                 <h4 v-else class="mr-auto"> Q&As for {{ specified_venue["venueName"] }} </h4>
                             </div>
                             <!-- show buttons for answered & unanswered questions -->
-                            <div v-if="userType == 'venue'" class="row text-center px-2">
+                            <div v-if="correctVenue" class="row text-center px-2">
                                 <div class="col-6 d-grid gap-0 no-padding">
                                     <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
                                         <a class="reverse-clickable-text" v-on:click="showAnswered()">
@@ -592,7 +592,7 @@
                                 <div id="carouselExample" class="carousel slide">
                                     <div class="carousel-inner px-4">
                                         <!-- [if] user type is venue -->
-                                        <div v-if="userType == 'venue'">
+                                        <div v-if="correctVenue">
                                             <!-- show answered questions -->
                                             <div v-if="answerStatus">
                                                 <div class="carousel-item" v-for="(qa, index) in answeredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
@@ -710,8 +710,9 @@
                 clipboardItem: false,
 
                 // define user type here (defined on mounted() function)
-                user_id: "65b327d5687b64f8302d56ef",
-                userType: "venue",
+                user_id: "",
+                userType: "",
+                correctVenue: false,
 
                 // all drinks that producer has
                 allDrinks: [],
@@ -798,6 +799,15 @@
         },
         async mounted() {
             // this.userType = localStorage.getItem('88B_accType');
+            let user_id = localStorage.getItem('88B_accID')
+            if(user_id !=null){
+                this.user_id = user_id
+            }
+            let userType = localStorage.getItem('88B_accType')
+            if(userType !=null){
+                this.userType = userType
+            }
+
             await this.loadData();
             // Accessing the current URL
             this.currentURL = window.location.href;
@@ -808,10 +818,13 @@
                 // Get the query string parameters (listing ID) from the URL
                 this.venue_id = this.$route.params.id;
                 console.log(this.venue_id);
-                    if (this.venue_id == null) {
+                    if (this.venue_id == null || this.venue_id =='') {
                         // redirect to page
                         this.$router.push('/Users/Bottle-Listings');
+                    }else if(this.venue_id == this.user_id && this.userType == 'venue'){
+                        this.correctVenue = true
                     }
+                
                 // countries
                 // _id, originCountry
                 // try {
@@ -1094,7 +1107,7 @@
             // get ratings for a listing
             getRatings(listing) {
                 const ratings = this.reviews.filter((rating) => {
-                    return rating["reviewTarget"] == listing["listingName"];
+                    rating["reviewTarget"]["$oid"] == listing["_id"]["$oid"];
                 });
                 // if there are no ratings
                 if (ratings.length == 0) {
