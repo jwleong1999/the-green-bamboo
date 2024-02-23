@@ -145,10 +145,15 @@ class modRequests:
 
 # Dataclass (flavourTags)
 @dataclass
-class modRequests:
+class flavourTags:
     hexcode: str
     familyTag: str
     subtag: list
+
+# Dataclass (languages)
+@dataclass
+class languages:
+    language: str
 
 def convert_to_json(data):
     return json.dumps(data.__dict__)
