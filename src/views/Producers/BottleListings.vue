@@ -870,6 +870,10 @@
                 // where to try
                 venueListings: [],
 
+                // all venue drinks
+                allVenueDrinks: [],
+                venuesWithMenu: [],
+
                 // customization for drinkLists buttons
                 // [TODO] get drink list of user, for now is hardcoded
                 drinkList:  {
@@ -1017,7 +1021,7 @@
                             const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
                             this.venues = response.data;
                             this.locationOptions = response.data.map(item => ({name: item.venueName, id:item._id}));
-                            // this.whereToTry(); // find where to try specified listing [RE-ENABLE WHEN VENUES HAVE MENU ATTRIBUTE]
+                            this.getVenuesWithMenu(); // extract venues with menu
                         } 
                         catch (error) {
                             console.error(error);
@@ -1032,6 +1036,7 @@
                         this.producer_id = this.specified_listing.producerID.$oid // find specified producer
                         console.log(this.specified_listing)
                         this.whereToBuy(); // find where to buy specified listing
+                        this.whereToTry(); // find where to try specified listing [RE-ENABLE WHEN VENUES HAVE MENU ATTRIBUTE]
                         this.filteredReviews = this.getReviewsForListing(this.specified_listing);
                         this.specificReview = this.getLoggedUserReview();
                         this.formatDeepDiveLink();
@@ -1120,15 +1125,21 @@
             // view which producers have specified listing
             whereToBuy() {
                 this.producerListings = this.listings
-                    .filter(listing => listing["listingName"] == this.specified_listing["listingName"])
+                    .filter(listing => listing["_id"]["$oid"] == this.specified_listing["_id"]["$oid"])
                     .map(listing => listing["producerID"]);
+            },
+
+            // extract venues with menu
+            getVenuesWithMenu() {
+                this.venuesWithMenu = this.venues.filter(venue => venue["menu"].length > 0);
             },
 
             // view which venues have specified listing, sort by alphabetical order of venue name
             whereToTry() {
-                this.venueListings = this.venues
-                    .filter(venue => venue["menu"].includes(this.specified_listing._id["$oid"]))
-                    .sort((a, b) => a["venueName"].localeCompare(b["venueName"]));
+                this.venueListings = this.venuesWithMenu
+                    .filter(venue => venue["menu"].some(item => {
+                        return item["listingsID"].some(listingID => listingID["$oid"] === this.specified_listing._id["$oid"]);
+                    }));
             },
 
             // get producerName for a listing based on producerID

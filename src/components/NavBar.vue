@@ -10,7 +10,7 @@
             <div class="container-fluid align-items-center col-xxl-8 col-xl-9 col-lg-10 col-md-11 col-sm-12">
                 <!-- logo -->
                 <div class="align-items-center col-3"> 
-                    <img src="../../Images/Logo/88 Bamboo.png" style="width: 70px; height: 70px;" @click="this.$router.push(`/`)">
+                    <img src="../../Images/Logo/88 Bamboo.png" style="width: 70px; height: 70px;" @click="this.$router.push(`/Users/Bottle-Listings`)">
                 </div>
                 <!-- search bar -->
                 <div class="col-6">
@@ -92,10 +92,10 @@
                     this.$router.push({path: '/userprofile'});
                 } 
                 else if (this.accType == 'producer') {
-                    this.$router.push({path: '/Producers/Profile-Page'});
+                    this.$router.push({path: '/Producers/Profile-Page/' + localStorage.getItem('88B_accID')});
                 } 
                 else if (this.accType == 'venue') {
-                    this.$router.push({path: '/Venues/Profile-Page'});
+                    this.$router.push({path: '/Venues/Profile-Page/' + localStorage.getItem('88B_accID')});
                 }
                 // [RE-ROUTE FLAG]
                 // if (this.accType == 'user') {
