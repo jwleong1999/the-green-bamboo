@@ -26,17 +26,27 @@
         <!-- Display requests after data loaded -->
         <div v-if="dataLoaded && !loadError">
 
-            <!-- Form Title -->
             <div class="row">
-                <div class="d-grid col-lg-4 col-md-5 col-sm-6 col-12">
+                
+                <!-- Back Button -->
+                <div class="d-grid col-sm-1 col-2">
+                    <button class="btn primary-light-dropdown btn-sm" @click="()=>{this.$router.go(-1)}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16" v-on:click="previousListing">
+                            <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Form Title -->
+                <div class="d-grid col-lg-4 col-md-5 col-sm-6 col-10">
                     <p class="fw-bold fs-3 m-0 text-start">Search Results for:</p>
                 </div>
 
                 <!-- Spacer Column -->
-                <div class="d-md-grid d-none col-lg-5 col-md-3"></div>
+                <div class="d-md-grid d-none col-lg-4 col-md-2"></div>
 
                 <!-- Filter Options: On smaller screens, this is "moved below" Search Term -->
-                <div class="d-sm-grid d-none col-lg-3 col-md-4 col-sm-6 dropdown">
+                <div class="d-sm-grid d-none col-lg-3 col-md-4 col-sm-5 dropdown">
                     <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
                         Filter: {{ searchFilter.drinkType != '' ? searchFilter.drinkType : 'by Drink Type' }}
                     </button>
@@ -53,7 +63,10 @@
 
             <!-- Search Term -->
             <div class="row">
-                <div class="col-12">
+                <!-- Aligner Column (Back Button) -->
+                <div class="col-sm-1 col-2"></div>
+
+                <div class="col-sm-11 col-10">
                     <p class="fs-3 m-0 text-start" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">"{{ this.$route.params.input }}"</p>
                 </div>
             </div>
@@ -84,7 +97,7 @@
                     <p class="d-none d-md-block fs-5 fst-italic text-start">Don't see what you're looking for? Request a new listing here!</p>
                     <p class="d-md-none fs-6 fst-italic text-start">Don't see what you're looking for? Request a new listing here!</p>
                 </router-link>
-                <router-link class="col-12 text-decoration-none" v-else :to="{ path: '/login' }">
+                <router-link class="col-12 text-decoration-none" v-if="role != 'producer' && role != 'user'" :to="{ path: '/login' }">
                     <p class="d-none d-md-block fs-5 fst-italic text-start">Don't see what you're looking for? Login to request a new listing!</p>
                     <p class="d-md-none fs-6 fst-italic text-start">Don't see what you're looking for? Login to request a new listing!</p>
                 </router-link>
