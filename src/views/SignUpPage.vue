@@ -1,3 +1,4 @@
+<!-- HTML -->
 <template>
     <!-- navbar -->
     <NavBar></NavBar>
@@ -54,6 +55,7 @@
                     <div class="form-group mb-3">
                         <input type="text" class="form-control" style="border-color: black" v-model="username" id="username" placeholder="Username">
                         <span v-if="missingUsername" class="text-danger">Please enter a username.</span>
+                        <span v-if="duplicateUser" class="text-danger">Username is already taken, if this is you, login instead!</span>
                     </div>
                     <!-- Input: Email -->
                     <div class="form-group mb-3">
@@ -87,12 +89,23 @@
                     </div>
                     <!-- Input: Birthday -->
                     
-                    <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">Birthday</span>
-                            <input type="date" class="form-control" style="border-color: black" v-model="birthday" id="birthday" placeholder="Birthday">
-                            <span v-if="missingBirthday" class="text-danger">Please enter your birthday.</span>
+                    <div class="input-group mb-0">
+                        <span class="input-group-text" id="basic-addon1">Birthday</span>
+                        <input type="date" class="form-control" style="border-color: black" v-model="birthday" id="birthday" placeholder="Birthday">
+                    </div>
+                    <div class="text-center mb-3">
+                        <span v-if="missingBirthday" class="text-danger mt-0 mb-3">Please enter your birthday.</span>
                     </div>
 
+                    <div class="text-center mt-3">
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label">I verify I am above legal drinking age in my country of location</label>
+                            <input class="form-check-input" type="checkbox" v-model="ageCheck">
+                        </div>
+                    </div>
+                    <div class="text-center mb-3">
+                        <span v-if="missingAgeCheck" class="text-danger">Please verify this.</span>
+                    </div>
                     
                     <button type="submit" class="btn secondary-btn mx-1 mb-3" @click="signUp">Sign Up</button>
                     <button type="button" class="btn primary-btn mx-1 mb-3" @click="goBack">Return</button>
@@ -120,6 +133,10 @@
         },
         data(){
             return{
+
+                // Initial user variable
+                response:[],
+
                 // Form variables
                 username:"",
                 email:'',
@@ -128,6 +145,7 @@
                 firstName:'',
                 lastName:'',
                 birthday:'',
+                ageCheck:'',
                 
                 // Submission variables
 
@@ -140,6 +158,8 @@
                 missingFirstName:false,
                 missingLastName:false,
                 missingBirthday:false,
+                missingAgeCheck:false,
+                duplicateUser:false,
 
                 submitForm: false,
                 successSubmission: false,
@@ -150,8 +170,7 @@
                 responseCode: "",
             }
         },
-        // mounted:(){
-
+        // mounted() {
         // },
         methods:{
             goBack() {
@@ -169,6 +188,11 @@
                 if(this.username==''){
                     this.missingUsername = true
                     errorCount++
+                }else{
+                    this.checkUsername(this.username)
+                    if(this.duplicateUser){
+                        errorCount++
+                    }
                 }
 
                 // Email validation
@@ -221,6 +245,12 @@
                     }
                 }
 
+                // Age Check validation
+                if(!this.ageCheck){
+                    this.missingAgeCheck = true
+                    errorCount++
+                }
+                
                 if(errorCount > 0){
                     return null
                 }
@@ -323,6 +353,25 @@
                 this.missingLastName=false
                 this.missingBirthday=false
             },
+
+            async checkUsername(username){
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
+                    let duplicateUser = response.data.filter((user)=>{
+                        return user.username == username
+                    })
+
+                    if(duplicateUser.length==0){
+                        this.duplicateUser = false
+                    }else{
+                        this.duplicateUser = true
+                    }
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+            },
+            
         }
     }
 
