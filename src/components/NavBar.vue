@@ -70,7 +70,7 @@
             }
         },
         mounted() {
-            // Obtain user's profile picture
+            // Obtain user's profile picture + set profile URL
             if (localStorage.getItem('88B_accID') != null) {
 
                 this.accType = localStorage.getItem('88B_accType');
@@ -101,7 +101,7 @@
             }
         },
         methods: {
-            // load data from database
+            // load data from database (profile picture)
             async loadData(url) {
                     try {
                         const response = await this.$axios.get(url);
@@ -112,43 +112,18 @@
                     }
             },
 
-            // searchListings() {
-            //     this.$router.push({name: 'search', query: {input: this.searchInput}})
-            // }
-            // for search button
+            // for search feature
             goSearch() {
-                // flag to check if there are search inputs
-                this.search = true;
-
-                const searchInput = this.searchInput.toLowerCase();
-                this.searchTerm = this.searchInput;
-
-                // if there is something searched
-                const searchResults = this.listings.filter((listing) => {
-                    const expressionName = listing["Expression Name"].toLowerCase();
-                    const producer = listing["Producer"].toLowerCase();
-                    return expressionName.includes(searchInput) || producer.includes(searchInput);
-                });
-
-                // if nothing found
-                if (searchResults.length == 0) {
-                    this.filteredListings = [];
-                } 
-                else {
-                    this.filteredListings = searchResults;
+                if (this.searchInput != '') {
+                    // if already on search page, refresh the page with new search input
+                    if (this.$route.path.split('/')[1] == 'search') {
+                        window.location.href = '/search/' + this.searchInput;
+                    }
+                    else {
+                        // re-route to search page
+                        this.$router.push({path: '/search/' + this.searchInput});
+                    }
                 }
-
-                // if there is nothing searched
-                if (this.searchInput == '') {
-                    this.resetListings();
-                }
-            },
-
-            // for resetting listings (show full listings)
-            resetListings() {
-                this.searchInput = '';
-                this.search = false;
-                this.filteredListings = this.listings;
             },
 
             // logout function

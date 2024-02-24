@@ -28,7 +28,7 @@ const routes = [
     component: () => import('../views/BusinessSignUpPage.vue')
   },
   {
-    path: '/search',
+    path: '/search/:input?',
     name: 'search',
     component: () => import('../views/SearchView.vue')
   },

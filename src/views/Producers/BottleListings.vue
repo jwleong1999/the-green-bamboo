@@ -1,105 +1,8 @@
 <!-- HTML -->
 <template>
-    <!-- navbar-->
-    <div class="navbar-container">
-        <nav class="navbar p-2">
-            <div class="navbar-inner-container container-fluid d-flex align-items-center justify-content-between">
-                <!-- logo -->
-                <div class="navbar-brand d-flex align-items-center" href="../login/index.html"> 
-                    <img src="../../../Images/Logo/88 Bamboo.png" style="width: 70px; height: 70px;">
-                </div>
-                <!-- search bar -->
-                <div class="col-md-6">
-                    <input class="search-bar form-control rounded fst-italic" type="text" placeholder="What are you drinking today?" style="height: 50px;" v-model="searchInput" v-on:keyup.enter="helperSearch"> 
-                </div>
-                <div>
-                    <!-- profile icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
-                    </svg>
-                    <!-- collapsible button -->
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                </div>
-            </div>
-        </nav>
-    </div>
-
-    <!-- collapsible content -->
-    <div class="collapse" id="navbarToggleExternalContent"> <!-- TODO: modify links accordingly -->
-        <div class="row pt-2">
-            <div class="col-7"></div>
-            <!-- [specific] for different accounts -->
-            <div class="col-2 navbar-dropdown text-end">
-                <!-- Users -->
-                <div class="p-4" id="Users">
-                    <h3> Users </h3>
-                    <!-- TODO: link to the user's profile page -->
-                    <a href="" class="default-clickable-text"> 
-                        <h5> View Profile </h5>
-                    </a>
-                    <!-- TODO: link to the user's dashboard -->
-                    <a href="" class="default-clickable-text"> 
-                        <h5> My Drink Stats </h5>
-                    </a>
-                    <!-- TODO: link to lists -->
-                    <a href="" class="default-clickable-text"> 
-                        <h5> My Bookmarked Drinks </h5>
-                    </a>
-                </div>
-
-                <!-- Venues -->
-                <div class="p-4" id="Venues">
-                    <h3> Venues </h3>
-                    <!-- TODO: link to the venue's profile page -->
-                    <a href="" class="default-clickable-text"> 
-                        <h5> View Profile </h5>
-                    </a>
-                    <!-- TODO: link to the venues's dashboard -->
-                    <a href="" class="default-clickable-text"> 
-                        <h5> My Dashboard </h5>
-                    </a>
-                    <!-- TODO: link to edit menu page -->
-                    <a href="" class="default-clickable-text"> 
-                        <h5> My Menu </h5>
-                    </a>
-                </div>
-
-                <!-- Producers -->
-                <div class="p-4" id="Producers">
-                    <h3> Producers </h3>
-                    <!-- TODO: link to the producers's profile page -->
-                    <a href="" class="default-clickable-text"> 
-                        <h5> View Profile </h5>
-                    </a>
-                    <!-- TODO: link to the producer's dashboard -->
-                    <a href="" class="default-clickable-text"> 
-                        <h5> My Dashboard </h5>
-                    </a>
-                    <!-- TODO: link to new listings page -->
-                    <a href="" class="default-clickable-text"> 
-                        <h5> Add a New Listing </h5>
-                    </a>
-                </div>
-
-                <!-- [common] for all accounts -->
-                <a href="www.88bamboo.co" class="primary-clickable-text">
-                    <h4> 
-                        Read & Learn
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
-                        </svg>
-                    </h4>
-                </a>
-            </div>
-            <div class="col-3"></div>
-        </div>
-    </div>
+    <NavBar />
 
     <!-- main content -->
-
     <div class="container pt-5">
         <div class="row">
             <!-- producer information -->
@@ -126,8 +29,12 @@
                                 </div>
                                 <!-- suggest edit & report duplicate -->
                                 <div class="col-3">
-                                    <p class="text-body-secondary no-margin text-decoration-underline fst-italic" @click="this.$router.push(`/Users/request/modify/edit/${this.listing_id}`)"> Suggest Edit </p>
-                                    <p class="text-body-secondary no-margin text-decoration-underline fst-italic" @click="this.$router.push(`/Users/request/modify/duplicate/${this.listing_id}`)"> Report Duplicate </p>
+                                    <router-link :to="{ path: '/Users/request/modify/edit/' + this.listing_id }">
+                                        <p class="text-body-secondary no-margin text-decoration-underline fst-italic"> Suggest Edit </p>
+                                    </router-link>
+                                    <router-link :to="{ path: '/Users/request/modify/duplicate/' + this.listing_id }">
+                                        <p class="text-body-secondary no-margin text-decoration-underline fst-italic"> Report Duplicate </p>
+                                    </router-link>
                                 </div>
                             </div>
                             <!-- producer & bottler -->
@@ -823,6 +730,7 @@
 
 <!-- JavaScript -->
 <script>
+    import NavBar from '@/components/NavBar.vue';
     // import ReviewModal from '@/components/EditReview.vue'
     
     export default {
@@ -830,6 +738,9 @@
 
         // },
         // components:{ReviewModal},
+        components: {
+            NavBar
+        },
         data() {
             return {
                 // data from database

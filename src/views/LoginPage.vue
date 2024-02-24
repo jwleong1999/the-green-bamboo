@@ -1,8 +1,6 @@
 <!-- HTML -->
 <template>
-
-    <!-- navbar -->
-    <NavBar></NavBar>
+    <NavBar />
 
     <!-- title -->
     <h2 class="pt-5 text-center"> Login </h2>

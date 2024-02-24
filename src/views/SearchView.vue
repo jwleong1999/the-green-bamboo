@@ -1,17 +1,155 @@
 <!-- Search page from navigation bar. Globally available, and should still use NavBar for new search queries. -->
 
-<!-- WORK IN PROGRESS -->
-
-<!-- CURRENT ISSUES:
-1. While using NavBar does update URL query for search input, page does not reload to reflect change.
-2. Search input is not retained when navigating back to previous pages. Potentially acceptable.
-3. If multiple consecutive searches made, "Go Back" button returns to an older search instead of "real" previous page. Potentially acceptable. -->
-
 <template>
     <NavBar />
-    <h3>Search Results Placeholder:</h3>
-    <p>{{ searchInput }}</p>
-    <button type="button" class="btn btn-dark" @click="goBack">Go Back</button>
+    <!-- Header -->
+    <div class="container pt-3">
+        
+        <!-- Display when search is in progress -->
+        <div class="text-info-emphasis fst-italic fw-bold fs-5" v-if="!dataLoaded"> 
+            <span>Currently searching, please hold on!</span>
+            <br><br>
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+        
+        <!-- Display when searching encounters an error -->
+        <div class="text-danger fst-italic fw-bold fs-3" v-if="loadError"> 
+            <span>An error occurred while searching, please try refreshing the page!</span>
+            <br>
+            <button class="btn primary-btn btn-sm" @click="()=>{this.$router.go(0)}">
+                <span class="fs-5 fst-italic"> Refresh Page </span>
+            </button>
+        </div>
+
+        <!-- Display requests after data loaded -->
+        <div v-if="dataLoaded && !loadError">
+
+            <!-- Form Title -->
+            <div class="row">
+                <div class="d-grid col-lg-4 col-md-5 col-sm-6 col-12">
+                    <p class="fw-bold fs-3 m-0 text-start">Search Results for:</p>
+                </div>
+
+                <!-- Spacer Column -->
+                <div class="d-md-grid d-none col-lg-5 col-md-3"></div>
+
+                <!-- Filter Options: On smaller screens, this is "moved below" Search Term -->
+                <div class="d-sm-grid d-none col-lg-3 col-md-4 col-sm-6 dropdown">
+                    <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                        Filter: {{ searchFilter.drinkType != '' ? searchFilter.drinkType : 'by Drink Type' }}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><span class="dropdown-item" @click="filterByDrinkType('')">Clear Filter</span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li v-for="drinkType in drinkTypeList" :key="drinkType._id">
+                            <span class="dropdown-item" @click="filterByDrinkType(drinkType['drinkType'])">{{ drinkType['drinkType'] }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Search Term -->
+            <div class="row">
+                <div class="col-12">
+                    <p class="fs-3 m-0 text-start" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">"{{ this.$route.params.input }}"</p>
+                </div>
+            </div>
+
+            <!-- Filter Options: On larger screens, this is "moved above" Search Term -->
+            <div class="row">
+                <div class="d-grid d-sm-none col-12 dropdown">
+                    <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                        Filter: {{ searchFilter.drinkType != '' ? searchFilter.drinkType : 'by Drink Type' }}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><span class="dropdown-item" @click="filterByDrinkType('')">Clear Filter</span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li v-for="drinkType in drinkTypeList" :key="drinkType._id">
+                            <span class="dropdown-item" @click="filterByDrinkType(drinkType['drinkType'])">{{ drinkType['drinkType'] }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Request / Create Listing Link (font size reduced at smaller screen width) -->
+            <div class="row">
+                <router-link class="col-12 text-decoration-none" v-if="role == 'producer'" :to="{ path: '/Producer/Producer-Create-Listing/' }">
+                    <p class="d-none d-md-block fs-5 fst-italic text-start">Don't see what you're looking for? Create a new listing here!</p>
+                    <p class="d-md-none fs-6 fst-italic text-start">Don't see what you're looking for? Create a new listing here!</p>
+                </router-link>
+                <router-link class="col-12 text-decoration-none" v-if="role == 'user'" :to="{ path: '/Users/request/new/' }">
+                    <p class="d-none d-md-block fs-5 fst-italic text-start">Don't see what you're looking for? Request a new listing here!</p>
+                    <p class="d-md-none fs-6 fst-italic text-start">Don't see what you're looking for? Request a new listing here!</p>
+                </router-link>
+                <router-link class="col-12 text-decoration-none" v-else :to="{ path: '/login' }">
+                    <p class="d-none d-md-block fs-5 fst-italic text-start">Don't see what you're looking for? Login to request a new listing!</p>
+                    <p class="d-md-none fs-6 fst-italic text-start">Don't see what you're looking for? Login to request a new listing!</p>
+                </router-link>
+            </div>
+
+            <!-- Dropdown Buttons -->
+            <!-- <hr>
+            <p class="gap-1">
+                <button class="btn primary-btn mx-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseListings" aria-expanded="false" aria-controls="collapseListings">
+                    Listings
+                </button>
+            </p> -->
+            
+            <!-- Display Listings -->
+            <div class="collapse show row" id="collapseListings">
+                <hr>
+                <p class="fw-bold fst-italic fs-5 m-0" v-if="resultListings.length > 0">Viewing: {{ resultListings.length }} Listing Search Results</p>
+                <p class="fw-bold fst-italic fs-5 m-0" v-else>No Listing Results Found!</p>
+
+                <div class="container pt-3 text-start">
+                    <div class="row" v-for="resultListing in resultListings" :key="resultListing._id">
+                        <hr>
+
+                        <!-- Image -->
+                        <div class="col-3 image-container">
+                            <router-link :to="{ path: '/Producers/Bottle-Listings/' + resultListing._id['$oid'] }">
+                                <img v-if="resultListing['photo']" :src="'data:image/png;base64,' + resultListing['photo']" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px">
+                                <img v-else src="../../Images/Drinks/Placeholder.png" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px"> 
+                            </router-link>
+                        </div>
+
+                        <!-- Details -->
+                        <div class="row col-9">
+
+                            <div class="col-8">
+                                <!-- Listing Name + Router Link -->
+                                <router-link class="text-dark text-decoration-none" :to="{ path: '/Producers/Bottle-Listings/' + resultListing._id['$oid'] }">
+                                    <h4 class="fw-bold">{{ resultListing['listingName'] }}</h4>
+                                </router-link>
+                                <!-- Producer Name + Router Link -->
+                                <router-link class="text-secondary-emphasis text-decoration-none" :to="{ path: '/Producers/Profile-Page/' + resultListing.producerID['$oid'] }">
+                                    <h5 class="fw-bold mb-0">{{ resultListing['producerName'] }}</h5>
+                                    <p class="fw-bold fst-italic" v-if="resultListing['bottler'] != 'OB'">Bottler: {{ resultListing['bottler'] }}</p>
+                                </router-link>
+                            </div>
+
+                            <div class="col-4 text-end" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                                <!-- Drink Type / Type Category -->
+                                <p class="m-0">Type: {{ resultListing['drinkType'] }}</p>
+                                <p class="m-0" v-if="resultListing['typeCategory']">Category: {{ resultListing['typeCategory'] }}</p>
+                                <!-- Country of Origin -->
+                                <p>Origin: {{ resultListing['originCountry'] }}</p>
+                            </div>
+
+                            <!-- Description -->
+                            <p class="fst-italic scrollable-long">{{ resultListing["officialDesc"] }}</p>
+
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+        </div>
+    </div>
 </template>
 
 <script>
@@ -24,13 +162,111 @@
         },
         data() {
             return {
-                searchInput: this.$route.query.input
+                dataLoaded: false,
+                loadError: false,
+                role: localStorage.getItem('88B_accType'),
+                searchTerm: this.$route.params.input,
+                searchFilter: {
+                    drinkType: ''
+                },
+                drinkTypeList: [],
+                producerList: [],
+                originalResults: [],
+                resultListings: [],
+            }
+        },
+        mounted() {
+            // if there is a search input
+            if (this.searchTerm != '' || this.searchTerm != null) {
+                this.searchTerm = this.searchTerm.toLowerCase();
+                this.runSearch();
+            }
+            else {
+                this.$router.push({path: '/Users/Bottle-Listings'});
             }
         },
         methods: {
-            goBack() {
-                this.$router.go(-1)
-            }
+            async runSearch() {
+                // Search Criteria: if any of the following attributes includes the search term
+                // - Listings: listingName, producerName, bottler, originCountry, drinkType, typeCategory
+                // - [NOT IMPLEMENTED, TO BE CONSIDERED] Users: username, displayName
+                // - [NOT IMPLEMENTED, TO BE CONSIDERED] Producers: producerName, originCountry
+                // - [NOT IMPLEMENTED, TO BE CONSIDERED] Venues: venueName, originCountry, address
+
+                // Drink Types
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
+                    this.drinkTypeList = response.data;
+                }
+                catch (error) {
+                    console.error(error);
+                    this.loadError = true;
+                }
+
+                // Producers
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
+                    this.producerList = response.data;
+                }
+                catch (error) {
+                    console.error(error);
+                    this.loadError = true;
+                }
+
+                // Listings
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
+
+                    for (let listing of response.data) {
+                        const producer = this.producerList.find((producer) => {
+                            return producer["_id"]["$oid"] == listing["producerID"]["$oid"];
+                        });
+                        if (producer) {
+                            listing["producerName"] = producer["producerName"];
+                        }
+                        else {
+                            listing["producerName"] = "";
+                        }
+                        this.resultListings.push(listing);
+                    }
+
+                    this.resultListings = this.resultListings.filter((listing) => {
+                        return listing["listingName"].toLowerCase().includes(this.searchTerm) || listing["producerName"].toLowerCase().includes(this.searchTerm) || listing["bottler"].toLowerCase().includes(this.searchTerm) || listing["originCountry"].toLowerCase().includes(this.searchTerm) || listing["drinkType"].toLowerCase().includes(this.searchTerm) || listing["typeCategory"].toLowerCase().includes(this.searchTerm);
+                    });
+                    this.originalResults = this.resultListings;
+                }
+                catch (error) {
+                    console.error(error);
+                    this.loadError = true;
+                }
+
+                this.dataLoaded = true;
+            },
+
+            // Main Filter Function
+            filterResults() {
+                this.resultListings = this.originalResults;
+                
+                // Filter by Drink Type
+                if (this.searchFilter.drinkType != '') {
+                    this.resultListings = this.resultListings.filter((listing) => {
+                        return listing["drinkType"] == this.searchFilter.drinkType;
+                    });
+                }
+            },
+
+            // Filter Support Function (Drink Type)
+            filterByDrinkType(drinkType) {
+
+                // Check if the selected filter is the same as the current filter
+                if (this.searchFilter.drinkType == drinkType) {
+                    return;
+                }
+                else {
+                    this.searchFilter.drinkType = drinkType;
+                    this.filterResults();
+                }
+            },
         }
     }
 </script>

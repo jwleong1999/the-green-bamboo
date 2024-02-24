@@ -1,7 +1,6 @@
 <!-- HTML -->
 <template>
-    <!-- navbar -->
-    <NavBar></NavBar>
+    <NavBar />
 
     <!-- TODO First Name and Last Name on the same line -->
 

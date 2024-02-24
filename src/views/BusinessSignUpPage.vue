@@ -1,6 +1,5 @@
 <template>
-    <!-- navbar -->
-    <NavBar></NavBar>
+    <NavBar />
 
     <!-- Display when form is being submitted -->
     <div class="text-info-emphasis fst-italic fw-bold fs-5" v-if="submitForm"> 

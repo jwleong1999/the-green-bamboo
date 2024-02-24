@@ -1,4 +1,5 @@
 <template>
+    <NavBar />
   <div v-if="displayUser" class="userprofile mt-3">
 
     <div class="container text-start">
@@ -510,9 +511,13 @@
 </template>
 
 <script>
+import NavBar from '@/components/NavBar.vue';
 
 // toggling between lists and list details
 export default {
+    components: {
+        NavBar
+    },
     data() {
         return {
             // default images
