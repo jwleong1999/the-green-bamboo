@@ -49,7 +49,7 @@
                         <li><hr class="dropdown-divider"></li>
                         <li v-if="profileURL == '/login'"><router-link :to="'/login'" class="dropdown-item">Login</router-link></li>
                         <li v-if="profileURL == '/login'"><router-link :to="'/signup'" class="dropdown-item">Sign Up</router-link></li>
-                        <li v-if="profileURL != '/login'"><span class="dropdown-item" @onclick="logout">Log Out</span></li>
+                        <li v-if="profileURL != '/login'"><span class="dropdown-item" @click="logout">Log Out</span></li>
                     </ul>
 
                 </div>
