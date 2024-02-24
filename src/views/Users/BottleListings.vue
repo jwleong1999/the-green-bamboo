@@ -933,7 +933,6 @@
                         const drinkTypeListing = listing["drinkType"].toLowerCase();
                         return drinkTypeListing.includes(drinkTypeSearch);
                     });
-                    console.log(searchResults)
 
                     // if nothing found
                     if(searchResults == null){
@@ -1048,7 +1047,6 @@
                 if(this.discovery){
                     this.mostReviews=[]
                     this.getMostReviews()
-                    console.log(this.mostReviews)
                 }
                 if(this.following){
                     this.getRecentlyAdded()

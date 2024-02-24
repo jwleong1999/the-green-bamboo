@@ -57,6 +57,23 @@
                         <span v-if="missingUsername" class="text-danger">Please enter a username.</span>
                         <span v-if="duplicateUser" class="text-danger">Username is already taken, if this is you, login instead!</span>
                     </div>
+                    <!-- Input: Display Name -->
+                    <div class="form-group mb-3">
+                        <input type="text" class="form-control" style="border-color: black" v-model="displayName" id="displayName" placeholder="Display Name">
+                        <span v-if="missingDisplayName" class="text-danger">Please enter a display name.</span>
+                    </div>
+                    <div class="row">
+                        <!-- Input: First Name -->
+                        <div class="form-group mb-3 col-6">
+                            <input type="text" class="form-control" style="border-color: black" v-model="firstName" id="firstName" placeholder="First Name">
+                            <span v-if="missingFirstName" class="text-danger">Please enter your First Name.</span>
+                        </div>
+                        <!-- Input: Last Name -->
+                        <div class="form-group mb-3 col-6">
+                            <input type="text" class="form-control" style="border-color: black" v-model="lastName" id="lastName" placeholder="Last Name">
+                            <span v-if="missingLastName" class="text-danger">Please enter your Last Name.</span>
+                        </div>
+                    </div>
                     <!-- Input: Email -->
                     <div class="form-group mb-3">
                         <input type="text" class="form-control" style="border-color: black" v-model="email" id="email" placeholder="Email">
@@ -74,18 +91,6 @@
                         <input type="password" class="form-control" style="border-color: black" v-model="passwordRepeat" id="passwordRepeat" placeholder="Repeat Password">
                         <span v-if="missingPasswordRepeat && !missingPassword" class="text-danger">Please repeat your password.</span>
                         <span v-if="passwordMismatch && !missingPasswordRepeat" class="text-danger">Passwords do not match, please try again.</span>
-                    </div>
-                    <div class="row">
-                        <!-- Input: First Name -->
-                        <div class="form-group mb-3 col-6">
-                            <input type="text" class="form-control" style="border-color: black" v-model="firstName" id="firstName" placeholder="First Name">
-                            <span v-if="missingFirstName" class="text-danger">Please enter your First Name.</span>
-                        </div>
-                        <!-- Input: Last Name -->
-                        <div class="form-group mb-3 col-6">
-                            <input type="text" class="form-control" style="border-color: black" v-model="lastName" id="lastName" placeholder="Last Name">
-                            <span v-if="missingLastName" class="text-danger">Please enter your Last Name.</span>
-                        </div>
                     </div>
                     <!-- Input: Birthday -->
                     
@@ -112,6 +117,11 @@
                 
                 </form>
                 <!-- End of Form -->
+                <router-link :to="{ path: '/businessSignUp' }" class="primary-clickable-text">
+                    <div class="text-center mb-3" style="text-decoration: underline; font-style: italic;" >
+                        If you are a drinks brand, bottler or venue owner trying to create an account, click here.
+                    </div>
+                </router-link>
             </div>
             <!-- End of the elements  -->
         </div>
@@ -139,6 +149,7 @@
 
                 // Form variables
                 username:"",
+                displayName:'',
                 email:'',
                 password:'',
                 passwordRepeat:'',
@@ -150,6 +161,7 @@
                 // Submission variables
 
                 missingUsername:false,
+                missingDisplayName:false,
                 missingEmail:false,
                 invalidEmail:false,
                 passwordMismatch:false,
@@ -193,6 +205,11 @@
                     if(this.duplicateUser){
                         errorCount++
                     }
+                }
+
+                if(this.displayName ==''){
+                    this.missingDisplayName = true
+                    errorCount++
                 }
 
                 // Email validation
@@ -257,7 +274,7 @@
 
 
                 let hashedPassword = this.hashPassword(this.username, this.password)
-                let joinDate = new Date().toISOString() + '+00:00';
+                let joinDate = new Date().toISOString();
                 let submitAPI =  "http://127.0.0.1:5400/createAccount"
                 let submitData = {
                     "username": this.username,
@@ -352,6 +369,7 @@
                 this.missingFirstName=false
                 this.missingLastName=false
                 this.missingBirthday=false
+                this.missingAgeCheck=false
             },
 
             async checkUsername(username){

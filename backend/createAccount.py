@@ -71,5 +71,52 @@ def createAccount():
         ), 500
 
 # -----------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------
+# [POST] Creates a Business Account Request
+# - Insert entry into the "accountRequests" collection. Follows reviews dataclass requirements.
+# - Duplicate review check: If a user with the same username, reject the request
+# - Possible return codes: 201 (Created), 400 (Duplicate Detected), 500 (Error during creation)
+@app.route("/createAccountRequest", methods= ['POST'])
+def createAccountRequest():
+    rawAccount = request.get_json()
+    rawEmail= rawAccount['email']
+    # Duplicate listing check: Reject if review with the same userID and reviewTarget exists in the database
+    existingAccount = db.accountRequests.find_one({"email": rawEmail})
+    if(existingAccount!= None):
+        return jsonify(
+            {   
+                "code": 400,
+                "data": {
+                    "userName": rawEmail
+                },
+                "message": "Request already exists."
+            }
+        ), 400
+    
+    
+    # Insert new review into database
+    # newAccount = data.users(**rawAccount)
+    try:
+        insertResult = db.accountRequests.insert_one(rawAccount)
+
+        return jsonify( 
+            {   
+                "code": 201,
+                "data": rawEmail
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "email": rawEmail
+                },
+                "message": "An error occurred creating the account request."
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, port = 5400)
