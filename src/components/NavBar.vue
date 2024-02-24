@@ -8,37 +8,53 @@
     <div class="navbar-container">
         <nav class="navbar">
             <div class="container-fluid align-items-center col-xxl-8 col-xl-9 col-lg-10 col-md-11 col-sm-12">
+
                 <!-- logo -->
-                <div class="align-items-center col-3"> 
-                    <img src="../../Images/Logo/88 Bamboo.png" style="width: 70px; height: 70px;" @click="this.$router.push(`/Users/Bottle-Listings`)">
+                <div class="align-items-center col-3">
+                    <router-link :to="'/Users/Bottle-Listings'">
+                        <img src="../../Images/Logo/88 Bamboo.png" style="width: 70px; height: 70px;">
+                    </router-link>
                 </div>
+
                 <!-- search bar -->
                 <div class="col-6">
                     <input class="search-bar form-control rounded fst-italic" type="text" placeholder="What are you drinking today?" style="height: 50px;" v-model="searchInput" v-on:keyup.enter="goSearch">
                 </div>
-                <div class="col-3">
+
+                <div class="col-3 dropdown">
+
                     <!-- profile icon -->
-                    <button type="button" class="btn px-0 ps-0 pe-1" @click="redirectProfile">
-                        <svg v-if="photo == ''" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
-                        </svg>
-                        <img v-else :src="'data:image/png;base64,'+ photo"  style="width: 30px; height: 30px;" class="img-border">
-                    </button>
-                    <!-- collapsible button -->
-                    <button class="navbar-toggler p-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <router-link :to="profileURL" class="me-1">
+                        <button type="button" class="btn p-0">
+                            <svg v-if="photo == ''" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                            </svg>
+                            <img v-else :src="'data:image/png;base64,'+ photo"  style="width: 30px; height: 30px;" class="img-border">
+                        </button>
+                    </router-link>
+
+                    <!-- dropdown button -->
+                    <button class="navbar-toggler p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="navbar-toggler-icon"></span>
                     </button>
+
+                    <!-- dropdown menu -->
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><router-link :to="'/Users/Bottle-Listings'" class="dropdown-item">Home</router-link></li>
+                        <li><router-link :to="profileURL" class="dropdown-item">My Profile</router-link></li>
+                        <li v-if="accType == 'producer'"><router-link :to="'/Producer/Producer-Create-Listing'" class="dropdown-item">Create New Listing</router-link></li>
+                        <li v-if="accType == 'user'"><router-link :to="'/Users/request/new'" class="dropdown-item">Request New Listing</router-link></li>
+                        <li v-if="accType == 'user' || accType == 'producer'"><router-link :to="'/producers/requests'" class="dropdown-item">View Requests</router-link></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li v-if="profileURL == '/login'"><router-link :to="'/login'" class="dropdown-item">Login</router-link></li>
+                        <li v-if="profileURL == '/login'"><router-link :to="'/signup'" class="dropdown-item">Sign Up</router-link></li>
+                        <li v-if="profileURL != '/login'"><span class="dropdown-item" @onclick="logout">Log Out</span></li>
+                    </ul>
+
                 </div>
             </div>
         </nav>
-    </div>
-    <!-- collapsible content -->
-    <div class="collapse" id="navbarToggleExternalContent"> <!-- TODO: check what content to put here -->
-        <div class="p-4">
-            <h5 class="text-body-emphasis h4">Collapsed content</h5>
-            <span class="text-body-secondary">Toggleable via the navbar brand.</span>
-        </div>
     </div>
 </template>
 
@@ -50,6 +66,7 @@
                 searchInput: '',
                 accType: '',
                 photo: '',
+                profileURL: '/login',
             }
         },
         mounted() {
@@ -63,14 +80,23 @@
                 if (this.accType == 'user') {
                     url = url + 'User/' + accID;
                     this.loadData(url);
+
+                    this.profileURL = '/userprofile';
+                    // [RE-ROUTE FLAG] this.profileURL = '/profile/user';
                 } 
                 else if (this.accType == 'producer') {
                     url = url + 'Producer/' + accID;
                     this.loadData(url);
+
+                    this.profileURL = '/Producers/Profile-Page/' + accID;
+                    // [RE-ROUTE FLAG] this.profileURL = '/profile/producer';
                 } 
                 else if (this.accType == 'venue') {
                     url = url + 'Venue/' + accID;
                     this.loadData(url);
+
+                    this.profileURL = '/Venues/Profile-Page/' + accID;
+                    // [RE-ROUTE FLAG] this.profileURL = '/profile/venue';
                 }
             }
         },
@@ -84,32 +110,6 @@
                     catch (error) {
                         console.error(error);
                     }
-            },
-
-            // Redirect when clicking on profile picture
-            redirectProfile() {
-                if (this.accType == 'user') {
-                    this.$router.push({path: '/userprofile'});
-                } 
-                else if (this.accType == 'producer') {
-                    this.$router.push({path: '/Producers/Profile-Page/' + localStorage.getItem('88B_accID')});
-                } 
-                else if (this.accType == 'venue') {
-                    this.$router.push({path: '/Venues/Profile-Page/' + localStorage.getItem('88B_accID')});
-                }
-                // [RE-ROUTE FLAG]
-                // if (this.accType == 'user') {
-                //     this.$router.push({path: '/profile/user'});
-                // } 
-                // else if (this.accType == 'producer') {
-                //     this.$router.push({path: '/profile/producer'});
-                // } 
-                // else if (this.accType == 'venue') {
-                //     this.$router.push({path: '/profile/venue'});
-                // }
-                else {
-                    this.$router.push({path: '/login'});
-                }
             },
 
             // searchListings() {
