@@ -11,7 +11,7 @@
                 <div class="row">
                     <!-- image -->
                     <div class="col-3 image-container">
-                        <img :src=" 'data:image/jpeg;base64,' + ( defaultProfilePhoto)" style="width: 200px; height: 200px;">
+                        <img :src=" 'data:image/jpeg;base64,' + ( specified_listing['photo'] || defaultProfilePhoto )" style="width: 200px; height: 200px;">
                     </div>
                     <!-- details -->
                     <div class="col-9 text-start">
@@ -29,12 +29,23 @@
                                 </div>
                                 <!-- suggest edit & report duplicate -->
                                 <div class="col-3">
-                                    <router-link :to="{ path: '/Users/request/modify/edit/' + this.listing_id }">
+                                    <!-- [if] correct producer-->
+                                    <div v-if="correctProducer">
+                                        <button type="button" class="btn tertiary-btn reverse-clickable-text m-1">
+                                            <a class="reverse-clickable-text" v-bind:href="'/Producer/Producer-Edit-Listing/' + `${specified_listing._id.$oid}`">
+                                                Edit Listing
+                                            </a>
+                                        </button>
+                                    </div>
+                                    <!-- [else] not correct producer -->
+                                    <div v-else>
+                                        <router-link :to="{ path: '/Users/request/modify/edit/' + this.listing_id }">
                                         <p class="text-body-secondary no-margin text-decoration-underline fst-italic"> Suggest Edit </p>
-                                    </router-link>
-                                    <router-link :to="{ path: '/Users/request/modify/duplicate/' + this.listing_id }">
-                                        <p class="text-body-secondary no-margin text-decoration-underline fst-italic"> Report Duplicate </p>
-                                    </router-link>
+                                        </router-link>
+                                        <router-link :to="{ path: '/Users/request/modify/duplicate/' + this.listing_id }">
+                                            <p class="text-body-secondary no-margin text-decoration-underline fst-italic"> Report Duplicate </p>
+                                        </router-link>
+                                    </div>
                                 </div>
                             </div>
                             <!-- producer & bottler -->
@@ -772,8 +783,13 @@
                 willRecommend: null,
                 willDrinkAgain: null,
 
+                // user
+                user_id: "",
+                userType: "",
+
                 // specified producer
                 producer_id: null,
+                correctProducer: false,
 
                 // where to buy
                 producerListings: [],
@@ -859,7 +875,6 @@
             try {
                     // Get the query string parameters (listing ID) from the URL
                     this.listing_id = this.$route.params.id;
-                    console.log(this.listing_id)
                     if (this.listing_id == null) {
                         // redirect to page
                         this.$router.push('/Users/Bottle-Listings');
@@ -873,13 +888,13 @@
             // Load local storage variables
             const accID = localStorage.getItem("88B_accID");
             if(accID !== null){
-                this.userID = localStorage.getItem('88B_accID')
+                this.user_id = localStorage.getItem('88B_accID')
             }
             //     this.loggedIn = true
             // }
             const accType = localStorage.getItem("88B_accType");
             if(accType !==null){
-                this.acctype = accType
+                this.userType = accType
             }
         },
         computed: {
@@ -887,12 +902,12 @@
             return this.locationOptions.filter(option =>
                 option.name.toLowerCase().includes(this.locationSearchTerm.toLowerCase())
             );
-            }
+            },
         },
         methods: {
             // fetch specific listing data
             created() {
-                
+
             },
 
             // load data from database
@@ -1031,6 +1046,13 @@
                     this.specificReviewRating = this.getRatings(this.specified_listing)
                     this.willRecommend = this.getWillRecommend(this.specified_listing)
                     this.willDrinkAgain = this.getWillDrinkAgain(this.specified_listing)
+
+
+            console.log(this.user_id)
+            console.log(this.producer_id)
+            if (this.user_id == this.producer_id && this.userType == "producer") {
+                this.correctProducer = true;
+            }
             },
 
             // view which producers have specified listing

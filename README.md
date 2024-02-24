@@ -60,7 +60,7 @@ These are the login credentials for test accounts:
 | Account Type | Username | Password |
 | :---:  | :----: | :---: |
 | User | `111hotpot` | `westlife123` |
-| Producer | `The Macallan Distillery` | `macallan!d1st1llery` |
+| Producer | `Ardbeg Distillery` | `ardddbe33g**!!` |
 | Venue | `Origin Bar` | `Origi456` |
 
 ### Installation

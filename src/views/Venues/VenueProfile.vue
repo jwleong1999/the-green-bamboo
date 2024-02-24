@@ -959,7 +959,9 @@
                 if (firstFiveItems.length < 5) {
                     this.allDrinks.forEach(drink => {
                         if (!firstFiveItems.some(item => item[0] == drink.listingName)) {
-                            firstFiveItems.push(drink);
+                            let drinkName = drink.listingName;
+                            let drinkCount = this.drinkCounts[drink.listingName];
+                            firstFiveItems.push([drinkName, drinkCount]);
                         }
                     });
                 }
@@ -977,7 +979,9 @@
                 if (firstFiveItems.length < 5) {
                     this.allDrinks.forEach(drink => {
                         if (!firstFiveItems.some(item => item[0] == drink.listingName)) {
-                            firstFiveItems.push(drink);
+                            let drinkName = drink.listingName;
+                            let drinkCount = this.drinkCounts[drink.listingName];
+                            firstFiveItems.push([drinkName, drinkCount]);
                         }
                     });
                 }
