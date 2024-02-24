@@ -47,7 +47,11 @@ def editDetails():
         return jsonify(
             {   
                 "code": 201,
-                "data": image64
+                "data": {
+                    "userID": userID,
+                    "image": image64[:8],
+                    "drinkChoice": drinkChoice
+                }
             }
         ), 201
     except Exception as e:
@@ -56,9 +60,11 @@ def editDetails():
             {
                 "code": 500,
                 "data": {
-                    "image": image64[:8]
+                    "userID": userID,
+                    "image": image64[:8],
+                    "drinkChoice": drinkChoice
                 },
-                "message": "An error occurred updating the image."
+                "message": "An error occurred updating the image or drink choice."
             }
         ), 500
     
@@ -79,7 +85,10 @@ def updateBookmark():
         return jsonify(
             {   
                 "code": 201,
-                "data": bookmark
+                "data": {
+                    "userID": userID,
+                    "bookmark": bookmark
+                }
             }
         ), 201
     except Exception as e:
@@ -88,9 +97,12 @@ def updateBookmark():
             {
                 "code": 500,
                 "data": {
-                    "data": bookmark
+                    "data": {
+                        "userID": userID,
+                        "bookmark": bookmark
+                    }
                 },
-                "message": "An error occurred updating the image."
+                "message": "An error occurred updating the drink lists."
             }
         ), 500
 
@@ -122,7 +134,12 @@ def updateFollowList():
         return jsonify(
             {   
                 "code": 201,
-                "data": userID
+                "data": {
+                    "userID": userID,
+                    "action": action,
+                    "target": target,
+                    "followerID": followerID
+                }
             }
         ), 201
     except Exception as e:
@@ -131,9 +148,14 @@ def updateFollowList():
             {
                 "code": 500,
                 "data": {
-                    "data": userID
+                    "data": {
+                        "userID": userID,
+                        "action": action,
+                        "target": target,
+                        "followerID": followerID
+                    }
                 },
-                "message": "An error occurred updating the image."
+                "message": "An error occurred follow list."
             }
         ), 500
     
@@ -159,7 +181,11 @@ def submitModRequest():
         return jsonify(
             {   
                 "code": 201,
-                "data": userID
+                "data": {
+                    "userID": userID,
+                    "drinkType": drinkType,
+                    "modDesc": modDesc
+                }
             }
         ), 201
     except Exception as e:
@@ -168,9 +194,13 @@ def submitModRequest():
             {
                 "code": 500,
                 "data": {
-                    "data": userID
+                    "data": {
+                        "userID": userID,
+                        "drinkType": drinkType,
+                        "modDesc": modDesc
+                    }
                 },
-                "message": "An error occurred updating the image."
+                "message": "An error occurred updating the mod request."
             }
         ), 500
 
