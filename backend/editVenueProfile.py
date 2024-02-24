@@ -64,12 +64,7 @@ def editDetails():
         return jsonify(
             {
                 "code": 500,
-                "data": {
-                    "image": image64[:8],
-                    "name": venueName,
-                    "desc": venueDesc,
-                    "country": originLocation,
-                },
+                "data": data,
                 "message": "An error occurred updating profile!"
             }
         ), 500
@@ -109,7 +104,7 @@ def addUpdates():
         return jsonify( 
             {   
                 "code": 201,
-                "data": data
+                "message": "Update added successfully!"
             }
         ), 201
     except Exception as e:
@@ -118,7 +113,7 @@ def addUpdates():
             {
                 "code": 500,
                 "data": data,
-                "message": "An error occurred creating the update."
+                "message": "An error occurred creating the update!"
             }
         ), 500
 
@@ -154,7 +149,7 @@ def sendQuestions():
         return jsonify( 
             {   
                 "code": 201,
-                "data": venueID
+                "message": "Question sent successfully!"
             }
         ), 201
     except Exception as e:
@@ -162,8 +157,8 @@ def sendQuestions():
         return jsonify(
             {
                 "code": 500,
-                "data": venueID,
-                "message": "An error occurred creating the update."
+                "data": data,
+                "message": "An error occurred sending the question!"
             }
         ), 500
 
@@ -191,7 +186,7 @@ def sendAnswers():
         return jsonify( 
             {   
                 "code": 201,
-                "data": venueID
+                "message": "Answer sent successfully!"
             }
         ), 201
     except Exception as e:
@@ -199,8 +194,8 @@ def sendAnswers():
         return jsonify(
             {
                 "code": 500,
-                "data": venueID,
-                "message": "An error occurred creating the update."
+                "data": data,
+                "message": "An error occurred sending the answer!"
             }
         ), 500
 
@@ -224,7 +219,7 @@ def likeUpdates():
         return jsonify(
             {   
                 "code": 201,
-                "data": venueID
+                "message": "Update liked successfully!"
             }
         ), 201
     except Exception as e:
@@ -232,10 +227,8 @@ def likeUpdates():
         return jsonify(
             {
                 "code": 500,
-                "data": {
-                    "data": venueID
-                },
-                "message": "An error occurred liking the update."
+                "data": data,
+                "message": "An error occurred liking the update!"
             }
         ), 500
 
@@ -259,7 +252,7 @@ def unlikeUpdates():
         return jsonify(
             {   
                 "code": 201,
-                "data": venueID
+                "message": "Update unliked successfully!"
             }
         ), 201
     except Exception as e:
@@ -267,10 +260,8 @@ def unlikeUpdates():
         return jsonify(
             {
                 "code": 500,
-                "data": {
-                    "data": venueID
-                },
-                "message": "An error occurred liking the update."
+                "data": data,
+                "message": "An error occurred unliking the update!"
             }
         ), 500
 
