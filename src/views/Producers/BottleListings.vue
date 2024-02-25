@@ -183,7 +183,7 @@
                     
                     <!-- Modal -->
                     <!-- TODO component for modal <ReviewModal :isEditing='false' :reviewData="reviewData" :showReviewButton="userID.$oid !== 'defaultUser'" /> -->
-                    <div v-if="userID !== 'defaultUser'" class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true" data-bs-backdrop="static">
+                    <div v-if="userID != 'defaultUser'" class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-lg">
                             <div class="text-success fst-italic fw-bold fs-3 modal-content" v-if='successSubmission'>
                                 <span v-if="!inEdit">Your review has successfully been submitted!</span>
@@ -494,7 +494,7 @@
                             </div>
                         </div>
                     </div>
-                <!-- END OF MODAL -->
+                    <!-- END OF MODAL -->
 
 
                 <hr>
@@ -707,7 +707,7 @@
                         <div class="text-start pt-2">
                             <!-- [function] where to try -->
                             <div v-for="venue in venueListings" v-bind:key="venue._id">
-                                <router-link :to="{ path: '/Venues/Profile-Page/' + venue.$oid }" class="reverse-clickable-text">
+                                <router-link :to="{ path: '/Venues/Profile-Page/' + venue._id.$oid }" class="reverse-clickable-text">
                                     <p> {{ venue.venueName }} </p>
                                 </router-link>
                             </div>
@@ -784,7 +784,6 @@
                 willDrinkAgain: null,
 
                 // user
-                user_id: "",
                 userType: "",
 
                 // specified producer
@@ -888,7 +887,7 @@
             // Load local storage variables
             const accID = localStorage.getItem("88B_accID");
             if(accID !== null){
-                this.user_id = localStorage.getItem('88B_accID')
+                this.userID = localStorage.getItem('88B_accID')
             }
             //     this.loggedIn = true
             // }
@@ -1047,10 +1046,7 @@
                     this.willRecommend = this.getWillRecommend(this.specified_listing)
                     this.willDrinkAgain = this.getWillDrinkAgain(this.specified_listing)
 
-
-            console.log(this.user_id)
-            console.log(this.producer_id)
-            if (this.user_id == this.producer_id && this.userType == "producer") {
+            if (this.userID == this.producer_id && this.userType == "producer") {
                 this.correctProducer = true;
             }
             },
@@ -1207,7 +1203,9 @@
                     const selectedLocation = this.locationOptions.filter((location)=>{
                         return location['id']['$oid'] == specificReview[0].location['$oid']
                     })
-                    this.selectedLocation = selectedLocation[0].name
+                    if(selectedLocation.length !=0){
+                        this.selectedLocation = selectedLocation[0].name
+                    }
                 }
 
                 return specificReview
