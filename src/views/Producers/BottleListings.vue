@@ -1327,7 +1327,7 @@
                 let submitData = {
                     "userID" : this.userID,
                     "reviewTarget" :this.listing_id,
-                    "rating" : this.rating,
+                    "rating" : Number(this.rating),
                     "reviewDesc": this.reviewDesc,
                     "reviewType": "Listing",
                     "flavorTag" : this.selectedFlavourTags,
