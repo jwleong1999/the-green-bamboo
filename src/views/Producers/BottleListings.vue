@@ -557,7 +557,7 @@
                 <!-- reviews -->
                 <!-- TODO  EDIT MODAL IF NOT DOING COMPONENT-->
                 <div>
-                    <div class="row" v-for="review in filteredReviews" v-bind:key="review._id">
+                    <div class="row mb-3" v-for="review in filteredReviews" v-bind:key="review._id">
                         <!-- profile photo -->
                         <div class="col-1">
                             <a :href="`../../userProfile/${review.userID.$oid}`">
