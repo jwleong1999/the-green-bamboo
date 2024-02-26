@@ -12,7 +12,7 @@
                     <h1 class="text-start"> Your glass deserves the best. </h1>
                 </div>
                 <!-- button -->
-                <div class="col-4">
+                <div v-if="!userID" class="col-4">
                     <div class="d-grid gap-2">
                         <router-link :to="{ path: '/signUp' }">
                             <button class="btn secondary-btn btn-lg"> 
