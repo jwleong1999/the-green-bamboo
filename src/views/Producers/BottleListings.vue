@@ -578,11 +578,11 @@
                                         <button class="btn btn-danger ms-1" @click="setDeleteID(review)" data-bs-toggle="modal" data-bs-target="#deleteReview">Delete</button>
                                     </div>
                                 </div>
-                                <div class="text-start mb-3">
+                                <div class="text-start mb-2">
                                     {{ review['reviewDesc'] }}
                                 </div>
                                 <!-- flavour tag -->
-                                <div class="text-start mb-1">
+                                <div class="text-start mb-2">
                                     <!-- flavor tag -->
                                         <span v-for="(tag, index) in review.flavorTag" :key="index" class="badge rounded-pill me-2" :style="{ backgroundColor: getTagColor(tag) }">{{ getTagName(tag) }}</span>
                                 </div>
