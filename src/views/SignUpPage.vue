@@ -43,7 +43,10 @@
             
             <!-- start of the elements -->
             <div class="col-xl-6 col-lg-8 col-md-10 rounded" style="background-color:#DDC8A9;">
-                <div class="d-grid gap-2">
+                <div class="d-grid gap-2" style="position: relative;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16" style="position: absolute; top: 10; left: 0;" v-on:click="goBack">
+                        <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+                    </svg>
                     <p class="fw-bold fs-1" style="font-style: italic; font-family: Radley, serif;">Create an Account</p>
                 </div>
 
@@ -112,13 +115,18 @@
                     </div>
                     
                     <button type="submit" class="btn secondary-btn mx-1 mb-3" @click="signUp">Sign Up</button>
-                    <button type="button" class="btn primary-btn mx-1 mb-3" @click="goBack">Return</button>
+                    <!-- <button type="button" class="btn primary-btn mx-1 mb-3" @click="goBack">Return</button> -->
                 
                 </form>
                 <!-- End of Form -->
                 <router-link :to="{ path: '/businessSignUp' }" class="primary-clickable-text">
-                    <div class="text-center mb-3" style="text-decoration: underline; font-style: italic;" >
-                        If you are a drinks brand, bottler or venue owner trying to create an account, click here.
+                    <div class="text-center mb-1" style="text-decoration: underline; font-style: italic;" >
+                        Click here if you are a drinks brand, bottler or venue owner trying to create an account.
+                    </div>
+                </router-link>
+                <router-link :to="{ path: '/login' }" class="primary-clickable-text">
+                    <div class="text-center mb-1" style="text-decoration: underline; font-style: italic;" >
+                        Click here to go to login.
                     </div>
                 </router-link>
             </div>
