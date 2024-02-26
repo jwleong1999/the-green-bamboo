@@ -26,6 +26,9 @@ export default {
     HelloWorld,
     NavBar,
     PromptLogin
-}
+  },
+  mounted() {
+    this.$router.push('/Users/Bottle-Listings');
+  }
 }
 </script>
