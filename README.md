@@ -61,7 +61,7 @@ These are the login credentials for test accounts:
 | :---:  | :----: | :---: |
 | User | `111hotpot` | `westlife123` |
 | Producer | `Ardbeg Distillery` | `ardddbe33g**!!` |
-| Venue | `Origin Bar` | `Origi456` |
+| Venue | `Orh Gao Taproom` | `orhhorsogao` |
 
 ### Installation
 

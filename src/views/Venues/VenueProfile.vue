@@ -373,7 +373,7 @@
                     </div>
                     <div class="row">
                         <!-- v-loop for each listing -->
-                        <div class="container text-start">
+                        <div class="container text-start scrollable-listings">
                             <div v-for="listing in filteredListings" v-bind:key="listing._id" class="p-3">
                                 <div class="row">
                                     <!-- image -->
