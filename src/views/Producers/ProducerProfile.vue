@@ -237,7 +237,7 @@
                     <hr>
 
                     <!-- most popular (highest ratings) -->
-                    <h3 class="text-body-secondary text-start"> 
+                    <h3 class="text-body-secondary text-start pt-2"> 
                         <b> Most Popular </b> 
                     </h3>
                     <div class="container">
@@ -249,10 +249,15 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="row">
+                            <div v-for="drinkInfo in mostPopular" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container-text scrollable">
+                                {{ drinkInfo[0] }}
+                            </div>
+                        </div>
                     </div>
 
                     <!-- most discussed (most number of reviews) -->
-                    <h3 class="text-body-secondary text-start"> 
+                    <h3 class="text-body-secondary text-start pt-4"> 
                         <b> Most Discussed </b> 
                     </h3>
                     <div class="container">
@@ -264,10 +269,15 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="row">
+                            <div v-for="drinkInfo in mostDiscussed" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container-text scrollable">
+                                {{ drinkInfo[0] }}
+                            </div>
+                        </div>
                     </div>
 
                     <!-- recently added -->
-                    <h3 class="text-body-secondary text-start"> 
+                    <h3 class="text-body-secondary text-start pt-4"> 
                         <b> Recently Added </b> 
                     </h3>
                     <div class="container">
@@ -279,7 +289,13 @@
                                 </svg>
                             </div>
                         </div>
+                        <div class="row">
+                            <div v-for="drinkInfo in recentlyAdded" v-bind:key="drinkInfo._id"  class="add-drink-photo-container-text scrollable">
+                                {{ drinkInfo["listingName"] }}
+                            </div>
+                        </div>
                     </div>
+
                 </div> <!-- end of main page (hide all listings) -->
 
                 <!-- show all listings-->

@@ -216,6 +216,16 @@ body {
     margin: 20px;
 }
 
+.add-drink-photo-container-text {
+    width: 150px;
+    height: 100px;
+    position: relative;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
 .add-drink-photo-container-close {
     width: 150px;
     height: 150px;
