@@ -29,6 +29,10 @@ body {
     color: black;
 }
 
+.reverse-text {
+    color: whitesmoke;
+}
+
 .default-clickable-text {
     color: black;
     text-decoration: none;

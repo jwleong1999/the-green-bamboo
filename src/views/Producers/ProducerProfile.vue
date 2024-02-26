@@ -147,7 +147,7 @@
                 <div v-if="showListings == false">
 
                     <!-- latest updates -->
-                    <div class="row pb-2">
+                    <div class="row pb-3">
                         <!-- header -->
                         <div class="col-10">
                             <h3 class="text-body-secondary text-start"> 
@@ -156,19 +156,19 @@
                                     {{ specified_producer["producerName"] }} 
                                 </b> 
                             </h3>
+                            <h5 class="text-decoration-underline text-start">
+                                Posted on:
+                                {{ latestUpdate.date }}
+                            </h5>
                         </div>
                     </div>
                     <!-- information -->
                     <div class="row">
                         <!-- profile photo & post timestamp & # of likes -->
                         <div class="col-2">
-                            <img :src=" 'data:image/jpeg;base64,' + (specified_producer['photo'] || defaultProfilePhoto)" alt="" class="profile-image-lg">
-                            <p class="text-decoration-underline">
-                                Posted on:
-                                {{ latestUpdate.date }}
-                            </p>
+                            <img :src=" 'data:image/jpeg;base64,' + (latestUpdate['photo'] || defaultProfilePhoto)" alt="" style="width: 150px; height: 150px;"> 
                             <!-- # of likes -->
-                            <div class="row"> 
+                            <div class="row pt-3"> 
                                 <div class="col-6 text-end">
                                     <!-- [if] liked -->
                                     <div v-if="likeStatus" style="display: inline-block;"  v-on:click="unlikeUpdates">
@@ -192,20 +192,15 @@
                         <div class="col-10">
                             <div class="row">
                                 <!-- description -->
-                                <div class="col-9">
+                                <div class="col">
                                     <p class="text-start p-text-lg"> 
                                         {{latestUpdate['text']}}
                                     </p>
-                                    
-                                </div>
-                                <!-- image -->
-                                <div class="col-3 image-container text-end">
-                                    <!-- [TODO] edit photo of this update -->
-                                    <img :src=" 'data:image/jpeg;base64,' + (latestUpdate['photo'] || defaultProfilePhoto)" alt="" style="width: 150px; height: 150px;"> 
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <!-- reply / send to producer -->
                     <div class="row pt-3">
                         <!-- [if] user type is producer -->

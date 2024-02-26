@@ -74,7 +74,17 @@
                                     <div v-if="questionsUpdates.length > 0" class="overflow-auto" style="max-height: 100%;">
                                         <div v-for="(update, index) in questionsUpdates" :key="index">
                                             <span v-if="update.type == 'producerUpdate' || update.type == 'venueUpdate'">
-                                                <b>{{ update.name }}</b> updated status: "<b>{{ update.text }}</b>"
+                                                    <router-link v-if="update.type == 'producerUpdate'" :to="{ path: '/Producers/Profile-Page/' + update.id }" class="reverse-text">
+                                                        <img :src="'data:image/png;base64,'+ (update.photo || defaultProfilePhoto)" style="width: 35px; height: 35px;" class="img-border">
+                                                        <b class="ps-2"> {{ update.name }} </b>
+                                                    </router-link>
+                                                    <router-link v-else :to="{ path: '/Venues/Profile-Page/' + update.id }" class="reverse-text">
+                                                        <img :src="'data:image/png;base64,'+ (update.photo || defaultProfilePhoto)" style="width: 35px; height: 35px;" class="img-border">
+                                                        <b class="ps-2"> {{ update.name }} </b>
+                                                    </router-link>
+                                                <br/>
+                                                updated status: "<b>{{ update.text }}</b>"
+                                                <br>
                                                 <i>{{ getTimeDifference(update.date.$date) }}</i>
                                                 <br><br>
                                             </span>
@@ -1111,6 +1121,8 @@
                         let updatesWithProducerName = producer.updates.map(update => ({
                             ...update,
                             name: producer.producerName, 
+                            id: producer._id.$oid,
+                            photo: producer.photo,
                             type: 'producerUpdate'
                         }));
                         arr.push(...updatesWithProducerName);
@@ -1126,6 +1138,8 @@
                         let updatesWithVenueName = venue.updates.map(update => ({
                             ...update,
                             name: venue.venueName, 
+                            id: venue._id.$oid,
+                            photo: venue.photo,
                             type: 'venueUpdate'
                         }));
                         arr.push(...updatesWithVenueName);
