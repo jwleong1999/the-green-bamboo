@@ -473,6 +473,9 @@
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
                         this.producerList = response.data;
+                        this.producerList.sort((a,b)=>{
+                            return a.producerName.localeCompare(b.producerName)
+                        })
 
                         // Check if user is a producer
                         if (localStorage.getItem('88B_accType') == "producer") {

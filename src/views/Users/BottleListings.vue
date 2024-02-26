@@ -658,6 +658,9 @@
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
                         this.drinkTypes = response.data;
+                        this.drinkTypes.sort((a,b)=>{
+                            return a.drinkType.localeCompare(b.drinkType)
+                        })
                     } 
                     catch (error) {
                         console.error(error);
@@ -810,7 +813,7 @@
                 this.selectedDrinkType = drinkType;
                 for(let drinks of this.drinkTypes){
                     if(drinks['drinkType'] == drinkType['drinkType']){
-                        this.selectedTypeCategory = drinks['typeCategory']
+                        this.selectedTypeCategory = drinks['typeCategory'].sort()
                     }
                 }
 
@@ -1097,7 +1100,6 @@
         // get recently added
         getRecentlyAdded() {
             this.recentlyAdded = [...new Map(this.allProducerDrinks.concat(this.allVenueDrinks).map(item => [item._id.$oid, item])).values()];
-            // console.log(this.recentlyAdded)
         },
 
         getQuestionsUpdates() {
@@ -1170,7 +1172,6 @@
             this.questionsUpdates.sort((a, b) => {
                 return new Date(b.date.$date) - new Date(a.date.$date);
             });
-            console.log(this.questionsUpdates);
         }, 
 
         // get time difference
