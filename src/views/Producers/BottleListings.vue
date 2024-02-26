@@ -840,7 +840,7 @@
                 finish:"",
                 wouldRecommend:false,
                 wouldBuyAgain:false,
-                extendReview:true,
+                extendReview:false,
                 locationOptions: [], // Your list of options
                 locationSearchTerm: "",
                 selectedLocation: "",
@@ -1323,7 +1323,7 @@
                 if (this.finish !== "") {
                     this.finish = this.finish.trim();
                 }
-                let submitAPI = "http://127.0.0.1:5200/updateReview/" + this.specificReview[0]._id['$oid']
+                let submitAPI = "http://127.0.0.1:5022/updateReview/" + this.specificReview[0]._id['$oid']
                 let submitData = {
                     "userID" : this.userID,
                     "reviewTarget" :this.listing_id,
@@ -1509,7 +1509,7 @@
                 }
 
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5200/voteReview', 
+                    const response = await this.$axios.post('http://127.0.0.1:5022/voteReview', 
                         {
                             reviewID: review._id,
                             userVotes: review.userVotes
