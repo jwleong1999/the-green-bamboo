@@ -60,7 +60,12 @@
                                 </div>
                                 <!-- bottler -->
                                 <div class="col-4">
-                                    <h5 class="text-body-secondary"> Bottler: <u> {{ specified_listing["bottler"] }} </u>  </h5>
+                                    <h5 v-if="specified_listing['bottler'] != 'OB'" class="text-body-secondary"> Bottler: <u> {{ specified_listing["bottler"] }} </u>  </h5>
+                                        <h5 v-else class="text-body-secondary"> Bottler:
+                                            <router-link :to="{ path: '/Producers/Profile-Page/' + this.producer_id }" class="default-text-no-background"> 
+                                                <u> {{ getProducerName(specified_listing["producerID"]) }} </u>  
+                                            </router-link>
+                                        </h5>
                                 </div>
                             </div>
                             <!-- description -->
