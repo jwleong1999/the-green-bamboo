@@ -1274,7 +1274,7 @@
                 if (this.finish !== "") {
                     this.finish = this.finish.trim();
                 }
-                let submitAPI = "http://127.0.0.1:5005/createReview"
+                let submitAPI = "http://127.0.0.1:5021/createReview"
                 let submitData = {
                     "userID" : this.userID,
                     "reviewTarget" :this.listing_id,
@@ -1457,7 +1457,7 @@
             },
 
             async deleteReview(){
-                let deleteAPI = "http://127.0.0.1:5006/deleteReview/" + this.deleteID['$oid']
+                let deleteAPI = "http://127.0.0.1:5023/deleteReview/" + this.deleteID['$oid']
                 console.log(this.deleteID)
                 const response = await this.$axios.delete(deleteAPI)
                 .then((response)=>{
