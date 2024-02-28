@@ -498,8 +498,7 @@ export default {
                 if (this.finish !== "") {
                     this.finish = this.finish.trim();
                 }
-                // [RE-ROUTE FLAG] let submitAPI = "http://127.0.0.1:5020/createReview"
-                let submitAPI = "http://127.0.0.1:5005/createReview"
+                let submitAPI = "http://127.0.0.1:5021/createReview"
                 let submitData = {
                     "userID" : this.userID,
                     "reviewTarget" : {

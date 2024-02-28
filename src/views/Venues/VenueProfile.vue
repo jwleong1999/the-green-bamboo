@@ -1225,7 +1225,7 @@
             async deleteListings(listing) {
 
                 try {
-                    const response = await this.$axios.delete(`http://127.0.0.1:5003/deleteListing/${listing._id.$oid}`);
+                    const response = await this.$axios.delete(`http://127.0.0.1:5002/deleteListing/${listing._id.$oid}`);
                     console.log(response.data);
                 } 
                 catch (error) {

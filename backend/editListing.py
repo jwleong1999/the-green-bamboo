@@ -1,4 +1,4 @@
-# Port: 5003
+# Port: 5002
 # Routes: /updateListing/<id> (PUT), /deleteListing/<id> (DELETE)
 # -----------------------------------------------------------------------------------------
 
@@ -149,4 +149,4 @@ def deleteListing(id):
 
 # -----------------------------------------------------------------------------------------
 if __name__ == "__main__":
-    app.run(debug=True, port = 5003)
+    app.run(debug=True, port = 5002)

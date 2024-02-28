@@ -387,6 +387,7 @@
                 isProducer: false,
                 prevListing: false,
                 modifyRequest: {},
+                types: [],
 
                 // Form model variables
                 tempDrinkType: "",
@@ -434,10 +435,50 @@
                 this.prevListing = true;
             }
 
-            // Load data
-            this.loadData();
+            // Power user check
+            if (this.formType == "power") {
+                this.checkPower();
+            } else {
+                // Load data
+                this.loadData();
+            }
         },
         methods:{
+            // Function to check if user is a power user
+            async checkPower() {
+                let powerValid = false;
+
+                // Check if user is a producer
+                if (localStorage.getItem('88B_accType') == "producer") {
+                    powerValid = true;
+                }
+                // If user is a user, check power
+                else if (localStorage.getItem('88B_accType') == "user") {
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getUser/' + this.form['userID']["$oid"]);
+                        this.types = response.data["modType"];
+
+                        if (this.types != []) {
+                            powerValid = true;
+                            if (this.types.includes("admin")) {
+                                this.types = [];
+                            }
+                        }
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                }
+
+                // Resolve power check
+                if (powerValid) {
+                    this.loadData();
+                } else {
+                    alert("This page is only accessible to producers and power users! Please log in as a producer or power user to access this page.")
+                    this.$router.push({path: '/login'});
+                }
+            },
+            
             // Function to load form data
             async loadData(){
 
@@ -461,7 +502,9 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
                         this.drinkCategories = response.data;
                         for (let drink of this.drinkCategories) {
-                            this.drinkCategoriesList.push(drink.drinkType);
+                            if (this.types == [] || this.types.includes(drink.drinkType)) {
+                                this.drinkCategoriesList.push(drink.drinkType);
+                            }
                         }
                         this.drinkCategoriesList = this.drinkCategoriesList.sort();
                     } 
@@ -802,8 +845,7 @@
 
                         // Request Creation Mode
                         if (this.formMode == "new") {
-                            // [RE-ROUTE FLAG] submitAPI = "http://127.0.0.1:5010/requestListing"
-                            submitAPI = "http://127.0.0.1:5002/requestListing"
+                            submitAPI = "http://127.0.0.1:5011/requestListing"
                             submitData = {
                                 "sourceLink": this.form["sourceLink"].trim(),
                                 "listingName": this.form["listingName"].trim(),
@@ -825,15 +867,13 @@
                             }
 
                             if (this.prevListing) {
-                                // [RE-ROUTE FLAG] submitAPI = "http://127.0.0.1:5010/requestListingModify/" + this.$route.params.requestID
-                                submitAPI = "http://127.0.0.1:5002/requestListingModify/" + this.$route.params.requestID
+                                submitAPI = "http://127.0.0.1:5011/requestListingModify/" + this.$route.params.requestID
                             }
                         }
 
                         // Request Edit / Duplicate Mode
                         else if (this.formMode == "edit" || this.formMode == "dup") {
-                            // [RE-ROUTE FLAG] submitAPI = "http://127.0.0.1:5010/requestEdits"
-                            submitAPI = "http://127.0.0.1:5002/requestEdits"
+                            submitAPI = "http://127.0.0.1:5011/requestEdits"
                             submitData = {
                                 "editDesc": this.form["editDesc"].trim(),
                                 "sourceLink": this.form["sourceLink"].trim(),
@@ -846,8 +886,7 @@
                             }
 
                             if (this.prevListing) {
-                                // [RE-ROUTE FLAG] submitAPI = "http://127.0.0.1:5010/requestEditsModify/" + this.$route.params.requestID
-                                submitAPI = "http://127.0.0.1:5002/requestEditsModify/" + this.$route.params.requestID;
+                                submitAPI = "http://127.0.0.1:5011/requestEditsModify/" + this.$route.params.requestID;
                             }
                         }
 
@@ -883,8 +922,7 @@
 
                         // Listing Edit Mode
                         else if (this.formMode == "edit") {
-                            // [RE-ROUTE FLAG] submitAPI = "http://127.0.0.1:5002/updateListing/" + this.$route.params.listingID
-                            submitAPI = "http://127.0.0.1:5003/updateListing/" + this.$route.params.listingID
+                            submitAPI = "http://127.0.0.1:5002/updateListing/" + this.$route.params.listingID
                         }
 
                         else {

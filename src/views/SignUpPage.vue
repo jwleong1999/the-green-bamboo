@@ -282,7 +282,7 @@
 
                 let hashedPassword = this.hashPassword(this.username, this.password)
                 let joinDate = new Date().toISOString();
-                let submitAPI =  "http://127.0.0.1:5400/createAccount"
+                let submitAPI =  "http://127.0.0.1:5040/createAccount"
                 let submitData = {
                     "username": this.username,
                     "displayName": this.username,
