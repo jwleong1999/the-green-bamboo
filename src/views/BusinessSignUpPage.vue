@@ -31,7 +31,7 @@
         </button>
     </div>
 
-    <div class="row" v-if="fillForm">
+    <div class="row my-5" v-if="fillForm">
         <!-- spacer -->
         <div class="col-xl-2 col-lg-1 col-md-1"></div>
                 

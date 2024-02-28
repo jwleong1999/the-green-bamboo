@@ -29,6 +29,10 @@ body {
     color: black;
 }
 
+.default-body-text-no-background {
+    color: #2C3E50;
+}
+
 .reverse-text {
     color: whitesmoke;
 }
@@ -110,6 +114,13 @@ body {
     background-color: #DD9E54;
     border-radius: 30px;
     border: 1px solid whitesmoke;
+}
+
+.secondary-btn-border-thick {
+    color: whitesmoke;
+    background-color: #DD9E54;
+    border-radius: 30px;
+    border: 2px solid whitesmoke;
 }
 
 .secondary-btn-not-rounded {
@@ -333,4 +344,12 @@ body {
 #qrcode {
     width: 160px;
     height: 160px;
+}
+
+.darker-hr {
+    border: 1px solid #000000;
+}
+
+.form-box-outline {
+    border: 3px solid #535C72;
 }

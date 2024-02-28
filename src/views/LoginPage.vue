@@ -2,43 +2,19 @@
 <template>
     <NavBar />
 
-    <!-- title -->
-    <h2 class="pt-5 text-center"> Login </h2>
-
     <!-- select buttons -->
-    <div class="container py-5 ">
+    <div class="container my-5 py-5" style="background-color:#DDC8A9;">
         <form id="login" v-on:submit.prevent="checkLogin">
-            <div class="row">
-                <!-- user -->
-                <div class="col-4 text-center">
-                    <img src="../../Images/Profile/User.png" style="width: 100px; height: 100px">
-                    <br><br>
-                    <input class="form-check-input" type="radio" v-model="role" :value="'user'" name="roleSelect" id="roleUser">
-                    <br>
-                    <label class="form-check-label" for="roleUser">User</label>
-                </div>
-                <!-- producer -->
-                <div class="col-4 text-center">
-                    <img src="../../Images/Profile/Producer.png" style="width: 100px; height: 100px">
-                    <br><br>
-                    <input class="form-check-input" type="radio" v-model="role" :value="'producer'" name="roleSelect" id="roleProducer">
-                    <br>
-                    <label class="form-check-label" for="roleProducer">Producer</label>
-                </div>
-                <!-- venue -->
-                <div class="col-4 text-center">
-                    <img src="../../Images/Profile/Venue.png" style="width: 100px; height: 100px">
-                    <br><br>
-                    <input class="form-check-input" type="radio" v-model="role" :value="'venue'" name="roleSelect" id="roleVenue">
-                    <br>
-                    <label class="form-check-label" for="roleVenue">Venue</label>
-                </div>
-            </div>
+            <!-- login header text -->
+            <p class="fw-bold fs-1" style="font-style: italic; font-family: Radley, serif;">
+                Join a community of drink lovers.
+            </p>
+
             <!-- username -->
             <div class="row pt-5">
                 <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="id" placeholder="Username" v-model="ID">
+                        <input type="text" class="form-control form-box-outline" id="id" placeholder="Username" v-model="ID">
                         <label for="username"> Username </label>
                     </div>
                 </div>
@@ -47,7 +23,7 @@
             <div class="row pt-2">
                 <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
                     <div class="form-floating">
-                        <input type="password" class="form-control" id="password" placeholder="Password" v-model="password">
+                        <input type="password" class="form-control form-box-outline" id="password" placeholder="Password" v-model="password">
                         <label for="password"> Password </label>
                     </div>
                 </div>
@@ -81,9 +57,39 @@
             </div>
             <!-- Confirm Selection -->
             <div class="row pt-3">
-                <div class="d-grid gap-2 col-xl-1 col-md-2 col-sm-4 col-6 mx-auto">
-                    <button v-if="authPending" type="submit" class="btn primary-square" disabled>Loading...</button>
-                    <button v-else type="submit" class="btn primary-square">Login</button>
+                <div class="col">
+                    <button v-if="authPending" type="submit" class="btn secondary-btn-border-thick btn-lg" disabled>Loading...</button>
+                    <button v-else type="submit" class="btn secondary-btn-border-thick btn-lg px-5">Login</button>
+                </div>
+            </div>
+
+            <div class="row py-2">
+                <div class="col-6 mx-auto">
+                    <hr class="darker-hr">
+                </div>
+            </div>
+
+            <!-- Prompt sign up -->
+            <p class="mt-2 fw-bold fs-3" style="font-style: italic; font-family: Radley, serif;">
+                Don't have an account?
+            </p>
+            <div class="row">
+                <div class="col">
+                    <router-link :to="{ path: '/signup' }" class="default-text-no-background">
+                        <button class="btn secondary-btn-border-thick btn-lg px-5"> Sign Up </button>
+                    </router-link>
+                </div>
+            </div>
+
+            <!-- Business sign up -->
+            <div class="row pt-5">
+                <div class="col">
+                    <p>
+                        <b>
+                            If you are a drinks brand, bottler or venue owner trying to create an account, 
+                            <router-link :to="{ path: '/businessSignup' }"  class="default-body-text-no-background">click here</router-link>.
+                        </b>
+                    </p>
                 </div>
             </div>
         </form>
@@ -109,7 +115,7 @@
                 errors: [],
 
                 // form values
-                role: '',
+                role: 'user', // user sign in page by default
                 ID: '',
                 password: '',
 
