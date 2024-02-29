@@ -458,6 +458,11 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getUser/' + this.form['userID']["$oid"]);
                         this.types = response.data["modType"];
 
+                        // Check for data deformation - reject if non-array type is found
+                        if (Array.isArray(this.types) == false) {
+                            this.types = [];
+                        }
+
                         if (this.types != []) {
                             powerValid = true;
                             if (this.types.includes("admin")) {
@@ -502,7 +507,7 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
                         this.drinkCategories = response.data;
                         for (let drink of this.drinkCategories) {
-                            if (this.types == [] || !this.types.includes(drink.drinkType)) {
+                            if (this.types == [] || this.types.includes(drink.drinkType)) {
                                 this.drinkCategoriesList.push(drink.drinkType);
                             }
                         }
