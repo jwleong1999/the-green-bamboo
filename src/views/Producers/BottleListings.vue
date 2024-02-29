@@ -244,6 +244,9 @@
                                                             <option v-for="language in languages" v-bind:key="language['_id']">{{ language['language'] }}</option>
                                                         </select>
                                                     </div>
+                                                    <div v-if="nullSelectedLanguage" class ="col-md-12">
+                                                        <p class='text-danger text-start mb-2 fw-bold'>Please select a language</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <!-- end of dropdown for language selection -->
@@ -617,10 +620,6 @@
                             </div>
                         </div>
                         <!-- Delete review modal -->
-                        <!-- <div v-if="checkUserID(review.userID)"> -->
-                        <!-- <div v-if="review.userID['$oid'] === userID">
-                            <button class="btn btn-danger" @click="setDeleteID(review)" data-bs-toggle="modal" data-bs-target="#deleteReview">Delete</button>
-                        </div> -->
                         <div class="modal fade" id="deleteReview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 
@@ -817,6 +816,7 @@
                 // For creating review
                 languages:[],
                 selectedLanguage:"English",
+                nullSelectedLanguage:false,
                 reviewDesc:"",
                 rating: 5,
                 colours: ["#FFFFFF", "#FEED97", "#FBE166", "#FAD74A", "#F5C84B", "#F8C139", "#E79E12", "#E07D1F", "#D55530", "#B63426", "#AA1F22", "#702C1C", "#4A1C0C", "#000000"],
@@ -903,9 +903,13 @@
         },
         computed: {
             filteredOptions() {
-            return this.locationOptions.filter(option =>
+            let tempLocation = this.locationOptions.filter(option =>
                 option.name.toLowerCase().includes(this.locationSearchTerm.toLowerCase())
             );
+            tempLocation.sort((a,b)=>{
+                return a.name.localeCompare(b.name)
+            })
+            return tempLocation
             },
         },
         methods: {
@@ -964,7 +968,6 @@
                         this.filteredListings = this.listings; // originally, make filtered listings the entire collection of listings
                         this.specified_listing = this.listings.find(listing => listing._id.$oid == this.listing_id); // find specified listing
                         this.producer_id = this.specified_listing.producerID.$oid // find specified producer
-                        console.log(this.specified_listing)
                         this.whereToBuy(); // find where to buy specified listing
                         this.whereToTry(); // find where to try specified listing [RE-ENABLE WHEN VENUES HAVE MENU ATTRIBUTE]
                         this.filteredReviews = this.getReviewsForListing(this.specified_listing);
@@ -978,7 +981,9 @@
                 // _id, language
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getLanguages');
-                        this.languages = response.data;
+                        this.languages = response.data.sort((a,b)=>{
+                            return a.language.localeCompare(b.language)
+                            })
                     } 
                     catch (error) {
                         console.error(error);
@@ -1251,10 +1256,17 @@
 
             // Function to add review
             addReview(){
+                // TODO Combine with editReview because using the same variables
+
                 // let errorPhrase = "Your completion is incomplete"
                 // form validation
                 if(this.reviewDesc.length < 20){
                     this.reviewDescError ="Character count is less than 20, please write more for a more detailed review."
+                    alert("Submission has error, please fill in the required fields properly")
+                    return "Submission error"
+                }
+                if(this.selectedLanguage ==''){
+                    this.nullSelectedLanguage = true
                     alert("Submission has error, please fill in the required fields properly")
                     return "Submission error"
                 }
@@ -1305,6 +1317,11 @@
             editReview(){
                 if(this.reviewDesc.length < 20){
                     this.reviewDescError ="Character count is less than 20, please write more for a more detailed review."
+                    alert("Submission has error, please fill in the required fields properly")
+                    return "Submission error"
+                }
+                if(this.selectedLanguage ==''){
+                    this.nullSelectedLanguage = true
                     alert("Submission has error, please fill in the required fields properly")
                     return "Submission error"
                 }
@@ -1458,7 +1475,6 @@
 
             async deleteReview(){
                 let deleteAPI = "http://127.0.0.1:5023/deleteReview/" + this.deleteID['$oid']
-                console.log(this.deleteID)
                 const response = await this.$axios.delete(deleteAPI)
                 .then((response)=>{
                     this.deleteReviewCode = response.data.code
@@ -1509,7 +1525,7 @@
                 }
 
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5022/voteReview', 
+                    await this.$axios.post('http://127.0.0.1:5022/voteReview', 
                         {
                             reviewID: review._id,
                             userVotes: review.userVotes
@@ -1518,7 +1534,6 @@
                             'Content-Type': 'application/json'
                         }
                     });
-                    console.log(response.data);
                 } catch (error) {
                     console.error(error);
                 }
@@ -1527,18 +1542,12 @@
             reloadRoute() {
                 this.$router.go(); // Reloads the current route
             },
-
-            checkUserID(review){
-                console.log(review)
-                console.log(this.userID)
-            },
             getTagName(tag) {
             const tagParts = tag.split("#");
             return tagParts[0];
             },
             getTagColor(tag) {
                 const tagParts = tag.split("#");
-                console.log("#" + tagParts[1]);
                 return "#" + tagParts[1];
             },
 
