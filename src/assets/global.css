@@ -6,6 +6,14 @@ body {
     overflow: overlay;
 }
 
+.body-login {
+    background-image: url("../../Images/Background/Sign\ Up\ :\ Log\ In.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh;
+    width: 100vw;
+}
+
 .navbar-container {
     justify-content: center;
     align-items: center;

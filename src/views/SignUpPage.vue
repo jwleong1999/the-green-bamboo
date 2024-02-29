@@ -31,162 +31,168 @@
             </button>
         </div>
 
-    <div v-if="fillForm">
-        <div class="container my-5 py-5" style="background-color:#DDC8A9;">
-            <div class="d-grid gap-2" style="position: relative;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16" style="position: absolute; top: 10; left: 0;" v-on:click="goBack">
-                    <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
-                </svg>
-                <p class="fw-bold fs-1" style="font-style: italic; font-family: Radley, serif;">Create an Account</p>
-            </div>
+    <div class="body-login">
+        <div class="container" style="width: 50%">
+            <div class="pt-5">
+                <div v-if="fillForm">
+                    <div class="container my-5 py-5" style="background-color:#DDC8A9;">
+                        <div class="d-grid gap-2" style="position: relative;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16" style="position: absolute; top: 10; left: 0;" v-on:click="goBack">
+                                <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+                            </svg>
+                            <p class="fw-bold fs-1" style="font-style: italic; font-family: Radley, serif;">Create an Account</p>
+                        </div>
 
-        <!-- <div class="row pt-5">
-            <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
-                <div class="form-floating">
-                    <input type="text" class="form-control form-box-outline" id="id" placeholder="Username" v-model="ID">
-                    <label for="username"> Username </label>
-                </div>
-            </div>
-        </div> -->
-
-        <!-- Start of form -->
-        <form v-on:submit.prevent="submitListing" id="frm">
-                    
-            <!-- Input: Username -->
-            <div class="row pt-4">
-                <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
-                    <div class="form-floating">
-                        <input type="text" class="form-control form-box-outline" v-model="username" id="username" placeholder="Username">
-                        <label for="username"> Username </label>
-                        <span v-if="missingUsername" class="text-danger">Please enter a username.</span>
-                        <span v-if="duplicateUser" class="text-danger">Username is already taken, if this is you, login instead!</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Input: Display Name -->
-            <div class="row pt-2">
-                <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
-                    <div class="form-floating">
-                        <input type="text" class="form-control form-box-outline" v-model="displayName" id="displayName" placeholder="Display Name">
-                        <label for="displayName"> Display Name </label>
-                        <span v-if="missingDisplayName" class="text-danger">Please enter a display name.</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Input: First Name -->
-            <div class="row pt-2">
-                <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
-                    <div class="form-floating">
-                        <div class = "row">
-                            <div class="form-group col-6">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control form-box-outline" v-model="firstName" id="firstName" placeholder="First Name">
-                                    <label for="firstName"> First Name </label>
-                                    <span v-if="missingFirstName" class="text-danger">Please enter your First Name.</span>
-                                </div>
+                    <!-- <div class="row pt-5">
+                        <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
+                            <div class="form-floating">
+                                <input type="text" class="form-control form-box-outline" id="id" placeholder="Username" v-model="ID">
+                                <label for="username"> Username </label>
                             </div>
-                            <!-- Input: Last Name -->
-                            <div class="form-group col-6">
+                        </div>
+                    </div> -->
+
+                    <!-- Start of form -->
+                    <form v-on:submit.prevent="submitListing" id="frm">
+                                
+                        <!-- Input: Username -->
+                        <div class="row pt-4">
+                            <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control form-box-outline" v-model="lastName" id="lastName" placeholder="Last Name">
-                                    <label for="lastName"> Last Name </label>
-                                    <span v-if="missingLastName" class="text-danger">Please enter your Last Name.</span>
+                                    <input type="text" class="form-control form-box-outline" v-model="username" id="username" placeholder="Username">
+                                    <label for="username"> Username </label>
+                                    <span v-if="missingUsername" class="text-danger">Please enter a username.</span>
+                                    <span v-if="duplicateUser" class="text-danger">Username is already taken, if this is you, login instead!</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Input: Email -->
-            <div class="row pt-2">
-                <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
-                    <div class="form-floating">
-                        <input type="text" class="form-control form-box-outline" v-model="email" id="email" placeholder="Email">
-                        <label for="email"> Email </label>
-                        <span v-if="missingEmail" class="text-danger">Please enter an email.</span>
-                        <span v-if="invalidEmail" class="text-danger">Please enter a valid email.</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Input: Password -->
-            <div class="row pt-2">
-                <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
-                    <div class="form-floating">
-                        <input type="password" class="form-control form-box-outline" v-model="password" id="password" placeholder="Password">
-                        <label for="password"> Password </label>
-                        <span v-if="missingPassword" class="text-danger">Please enter a password.</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Input: Repeat Password -->
-            <div class="row pt-2">
-                <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
-                    <div class="form-floating">
-                        <input type="password" class="form-control form-box-outline" v-model="passwordRepeat" id="passwordRepeat" placeholder="Repeat Password">
-                        <label for="passwordRepeat"> Repeat Password </label>
-                        <span v-if="missingPasswordRepeat && !missingPassword" class="text-danger">Please repeat your password.</span>
-                        <span v-if="passwordMismatch && !missingPasswordRepeat" class="text-danger">Passwords do not match, please try again.</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Input: Country -->
-            <div class="row pt-2">
-                <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
-                    <div class="form-floating">
-                        <div class="input-group mb-0">
-                            <span class="input-group-text" id="basic-addon1">Country</span>
-                            <select v-model="selectedCountry" class="form-select form-box-outline" id="inputGroupSelect01">
-                                <!-- Add in the languages here -->
-                                <option v-for="country in countries" v-bind:key="country['_id']">{{ country['originCountry'] }}</option>
-                            </select>
+                        <!-- Input: Display Name -->
+                        <div class="row pt-2">
+                            <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control form-box-outline" v-model="displayName" id="displayName" placeholder="Display Name">
+                                    <label for="displayName"> Display Name </label>
+                                    <span v-if="missingDisplayName" class="text-danger">Please enter a display name.</span>
+                                </div>
+                            </div>
                         </div>
-                        <span v-if="missingCountry" class="text-danger mt-0 mb-3">Please select your country.</span>
-                    </div>
-                </div>
-            </div>
-            <!-- Input: Birthday -->
-            <div class="row pt-2">
-                <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
-                    <div class="form-floating">
-                        <div class="input-group mb-0">
-                            <span class="input-group-text" id="basic-addon1">Birthday</span>
-                            <input type="date" class="form-control form-box-outline" v-model="birthday" id="birthday" placeholder="Birthday">
+
+                        <!-- Input: First Name -->
+                        <div class="row pt-2">
+                            <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
+                                <div class="form-floating">
+                                    <div class = "row">
+                                        <div class="form-group col-6">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control form-box-outline" v-model="firstName" id="firstName" placeholder="First Name">
+                                                <label for="firstName"> First Name </label>
+                                                <span v-if="missingFirstName" class="text-danger">Please enter your First Name.</span>
+                                            </div>
+                                        </div>
+                                        <!-- Input: Last Name -->
+                                        <div class="form-group col-6">
+                                            <div class="form-floating">
+                                                <input type="text" class="form-control form-box-outline" v-model="lastName" id="lastName" placeholder="Last Name">
+                                                <label for="lastName"> Last Name </label>
+                                                <span v-if="missingLastName" class="text-danger">Please enter your Last Name.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Input: Email -->
+                        <div class="row pt-2">
+                            <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control form-box-outline" v-model="email" id="email" placeholder="Email">
+                                    <label for="email"> Email </label>
+                                    <span v-if="missingEmail" class="text-danger">Please enter an email.</span>
+                                    <span v-if="invalidEmail" class="text-danger">Please enter a valid email.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Input: Password -->
+                        <div class="row pt-2">
+                            <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
+                                <div class="form-floating">
+                                    <input type="password" class="form-control form-box-outline" v-model="password" id="password" placeholder="Password">
+                                    <label for="password"> Password </label>
+                                    <span v-if="missingPassword" class="text-danger">Please enter a password.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Input: Repeat Password -->
+                        <div class="row pt-2">
+                            <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
+                                <div class="form-floating">
+                                    <input type="password" class="form-control form-box-outline" v-model="passwordRepeat" id="passwordRepeat" placeholder="Repeat Password">
+                                    <label for="passwordRepeat"> Repeat Password </label>
+                                    <span v-if="missingPasswordRepeat && !missingPassword" class="text-danger">Please repeat your password.</span>
+                                    <span v-if="passwordMismatch && !missingPasswordRepeat" class="text-danger">Passwords do not match, please try again.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Input: Country -->
+                        <div class="row pt-2">
+                            <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
+                                <div class="form-floating">
+                                    <div class="input-group mb-0">
+                                        <span class="input-group-text" id="basic-addon1">Country</span>
+                                        <select v-model="selectedCountry" class="form-select form-box-outline" id="inputGroupSelect01">
+                                            <!-- Add in the languages here -->
+                                            <option v-for="country in countries" v-bind:key="country['_id']">{{ country['originCountry'] }}</option>
+                                        </select>
+                                    </div>
+                                    <span v-if="missingCountry" class="text-danger mt-0 mb-3">Please select your country.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Input: Birthday -->
+                        <div class="row pt-2">
+                            <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
+                                <div class="form-floating">
+                                    <div class="input-group mb-0">
+                                        <span class="input-group-text" id="basic-addon1">Birthday</span>
+                                        <input type="date" class="form-control form-box-outline" v-model="birthday" id="birthday" placeholder="Birthday">
+                                    </div>
+                                    <div class="text-center mb-3">
+                                        <span v-if="missingBirthday" class="text-danger mt-0 mb-3">Please enter your birthday.</span>
+                                        <span v-if="underAge" class="text-danger mt-0 mb-3">You are underage, creation of account is not allowed.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label">I verify I am above legal drinking age in my country of location</label>
+                                <input class="form-check-input" type="checkbox" v-model="ageCheck">
+                            </div>
                         </div>
                         <div class="text-center mb-3">
-                            <span v-if="missingBirthday" class="text-danger mt-0 mb-3">Please enter your birthday.</span>
-                            <span v-if="underAge" class="text-danger mt-0 mb-3">You are underage, creation of account is not allowed.</span>
+                            <span v-if="missingAgeCheck" class="text-danger">Please verify this.</span>
                         </div>
+                        
+                        <button type="submit" class="btn secondary-btn mx-1 mb-3" @click="signUp">Sign Up</button>
+                        <!-- <button type="button" class="btn primary-btn mx-1 mb-3" @click="goBack">Return</button> -->
+                    
+                    </form>
+                        <router-link :to="{ path: '/businessSignUp' }" class="primary-clickable-text">
+                            <div class="text-center mb-1" style="text-decoration: underline; font-style: italic;" >
+                                Click here if you are a drinks brand, bottler or venue owner trying to create an account.
+                            </div>
+                        </router-link>
+                        <router-link :to="{ path: '/login' }" class="primary-clickable-text">
+                            <div class="text-center mb-1" style="text-decoration: underline; font-style: italic;" >
+                                Click here to go to login.
+                            </div>
+                        </router-link>
+                    <!-- End of Form -->
+                    <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
                     </div>
                 </div>
             </div>
-
-            <div class="text-center mt-3">
-                <div class="form-check form-check-inline">
-                    <label class="form-check-label">I verify I am above legal drinking age in my country of location</label>
-                    <input class="form-check-input" type="checkbox" v-model="ageCheck">
-                </div>
-            </div>
-            <div class="text-center mb-3">
-                <span v-if="missingAgeCheck" class="text-danger">Please verify this.</span>
-            </div>
-            
-            <button type="submit" class="btn secondary-btn mx-1 mb-3" @click="signUp">Sign Up</button>
-            <!-- <button type="button" class="btn primary-btn mx-1 mb-3" @click="goBack">Return</button> -->
-        
-        </form>
-            <router-link :to="{ path: '/businessSignUp' }" class="primary-clickable-text">
-                <div class="text-center mb-1" style="text-decoration: underline; font-style: italic;" >
-                    Click here if you are a drinks brand, bottler or venue owner trying to create an account.
-                </div>
-            </router-link>
-            <router-link :to="{ path: '/login' }" class="primary-clickable-text">
-                <div class="text-center mb-1" style="text-decoration: underline; font-style: italic;" >
-                    Click here to go to login.
-                </div>
-            </router-link>
-        <!-- End of Form -->
-        <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
         </div>
     </div>
     <!-- End of display -->
