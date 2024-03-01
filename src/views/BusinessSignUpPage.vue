@@ -36,9 +36,9 @@
         <div class="col-xl-2 col-lg-1 col-md-1"></div>
                 
         <!-- start of the elements -->
-        <div class="col-xl-4 col-lg-5 col-md-7 rounded" style="background-color:#DDC8A9;">
+        <div class="col-xl-5 col-lg-5 col-md-7 rounded" style="background-color:#DDC8A9;">
             <div class="d-grid gap-2 mb-3">
-                <p class="fw-bold fs-1" style="font-style: italic; font-family: Radley, serif;">Are you a distiller, brewery or bar owner?</p>
+                <p class="fw-bold fs-2" style="font-style: italic; font-family: Radley, serif;">Are you a distiller, brewery or bar owner?</p>
             </div>
 
             <h3 class="text-start mb-5">Apply for a Business Account</h3>
@@ -51,7 +51,7 @@
             <!-- Profile Type -->
             <!-- Radio for would recommend and would buy again -->
                 <div class = 'row justify-content-start mb-3 text-start'>
-                    <p class="text-start mb-1">Choose Your Profile Type</p>
+                    <p class="text-start mb-1">Choose Your Profile Type *</p>
                     <div class = "col-md-12 justify-content-between">
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" id="inlineCheckbox1" v-model="businessType" value="producer" name="business">
@@ -67,14 +67,14 @@
 
             <!-- Input: Username -->
                 <div class="form-group mb-3">
-                    <p class="text-start mb-1">Business Name</p>
+                    <p class="text-start mb-1">Business Name *</p>
                     <input type="text" class="form-control" style="border-color: black" v-model="businessName" id="businessName" placeholder="Business Name">
                     <span v-if="missingBusinessName" class="text-danger">Please enter a business name.</span>
                 </div>
 
             <!-- Input: Business description -->
                 <div class="form-group mb-3">
-                    <p class="text-start mb-1">Business Description</p>
+                    <p class="text-start mb-1">Business Description *</p>
                     <textarea rows=3 class="form-control" style="border-color: black" v-model="businessDesc" id="businessDesc" placeholder="Enter Business Description"></textarea>
                     <span v-if="missingBusinessDesc" class="text-danger">Please enter a business description.</span>
                 </div>
@@ -82,7 +82,7 @@
              <!-- Input: Country of Origin -->
              <div class="form-group mb-3">
                 <div class=" mb-3">
-                    <p class="text-start mb-1">Country of Origin/Location </p>
+                    <p class="text-start mb-1">Country of Origin/Location *</p>
                     <div class="input-group">
                         <select class="form-select" id="countrySelect" v-model="selectedCountry" style="border-color: black;">
                             <option v-for="country in countries" :key="country" :value="country">
@@ -108,13 +108,13 @@
             <div class="row">
                 <!-- Input: First Name -->
                 <div class="form-group mb-3 col-6">
-                    <p class="text-start mb-1">First Name</p>
+                    <p class="text-start mb-1">First Name *</p>
                     <input type="text" class="form-control" style="border-color: black" v-model="firstName" id="firstName" placeholder="First Name">
                     <span v-if="missingFirstName" class="text-danger">Please enter your First Name.</span>
                 </div>
                 <!-- Input: Last Name -->
                 <div class="form-group mb-3 col-6">
-                    <p class="text-start mb-1">Last Name</p>
+                    <p class="text-start mb-1">Last Name *</p>
                     <input type="text" class="form-control" style="border-color: black" v-model="lastName" id="lastName" placeholder="Last Name">
                     <span v-if="missingLastName" class="text-danger">Please enter your Last Name.</span>
                 </div>
@@ -122,7 +122,7 @@
 
             <!-- Input: Email -->
                 <div class="form-group mb-3">
-                    <p class="text-start mb-1">Email</p>
+                    <p class="text-start mb-1">Email *</p>
                     <input type="text" class="form-control" style="border-color: black" v-model="email" id="email" placeholder="Email">
                     <span v-if="missingEmail" class="text-danger">Please enter an email.</span>
                     <span v-if="invalidEmail" class="text-danger">Please enter a valid email.</span>
@@ -131,7 +131,7 @@
 
             <!-- Input: Is business account on the site already, provide link -->
                 <div class="form-group mb-3">
-                    <p class="text-start mb-1">Representative's Relationship to Brand/Venue</p>
+                    <p class="text-start mb-1">Representative's Relationship to Brand/Venue *</p>
                     <input type="text" class="form-control" style="border-color: black" v-model="relationship" id="relationship" placeholder="Relationship">
                     <span v-if="missingRelationship" class="text-danger">Please enter your relationship with the business.</span>
                 </div>
@@ -143,25 +143,27 @@
         </div>
 
         <!-- right side of elements -->
-        <div class="col-xl-4 col-lg-5 col-md-7 rounded" style="background-color:#DDC8A9;">
+        <div class="col-xl-3 col-lg-5 col-md-7 rounded" style="background-color:#DDC8A9;">
             <div class="d-grid gap-2 mt-3">
-                <p class="fs-2">Subscribe to a Business Account to connect directly with your fans and grow your business.</p>
+                <p class="fs-3">Subscribe to a Business Account to connect directly with your fans and grow your business.</p>
             </div>
-            <div class="row">
-                <div class="col-xl-2 col-lg-1 col-md-1"></div>
-                <button class="btn rounded p-3 text-start mx-3 mb-3 col-xl-6" @click="toggleMonthlyPricing" :style="{ backgroundColor: selectedMonthlyPricing ? 'grey' :'white', borderColor: '#DD9E54', borderWidth:'3px' }">
-                    <p class="fw-bold mb-0">Monthly plan</p>
-                    $50.00/Month
+            <div class="row justify-content-center">
+                <!-- <div class="col-xl-2 col-lg-1 col-md-1"></div> -->
+                <button class="btn rounded p-3 text-start mx-3 mb-3 col-8" @click="toggleMonthlyPricing" :style="{ backgroundColor: selectedMonthlyPricing ? 'grey' :'white', borderColor: '#DD9E54', borderWidth:'3px' }">
+                    <p class="fw-bold mb-1">Monthly plan</p>
+                    $50.00/Month <br/>
+                    <i class="text-secondary" style="font-size: 12px;">Billed monthly</i>
                 </button>
             </div>
-            <div class="row">
-                <div class="col-xl-2 col-lg-1 col-md-1"></div>
-                <button class="rounded p-3 text-start mx-3 mb-3 col-xl-6 btn" @click="toggleYearlyPricing" :style="{ backgroundColor: selectedYearlyPricing ? 'grey' :'white', borderColor: '#DD9E54', borderWidth:'3px' }">
+            <div class="row justify-content-center">
+                <!-- <div class="col-xl-2 col-lg-1 col-md-1"></div> -->
+                <button class="btn rounded p-3 text-start mx-3 mb-3 col-8" @click="toggleYearlyPricing" :style="{ backgroundColor: selectedYearlyPricing ? 'grey' :'white', borderColor: '#DD9E54', borderWidth:'3px' }">
                     <div class="row">
-                        <p class="fw-bold mb-0 col-7">Yearly plan</p>
-                        <div class="rounded col-5" style="background-color: green; color: white;">Save 16%</div>
+                        <p class="fw-bold mb-1 col-7">Yearly plan</p>
+                        <div class="rounded col-5 text-center" style="background-color: green; color: white;">Save 16%</div>
                     </div>
-                    $42.00/Month
+                    $42.00/Month <br/>
+                    <i class="text-secondary" style="font-size: 12px;">$504 Billed annually</i>
                 </button>
             </div>
             <span v-if="missingPlan" class="text-danger">Please select a plan.</span>
