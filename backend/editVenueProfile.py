@@ -298,5 +298,37 @@ def editOpeningHours():
         ), 500
 
 # -----------------------------------------------------------------------------------------
+# [POST] Add listing to menu
+# - Add listing to menu
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/addListingToMenu', methods=['POST'])
+def addListingToMenu():
+    data = request.get_json()
+    print(data)
+    venueID = data['venueID']
+    listingID = data['listingID']
+    sectionName = data['sectionName']
+
+    try: 
+        addListing = db.venues.update_one(
+            {'_id': ObjectId(venueID), 'menu.sectionName': sectionName},
+            {'$push': {'menu.$.listingsID': ObjectId(listingID)}}
+        )
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Listing added to menu successfully!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "An error occurred adding the listing to menu!"
+            }
+        ), 500
+# -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(debug=True, port=5300)

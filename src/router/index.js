@@ -105,6 +105,11 @@ const routes = [
     component: () => import('../views/Producers/EditHome.vue')
   },
   {
+    path: '/Venues/Add-Menu/:id',
+    name: 'venuesaddmenu',
+    component: () => import('../views/Venues/AddMenu.vue')
+  },
+  {
     path: '/Venues/Bottle-Listings',
     name: 'venuesbottlelistings',
     component: () => import('../views/Venues/BottleListings.vue')

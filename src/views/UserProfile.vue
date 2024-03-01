@@ -489,6 +489,21 @@
                                 {{listName}}
                             </label>
                         </div>
+
+                        <div class="form-check mt-3">
+                            <input class="form-check-input" type="checkbox" value="saveToNewList" id="saveToNewList" v-model="saveToNewList">
+                            <label class="form-check-label" for="saveToNewList">
+                                Create New List
+                            </label>
+                            <div v-if="saveToNewList">
+                                <div class="mt-2">New List Name</div>
+                                <input type="text" class="form-control" v-model="othersListName" placeholder="New List Name">
+                                <div v-if="othersListNameError" class="text-danger text-sm">
+                                    *{{ othersListNameError }}
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -570,6 +585,9 @@ export default {
             newListName: "",
             newListDesc: "",
             newListNameError: "",
+            saveToNewList: "",
+            othersListName: "",
+            othersListNameError: "",
 
             // edit list
             editListName: "",
@@ -816,6 +834,24 @@ export default {
         // ------------------- User Update Bookmarks -------------------
         // bookmark item through bookmark icon
         async bookmarkItem() {
+            if (this.saveToNewList) {
+                if (this.othersListName === "") {
+                    this.othersListNameError = "Please enter a list name";
+                    return;
+                } else if (this.userBookmarks[this.othersListName]) {
+                    this.othersListNameError = "List name already exists";
+                    return;
+                } else {
+                    this.othersListNameError = "";
+                    this.userBookmarks[this.othersListName] = {
+                        listDesc: "",
+                        listItems: [this.bookmarkModalItem],
+                    };
+                    // TODO
+                    this.userBookmarks[this.othersListName].listItems.push(this.bookmarkModalItem);
+                }
+            }
+            console.log(this.userBookmarks);
             for (const listName in this.userBookmarks) {
                 if (Object.hasOwnProperty.call(this.userBookmarks, listName)) {
                     const bookmarkItems = this.userBookmarks[listName].listItems;
