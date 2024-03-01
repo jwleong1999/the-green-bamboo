@@ -573,16 +573,38 @@
                         </div>
                     </div>
                     <!-- opening hours and reservation details-->
-                    <div class="col-12">
+                    <div v-if="venue_claimed == true" class="col-12">
                         <div class="square secondary-square rounded p-3 mb-3">
                             <!-- header text -->
                             <div class="square-inline">
                                 <h4 class="square-inline text-start mr-auto"> Opening Hours and Reservation Details </h4>
                             </div>
+                            <!-- body text -->
                             <div class="py-2 text-start">
-                                <a class="text-left default-text-no-background">
-                                    <!-- [TODO] opening hours and reservation -->
-                                </a>
+                                <!-- buttons -->
+                                <div class="pb-3">
+                                    <!-- [if] not editing -->
+                                    <button v-if="editingOpeningHours == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" v-on:click="editOpeningHours()">
+                                        Edit opening hours
+                                    </button>
+                                    <!-- [else] if editing -->
+                                    <button v-else type="button" class="btn success-btn rounded-0 reverse-clickable-text" v-on:click="saveOpeningHours()">
+                                        Save
+                                    </button>
+                                </div>
+
+                                <!-- opening hours -->
+                                <div class="text-left default-text-no-background" v-for = "(hours, day) in openingHours" v-bind:key="day">
+                                    <b>{{ day }}: </b>
+                                    <!-- [if] editing opening hours-->
+                                    <p v-if="editingOpeningHours == false" class="d-inline">{{ hours[0] }} - {{ hours[1] }}</p>
+                                    <!-- [else] not editing opening hours -->
+                                    <div v-else class="d-flex align-items-center">
+                                        <input type="time" class="form-control" :id="day + 'start'" :value="hours[0]">
+                                        <span class="mx-2">-</span>
+                                        <input type="time" class="form-control" :id="day + 'end'" :value="hours[1]">
+                                    </div>
+                                </div>
                             </div>
                             <div class="py-2"></div>
                         </div>
@@ -670,6 +692,8 @@
                 // specified venue
                 venue_id: null,
                 specified_venue: {},
+                venue_claimed: null,
+                openingHours: [],
 
                 // q&a
                 question: '',
@@ -677,6 +701,10 @@
 
                 // status to indicate whether to show listings or not
                 showListings: false,
+
+                // opening hours
+                editingOpeningHours: false,
+                edited_openingHours: {},
 
                 // customization for drinkLists buttons
                 // [TODO] get drink list of user, for now is hardcoded
@@ -790,6 +818,10 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
                         this.venues = response.data;
                         this.specified_venue = this.venues.find(venue => venue["_id"]["$oid"] == this.venue_id); // find specified venue
+                        this.venue_claimed = this.specified_venue["claimStatus"];
+                        this.openingHours = this.specified_venue["openingHours"];
+                        // sort opening hours by day
+                        this.sortOpeningHours()
                         this.getLatestUpdates()
                         this.checkVenueAnswered()
                         // get all drinks
@@ -1437,7 +1469,8 @@
                     console.error(error);
                 }
                 
-            }, 
+            },
+
             claimVenueAccount() {
                 let accountDetails = {
                     userID: this.venue_id,
@@ -1451,6 +1484,58 @@
                     query: accountDetails
                 });
             },
+
+            sortOpeningHours() {
+            
+                const specificOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; // Specify the specific order of keys
+
+                // Create a new object with keys sorted according to the specific order
+                const sortedOpeningHours = Object.fromEntries(
+                    specificOrder
+                        .filter(key => key in this.openingHours) // Filter keys that exist in this.openingHours
+                        .map(key => [key, this.openingHours[key]]) // Map each key to its corresponding value
+                );
+
+                this.openingHours = sortedOpeningHours;
+            },
+
+            editOpeningHours() {
+                this.editingOpeningHours = true;
+            },
+
+            saveOpeningHours() {
+                this.editingOpeningHours = false;
+
+                // get edited opening hours
+                for (let day in this.openingHours) {
+                    const startTime = document.getElementById(day + 'start').value;
+                    const endTime = document.getElementById(day + 'end').value;
+                    this.edited_openingHours[day] = [startTime, endTime];
+                }
+                
+                // update database
+                try {
+                    const response = this.$axios.post('http://localhost:5300/editOpeningHours', 
+                        {
+                            venueID: this.venue_id,
+                            updatedOpeningHours: this.edited_openingHours,
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        console.log(response.data);
+                }
+                catch (error) {
+                    console.error(error);
+                }
+
+                // force page to reload
+                window.location.reload();
+
+            },
+
 
         }
     };
