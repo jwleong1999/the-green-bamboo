@@ -65,13 +65,15 @@ body {
 
 }
 
-.primary-btn {
+.primary-btn, 
+.primary-btn-outline:hover {
     color: whitesmoke;
     background-color: #535C72;
     border-radius: 30px;
 }
 
-.primary-btn-outline {
+.primary-btn-outline, 
+.primary-btn:hover {
     color: #535C72;
     background-color: whitesmoke;
     border-radius: 30px;

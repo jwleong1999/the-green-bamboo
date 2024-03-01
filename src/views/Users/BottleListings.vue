@@ -109,7 +109,9 @@
                             <!-- discover -->
                             <div class="col-3">
                                 <div class="d-grid gap-2">
-                                    <button class="btn primary-btn btn-sm" v-on:click="changeDiscoveryStatus()">
+                                    <button class="btn btn-sm" 
+                                        :class="{ 'primary-btn': discovery, 'primary-btn-outline': !discovery }"
+                                        v-on:click="changeDiscoveryStatus()">
                                         <h4> Discover </h4>
                                     </button>
                                 </div>
@@ -117,7 +119,9 @@
                             <!-- following -->
                             <div class="col-3">
                                 <div class="d-grid gap-2">
-                                    <button class="btn primary-btn-outline btn-sm" v-on:click="changeFollowingStatus()">
+                                    <button class="btn btn-sm"
+                                        :class="{ 'primary-btn': following, 'primary-btn-outline': !following }"
+                                        v-on:click="changeFollowingStatus()">
                                         <h4> Following </h4>
                                     </button>
                                 </div>
