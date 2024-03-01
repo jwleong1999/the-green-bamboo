@@ -11,7 +11,7 @@
         </div>
         
         <!-- Display when bottle listing is successfully submitted -->
-        <div class="text-success fst-italic fw-bold fs-3"  v-if="successSubmission"> 
+        <div class="text-success fst-italic fw-bold fs-3" v-if="successSubmission"> 
             <span>The account has successfully been created!</span> <!-- for user -->
             <br>
             <button class="btn primary-btn btn-sm">
@@ -19,8 +19,22 @@
                     <span class="fs-5 fst-italic" style="color: white;"> Click to login here! </span>
                 </router-link>
             </button>
+            <button class="btn primary-btn btn-sm" @click="loginUser">
+                    <span class="fs-5 fst-italic" style="color: white;"> Click to get login-ed! </span>
+            </button>
         </div>
         
+        <!-- Display when login encounters an error -->
+        <div class="text-danger fst-italic fw-bold fs-3" v-if="loginError"> 
+            <span>An error occurred while attempting to login!</span>
+            <br>
+            <button class="btn primary-btn btn-sm" @click="reset">
+                <router-link :to="{ path: '/login' }" class="primary-clickable-text">
+                    <span class="fs-5 fst-italic" style="color: white;"> Click to login here! </span>
+                </router-link>
+            </button>
+        </div>
+
         <!-- Display when bottle listing submission encounters an error -->
         <div class="text-danger fst-italic fw-bold fs-3" v-if="errorSubmission"> 
             <span v-if="errorMessage">An error occurred while attempting to create account, please try again!</span>
@@ -31,10 +45,10 @@
             </button>
         </div>
 
-    <div class="body-login">
+    <div class="body-login" v-if="fillForm">
         <div class="container" style="width: 50%">
             <div class="pt-5">
-                <div v-if="fillForm">
+                <div>
                     <div class="container my-5 py-5" style="background-color:#DDC8A9;">
                         <div class="d-grid gap-2" style="position: relative;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16" style="position: absolute; top: 10; left: 0;" v-on:click="goBack">
@@ -255,6 +269,7 @@
                 duplicateEntry: false,
                 fillForm: true,
                 responseCode: "",
+                loginError:false,
             }
         },
         mounted() {
@@ -486,6 +501,24 @@
                 } 
                 catch (error) {
                     console.error(error);
+                }
+            },
+
+            async loginUser(){
+                // Get specific user by username and set local storage then redirect
+                try {
+                    const submitURL = 'http://127.0.0.1:5000/getUserByUsername/' + this.username
+                    const response = await this.$axios.get(submitURL);
+                    if(response.data.username== this.username){
+                        localStorage.setItem("88B_accID", response.data['_id']['$oid']);
+                        localStorage.setItem("88B_accType", "user");
+                        this.$router.push({path: '/Users/Bottle-Listings'});
+                    }
+                } 
+                catch (error) {
+                    console.error(error);
+                    this.loginError = true
+                    this.successSubmission = false
                 }
             },
             
