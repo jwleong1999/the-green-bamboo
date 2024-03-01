@@ -9,7 +9,8 @@
             <div class="row">
                 <!-- tagline -->
                 <div class="col-8">
-                    <h1 class="text-start"> Your glass deserves the best. </h1>
+                    <h1 class="text-start" v-if="userID == ''"> What can we get you today? </h1>
+                    <h1 class="text-start" v-else> Hello, {{ username }}! </h1>
                 </div>
                 <!-- button -->
                 <div v-if="!userID" class="col-4">
@@ -30,15 +31,17 @@
         <!-- main content -->
         <div class="container pt-3">
             <div class="row">
-                <!-- your drinks shelf & brands you follow -->
+                <!-- left pane -->
                 <div class="col-3">
-                    <div class="row">
+
+                    <!-- [user] your drinks shelf & brands you follow -->
+                    <div v-if="userType == 'user'" class="row">
                         <!-- your drinks shelf -->
                         <div class="col-12">
                             <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
                                 <!-- header text -->
                                 <div class="square-inline">
-                                    <h4 class="square-inline-text-start mr-auto"> Your Drink Shelf </h4>
+                                    <h4 class="square-inline text-start mr-auto"> Your Drink Shelf </h4>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
                                     </svg>
@@ -64,7 +67,7 @@
                             <div class="square primary-square rounded p-3 mb-3 text-start" style="height: 325px;">
                                 <!-- header text -->
                                 <div class="square-inline">
-                                    <h4 class="square-inline-text-start mr-auto"> Brands You Follow </h4>
+                                    <h4 class="square-inline text-start mr-auto"> Brands You Follow </h4>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
                                     </svg>
@@ -100,6 +103,100 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- [producer] listing requests / fan questions / activity -->
+                    <div v-else-if="userType == 'producer'" class="row">
+                        <!-- listing requests -->
+                        <div class="col-12">
+                            <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
+                                <!-- header text -->
+                                <div class="square-inline text-start">
+                                    <h4 v-if="totalRequests != 0" class="square-inline text-start mr-auto"> {{ totalRequests }} Pending Listing Requests </h4>
+                                    <h4 v-else class="square-inline text-start mr-auto">  No New Pending Listing Requests! </h4>
+                                </div>
+                                <!-- body -->
+                                <div v-if="totalRequests != 0" style="height: 85%;">
+                                    <div style="align-items: center; justify-content: center; height: 100%;" class="pt-5">
+                                        <p>
+                                            {{producerRequestListings.length}} New Listing Requests
+                                            <br>
+                                            {{producerEditRequestListings.length}} Edit Listing Requests
+                                        </p>
+                                        <router-link :to="{ path: '/producers/requests' }">
+                                            <button class="btn secondary-btn-border btn-sm py-2 px-3"> View all requests </button>
+                                        </router-link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- fan questions -->
+                        <div class="col-12">
+                            <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
+                                <!-- header text -->
+                                <div class="square-inline">
+                                    <h4 v-if="unansweredQuestions.length != 0" class="square-inline text-start mr-auto"> {{ unansweredQuestions.length }} Pending Fan Questions For You </h4>
+                                    <h4 v-else class="square-inline text-start mr-auto">  No New Fan Questions! </h4>
+                                </div>
+                                <!-- body -->
+                                <div v-if="unansweredQuestions.length != 0" style="height: 85%;">
+                                    <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                                        <router-link :to="{ path: '/Producers/Profile-Page/' + userID }">
+                                            <button class="btn secondary-btn-border btn-sm py-2 px-3"> Respond to Q&A </button>
+                                        </router-link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- activity -->
+                        <div class="col-12">
+                            <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
+                                <!-- header text -->
+                                <div class="square-inline">
+                                    <h4 class="square-inline text-start mr-auto"> Activity on Your Listings </h4>
+                                </div>
+                                <!-- body -->
+                                <div style="height: 85%;">
+                                    <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                                        <router-link :to="{ path: '/Producers/Profile-Page/' + userID }">
+                                            <button class="btn secondary-btn-border btn-sm py-2 px-3"> View Dashboard </button>
+                                        </router-link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- [venue] listing requests / fan questions -->
+                    <div v-else-if="userType == 'venue'" class="row">
+                        <!-- your drinks shelf -->
+                        <div class="col-12">
+                            <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
+                                <!-- header text -->
+                                <div class="square-inline">
+                                    <h4 class="square-inline text-start mr-auto"> venue </h4>
+                                </div>
+                                <!-- body -->
+                                <div style="height: 85%;">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <!-- brands you follow -->
+                        <!-- your drinks shelf -->
+                        <div class="col-12">
+                            <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
+                                <!-- header text -->
+                                <div class="square-inline">
+                                    <h4 class="square-inline text-start mr-auto"> Pening </h4>
+                                </div>
+                                <!-- body -->
+                                <div style="height: 85%;">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <!-- discover, following & filter by drink type -->
                 <div class="col-9">
@@ -538,8 +635,15 @@
                 modRequests: [],
 
                 // for user account credentials
-                // [TODO] for now is hardcoded, will be replaced with user's account details
                 userID: "",
+                userType: "",
+                username: "",
+
+                // for producer listing information
+                producerRequestListings: [],
+                producerEditRequestListings: [],
+                totalRequests: 0,
+                unansweredQuestions: [],
 
                 // search
                 search: false,
@@ -588,6 +692,10 @@
             const accID = localStorage.getItem("88B_accID");
             if(accID !== null){
                 this.userID = localStorage.getItem('88B_accID')
+            }
+            let userType = localStorage.getItem('88B_accType')
+            if(userType !=null){
+                this.userType = userType
             }
         },
         methods: {
@@ -681,13 +789,13 @@
                     }
                 // requestListings
                 // _id, listingName, producerNew, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, sourceLink, brandRelation, reviewStatus, userID, photo
-                    // try {
-                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
-                    //         this.requestListings = response.data;
-                    //     } 
-                    // catch (error) {
-                    //     console.error(error);
-                    // }
+                    try {
+                            const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
+                            this.requestListings = response.data;
+                        } 
+                    catch (error) {
+                        console.error(error);
+                    }
                 // requestEdits
                 // _id, duplicateLink, editDesc, sourceLink, brandRelation, listingID, userID, reviewStatus
                     // try {
@@ -706,7 +814,48 @@
                     // catch (error) {
                     //     console.error(error);
                     // }
+
+                this.getUsername()
             },
+
+            // get username of user accessing page
+            getUsername() {
+                let user = this.users.find(user => user._id.$oid == this.userID)
+                let producer = this.producers.find(producer => producer._id.$oid == this.userID)
+                let venue = this.venues.find(venue => venue._id.$oid == this.userID)
+                if (user) {
+                    this.username = user.username
+                }
+                else if (producer) {
+                    this.username = producer.producerName
+                    // request listings
+                    this.producerRequestListings = this.requestListings.filter(listing => listing.producerID.$oid === this.userID);
+                    // request edits
+                    for (const obj of this.requestEdits) {
+                        const listingID = obj.listingID.$oid;
+                        const listing = this.listings.find(listing => listing._id.$oid === listingID);
+                        if (listing && listing.producerID.$oid === this.userID) {
+                            this.producerEditRequestListings.push(obj);
+                        }
+                    }
+                    this.totalRequests = this.producerRequestListings.length + this.producerEditRequestListings.length;
+                    
+                    // Q&A
+                    let answeredQuestions = producer["questionsAnswers"];
+                    if (answeredQuestions.length > 0) {
+                        for (let qa in answeredQuestions) {
+                            let answer = answeredQuestions[qa]["answer"];
+                            if (answer == "") {
+                                this.unansweredQuestions.push(answeredQuestions[qa]);
+                            }
+                        }
+                    }
+                }
+                else if (venue) {
+                    this.username = venue.venueName
+                }
+            },
+
             // Helper function for onkeyup search to reset filter
             helperSearch(){
                 this.searchListings()
