@@ -130,6 +130,12 @@ def getUser(id):
     data = db.users.find_one({"_id": ObjectId(id)})
     return parse_json(data)
 
+# [GET] Specific User by username
+@app.route("/getUserByUsername/<username>")
+def getUserByUsername(username):
+    data = db.users.find_one({"username": username})
+    return parse_json(data)
+
 # -----------------------------------------------------------------------------------------
 # [GET] Venues
 @app.route("/getVenues")
