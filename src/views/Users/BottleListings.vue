@@ -166,32 +166,40 @@
                         </div>
                     </div>
 
-                    <!-- [venue] listing requests / fan questions -->
+                    <!-- [venue] fan questions / check ins -->
                     <div v-else-if="userType == 'venue'" class="row">
-                        <!-- your drinks shelf -->
+                        <!-- fan questions -->
                         <div class="col-12">
                             <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
                                 <!-- header text -->
                                 <div class="square-inline">
-                                    <h4 class="square-inline text-start mr-auto"> venue </h4>
+                                    <h4 v-if="unansweredQuestions.length != 0" class="square-inline text-start mr-auto"> {{ unansweredQuestions.length }} Pending Fan Questions For You </h4>
+                                    <h4 v-else class="square-inline text-start mr-auto">  No New Fan Questions! </h4>
                                 </div>
                                 <!-- body -->
-                                <div style="height: 85%;">
-                                    
+                                <div v-if="unansweredQuestions.length != 0" style="height: 85%;">
+                                    <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                                        <router-link :to="{ path: '/Producers/Profile-Page/' + userID }">
+                                            <button class="btn secondary-btn-border btn-sm py-2 px-3"> Respond to Q&A </button>
+                                        </router-link>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- brands you follow -->
-                        <!-- your drinks shelf -->
+                        <!-- check ins at your venue -->
                         <div class="col-12">
                             <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
                                 <!-- header text -->
                                 <div class="square-inline">
-                                    <h4 class="square-inline text-start mr-auto"> Pening </h4>
+                                    <h4 class="square-inline text-start mr-auto"> Activity on Your Listings </h4>
                                 </div>
                                 <!-- body -->
                                 <div style="height: 85%;">
-                                    
+                                    <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                                        <router-link :to="{ path: '/Venues/Profile-Page/' + userID }">
+                                            <button class="btn secondary-btn-border btn-sm py-2 px-3"> View Dashboard </button>
+                                        </router-link>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -853,6 +861,17 @@
                 }
                 else if (venue) {
                     this.username = venue.venueName
+
+                    // Q&A
+                    let answeredQuestions = venue["questionsAnswers"];
+                    if (answeredQuestions.length > 0) {
+                        for (let qa in answeredQuestions) {
+                            let answer = answeredQuestions[qa]["answer"];
+                            if (answer == "") {
+                                this.unansweredQuestions.push(answeredQuestions[qa]);
+                            }
+                        }
+                    }
                 }
             },
 
