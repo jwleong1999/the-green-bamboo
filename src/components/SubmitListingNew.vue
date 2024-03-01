@@ -507,7 +507,7 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
                         this.drinkCategories = response.data;
                         for (let drink of this.drinkCategories) {
-                            if (this.types == [] || this.types.includes(drink.drinkType)) {
+                            if (this.types.length === 0 || this.types.includes(drink.drinkType)) {
                                 this.drinkCategoriesList.push(drink.drinkType);
                             }
                         }
