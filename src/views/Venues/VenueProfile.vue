@@ -301,12 +301,22 @@
                         <!-- [if] user type is venue -->
                         <div v-if="correctVenue" class="col-6 d-grid no padding">
                             <div class="row">
-                                <div class="col-6 d-grid no padding">
+                                <!-- add menu -->
+                                <div class="col-4 d-grid px-1">
+                                    <router-link :to="{ path: '/Venues/Add-Menu/' + user_id }" class="default-text-no-background">
+                                        <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text w-100">
+                                            Add menu
+                                        </button>
+                                    </router-link>
+                                </div>
+                                <!-- edit menu -->
+                                <div class="col-4 d-grid px-1">
                                     <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text" v-on:click="editCatalogue()">
                                         Edit menu
                                     </button>
                                 </div>
-                                <div class="col-6 d-grid no padding">
+                                <!-- share menu -->
+                                <div class="col-4 d-grid px-1">
                                     <button type="button" class="btn primary-btn-outline-thick rounded-0 reverse-clickable-text" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                         Share menu
                                     </button>
@@ -1250,7 +1260,12 @@
 
             // for user to edit their catalogue
             editCatalogue () {
-                this.editingCatalogue = true;
+                if (this.editingCatalogue == true) {
+                    this.editingCatalogue = false;
+                } 
+                else {
+                    this.editingCatalogue = true;
+                }
             },
 
             // delete bottle listing
@@ -1535,7 +1550,6 @@
                 window.location.reload();
 
             },
-
 
         }
     };
