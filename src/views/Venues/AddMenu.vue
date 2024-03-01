@@ -23,17 +23,13 @@
                     <!-- [input] bottle name -->
                     <div class="form-group mb-3">
                         <p class="text-start mb-1"> Name of Bottle <span class="text-danger">*</span></p>
-                        <input type="text" v-model="bottleName" class="form-control" id="bottleName" placeholder="Enter Bottle Name" v-on:change="resetSelectedBottle()">
+                        <input list="bottle-listings" v-model="bottleName" class="form-control" id="bottleName" placeholder="Enter Bottle Name" @input="updateBottleName">
 
-                        <!-- [search results] bottle name -->
-                        <div v-if="bottleName.length > 0 && selectedBottle.length == 0 && filteredListings.length > 0" class="py-3 text-start input-group">
-                            <select class="form-select" aria-label="bottle listings" v-model="selectedBottle" v-on:change="updateBottleName">
-                                <option disabled value=""> Select a bottle listing </option>
-                                <option v-for="listing in filteredListings" v-bind:key="listing._id.$oid" v-bind:value="listing._id.$oid"> 
-                                    {{listing.listingName }} 
-                                </option>
-                            </select>
-                        </div>
+                        <datalist id="bottle-listings">
+                        <option v-for="listing in listings" :key="listing._id.$oid" :value="listing.listingName">
+                            {{listing.listingName}}
+                        </option>
+                        </datalist>
                     </div>
 
                     <!-- [input] menu section to add to-->
@@ -205,22 +201,12 @@
             },
 
             updateBottleName() {
-                if (this.selectedBottle != "") {
-                    let listing = this.listings.find(listing => listing._id.$oid == this.selectedBottle)
+                let listing = this.listings.find(listing => listing.listingName === this.bottleName)
+                if (listing) {
                     this.selectedListing = listing
-                    this.bottleName = listing.listingName
-
-                    // check to allow user to submit form
+                    this.selectedBottle = listing._id.$oid
                     this.bottleNameOK = true;
                 }
-            },
-
-            resetSelectedBottle() {
-                // reset selected bottle
-                this.selectedBottle = ""
-
-                // filter bottle listings based on search input
-                this.filteredListings = this.listings.filter(listing => listing.listingName.toLowerCase().includes(this.bottleName.toLowerCase()))
             },
 
             getMenuSections() {
