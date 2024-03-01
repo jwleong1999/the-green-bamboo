@@ -221,6 +221,15 @@
 
             }
         },
+        created() {
+            let accountDetails = this.$route.query
+            console.log(accountDetails);
+            this.businessType = accountDetails.businessType
+            this.businessName = accountDetails.businessName
+            // this.businessDesc = accountDetails.businessDesc
+            this.selectedCountry = accountDetails.originCountry
+            console.log(this.selectedCountry);
+        },
         mounted(){
             this.loadData()
         },

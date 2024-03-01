@@ -43,7 +43,7 @@
                                     <!-- [else] not editing -->
                                     <h5 v-else class="text-body-secondary fs"> {{ specified_venue["originLocation"] }} </h5>
                                 </div>
-                                <!-- claim this listing / add listing & edit profile -->
+                                <!-- claim this venue / add listing & edit profile -->
                                 <div class="col-4">
                                     <!-- [if] user type is venue -->
                                     <span v-if="correctVenue" class="row"> 
@@ -62,7 +62,7 @@
                                     </span>
                                     <!-- [else] user type is NOT producer -->
                                     <div v-else> 
-                                        <p class="text-body-secondary no-margin text-decoration-underline fst-italic"> Claim This Listing </p>
+                                        <p class="text-body-secondary no-margin text-decoration-underline fst-italic" @click="claimVenueAccount"> Claim This Venue </p>
                                     </div>
                                 </div>
                             </div>
@@ -1437,7 +1437,20 @@
                     console.error(error);
                 }
                 
-            }
+            }, 
+            claimVenueAccount() {
+                let accountDetails = {
+                    userID: this.venue_id,
+                    businessType: "venue",
+                    businessName: this.specified_venue.venueName,
+                    // desc: this.specified_venue.venueDesc,
+                    originCountry: this.specified_venue.originLocation,
+                }
+                this.$router.push({
+                    path: '/BusinessSignup', 
+                    query: accountDetails
+                });
+            },
 
         }
     };
