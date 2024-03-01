@@ -227,20 +227,14 @@
                         </div>
                         <!-- [ELSE] Dropdown menu tied to producerID, show producerNew textbox only if "Other" selected (no producerID). -->
                         <!-- set name only, then before submitting request, put the id, save computation -->
-                        <div class="form-group mb-3" v-else>
-                            <p class="text-start mb-1">Producer Name <span class="text-danger">*</span></p>
-                            <select class="form-select" id="producerSelect" v-model="tempProducer" @change="getProducerID">
-                                <option v-for="producer in producerList" :key="producer.producerName" :value="producer.producerName">
-                                {{ producer.producerName }}
-                                </option>
-                                <option v-if="formType == 'req'" value="Other">[ Other ]</option>
-                            </select>
-                        </div>
-
-                        <!-- Input: New Producer Name (Request Only: if "Other" is selected in Producer Name) -->
-                        <div class="form-group mb-3" v-if="this.tempProducer == 'Other'">
+                        <div class="form-group mb-3">
                             <p class="text-start mb-1">New Producer Name <span class="text-danger">*</span></p>
-                            <input type="text" class="form-control" v-model="form['producerNew']" id="producerNew" placeholder="Enter Producer Name">
+                            <input list="producer-names" v-model="form['producerNew']" class="form-control" id="bottleName" placeholder="Enter Producer Name" @input="getProducerID">
+                            <datalist id="producer-names">
+                                <option v-for="producer in producerList" :key="producer.producerName" :value="producer.producerName">
+                                    {{ producer.producerName }}
+                                </option>
+                            </datalist>
                         </div>
 
                         <!-- Input: Independent Bottler Check -->
@@ -738,14 +732,15 @@
             },
             // Helper function to get producerID from tempProducer
             getProducerID() {
-                if(this.tempProducer!= 'Other'){
-                    this.form['producerID'] = this.producerList.find(producer => producer.producerName == this.tempProducer)._id;
-                } else {
+                let producer = this.producerList.find(producer => producer.producerName == this.form['producerNew'])
+                if (producer) {
+                    this.form['producerID'] = producer._id;
+                }
+                else {
                     this.form['producerID'] = {
                         "$oid": ""
                     }
                 }
-
             },
 
             // Function to submit form
@@ -960,6 +955,7 @@
 
             // Function to write listing to database
             async writeListing(submitAPI, submitData) {
+                console.log(submitData)
 
                 this.fillForm = false; // Hide form
                 this.submitForm = true; // Display submission in progress message

@@ -26,9 +26,9 @@
                         <input list="bottle-listings" v-model="bottleName" class="form-control" id="bottleName" placeholder="Enter Bottle Name" @input="updateBottleName">
 
                         <datalist id="bottle-listings">
-                        <option v-for="listing in listings" :key="listing._id.$oid" :value="listing.listingName">
-                            {{listing.listingName}}
-                        </option>
+                            <option v-for="listing in listings" :key="listing._id.$oid" :value="listing.listingName">
+                                {{listing.listingName}}
+                            </option>
                         </datalist>
                     </div>
 
