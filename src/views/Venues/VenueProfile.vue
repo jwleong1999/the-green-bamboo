@@ -598,7 +598,7 @@
                                         Edit opening hours
                                     </button>
                                     <!-- [else] if editing -->
-                                    <button v-else type="button" class="btn success-btn rounded-0 reverse-clickable-text" v-on:click="saveOpeningHours()">
+                                    <button v-else type="button" class="btn success-btn rounded-0 reverse-clickable-text" v-on:click="saveOpeningHours()" :disabled="saveOpeningHoursError">
                                         Save
                                     </button>
                                 </div>
@@ -606,13 +606,17 @@
                                 <!-- opening hours -->
                                 <div class="text-left default-text-no-background" v-for = "(hours, day) in openingHours" v-bind:key="day">
                                     <b>{{ day }}: </b>
-                                    <!-- [if] editing opening hours-->
+                                    <!-- [if] not editing opening hours-->
                                     <p v-if="editingOpeningHours == false" class="d-inline">{{ hours[0] }} - {{ hours[1] }}</p>
-                                    <!-- [else] not editing opening hours -->
-                                    <div v-else class="d-flex align-items-center">
-                                        <input type="time" class="form-control" :id="day + 'start'" :value="hours[0]">
-                                        <span class="mx-2">-</span>
-                                        <input type="time" class="form-control" :id="day + 'end'" :value="hours[1]">
+                                    <!-- [else] editing opening hours -->
+                                    <div v-else class="pb-2">
+                                        <div class="d-flex align-items-center">
+                                            <input type="time" class="form-control" :id="day + 'start'" v-model="hours[0]" v-on:change="checkOpeningHours()">
+                                            <span class="mx-2">-</span>
+                                            <input type="time" class="form-control" :id="day + 'end'" v-model="hours[1]" v-on:change="checkOpeningHours()">
+                                        </div>
+                                        <!-- for error message -->
+                                        <span :id="day + 'error'" class="text-danger mx-2"></span>
                                     </div>
                                 </div>
                             </div>
@@ -715,6 +719,8 @@
                 // opening hours
                 editingOpeningHours: false,
                 edited_openingHours: {},
+                saveOpeningHoursError: false,
+                openingHoursErrors: 0,
 
                 // customization for drinkLists buttons
                 // [TODO] get drink list of user, for now is hardcoded
@@ -1518,16 +1524,49 @@
                 this.editingOpeningHours = true;
             },
 
-            saveOpeningHours() {
-                this.editingOpeningHours = false;
+            checkOpeningHours() {
+                // reset errors
+                this.saveOpeningHoursError = false;
 
                 // get edited opening hours
                 for (let day in this.openingHours) {
                     const startTime = document.getElementById(day + 'start').value;
                     const endTime = document.getElementById(day + 'end').value;
+
+                    // convert startTime to a number type
+                    const startTimeValue = parseInt(startTime.replace(/:/g, ''));
+                    // convert endTime to a number type
+                    const endTimeValue = parseInt(endTime.replace(/:/g, ''));
+
                     this.edited_openingHours[day] = [startTime, endTime];
+
+                    // [error] check if start time is after end time
+                    if (startTimeValue > endTimeValue) {
+                        console.log(startTime, endTime);
+                        // show error message
+                        const errorMessage = "End time must be after start time";
+                        const errorElement = document.getElementById(day + 'error');
+                        if (errorElement) {
+                            errorElement.innerHTML = errorMessage;
+                        }
+                        this.saveOpeningHoursError = true;
+                    }
+                    // remove error message
+                    else {
+                        const errorElement = document.getElementById(day + 'error');
+                        if (errorElement) {
+                            errorElement.innerHTML = "";
+                        }
+                        this.saveOpeningHoursError = false;
+                    }
+
+                    console.log(this.openingHoursErrors)
                 }
-                
+            },
+
+            saveOpeningHours() {
+                this.editingOpeningHours = false;
+
                 // update database
                 try {
                     const response = this.$axios.post('http://localhost:5300/editOpeningHours', 
@@ -1548,7 +1587,7 @@
 
                 // force page to reload
                 window.location.reload();
-
+                    
             },
 
         }
