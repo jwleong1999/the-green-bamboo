@@ -190,52 +190,55 @@
                 </ul> -->
                 <div class="nav">
                     <button id="reviewsButton" class="btn active" aria-current="page" data-bs-toggle="pill" data-bs-target="#reviews" style="color: #535C72; background-color: whitesmoke; border-radius: 30px; border: 4px solid #535C72;" @click="switchTab('reviews')">Reviews</button>
-                    <button id="ownListsButton" v-if="ownProfile" class="btn primary-btn ms-2" data-bs-toggle="pill" data-bs-target="#lists" style="color: whitesmoke; background-color: #535C72; border-radius: 30px;" @click="switchTab('lists')">My Drink Lists</button>
-                    <button id="listsButton" v-else class="btn primary-btn ms-2" data-bs-toggle="pill" data-bs-target="#lists" style="color: whitesmoke; background-color: #535C72; border-radius: 30px;" @click="switchTab('lists')">Drink Lists</button>
+                    <button id="ownListsButton" v-if="ownProfile" class="btn primary-btn ms-2" data-bs-toggle="pill" data-bs-target="#lists" style="color: whitesmoke; background-color: #535C72; border-radius: 30px; border: 4px solid #535C72" @click="switchTab('lists')">My Drink Lists</button>
+                    <button id="listsButton" v-else class="btn primary-btn ms-2" data-bs-toggle="pill" data-bs-target="#lists" style="color: whitesmoke; background-color: #535C72; border-radius: 30px; border: 4px solid #535C72" @click="switchTab('lists')">Drink Lists</button>
                 </div>
 
                 <div class="tab-content container mt-2">
                     <!-- reviews tab -->
                     <div class="tab-pane fade show active" id="reviews">
                         <h4 class="mt-3">Favourite Drinks</h4>
-                        <div>
+                        <div class="flex-start">
                             <div class="image-container" v-for="(listing, index) in favouriteListings" :key="index" >
                                 <img :src=" 'data:image/png;base64,' + (listing.photo || defaultDrinkImage)" alt="" class="rounded border border-dark-subtle border-2 bottle-img me-3">
                                 <!-- svg for bookmarked -->
-                                <svg v-if="bookmarkStatus[listing.listingName] && user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
-                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="checkItem(listing.listingName)">
+                                <svg v-if="checkBookmarkStatus(listing._id.$oid) && user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
+                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(listing._id)">
                                     <path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/>
                                 </svg>
                                 <!-- svg for not bookmarked -->
                                 <svg v-else-if="user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
-                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="checkItem(listing.listingName)">
+                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(listing._id)">
                                     <path d="M0 48C0 21.5 21.5 0 48 0l0 48V441.4l130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4V48H48V0H336c26.5 0 48 21.5 48 48V488c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488V48z"/>
                                 </svg>
                                 <br/>
                                 <span style="display: inline-block; max-width: 150px;">
-                                    {{ listing.listingName }}
+                                    <a :href="'/Producers/Bottle-Listings/' + listing._id.$oid" style="text-decoration: none; color: inherit;">
+                                        {{ listing.listingName }}
+                                    </a>
                                 </span>
                             </div>
                         </div>
 
                         <h4 class="mt-4">Recent Activity</h4>
-                        <div>
-
+                        <div class="flex-start">
                             <div class="image-container" v-for="(review, index) in recentActivity" :key="index" >
-                                <img :src=" 'data:image/png;base64,' + ( getListingPhoto(review.reviewTarget) || defaultDrinkImage)" alt="" class="rounded border border-dark-subtle border-2 bottle-img me-3">
+                                <img :src=" 'data:image/png;base64,' + ( getListingPhoto(review.reviewTarget ) || defaultDrinkImage)" alt="" class="rounded border border-dark-subtle border-2 bottle-img me-3">
                                 <!-- svg for bookmarked -->
-                                <svg v-if="bookmarkStatus[review.listingName] && user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
-                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="checkItem(review.listingName)">
+                                <svg v-if="checkBookmarkStatus(review.reviewTarget.$oid) && user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
+                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(review.reviewTarget)">
                                     <path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/>
                                 </svg>
                                 <!-- svg for not bookmarked -->
                                 <svg v-else-if="user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
-                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="checkItem(review.listingName)">
+                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(review.reviewTarget)">
                                     <path d="M0 48C0 21.5 21.5 0 48 0l0 48V441.4l130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4V48H48V0H336c26.5 0 48 21.5 48 48V488c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488V48z"/>
                                 </svg>
                                 <br/>
                                 <span style="display: inline-block; max-width: 150px;">
-                                    {{ review.listingName }}
+                                    <a :href="'/Producers/Bottle-Listings/' + review.reviewTarget.$oid" style="text-decoration: none; color: inherit;">
+                                        {{ review.listingName }}
+                                    </a>
                                 </span>
                             </div>
                         </div>
@@ -421,25 +424,27 @@
                                 </div>
                             </div>
 
-                            <div style="display: flex" class="mb-3" v-for="(drinkName, index) in displayUser.drinkLists[currentList].listItems" :key="index">
-                                <img :src=" 'data:image/png;base64,' + (photo || defaultDrinkImage)" alt="" class="border border-dark-subtle border-2 bottle-img me-3">
-                                <div style="height: 150px; display: flex; flex-direction: column;">
-                                    <h3>{{drinkName}}</h3>
-                                    <p>Drink information </p>
-                                    <div v-if="ownProfile" style="display: flex; margin-top: auto" class="mb-0">
-                                        <a href="#" style="text-decoration: none; color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#deleteFromListModal${index}`">
-                                            <!-- cross icon -->
-                                            <svg class=mb-1 xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
-                                                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
-                                            </svg>
-                                            Delete from list
-                                        </a>
-                                    </div>
+                            <div class="row mb-3" v-for="(listingID, index) in displayUser.drinkLists[currentList].listItems" :key="index">
+                                <div class="col-10" style="display: flex">
+                                    <img :src=" 'data:image/png;base64,' + ( getListingFromID(listingID.$oid).photo || defaultDrinkImage )" alt="" class="border border-dark-subtle border-2 bottle-img me-3">
+                                    <div style="height: 150px; display: flex; flex-direction: column;">
+                                        <h4>{{ getListingFromID(listingID.$oid).listingName }}</h4>
+                                        <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;"> {{ getListingFromID(listingID.$oid).officialDesc }} </p>
+                                        <div v-if="ownProfile" style="display: flex; margin-top: auto" class="mb-0">
+                                            <a href="#" style="text-decoration: none; color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#deleteFromListModal${index}`">
+                                                <!-- cross icon -->
+                                                <svg class=mb-1 xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                                    <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+                                                </svg>
+                                                Delete from list
+                                            </a>
+                                        </div>
 
+                                    </div>
                                 </div>
-                                <div>
+                                <div class="col-2 text-end">
                                     <h2>
-                                        3.8 
+                                        {{ getAverageReview(listingID) }}
                                         <svg class="mb-2" xmlns="http://www.w3.org/2000/svg" height="18" width="20.25" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
                                             <path d="M287.9 0c9.2 0 17.6 5.2 21.6 13.5l68.6 141.3 153.2 22.6c9 1.3 16.5 7.6 19.3 16.3s.5 18.1-5.9 24.5L433.6 328.4l26.2 155.6c1.5 9-2.2 18.1-9.7 23.5s-17.3 6-25.3 1.7l-137-73.2L151 509.1c-8.1 4.3-17.9 3.7-25.3-1.7s-11.2-14.5-9.7-23.5l26.2-155.6L31.1 218.2c-6.5-6.4-8.7-15.9-5.9-24.5s10.3-14.9 19.3-16.3l153.2-22.6L266.3 13.5C270.4 5.2 278.7 0 287.9 0zm0 79L235.4 187.2c-3.5 7.1-10.2 12.1-18.1 13.3L99 217.9 184.9 303c5.5 5.5 8.1 13.3 6.8 21L171.4 443.7l105.2-56.2c7.1-3.8 15.6-3.8 22.6 0l105.2 56.2L384.2 324.1c-1.3-7.7 1.2-15.5 6.8-21l85.9-85.1L358.6 200.5c-7.8-1.2-14.6-6.1-18.1-13.3L287.9 79z"/>
                                         </svg>
@@ -458,11 +463,11 @@
                                                 <img src="../../Images/Others/cancel.png" alt="" class="rounded-circle border border-dark text-center" style="width: 100px; height: 100px;">
                                                 <h3>Are you sure?</h3>
                                                 <br>
-                                                <p>Do you really want to delete <b><i>{{ drinkName }}</i></b> from <b><i>{{ currentList }}</i></b>? </p>
+                                                <p>Do you really want to delete <b><i>{{ getListingFromID(listingID.$oid).listingName }}</i></b> from <b><i>{{ currentList }}</i></b>? </p>
                                             </div>
                                             <div style="display: inline" class="text-center mb-4">
                                                 <button type="button" class="btn btn-secondary me-3" data-bs-dismiss="modal">Cancel</button>
-                                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deleteFromList(currentList, drinkName)">Delete</button>
+                                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deleteFromList(currentList, listingID)">Delete</button>
                                             </div>
                                         </div>
                                     </div>
@@ -689,12 +694,6 @@ export default {
                 this.userDrinkChoice = this.getDrinkOfChoice(this.user);
                 this.displayUserDrinkChoice = this.getDrinkOfChoice(this.displayUser);
                 this.displayUserBookmarks = this.displayUser.drinkLists;
-                this.recentActivity.forEach((review) => {
-                    this.fetchBookmarkStatus(review.listingName);
-                });
-                this.favouriteListings.forEach((listing) => {
-                    this.fetchBookmarkStatus(listing.listingName);
-                });
             } 
             catch (error) {
                 console.error(error);
@@ -786,54 +785,26 @@ export default {
 
         // ------------------- User Bookmarks -------------------
         // checks if an item has been bookmarked
-        async checkBookmark(listingName) {
+        checkBookmarkStatus(listingID) {
+            // check if listingID is in user bookmark
             for (const category of Object.values(this.userBookmarks)) {
                 if (category.listItems) {
-                    if (category.listItems.includes(listingName)) {
+                    if (category.listItems.some(item => item.$oid === listingID)) {
                         return true;
                     }
                 }
             }
-            return false;
         },
-        // fetches the bookmark status of an item
-        async fetchBookmarkStatus(listing) {
-            try {
-                const result = await this.checkBookmark(listing);
-                this.bookmarkStatus[listing] = result;
-            } catch (error) {
-                console.error('Error fetching bookmark status:', error);
-            }
-        },
-        // checks if an item has been bookmarked
-        checkItem(listing) {
-            this.bookmarkModalItem = listing;
-            // if item is in userbookmark list, push the bookmark into the selectedBookmarkList
-            this.selectedBookmarkList = [];
-            for (const listName in this.userBookmarks) {
-                if (Object.hasOwnProperty.call(this.userBookmarks, listName)) {
-                    const bookmarkItems = this.userBookmarks[listName].listItems;
-                    if (bookmarkItems) {
-                        if (bookmarkItems.includes(listing)) {
-                            if (!this.selectedBookmarkList.includes(listName)) {
-                                this.selectedBookmarkList.push(listName);
-                            }
-                        }
-                    } 
-                }
-            }
-        },
-        // check if item is in specific list
-        checkBookmarkList(listName, bookmarkModalItem) {
-            if (this.userBookmarks[listName].listItems.includes(bookmarkModalItem)) {
-                return true;
-            }
-            return false;
+        getListingFromID(listingID) {
+            return this.listings.find(listing => listing._id.$oid === listingID);
         },
 
         // ------------------- User Update Bookmarks -------------------
         // bookmark item through bookmark icon
         async bookmarkItem() {
+
+            let addListingId = this.getListingID(this.bookmarkModalItem);
+
             if (this.saveToNewList) {
                 if (this.othersListName === "") {
                     this.othersListNameError = "Please enter a list name";
@@ -845,25 +816,24 @@ export default {
                     this.othersListNameError = "";
                     this.userBookmarks[this.othersListName] = {
                         listDesc: "",
-                        listItems: [this.bookmarkModalItem],
+                        listItems: [addListingId],
                     };
                     // TODO
-                    this.userBookmarks[this.othersListName].listItems.push(this.bookmarkModalItem);
+                    this.userBookmarks[this.othersListName].listItems.push(addListingId);
                 }
             }
-            console.log(this.userBookmarks);
             for (const listName in this.userBookmarks) {
                 if (Object.hasOwnProperty.call(this.userBookmarks, listName)) {
                     const bookmarkItems = this.userBookmarks[listName].listItems;
                     if (this.selectedBookmarkList.includes(listName)) {
-                        
-                        if (!bookmarkItems.includes(this.bookmarkModalItem)) {
-                            bookmarkItems.push(this.bookmarkModalItem);
+                        if (!JSON.stringify(bookmarkItems).includes(JSON.stringify(addListingId))) {
+                            bookmarkItems.push(addListingId);
                         }
                     } else {
-                        if (bookmarkItems.includes(this.bookmarkModalItem)) {
-                            const index = bookmarkItems.indexOf(this.bookmarkModalItem);
+                        if (JSON.stringify(bookmarkItems).includes(JSON.stringify(addListingId))) {
+                            const index = bookmarkItems.indexOf(addListingId);
                             bookmarkItems.splice(index, 1);
+                            console.log("done");
                         }
                     }
                 }
@@ -886,7 +856,30 @@ export default {
             
             window.location.reload();
 
-
+        },
+        // return oid from name of drink listing
+        getListingID(listingName) {
+            const listing = this.listings.find(listing => listing.listingName === listingName);
+            console.log(listing);
+            return listing._id;
+        },
+        // checks which lists the item is in
+        populateBookmarkModal(listingID) {
+            // param: objectId
+            this.bookmarkModalItem = this.getListingName(listingID);
+            this.selectedBookmarkList = [];
+            for (const listName in this.userBookmarks) {
+                if (Object.hasOwnProperty.call(this.userBookmarks, listName)) {
+                    const bookmarkItems = this.userBookmarks[listName].listItems;
+                    if (bookmarkItems) {
+                        if (bookmarkItems.some(item => item.$oid === listingID.$oid)) {
+                            if (!this.selectedBookmarkList.includes(listName)) {
+                                this.selectedBookmarkList.push(listName);
+                            }
+                        }
+                    } 
+                }
+            }
         },
         // return search items for bookmarking
         searchResult() {
@@ -895,8 +888,10 @@ export default {
         // bookmark item through search
         async addDrinkToList(listName) {
             for (const drink of this.drinksToAdd) {
-                if (!this.userBookmarks[listName].listItems.includes(drink)) {
-                    this.userBookmarks[listName].listItems.push(drink);
+                let addListingId = this.getListingID(drink);
+                console.log(addListingId);
+                if (!this.userBookmarks[listName].listItems.includes(addListingId)) {
+                    this.userBookmarks[listName].listItems.push(addListingId);
                 }
             }
 
@@ -951,8 +946,9 @@ export default {
 
         },
         // delete drink from list
-        async deleteFromList(listName, item) {
-            const index = this.userBookmarks[listName].listItems.indexOf(item);
+        async deleteFromList(listName, listingID) {
+            // param: objectId
+            const index = this.userBookmarks[listName].listItems.indexOf(listingID);
             this.userBookmarks[listName].listItems.splice(index, 1);
 
             try {
@@ -1144,6 +1140,18 @@ export default {
             }
         }, 
 
+        // others
+        // get average review
+        getAverageReview(listingID) {
+            // param: objectId
+            const reviews = this.reviews.filter(review => review.reviewTarget.$oid === listingID.$oid);
+            if (reviews.length > 0) {
+                const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
+                return (totalRating / reviews.length).toFixed(1);
+            }
+            return "-";
+        },
+
         // ------------------- UI -------------------
         // review and drink list toggle
         toggleView(name) {
@@ -1198,6 +1206,7 @@ export default {
 .bottle-img {
     width: 150px;
     height: 150px;
+    flex-shrink: 0;
 }
 
 .image-container {
@@ -1212,6 +1221,12 @@ export default {
     margin-top: 10px;
     margin-right: 25px;
     z-index: 1;
+}
+
+.flex-start {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
 }
 
 </style>
