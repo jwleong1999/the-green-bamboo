@@ -66,12 +66,8 @@
                                 </div>
                                 <!-- body -->
                                 <div style="height: 85%;">
-                                    <!-- [if] no drinks in drink shelf -->
-                                    <div v-if="drinkShelf.length == 0" style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <h6 class="fst-italic"> No drinks added yet. </h6>
-                                    </div>
-                                    <!-- [else] drinks in drink shelf -->
-                                    <div v-else class="overflow-auto" style="max-height: 100%;">
+                                    <!-- [if] drinks in drink shelf -->
+                                    <div v-if="drinkShelf.length != 0" class="overflow-auto" style="max-height: 100%;">
                                         <div class="text-start" v-for="listing in drinkShelf" v-bind:key="listing._id">
                                             <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="reverse-clickable-text">
                                                 <div class="d-flex align-items-center">
@@ -85,10 +81,10 @@
                                             </router-link>
                                         </div>
                                     </div>
-                                    <div v-if="userID" style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                                    <div v-if="userID && drinkShelf.length == 0" style="display: flex; align-items: center; justify-content: center; height: 100%;">
                                         <h6 class="fst-italic"> No drinks added yet. </h6>
                                     </div>
-                                    <div v-else style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                                    <div v-else-if="!userID" style="display: flex; align-items: center; justify-content: center; height: 100%;">
                                         <router-link :to="{ path: '/login' }">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> Log in to add a drink to shelf </button>
                                         </router-link>
