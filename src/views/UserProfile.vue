@@ -200,7 +200,7 @@
                         <h4 class="mt-3">Favourite Drinks</h4>
                         <div class="flex-start">
                             <div class="image-container" v-for="(listing, index) in favouriteListings" :key="index" >
-                                <img :src=" 'data:image/png;base64,' + (listing.photo || defaultDrinkImage)" alt="" class="rounded border border-dark-subtle border-2 bottle-img me-3">
+                                <img :src=" 'data:image/png;base64,' + (listing.photo || defaultDrinkImage)" alt="" class="rounded bottle-img me-3">
                                 <!-- svg for bookmarked -->
                                 <svg v-if="checkBookmarkStatus(listing._id.$oid) && user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
                                     data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(listing._id)">
@@ -223,7 +223,7 @@
                         <h4 class="mt-4">Recent Activity</h4>
                         <div class="flex-start">
                             <div class="image-container" v-for="(review, index) in recentActivity" :key="index" >
-                                <img :src=" 'data:image/png;base64,' + ( getListingPhoto(review.reviewTarget ) || defaultDrinkImage)" alt="" class="rounded border border-dark-subtle border-2 bottle-img me-3">
+                                <img :src=" 'data:image/png;base64,' + ( getListingPhoto(review.reviewTarget ) || defaultDrinkImage)" alt="" class="rounded bottle-img me-3">
                                 <!-- svg for bookmarked -->
                                 <svg v-if="checkBookmarkStatus(review.reviewTarget.$oid) && user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
                                     data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(review.reviewTarget)">
@@ -247,7 +247,7 @@
                         <div>
                             <div v-for="(review, index) in reviews" :key="index">
                                 <div style="display: flex" class="mb-3" v-if="review.userID?.$oid === displayUserID && review.reviewType === 'Listing'">
-                                    <img :src=" 'data:image/png;base64,' + (review.photo||defaultDrinkImage)" alt="" class="border border-dark-subtle border-2 bottle-img me-3">
+                                    <img :src=" 'data:image/png;base64,' + (review.photo||defaultDrinkImage)" alt="" class="bottle-img me-3">
                                     <div>
                                         <a :href="'/Producers/Bottle-Listings/' + review.reviewTarget.$oid" style="text-decoration: none; color: inherit;">
                                             <h3>{{ getListingName(review.reviewTarget) }}</h3>
@@ -312,7 +312,7 @@
                             </div>
 
                             <div v-for="(bookmarkList, name, index) in displayUserBookmarks" :key="name" style="display: flex" class="mb-5">
-                                <img :src=" 'data:image/png;base64,' + (photo || defaultDrinkImage)" alt="" class="border border-dark-subtle border-2 bottle-img me-3">
+                                <img :src=" 'data:image/png;base64,' + (photo || defaultDrinkImage)" alt="" class="bottle-img me-3">
                                 <div style="height: 150px; display: flex; flex-direction: column;" >
                                     <h3 class="mt-1">{{ name }} </h3>
                                     <p v-if="bookmarkList.listItems.length > 1"> {{ bookmarkList.listItems.length }} items in list </p>
@@ -429,7 +429,7 @@
                             <!-- display drink information -->
                             <div class="row mb-3" v-for="(listingID, index) in displayUser.drinkLists[currentList].listItems" :key="index">
                                 <div class="col-10" style="display: flex">
-                                    <img :src=" 'data:image/png;base64,' + ( getListingFromID(listingID.$oid).photo || defaultDrinkImage )" alt="" class="border border-dark-subtle border-2 bottle-img me-3">
+                                    <img :src=" 'data:image/png;base64,' + ( getListingFromID(listingID.$oid).photo || defaultDrinkImage )" alt="" class="bottle-img me-3">
                                     <div style="height: 150px; display: flex; flex-direction: column;">
                                         <a :href="'/Producers/Bottle-Listings/' + listingID.$oid" style="text-decoration: none; color: inherit;">
                                             <h4>{{ getListingFromID(listingID.$oid).listingName }}</h4>
@@ -991,6 +991,7 @@ export default {
                 console.error(error);
             }
 
+            window.location.reload();
         }, 
         // reset form details
         resetEditList(listName, listDesc) {
@@ -1212,6 +1213,7 @@ export default {
     width: 150px;
     height: 150px;
     flex-shrink: 0;
+    border: 2px solid #535C72;
 }
 
 .image-container {
