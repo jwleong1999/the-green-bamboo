@@ -23,13 +23,13 @@
                     <!-- [input] bottle name -->
                     <div class="form-group mb-3">
                         <p class="text-start mb-1"> Name of Bottle <span class="text-danger">*</span></p>
-                        <input list="bottle-listings" v-model="bottleName" class="form-control" id="bottleName" placeholder="Enter Bottle Name" @input="updateBottleName">
-
+                        <input list="bottle-listings" v-model="bottleName" class="form-control" id="bottleName" placeholder="Enter Bottle Name" v-on:change="updateBottleName">
                         <datalist id="bottle-listings">
                             <option v-for="listing in listings" :key="listing._id.$oid" :value="listing.listingName">
                                 {{listing.listingName}}
                             </option>
                         </datalist>
+                        <p v-show="bottleName.length > 0" class="text-start mb-1 text-danger" id="bottleNameError"></p>
                     </div>
 
                     <!-- [input] menu section to add to-->
@@ -41,6 +41,7 @@
                                 {{ section }} 
                             </option>
                         </select>
+                        <p v-show="selectedMenuSection.length > 0" class="text-start mb-1 text-danger" id="menuSectionError"></p>
                     </div>
 
                     <!-- show preview of bottle listing -->
@@ -201,11 +202,21 @@
             },
 
             updateBottleName() {
+                // get error message element
+                let bottleNameError = document.getElementById("bottleNameError")
+                // find listing based on bottle name
                 let listing = this.listings.find(listing => listing.listingName === this.bottleName)
                 if (listing) {
                     this.selectedListing = listing
                     this.selectedBottle = listing._id.$oid
                     this.bottleNameOK = true;
+                    bottleNameError.innerHTML = ""
+                }
+                else {
+                    this.selectedListing = null
+                    this.selectedBottle = ""
+                    this.bottleNameOK = false;
+                    bottleNameError.innerHTML = "Please enter a valid bottle listing name"
                 }
             },
 
@@ -219,7 +230,32 @@
 
             updateMenuSection() {
                 if (this.selectedMenuSection != "") {
-                    this.menuSectionOK = true;
+                    // get error message element
+                    let menuSectionError = document.getElementById("menuSectionError")
+
+                    console.log(this.selectedMenuSection)
+                    // get all menu items in the selected menu section
+                    let existingMenuItems = this.specified_venue.menu.find(menuItem => menuItem.sectionName == this.selectedMenuSection).listingsID
+                    // if there are items in the menu
+                    if (existingMenuItems.some(item => item.$oid === this.selectedBottle)) {
+                        // The selected bottle is already in this menu section
+                        this.menuSectionOK = false;
+                        menuSectionError.innerHTML = "This bottle is already in this menu section";
+                    } 
+                    else {
+                        // The selected bottle is not in this menu section
+                        this.menuSectionOK = true;
+                        menuSectionError.innerHTML = "";
+                    }
+                    
+                    // if (existingItem) {
+                    //     this.menuSectionOK = false;
+                    //     menuSectionError.innerHTML = "This bottle is already in this menu section"
+                    // }
+                    // else {
+                    //     this.menuSectionOK = true;
+                    //     menuSectionError.innerHTML = ""
+                    // }
                 }
             },
 
