@@ -35,7 +35,7 @@
                 <div class="col-3">
 
                     <!-- [user] your drinks shelf & brands you follow -->
-                    <div v-if="userType == 'user'" class="row">
+                    <div v-if="userType == 'user' || userType == ''" class="row">
                         <!-- [moderator] listing requests -->
                         <div v-if="isModerator" class="col-12">
                             <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
@@ -56,20 +56,36 @@
                         </div>
                         <!-- your drinks shelf -->
                         <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
+                            <div class="square primary-square rounded p-3 mb-3 text-start" style="height: 325px;">
                                 <!-- header text -->
                                 <div class="square-inline">
-                                    <h4 class="square-inline text-start mr-auto"> Your Drink Shelf </h4>
+                                    <h4 class="square-inline text-start mr-auto"> Your Drinks Shelf </h4>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
                                     </svg>
                                 </div>
                                 <!-- body -->
                                 <div style="height: 85%;">
-                                    <!-- TODO check for drink shelf -->
-                                    <div v-if="false" class="overflow-auto" style="max-height: 100%;">
+                                    <!-- [if] no drinks in drink shelf -->
+                                    <div v-if="drinkShelf.length == 0" style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                                        <h6 class="fst-italic"> No drinks added yet. </h6>
                                     </div>
-                                    <div v-else-if="userID" style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                                    <!-- [else] drinks in drink shelf -->
+                                    <div v-else class="overflow-auto" style="max-height: 100%;">
+                                        <div class="text-start" v-for="listing in drinkShelf" v-bind:key="listing._id">
+                                            <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="reverse-clickable-text">
+                                                <div class="d-flex align-items-center">
+                                                    <img :src="'data:image/png;base64,'+ (listing.photo || defaultProfilePhoto)" style="width: 70px; height: 70px;">
+                                                    <p class="ms-3 reverse-clickable-text"> 
+                                                        <b> {{ listing.listingName }} </b> 
+                                                        <br>
+                                                        {{ getProducerName(listing) }}
+                                                    </p>
+                                                </div>
+                                            </router-link>
+                                        </div>
+                                    </div>
+                                    <div v-if="userID" style="display: flex; align-items: center; justify-content: center; height: 100%;">
                                         <h6 class="fst-italic"> No drinks added yet. </h6>
                                     </div>
                                     <div v-else style="display: flex; align-items: center; justify-content: center; height: 100%;">
@@ -115,7 +131,9 @@
                                         <h6 class="fst-italic"> No brands added yet. </h6>
                                     </div>
                                     <div v-else style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <button class="btn secondary-btn-border btn-sm py-2 px-3"> Log in to follow your favourite brand </button>
+                                        <router-link :to="{ path: '/login' }">
+                                            <button class="btn secondary-btn-border btn-sm py-2 px-3"> Log in to follow your favourite brand</button>
+                                        </router-link>
                                     </div>
                                 </div>
                             </div>
@@ -665,6 +683,7 @@
                 userType: "",
                 username: "",
                 isModerator: "",
+                drinkShelf: [],
 
                 // for producer listing information
                 producerRequestListings: [],
@@ -863,7 +882,19 @@
                         const matches = this.requestListings.filter(listing => listing.drinkType === drink);
                         return acc + matches.length;
                     }, 0);
-
+                    // drink shelf
+                    let allDrinkShelf = Object.values(user.drinkLists).flatMap(obj => obj.listItems);
+                    console.log(allDrinkShelf)
+                    let allDrinks = []
+                    for (const item of allDrinkShelf) {
+                        const listing = this.listings.find(listing => listing._id.$oid === item.$oid);
+                        console.log(listing)
+                        if (listing) {
+                            allDrinks.push(listing);
+                        }
+                    }
+                    this.drinkShelf = [...new Set(allDrinks)];
+                    console.log(this.drinkShelf)
                 }
                 else if (producer) {
                     this.username = producer.producerName
@@ -878,7 +909,6 @@
                         }
                     }
                     this.totalRequests = this.producerRequestListings.length + this.producerEditRequestListings.length;
-                    
                     // Q&A
                     let answeredQuestions = producer["questionsAnswers"];
                     if (answeredQuestions.length > 0) {
