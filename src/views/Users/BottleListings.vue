@@ -36,6 +36,24 @@
 
                     <!-- [user] your drinks shelf & brands you follow -->
                     <div v-if="userType == 'user'" class="row">
+                        <!-- [moderator] listing requests -->
+                        <div v-if="isModerator" class="col-12">
+                            <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
+                                <!-- header text -->
+                                <div class="square-inline text-start">
+                                    <h4 v-if="totalRequests != 0" class="square-inline text-start mr-auto"> {{ totalRequests }} Pending Listing Requests </h4>
+                                    <h4 v-else class="square-inline text-start mr-auto">  No New Pending Listing Requests! </h4>
+                                </div>
+                                <!-- body -->
+                                <div v-if="totalRequests != 0" style="height: 85%;">
+                                    <div style="align-items: center; justify-content: center; height: 100%;" class="pt-5">
+                                        <router-link :to="{ path: '/producers/requests' }">
+                                            <button class="btn secondary-btn-border btn-sm py-2 px-3"> View all requests </button>
+                                        </router-link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <!-- your drinks shelf -->
                         <div class="col-12">
                             <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
@@ -646,6 +664,7 @@
                 userID: "",
                 userType: "",
                 username: "",
+                isModerator: "",
 
                 // for producer listing information
                 producerRequestListings: [],
@@ -833,6 +852,18 @@
                 let venue = this.venues.find(venue => venue._id.$oid == this.userID)
                 if (user) {
                     this.username = user.username
+
+                    console.log(user.choiceDrinks)
+                    // check if user is a moderator
+                    if (user.choiceDrinks.length > 0) {
+                        this.isModerator = true
+                    }
+                    // check number of moderator requests
+                    this.totalRequests = user.choiceDrinks.reduce((acc, drink) => {
+                        const matches = this.requestListings.filter(listing => listing.drinkType === drink);
+                        return acc + matches.length;
+                    }, 0);
+
                 }
                 else if (producer) {
                     this.username = producer.producerName
