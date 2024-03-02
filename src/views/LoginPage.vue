@@ -61,7 +61,7 @@
                     <div class="row pt-3">
                         <div class="col">
                             <button v-if="authPending" type="submit" class="btn secondary-btn-border-thick btn-lg" disabled>Loading...</button>
-                            <button v-else type="submit" class="btn secondary-btn-border-thick btn-lg px-5">Login</button>
+                            <button v-else type="submit" class="btn secondary-btn-border-thick btn-lg px-5">Log In</button>
                         </div>
                     </div>
 
@@ -233,6 +233,11 @@
                     else if (this.venues.some(venue => venue.venueName == this.ID)) {
                         this.role = "venue"
                         this.auth(loginInfo, "http://127.0.0.1:5030/authcheckVenue");
+                    }
+                    // If no such account exists
+                    else {
+                        this.errors.push("Invalid username or password!")
+                        this.authPending = false
                     }
                 }
 

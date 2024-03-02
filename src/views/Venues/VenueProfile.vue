@@ -43,13 +43,32 @@
                                     <!-- [else] not editing -->
                                     <h5 v-else class="text-body-secondary fs"> {{ specified_venue["originLocation"] }} </h5>
                                 </div>
-                                <!-- claim this venue / add listing & edit profile -->
+                                <!-- claim this venue -->
                                 <div class="col-4">
-                                    <!-- [if] user type is venue -->
-                                    <span v-if="correctVenue" class="row"> 
-                                        <!-- edit profile -->
-                                        <div class="col-6"></div>
-                                        <div class="col-6 d-grid no-padding text-end">
+                                    <span class="row"> 
+                                        <div class="col4"></div>
+                                        <div class="col-10 d-grid no-padding text-end">
+                                            <p class="text-body-secondary no-margin text-decoration-underline fst-italic pb-2" @click="claimVenueAccount"> Claim This Venue </p>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                            <!-- producer -->
+                            <div class="row">
+                                <div class="col-8">
+                                    <!-- [if] editing -->
+                                    <div v-if="editing">
+                                        <label for="venueNameInput"> Venue name </label>
+                                        <input type="text" class="form-control mb-3" id="venueNameInput" aria-describedby="venueName" v-model="edit_venueName">
+                                    </div>
+                                    <!-- [else] not editing -->
+                                    <h3 v-else class="text-body-secondary"> <b> {{ specified_venue["venueName"] }} </b> </h3>
+                                </div>
+                                <!-- edit profile  -->
+                                <div class="col-4">
+                                    <span class="row"> 
+                                        <div class="col4"></div>
+                                        <div class="col-10 d-grid no-padding text-end">
                                             <!-- [if] not editing -->
                                             <button v-if="editing == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" v-on:click="editProfile()">
                                                 Edit profile
@@ -60,21 +79,7 @@
                                             </button>
                                         </div>
                                     </span>
-                                    <!-- [else] user type is NOT producer -->
-                                    <div v-else> 
-                                        <p class="text-body-secondary no-margin text-decoration-underline fst-italic" @click="claimVenueAccount"> Claim This Venue </p>
-                                    </div>
                                 </div>
-                            </div>
-                            <!-- producer -->
-                            <div class="row">
-                                <!-- [if] editing -->
-                                <div v-if="editing">
-                                    <label for="venueNameInput"> Venue name </label>
-                                    <input type="text" class="form-control mb-3" id="venueNameInput" aria-describedby="venueName" v-model="edit_venueName">
-                                </div>
-                                <!-- [else] not editing -->
-                                <h3 v-else class="text-body-secondary"> <b> {{ specified_venue["venueName"] }} </b> </h3>
                             </div>
                             <!-- description -->
                             <div class="row">
@@ -598,7 +603,7 @@
                                         Edit opening hours
                                     </button>
                                     <!-- [else] if editing -->
-                                    <button v-else type="button" class="btn success-btn rounded-0 reverse-clickable-text" v-on:click="saveOpeningHours()" :disabled="saveOpeningHoursError">
+                                    <button v-else type="button" class="btn success-btn rounded-0 reverse-clickable-text" v-on:click="saveOpeningHours()" :disabled="countOpeningHoursError > 0">
                                         Save
                                     </button>
                                 </div>
@@ -720,7 +725,7 @@
                 editingOpeningHours: false,
                 edited_openingHours: {},
                 saveOpeningHoursError: false,
-                openingHoursErrors: 0,
+                countOpeningHoursError: 0,
 
                 // customization for drinkLists buttons
                 // [TODO] get drink list of user, for now is hardcoded
@@ -834,7 +839,8 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
                         this.venues = response.data;
                         this.specified_venue = this.venues.find(venue => venue["_id"]["$oid"] == this.venue_id); // find specified venue
-                        this.venue_claimed = this.specified_venue["claimStatus"];
+                        this.venue_claimed = this.specified_venue["claimStatus"]; 
+                        // this.venue_claimed = true // (for testing only, to be removed later when db is updated)
                         this.openingHours = this.specified_venue["openingHours"];
                         // sort opening hours by day
                         this.sortOpeningHours()
@@ -1527,6 +1533,7 @@
             checkOpeningHours() {
                 // reset errors
                 this.saveOpeningHoursError = false;
+                this.countOpeningHoursError = 0;
 
                 // get edited opening hours
                 for (let day in this.openingHours) {
@@ -1550,6 +1557,7 @@
                             errorElement.innerHTML = errorMessage;
                         }
                         this.saveOpeningHoursError = true;
+                        this.countOpeningHoursError += 1;
                     }
                     // remove error message
                     else {
@@ -1559,8 +1567,6 @@
                         }
                         this.saveOpeningHoursError = false;
                     }
-
-                    console.log(this.openingHoursErrors)
                 }
             },
 
