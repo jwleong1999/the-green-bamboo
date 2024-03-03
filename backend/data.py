@@ -136,6 +136,14 @@ class requestEdits:
     duplicateLink: Optional[str] = None
     sourceLink: Optional[str] = None
 
+# Dataclass (requestInaccuracy)
+@dataclass
+class requestInaccuracy:
+    listingID: object
+    userID: object
+    venueID:object
+    inaccurateReason: Optional[str] = None
+    
 # Dataclass (modRequests)
 @dataclass
 class modRequests:

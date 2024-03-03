@@ -49,9 +49,89 @@
                                         <div class="col4"></div>
                                         <div class="col-10 d-grid no-padding text-end">
                                             <p class="text-body-secondary no-margin text-decoration-underline fst-italic pb-2" @click="claimVenueAccount"> Claim This Venue </p>
+                                            <!-- Opens report inaccuracy modal -->
+                                            <p class="text-body-secondary no-margin text-decoration-underline fst-italic" data-bs-toggle="modal" data-bs-target="#inaccurateModal"> Report Inaccuracy of Menu</p>
                                         </div>
                                     </span>
                                 </div>
+                                <!-- modal for inaccurate listing request -->
+                                <div class="modal fade" id="inaccurateModal" tabindex="-1" aria-labelledby="inaccurateModalLabel" aria-hidden="true" data-bs-backdrop="static">
+                                    <div class="modal-dialog modal-xl">
+
+                                        <div class="text-success text-center fst-italic fw-bold fs-3 modal-content" v-if='successSubmission'>
+                                            <span>Your review has successfully been submitted!</span>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" @click="reset" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-danger text-center fst-italic fw-bold fs-3 modal-content" v-if="errorSubmission"> 
+                                            <div v-if="errorMessage" class = "text-center"> 
+                                                <div class="row text-center">
+                                                    <span>An error occurred while attempting to report, please try again!</span>
+                                                </div>
+                                                <div class="row text-center">
+                                                    <div class= 'col'>
+                                                        <button class="btn primary-btn btn-sm" style="width: 300px;" @click="reset">
+                                                            <span class="fs-5 fst-italic"> Send another report here! </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div v-if="duplicateEntry" class = "text-center">
+                                                <div class="row text-center">
+                                                    <span>You've already submitted an inaccurate report for this bottle listing!</span>
+                                                </div>
+                                                <div class="row text-center">
+                                                    <div class= 'col'>
+                                                        <button class="btn primary-btn btn-sm" style="width: 300px;" @click="reset">
+                                                            <span class="fs-5 fst-italic"> Send another report here! </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                        <div v-if="requestInaccuracy" class="modal-content" style="height: 450px;">
+                                            <div class="modal-header" style="background-color: #535C72">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Report inaccurate menu</h1>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+
+                                                <!-- Text input are for review -->
+                                                <p class='text-start mb-2 fw-bold'>Select the bottle that is inaccurate <span class="text-danger">*</span></p>
+                                                <div class="input-group">
+                                                    <select v-model="inaccurateDrink" class="form-select" style="max-width: 100%;">
+                                                        <option disabled value="" > Select a drink listing </option>
+                                                        <option v-for="bottle in allDrinks" v-bind:key="bottle._id" v-bind:value="bottle._id">{{ bottle.listingName }}</option>
+                                                    </select>
+                                                </div>      
+                                                <span v-if="missingInaccurateDrink" class="text-danger">Please select a drink.</span>         
+                                                <!-- Text input for reason for inaccuracy -->
+                                                <div class = 'row justify-content-start mt-3'>
+                                                    <div class = "col-md-12">
+                                                        <p class='text-start mb-2 fw-bold'>Reason for inaccuracy: <span class="text-danger">*</span></p>
+                                                        <textarea v-model="inaccuracyReason" class="form-control" id="reviewTextarea" rows="3" placeholder="Enter reason for inaccuracy and how to solve this issue."></textarea>
+                                                    </div>
+                                                    <span v-if="missingReason" class="text-danger">Please type in your reason.</span>
+                                                </div>                                                
+                                            </div>
+
+                                            <!-- end of modal body -->
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="button" @click="sendInaccurateRequest" class="btn btn-primary">Submit report</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- END OF MODAL FOR INACCURATE REPORTING -->
+
                             </div>
                             <!-- producer -->
                             <div class="row">
@@ -718,6 +798,20 @@
                 question: '',
                 answer: '',
 
+                // To submit inaccurate menu request
+                inaccuracyReason:'',
+                inaccurateDrink:'',
+                errors:[],
+
+                missingReason:false,
+                missingInaccurateDrink:false,
+                successSubmission:false,
+                reviewResponseCode:'',
+                requestInaccuracy:true,
+                errorSubmission:false,
+                duplicateEntry:false,
+                errorMessage:false,
+
                 // status to indicate whether to show listings or not
                 showListings: false,
 
@@ -785,7 +879,6 @@
             async loadData() {
                 // Get the query string parameters (listing ID) from the URL
                 this.venue_id = this.$route.params.id;
-                console.log(this.venue_id);
                     if (this.venue_id == null || this.venue_id =='') {
                         // redirect to page
                         this.$router.push('/Users/Bottle-Listings');
@@ -1198,7 +1291,7 @@
                 }
                 
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5300/editDetails', 
+                    await this.$axios.post('http://127.0.0.1:5300/editDetails', 
                         {
                             venueID: this.venue_id,
                             image64: this.image64,
@@ -1211,7 +1304,6 @@
                             'Content-Type': 'application/json'
                         }
                     });
-                    console.log(response.data);
                 } 
                 catch (error) {
                     console.error(error);
@@ -1224,7 +1316,7 @@
             // send questions that users ask to producers
             async sendQuestion () {
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5300/sendQuestions', 
+                    await this.$axios.post('http://127.0.0.1:5300/sendQuestions', 
                         {
                             venueID: this.venue_id,
                             question: this.question,
@@ -1235,7 +1327,6 @@
                             'Content-Type': 'application/json'
                         }
                     });
-                    console.log(response.data);
                 } 
                 catch (error) {
                     console.error(error);
@@ -1249,7 +1340,7 @@
             async sendAnswer (qa) {
                 let q_and_a_id = qa._id.$oid;
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5300/sendAnswers', 
+                    await this.$axios.post('http://127.0.0.1:5300/sendAnswers', 
                         {
                             venueID: this.venue_id,
                             questionsAnswersID: q_and_a_id,
@@ -1260,7 +1351,6 @@
                             'Content-Type': 'application/json'
                         }
                     });
-                    console.log(response.data);
                 } 
                 catch (error) {
                     console.error(error);
@@ -1284,8 +1374,7 @@
             async deleteListings(listing) {
 
                 try {
-                    const response = await this.$axios.delete(`http://127.0.0.1:5002/deleteListing/${listing._id.$oid}`);
-                    console.log(response.data);
+                    await this.$axios.delete(`http://127.0.0.1:5002/deleteListing/${listing._id.$oid}`);
                 } 
                 catch (error) {
                     console.error(error);
@@ -1351,7 +1440,6 @@
             // get venue's answered questions (to be displayed to the users/venues)
             checkVenueAnswered() {
                 let answeredQuestions = this.specified_venue["questionsAnswers"];
-                console.log(answeredQuestions);
                 if (answeredQuestions.length > 0) {
                     for (let qa in answeredQuestions) {
                         let answer = answeredQuestions[qa]["answer"];
@@ -1393,7 +1481,7 @@
             // for producer to add updates
             async addUpdates() {
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5300/addUpdates', 
+                    await this.$axios.post('http://127.0.0.1:5300/addUpdates', 
                         {
                             venueID: this.venue_id,
                             date: this.currDate,
@@ -1405,7 +1493,6 @@
                             'Content-Type': 'application/json'
                         }
                     });
-                    console.log(response.data);
                 } 
                 catch (error) {
                     console.error(error);
@@ -1427,7 +1514,7 @@
             // like updates
             async likeUpdates() {
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5300/likeUpdates', 
+                    await this.$axios.post('http://127.0.0.1:5300/likeUpdates', 
                         {
                             venueID: this.venue_id,
                             updateID: this.update_id,
@@ -1438,7 +1525,6 @@
                             'Content-Type': 'application/json'
                         }
                     });
-                    console.log(response.data);
                 } 
                 catch (error) {
                     console.error(error);
@@ -1451,7 +1537,7 @@
             // unlike updates
             async unlikeUpdates() {
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5300/unlikeUpdates', 
+                    await this.$axios.post('http://127.0.0.1:5300/unlikeUpdates', 
                         {
                             venueID: this.venue_id,
                             updateID: this.update_id,
@@ -1462,7 +1548,6 @@
                             'Content-Type': 'application/json'
                         }
                     });
-                    console.log(response.data);
                 } 
                 catch (error) {
                     console.error(error);
@@ -1480,7 +1565,7 @@
                     this.following = true
                 }
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5100/updateFollowLists', 
+                    await this.$axios.post('http://127.0.0.1:5100/updateFollowLists', 
                         {
                             userID: this.user_id,
                             action: action,
@@ -1491,7 +1576,6 @@
                             'Content-Type': 'application/json'
                         }
                     });
-                    console.log(response.data);
                 } catch (error) {
                     console.error(error);
                 }
@@ -1549,7 +1633,6 @@
 
                     // [error] check if start time is after end time
                     if (startTimeValue > endTimeValue) {
-                        console.log(startTime, endTime);
                         // show error message
                         const errorMessage = "End time must be after start time";
                         const errorElement = document.getElementById(day + 'error');
@@ -1575,7 +1658,7 @@
 
                 // update database
                 try {
-                    const response = this.$axios.post('http://localhost:5300/editOpeningHours', 
+                    this.$axios.post('http://localhost:5300/editOpeningHours', 
                         {
                             venueID: this.venue_id,
                             updatedOpeningHours: this.edited_openingHours,
@@ -1585,7 +1668,6 @@
                                 'Content-Type': 'application/json'
                             }
                         });
-                        console.log(response.data);
                 }
                 catch (error) {
                     console.error(error);
@@ -1596,6 +1678,79 @@
                     
             },
 
+            // Send request for modification of listing
+            sendInaccurateRequest(){
+                // Validate request
+                this.resetErrors()
+                let errorCount=0
+                if(this.inaccurateDrink==''){
+                    this.missingInaccurateDrink=true;
+                    errorCount++
+                }
+                if(this.inaccuracyReason.trim()==''){
+                    this.missingReason=true;
+                    errorCount++
+                }
+                if(errorCount > 0){
+                    return null
+                }
+                let submitAPI = 'http://localhost:5011/requestInaccuracy'
+                let submitData= {
+                    "listingID": this.inaccurateDrink,
+                    "userID": this.user_id,
+                    "venueID": this.venue_id,
+                    "inaccurateReason": this.inaccuracyReason
+                }
+                this.submitInaccuracy(submitAPI, submitData)
+
+            },
+            
+            async submitInaccuracy(submitAPI, submitData){
+                const response = await this.$axios.post(submitAPI, submitData)
+                .then((response)=>{
+                    this.reviewResponseCode = response.data.code
+                })
+                .catch((error)=>{
+                    console.log(error);
+                    this.reviewResponseCode = error.response.data.code
+                });
+                if(this.reviewResponseCode==201){
+                    this.successSubmission=true; // Display success message
+                    this.requestInaccuracy=false; // Hide submission in progress message
+                }else{
+                    this.errorSubmission=true; // Display error message
+                    this.requestInaccuracy=false; // Hide submission in progress message
+                    if(this.reviewResponseCode==400){
+                        this.duplicateEntry = true // Display duplicate entry message
+                    }else{
+                        this.errorMessage = true // Display generic error message
+                    }
+                }
+                return response
+            },
+            retryRequest(){
+                
+                this.requestInaccuracy= true
+                this.errorSubmission = false
+                this.duplicateEntry=false
+                this.errorMessage = false
+                this.successSubmission=false
+
+            },
+
+            resetErrors(){
+                this.missingInaccurateDrink = false
+                this.missingReason = false
+            },
+            reset(){
+                this.requestInaccuracy= true
+                this.errorSubmission = false
+                this.duplicateEntry=false
+                this.errorMessage = false
+                this.successSubmission=false
+                this.inaccurateDrink=''
+                this.inaccuracyReason=''
+            },
         }
     };
 </script>

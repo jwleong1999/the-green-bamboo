@@ -819,19 +819,12 @@
                 nullSelectedLanguage:false,
                 reviewDesc:"",
                 rating: 5,
-                colours: ["#FFFFFF", "#FEED97", "#FBE166", "#FAD74A", "#F5C84B", "#F8C139", "#E79E12", "#E07D1F", "#D55530", "#B63426", "#AA1F22", "#702C1C", "#4A1C0C", "#000000"],
-                specialColours: {
-                                    "red":['#FF0F0F', '#69140F'],
-                                    "green":['#24FF00', '#074202'],
-                                    "lightBlue":['#82E3E9', '#0A7E97'],
-                                    "darkBlue":['#8F8DF3', '#051B6B'],
-                                    "purple":['#CBA4E3', '#5B0E8A'],
-                                    "pink":['#FDC1FE', '#AD1181'],
-                                },
+                colours: [],
+                specialColours: {},
                 selectedColour:"",
                 image64: null,
                 photo: null,
-                observationTags: ["Beginner Friendly", "Recommended for Enthusiasts", "Good for Gifts", "Cool Packaging", "Acquired Taste", "Easy to Drink", "Good for Cocktails", "Good for Sipping", "Good for Highballs", "Unique Expression", "For My Worst Enemy", "Overhyped!", "More Complex Than Inception", "What Just Hit Me", "Is This Water?", "Try Once", "Daily Drinker","Sharp Like a Toothpick","Hot Like Hell", "Ticket to Funkytown", "Food Pairing Friendly", "Netflx & Chill", "Broke the Bank", "Smooth Criminal", "Grail"],
+                observationTags: [],
                 selectedObservations:[],
                 flavourTags: [],
                 selectedFlavourTags:[],
@@ -949,6 +942,42 @@
                         catch (error) {
                             console.error(error);
                         }
+                    // observationTags
+                    // observationTag
+                        try {
+                            const response = await this.$axios.get('http://127.0.0.1:5000/getObservationTags');
+                            for (let observationTag of response.data) {
+                                this.observationTags.push(observationTag.observationTag);
+                            }
+                        } 
+                        catch(error){
+                            console.error(error)
+                        }
+                    
+                    // colours
+                    // hexcode
+                        try {
+                            const response = await this.$axios.get('http://127.0.0.1:5000/getColours');
+                            for (let colour of response.data) {
+                                this.colours.push(colour.hexcode);
+                            }
+                        } 
+                        catch(error){
+                            console.error(error)
+                        }
+                    // specialColours
+                        try {
+                            const response = await this.$axios.get('http://127.0.0.1:5000/getSpecialColours');
+                            this.specialColours = response.data.reduce((obj, item) => {
+                                obj[item.colour] = item.hexList;
+                                return obj;
+                            }, {});
+                            console.log(this.specialColours)
+                        } 
+                        catch(error){
+                            console.error(error)
+                        }
+                    
                     // venues
                     // _id, venueName, venueDesc, originCountry, address, openingHours
                         try {
