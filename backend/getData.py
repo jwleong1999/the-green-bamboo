@@ -267,6 +267,54 @@ def getFlavourTags():
     return allFlavourTags
 
 # -----------------------------------------------------------------------------------------
+# [GET] observationTags
+@app.route("/getObservationTags")
+def getObservationTags():
+    #this step finds all the items in the collection, specifying Flavour Tags
+    data = db.observationTags.find({})
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+    allObservationTags = []
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allObservationTags.append(doc)
+    return allObservationTags
+
+# -----------------------------------------------------------------------------------------
+# [GET] colours
+@app.route("/getColours")
+def getColours():
+    #this step finds all the items in the collection, specifying Flavour Tags
+    data = db.colours.find({})
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+    allColours = []
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allColours.append(doc)
+    return allColours
+
+# -----------------------------------------------------------------------------------------
+# [GET] colours
+@app.route("/getSpecialColours")
+def getSpecialColours():
+    #this step finds all the items in the collection, specifying Flavour Tags
+    data = db.specialColours.find({})
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+    allSpecialColours = []
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allSpecialColours.append(doc)
+    return allSpecialColours
+
+# -----------------------------------------------------------------------------------------
 # [GET] Languages
 @app.route("/getLanguages")
 def getLanguages():
