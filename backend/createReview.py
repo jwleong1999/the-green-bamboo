@@ -1,5 +1,6 @@
 # Port: 5021
 # Routes: /createReview (POST)
+# Dataclass: reviews
 # -----------------------------------------------------------------------------------------
 
 import bson

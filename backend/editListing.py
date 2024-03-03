@@ -1,5 +1,6 @@
 # Port: 5002
 # Routes: /updateListing/<id> (PUT), /deleteListing/<id> (DELETE)
+# Dataclass: listings
 # -----------------------------------------------------------------------------------------
 
 import bson
@@ -34,6 +35,7 @@ def updateListing(id):
     listing_id=ObjectId(id)
     updatedListing = request.get_json()
     
+    
     # Duplicate listing check: Reject if listing with the same bottle name already exists in the database
     updatedListingName = updatedListing["listingName"]
     existingBottle = db.listings.find_one({"listingName": updatedListingName})
@@ -50,12 +52,14 @@ def updateListing(id):
             ), 410
     
     # Update the listing entry with the specified id
-    updatedBottle = data.listings(**updatedListing)
-    print(updatedBottle)
+    # updatedBottle = data.listings(**updatedListing)
+    # print(updatedBottle)
     try:
         result = db.listings.update_one(
             {"_id": listing_id},
-            {"$set": data.asdict(updatedBottle)}
+            # {"$set": data.asdict(updatedBottle)}
+            {"$set": updatedListing}
+
         )
 
         if result.matched_count > 0:

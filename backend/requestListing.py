@@ -1,5 +1,6 @@
 # Port: 5011
 # Routes: /requestListing (POST), /requestListingModify/<requestID> (POST), /requestEdits (POST), /requestEditsModify/<requestID> (POST), /requestInaccuracy (POST)
+# Dataclass: RequestListings
 # -----------------------------------------------------------------------------------------
 
 import bson

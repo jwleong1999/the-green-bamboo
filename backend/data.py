@@ -18,6 +18,7 @@ database = client["GreenBamboo"]
 @dataclass
 class countries:
     originCountry: str
+    legalAge:str
 
 # Dataclass (listings)
 @dataclass
@@ -29,11 +30,14 @@ class listings:
     drinkType: str
     abv: float
     officialDesc: str
-    photo: str
+    addedDate: datetime
+    allowMod: bool
     age: Optional[str] = None
+    photo: Optional[str] = None
     typeCategory: Optional[str] = None
     reviewLink: Optional[str] = None
     sourceLink: Optional[str] = None
+    
 
 # Dataclass (producers)
 @dataclass
@@ -44,7 +48,11 @@ class producers:
     mainDrinks: list
     hashedPassword: str
     photo: str
+    hashedPassword:str
+    questionAnswers: Optional[list] = None
+    updates:Optional[list]=None
     statusOB: Optional[str] = None
+    producerLink: Optional[str] = None
 
 # Dataclass (reviews)
 @dataclass
@@ -82,16 +90,27 @@ class users:
     hashedPassword: str
     joinDate: datetime
     followLists: object
+    firstName:str
+    lastName:str
+    email:str
 
 # Dataclass (venues)
 @dataclass
 class venues:
     venueName: str
-    venueDesc: str
-    originCountry: str
     address: str
+    venueType: str
+    venueDesc: str
+    originLocation: str
+    venueDesc: str
+    menu: list
+    photo: str
+    claimStatus: bool
     openingHours: object
     hashedPassword: str
+    questionAnswers: Optional[list] = None
+    updates:Optional[list]=None
+
 
 # Dataclass (venuesAPI) --> Using Google Maps API
 @dataclass
@@ -162,6 +181,22 @@ class flavourTags:
 @dataclass
 class languages:
     language: str
+
+# Dataclass (observationTags)
+@dataclass
+class observationTags:
+    observationTag: str
+
+# Dataclass (colours)
+@dataclass
+class colours:
+    hexcode: str
+
+# Dataclass (specialColours)
+@dataclass
+class specialColours:
+    hexList: list
+    colour: str
 
 def convert_to_json(data):
     return json.dumps(data.__dict__)

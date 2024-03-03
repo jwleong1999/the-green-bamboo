@@ -1,5 +1,6 @@
 # Port: 5001
 # Routes: /createListing (POST)
+# Dataclass: listings
 # -----------------------------------------------------------------------------------------
 
 import bson
