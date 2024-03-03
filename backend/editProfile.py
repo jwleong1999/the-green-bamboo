@@ -14,6 +14,8 @@ from pymongo.errors import DuplicateKeyError, OperationFailure
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
+from datetime import datetime
+
 from gridfs import GridFS
 import os
 
@@ -78,6 +80,13 @@ def updateBookmark():
     print(data)
     userID = data['userID']
     bookmark = data['bookmark']
+
+    # convert date (str) to datetime object
+    for listName in bookmark:
+        listItems = bookmark[listName]["listItems"]
+        for item in listItems:
+            if isinstance(item[0], str):
+                item[0] = datetime.strptime(item[0], "%Y-%m-%dT%H:%M:%S.%fZ")
 
     try: 
         updateBookmark = db.users.update_one({'_id': ObjectId(userID)}, {'$set': {'drinkLists': bookmark}})

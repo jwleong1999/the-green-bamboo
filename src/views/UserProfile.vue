@@ -199,7 +199,7 @@
                     <div class="tab-pane fade show active" id="reviews">
                         <h4 class="mt-3">Favourite Drinks</h4>
                         <div class="flex-start">
-                            <div class="image-container" v-for="(listing, index) in favouriteListings" :key="index" >
+                            <div class="image-container-150" v-for="(listing, index) in favouriteListings" :key="index" >
                                 <img :src=" 'data:image/png;base64,' + (listing.photo || defaultDrinkImage)" alt="" class="rounded bottle-img me-3">
                                 <!-- svg for bookmarked -->
                                 <svg v-if="checkBookmarkStatus(listing._id.$oid) && user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
@@ -222,7 +222,7 @@
 
                         <h4 class="mt-4">Recent Activity</h4>
                         <div class="flex-start">
-                            <div class="image-container" v-for="(review, index) in recentActivity" :key="index" >
+                            <div class="image-container-150" v-for="(review, index) in recentActivity" :key="index" >
                                 <img :src=" 'data:image/png;base64,' + ( getListingPhoto(review.reviewTarget ) || defaultDrinkImage)" alt="" class="rounded bottle-img me-3">
                                 <!-- svg for bookmarked -->
                                 <svg v-if="checkBookmarkStatus(review.reviewTarget.$oid) && user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
@@ -429,12 +429,12 @@
                             <!-- display drink information -->
                             <div class="row mb-3" v-for="(listingID, index) in displayUser.drinkLists[currentList].listItems" :key="index">
                                 <div class="col-10" style="display: flex">
-                                    <img :src=" 'data:image/png;base64,' + ( getListingFromID(listingID.$oid).photo || defaultDrinkImage )" alt="" class="bottle-img me-3">
+                                    <img :src=" 'data:image/png;base64,' + ( getListingFromID(listingID[1].$oid).photo || defaultDrinkImage )" alt="" class="bottle-img me-3">
                                     <div style="height: 150px; display: flex; flex-direction: column;">
-                                        <a :href="'/Producers/Bottle-Listings/' + listingID.$oid" style="text-decoration: none; color: inherit;">
-                                            <h4>{{ getListingFromID(listingID.$oid).listingName }}</h4>
+                                        <a :href="'/Producers/Bottle-Listings/' + listingID[1].$oid" style="text-decoration: none; color: inherit;">
+                                            <h4>{{ getListingFromID(listingID[1].$oid).listingName }}</h4>
                                         </a>
-                                        <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;"> {{ getListingFromID(listingID.$oid).officialDesc }} </p>
+                                        <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;"> {{ getListingFromID(listingID[1].$oid).officialDesc }} </p>
                                         <div v-if="ownProfile" style="display: flex; margin-top: auto" class="mb-0">
                                             <a href="#" style="text-decoration: none; color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#deleteFromListModal${index}`">
                                                 <!-- cross icon -->
@@ -449,7 +449,7 @@
                                 </div>
                                 <div class="col-2 text-end">
                                     <h2>
-                                        {{ getAverageReview(listingID) }}
+                                        {{ getAverageReview(listingID[1]) }}
                                         <svg class="mb-2" xmlns="http://www.w3.org/2000/svg" height="18" width="20.25" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
                                             <path d="M287.9 0c9.2 0 17.6 5.2 21.6 13.5l68.6 141.3 153.2 22.6c9 1.3 16.5 7.6 19.3 16.3s.5 18.1-5.9 24.5L433.6 328.4l26.2 155.6c1.5 9-2.2 18.1-9.7 23.5s-17.3 6-25.3 1.7l-137-73.2L151 509.1c-8.1 4.3-17.9 3.7-25.3-1.7s-11.2-14.5-9.7-23.5l26.2-155.6L31.1 218.2c-6.5-6.4-8.7-15.9-5.9-24.5s10.3-14.9 19.3-16.3l153.2-22.6L266.3 13.5C270.4 5.2 278.7 0 287.9 0zm0 79L235.4 187.2c-3.5 7.1-10.2 12.1-18.1 13.3L99 217.9 184.9 303c5.5 5.5 8.1 13.3 6.8 21L171.4 443.7l105.2-56.2c7.1-3.8 15.6-3.8 22.6 0l105.2 56.2L384.2 324.1c-1.3-7.7 1.2-15.5 6.8-21l85.9-85.1L358.6 200.5c-7.8-1.2-14.6-6.1-18.1-13.3L287.9 79z"/>
                                         </svg>
@@ -468,7 +468,7 @@
                                                 <img src="../../Images/Others/cancel.png" alt="" class="rounded-circle border border-dark text-center" style="width: 100px; height: 100px;">
                                                 <h3>Are you sure?</h3>
                                                 <br>
-                                                <p>Do you really want to delete <b><i>{{ getListingFromID(listingID.$oid).listingName }}</i></b> from <b><i>{{ currentList }}</i></b>? </p>
+                                                <p>Do you really want to delete <b><i>{{ getListingFromID(listingID[1].$oid).listingName }}</i></b> from <b><i>{{ currentList }}</i></b>? </p>
                                             </div>
                                             <div style="display: inline" class="text-center mb-4">
                                                 <button type="button" class="btn btn-secondary me-3" data-bs-dismiss="modal">Cancel</button>
@@ -794,7 +794,7 @@ export default {
             // check if listingID is in user bookmark
             for (const category of Object.values(this.userBookmarks)) {
                 if (category.listItems) {
-                    if (category.listItems.some(item => item.$oid === listingID)) {
+                    if (category.listItems.some(item => item[1].$oid === listingID)) {
                         return true;
                     }
                 }
@@ -821,24 +821,24 @@ export default {
                     this.othersListNameError = "";
                     this.userBookmarks[this.othersListName] = {
                         listDesc: "",
-                        listItems: [addListingId],
+                        listItems: [new Date(), addListingId],
                     };
                     // TODO
-                    this.userBookmarks[this.othersListName].listItems.push(addListingId);
+                    this.userBookmarks[this.othersListName].listItems.push([new Date(), addListingId]);
                 }
             }
             for (const listName in this.userBookmarks) {
                 if (Object.hasOwnProperty.call(this.userBookmarks, listName)) {
                     const bookmarkItems = this.userBookmarks[listName].listItems;
+                    let itemExist = bookmarkItems.some(item => item[1].$oid === addListingId.$oid);
                     if (this.selectedBookmarkList.includes(listName)) {
-                        if (!JSON.stringify(bookmarkItems).includes(JSON.stringify(addListingId))) {
-                            bookmarkItems.push(addListingId);
+                        if (!itemExist) {
+                            bookmarkItems.push([new Date(), addListingId]);
                         }
                     } else {
-                        if (JSON.stringify(bookmarkItems).includes(JSON.stringify(addListingId))) {
-                            const index = bookmarkItems.indexOf(addListingId);
+                        if (itemExist) {
+                            const index = bookmarkItems.findIndex(item => item[1].$oid === addListingId.$oid);
                             bookmarkItems.splice(index, 1);
-                            console.log("done");
                         }
                     }
                 }
@@ -877,7 +877,7 @@ export default {
                 if (Object.hasOwnProperty.call(this.userBookmarks, listName)) {
                     const bookmarkItems = this.userBookmarks[listName].listItems;
                     if (bookmarkItems) {
-                        if (bookmarkItems.some(item => item.$oid === listingID.$oid)) {
+                        if (bookmarkItems.some(item => item[1].$oid === listingID.$oid)) {
                             if (!this.selectedBookmarkList.includes(listName)) {
                                 this.selectedBookmarkList.push(listName);
                             }
@@ -894,9 +894,9 @@ export default {
         async addDrinkToList(listName) {
             for (const drink of this.drinksToAdd) {
                 let addListingId = this.getListingID(drink);
-                console.log(addListingId);
-                if (!this.userBookmarks[listName].listItems.includes(addListingId)) {
-                    this.userBookmarks[listName].listItems.push(addListingId);
+                let itemExist = this.userBookmarks[listName].listItems.find(item => item[1].$oid === addListingId.$oid);
+                if (!itemExist) {
+                    this.userBookmarks[listName].listItems.push([new Date(), addListingId]);
                 }
             }
 
@@ -1216,12 +1216,12 @@ export default {
     border: 2px solid #535C72;
 }
 
-.image-container {
+.image-container-150 {
     position: relative;
     display: inline-block;
 }
 
-.image-container .icon {
+.image-container-150 .icon {
     position: absolute;
     top: 0;
     right: 0;
