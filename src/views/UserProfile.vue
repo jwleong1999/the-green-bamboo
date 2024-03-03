@@ -810,23 +810,6 @@ export default {
 
             let addListingId = this.getListingID(this.bookmarkModalItem);
 
-            if (this.saveToNewList) {
-                if (this.othersListName === "") {
-                    this.othersListNameError = "Please enter a list name";
-                    return;
-                } else if (this.userBookmarks[this.othersListName]) {
-                    this.othersListNameError = "List name already exists";
-                    return;
-                } else {
-                    this.othersListNameError = "";
-                    this.userBookmarks[this.othersListName] = {
-                        listDesc: "",
-                        listItems: [new Date(), addListingId],
-                    };
-                    // TODO
-                    this.userBookmarks[this.othersListName].listItems.push([new Date(), addListingId]);
-                }
-            }
             for (const listName in this.userBookmarks) {
                 if (Object.hasOwnProperty.call(this.userBookmarks, listName)) {
                     const bookmarkItems = this.userBookmarks[listName].listItems;
@@ -841,6 +824,22 @@ export default {
                             bookmarkItems.splice(index, 1);
                         }
                     }
+                }
+            }
+
+            if (this.saveToNewList) {
+                if (this.othersListName === "") {
+                    this.othersListNameError = "Please enter a list name";
+                    return;
+                } else if (this.userBookmarks[this.othersListName]) {
+                    this.othersListNameError = "List name already exists";
+                    return;
+                } else {
+                    this.othersListNameError = "";
+                    this.userBookmarks[this.othersListName] = {
+                        listDesc: "",
+                        listItems: [[new Date(), addListingId]],
+                    };
                 }
             }
 
