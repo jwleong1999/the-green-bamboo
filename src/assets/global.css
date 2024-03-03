@@ -204,13 +204,50 @@ body {
 }
 
 .image-container {
+    width: 300px;
+    height: 300px;
     position: relative;
 }
 
 .overlay-icon {
     position: absolute;
-    top: 15px;
-    right: 15px;
+    top: 22px;
+    right: 10px;
+}
+
+.image-container-256 {
+    width: 256px;
+    height: 256px;
+    position: relative;
+}
+
+.overlay-icon-256 {
+    position: absolute;
+    top: 22px;
+    right: 30px;
+}
+
+.image-container-150 {
+    position: relative;
+    display: inline-block;
+}
+
+.image-container-150 .icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 10px;
+    margin-right: 25px;
+    z-index: 1;
+}
+
+.image-container-150 .overlay-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 11px;
+    margin-right: 8px;
+    z-index: 1;
 }
 
 .add-review-photo-container {

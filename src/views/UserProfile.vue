@@ -1215,20 +1215,6 @@ export default {
     border: 2px solid #535C72;
 }
 
-.image-container-150 {
-    position: relative;
-    display: inline-block;
-}
-
-.image-container-150 .icon {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin-top: 10px;
-    margin-right: 25px;
-    z-index: 1;
-}
-
 .flex-start {
     display: flex;
     justify-content: flex-start;

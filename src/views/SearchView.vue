@@ -122,11 +122,20 @@
                         <hr>
 
                         <!-- Image -->
-                        <div class="col-3 image-container">
+                        <div class="col-3 image-container-256">
                             <router-link :to="{ path: '/Producers/Bottle-Listings/' + resultListing._id['$oid'] }">
                                 <img v-if="resultListing['photo']" :src="'data:image/png;base64,' + resultListing['photo']" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px">
                                 <img v-else src="../../Images/Drinks/Placeholder.png" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px"> 
                             </router-link>
+                            <!-- bookmark icon -->
+                            <svg v-if="checkBookmarkStatus(resultListing._id.$oid) && user" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark-fill overlay-icon-256" viewBox="0 0 16 16"
+                                data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(resultListing._id)">
+                                <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2"/>
+                            </svg>
+                            <svg v-else-if="user" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-bookmark overlay-icon-256" viewBox="0 0 16 16"
+                                data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(resultListing._id)">
+                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                            </svg>
                         </div>
 
                         <!-- Details -->
@@ -158,6 +167,47 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- bookmark modal start -->
+                <div v-if="user" class="modal fade" id="bookmarkModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Add {{bookmarkModalItem}} to List</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-start">
+                            <div class="form-check" v-for="(listItems, listName) in user.drinkLists" :key="listName">
+                                <input class="form-check-input" type="checkbox" :value="listName" :id="listName" 
+                                    v-model="selectedBookmarkList">
+                                <label class="form-check-label" :for="listName">
+                                    {{listName}}
+                                </label>
+                            </div>
+
+                            <div class="form-check mt-3">
+                                <input class="form-check-input" type="checkbox" value="saveToNewList" id="saveToNewList" v-model="saveToNewList">
+                                <label class="form-check-label" for="saveToNewList">
+                                    Create New List
+                                </label>
+                                <div v-if="saveToNewList">
+                                    <div class="mt-2">New List Name</div>
+                                    <input type="text" class="form-control" v-model="othersListName" placeholder="New List Name">
+                                    <div v-if="othersListNameError" class="text-danger text-sm">
+                                        *{{ othersListNameError }}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" @click="bookmarkItem">Save changes</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- modal end -->
                 
             </div>
 
@@ -186,9 +236,32 @@
                 producerList: [],
                 originalResults: [],
                 resultListings: [],
+                listings: [],
+
+                userID: "",
+                userType: "",
+
+                // for bookmark
+                user: null,
+                userBookmarks: [],
+                bookmarkModalItem: {},
+                selectedBookmarkList: [],
+                saveToNewList: false,
+                othersListName: "",
+                othersListNameError: "",
             }
         },
         mounted() {
+            // Load local storage variables
+            const accID = localStorage.getItem("88B_accID");
+            if(accID !== null){
+                this.userID = localStorage.getItem('88B_accID')
+            }
+            let userType = localStorage.getItem('88B_accType')
+            if(userType !=null){
+                this.userType = userType
+            }
+
             // if there is a search input
             if (this.searchTerm != '' || this.searchTerm != null) {
                 this.searchTerm = this.searchTerm.toLowerCase();
@@ -216,6 +289,19 @@
                     this.loadError = true;
                 }
 
+                // Users
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
+                    this.users = response.data;
+                    this.user = this.users.find(user => user._id.$oid == this.userID)
+                    console.log(this.user);
+                    this.userBookmarks = this.user.drinkLists;
+                    console.log(this.userBookmarks);
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+
                 // Producers
                 try {
                     const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
@@ -229,6 +315,7 @@
                 // Listings
                 try {
                     const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
+                    this.listings = response.data;
 
                     for (let listing of response.data) {
                         const producer = this.producerList.find((producer) => {
@@ -279,6 +366,103 @@
                     this.searchFilter.drinkType = drinkType;
                     this.filterResults();
                 }
+            },
+
+            // bookmarks
+            // checks if an item has been bookmarked
+            checkBookmarkStatus(listingID) {
+                for (const category of Object.values(this.userBookmarks)) {
+                    if (category.listItems) {
+                        if (category.listItems.some(item => item[1].$oid === listingID)) {
+                            return true;
+                        }
+                    }
+                }
+            },
+            getListingName(listingID) {
+                if (this.listings) {
+                    return this.listings.find(listing => listing._id.$oid === listingID.$oid).listingName;
+                }
+            },
+            getListingID(listingName) {
+                const listing = this.listings.find(listing => listing.listingName === listingName);
+                console.log(listing);
+                return listing._id;
+            },
+            // checks which lists the item is in
+            populateBookmarkModal(listingID) {
+                // param: objectId
+                this.bookmarkModalItem = this.getListingName(listingID);
+                this.selectedBookmarkList = [];
+                for (const listName in this.userBookmarks) {
+                    if (Object.hasOwnProperty.call(this.userBookmarks, listName)) {
+                        const bookmarkItems = this.userBookmarks[listName].listItems;
+                        if (bookmarkItems) {
+                            if (bookmarkItems.some(item => item[1].$oid === listingID.$oid)) {
+                                if (!this.selectedBookmarkList.includes(listName)) {
+                                    this.selectedBookmarkList.push(listName);
+                                }
+                            }
+                        } 
+                    }
+                }
+            },
+            // bookmark item through bookmark icon
+            async bookmarkItem() {
+                console.log(this.bookmarkModalItem);
+                let addListingId = this.getListingID(this.bookmarkModalItem);
+                console.log(addListingId);
+
+                for (const listName in this.userBookmarks) {
+                    if (Object.hasOwnProperty.call(this.userBookmarks, listName)) {
+                        const bookmarkItems = this.userBookmarks[listName].listItems;
+                        let itemExist = bookmarkItems.some(item => item[1].$oid === addListingId.$oid);
+                        if (this.selectedBookmarkList.includes(listName)) {
+                            if (!itemExist) {
+                                bookmarkItems.push([new Date(), addListingId]);
+                            }
+                        } else {
+                            if (itemExist) {
+                                const index = bookmarkItems.findIndex(item => item[1].$oid === addListingId.$oid);
+                                bookmarkItems.splice(index, 1);
+                            }
+                        }
+                    }
+                }
+
+                if (this.saveToNewList) {
+                    if (this.othersListName === "") {
+                        this.othersListNameError = "Please enter a list name";
+                        return;
+                    } else if (this.userBookmarks[this.othersListName]) {
+                        this.othersListNameError = "List name already exists";
+                        return;
+                    } else {
+                        this.othersListNameError = "";
+                        this.userBookmarks[this.othersListName] = {
+                            listDesc: "",
+                            listItems: [[new Date(), addListingId]],
+                        };
+                    }
+                }
+
+                try {
+                    const response = await this.$axios.post('http://127.0.0.1:5100/updateBookmark', 
+                        {
+                            userID: this.userID,
+                            bookmark: this.userBookmarks,
+                        }, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    console.log(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+                
+                window.location.reload();
+
             },
         }
     }
