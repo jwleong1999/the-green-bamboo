@@ -1,5 +1,5 @@
 # Port: 5011
-# Routes: /requestListing (POST), /requestListingModify/<requestID> (POST), /requestEdits (POST), /requestEditsModify/<requestID> (POST)
+# Routes: /requestListing (POST), /requestListingModify/<requestID> (POST), /requestEdits (POST), /requestEditsModify/<requestID> (POST), /requestInaccuracy (POST)
 # -----------------------------------------------------------------------------------------
 
 import bson
@@ -215,7 +215,59 @@ def requestEditsModify(requestID):
                 "message": "An error occurred while submitting the request."
             }
         ), 500
+    
+# -----------------------------------------------------------------------------------------
+# [POST] Request for listing modification in venue menu
+# - Insert entry into the "requestInaccurate" collection. Follows requestInaccuracy dataclass requirements.
+# - Possible return codes: 201 (Created), 400 (Duplicate request), 500 (Error during creation)
+@app.route("/requestInaccuracy", methods= ['POST'])
+def requestInaccuracy():
+    rawRequest = request.get_json()
 
+    # Check if inaccuracy request is already submitted for the same bottle for a venue in the database
+    rawListingID = rawRequest["listingID"]["$oid"]
+    rawVenueID = rawRequest["venueID"]
+    rawUserID = rawRequest["userID"]
+    existingListing = db.requestInaccuracy.find_one({"listingID": ObjectId(rawListingID), "venueID":ObjectId(rawVenueID), "userID":ObjectId(rawUserID)})
+
+    if (existingListing != None):
+        return jsonify(
+            {
+                "code": 400,
+                "data": {
+                    "listingID": rawListingID
+                },
+                "message": "Duplicate request for inaccuracy!"
+            }
+        ), 400
+    
+    # Insert new edit request into database
+    rawRequest["venueID"] = ObjectId(rawVenueID)
+    rawRequest["userID"] = ObjectId(rawUserID)
+    rawRequest["listingID"] = ObjectId(rawListingID)
+    newRequest = data.requestInaccuracy(**rawRequest)
+    try:
+        insertResult = db.requestInaccuracy.insert_one(data.asdict(newRequest))
+
+        return jsonify(
+            {
+                "code": 201,
+                "data": rawListingID
+            }
+        ), 201
+    
+    except Exception as e:
+        print(str(e))
+
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "listingName": rawListingID
+                },
+                "message": "An error occurred while submitting the request."
+            }
+        ), 500
 # -----------------------------------------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, port = 5011)
