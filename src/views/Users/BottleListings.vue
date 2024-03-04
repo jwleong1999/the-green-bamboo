@@ -316,7 +316,7 @@
 
                                         <div class="row">
                                             <!-- image -->
-                                            <div class="col-4 image-container">
+                                            <div class="col-4 image-container" style="height: 300px; width: 300px">
                                                 <img v-if="listing['photo']" :src="'data:image/png;base64,'+listing['photo']" style="width: 300px; height: 300px;" class="img-border">
                                                 <img v-else src="../../../Images/Drinks/Placeholder.png" style="width: 300px; height: 300px;" class="img-border">
                                                 <!-- bookmark icon -->
