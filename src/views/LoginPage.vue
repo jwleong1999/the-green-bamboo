@@ -122,50 +122,12 @@
                 role: '',
                 ID: '',
                 password: '',
-
-                // database values
-                users: [],
-                producers: [],
-                venues: [],
-
             };
         },
         mounted() {
-            this.loadData();
             this.loginCheck();
         },
         methods: {
-
-            // load data from database
-            async loadData() {
-                // users
-                // _id, username, displayName, choiceDrinks, drinkLists, modType, photo
-                try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
-                        this.users = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
-                // producers
-                // _id, producerName, producerDesc, originCountry, statusOB, mainDrinks
-                try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
-                        this.producers = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
-                // venues
-                // _id, venueName, venueDesc, originCountry, address, openingHours
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
-                        this.venues = response.data;
-                    } 
-                    catch (error) {
-                        console.error(error);
-                    }
-            },
 
             // Check if user is already logged in
             loginCheck() {
@@ -188,7 +150,7 @@
             },
 
             // Form Submission Function
-            async checkLogin() {
+            checkLogin() {
 
                 // set authentication pending flag to true
                 this.authPending = true
@@ -217,28 +179,8 @@
 
                     // Check login validity
                     let hashedPassword = this.hashPassword(this.ID, this.password)
-                    let loginInfo = { "username": this.ID, "password": hashedPassword}                    
-
-                    // Check if user account exists
-                    if (this.users.some(user => user.username == this.ID)) {
-                        this.role = "user"
-                        this.auth(loginInfo, "http://127.0.0.1:5030/authcheckUser");
-                    }
-                    // Check if producer account exists
-                    else if (this.producers.some(producer => producer.producerName == this.ID)) {
-                        this.role = "producer"
-                        this.auth(loginInfo, "http://127.0.0.1:5030/authcheckProducer");
-                    }
-                    // Check if producer account exists
-                    else if (this.venues.some(venue => venue.venueName == this.ID)) {
-                        this.role = "venue"
-                        this.auth(loginInfo, "http://127.0.0.1:5030/authcheckVenue");
-                    }
-                    // If no such account exists
-                    else {
-                        this.errors.push("Invalid username or password!")
-                        this.authPending = false
-                    }
+                    let loginInfo = { "username": this.ID, "password": hashedPassword }
+                    this.auth(loginInfo, "http://127.0.0.1:5030/authcheck");
                 }
 
             },
@@ -253,6 +195,7 @@
                     // Authentication successful
                     if (responseCode == 200) {
                         this.accountID = response.data.id;
+                        this.role = response.data.role;
                         localStorage.setItem("88B_accID", this.accountID);
                         localStorage.setItem("88B_accType", this.role);
 
