@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
+  // ----------------- MAIN PAGES -----------------
   {
     // path: '/',
     // name: 'home',
@@ -32,7 +33,9 @@ const routes = [
     name: 'search',
     component: () => import('../views/SearchView.vue')
   },
-
+  // -------------------------------------------------------------------------------------
+  
+  // ----------------- PROFILE PAGES -----------------
   {
     // path: '/profile/user/:userID?',
     // name: 'profileuser',
@@ -54,7 +57,9 @@ const routes = [
     name: 'venuesprofilepage',
     component: () => import('../views/Venues/VenueProfile.vue')
   },
+  // -------------------------------------------------------------------------------------
 
+  // ----------------- LISTING PAGES -----------------
   {
     // path: '/listing/view/:listingID',
     // name: 'listingview',
@@ -76,7 +81,9 @@ const routes = [
     name: 'producerupdatelistingsdetails',
     component: () => import('../views/Producers/EditListing.vue')
   },
+  // -------------------------------------------------------------------------------------
   
+  // ----------------- REQUEST PAGES -----------------
   {
     // path: '/request/view',
     // name: 'requestview',
@@ -98,8 +105,10 @@ const routes = [
     name: 'usersrequestlistingmodify',
     component: () => import('../views/Users/RequestListingModify.vue')
   },
+  // -------------------------------------------------------------------------------------
   
   {
+    // TO BE DELETED
     path: '/Producer/Producer-Edit-Listing',
     name: 'producerupdatelistings',
     component: () => import('../views/Producers/EditHome.vue')
@@ -110,16 +119,19 @@ const routes = [
     component: () => import('../views/Venues/AddMenu.vue')
   },
   {
+    // TO BE DELETED
     path: '/Venues/Bottle-Listings',
     name: 'venuesbottlelistings',
     component: () => import('../views/Venues/BottleListings.vue')
   },
   {
+    // TO BE DELETED
     path: '/Producer/Producer-Listings',
     name: 'producerlistings',
     component: () => import('../views/Producers/ProducerListings.vue')
   },
   {
+    // TO BE DELETED
     // path: '/test/home',
     // name: 'testhome',
     path: '/',
@@ -127,6 +139,7 @@ const routes = [
     component: () => import('../views/zToBeDeleted/HomeView.vue')
   },
   {
+    // TO BE DELETED
     // path: '/test/about',
     // name: 'testabout',
     path: '/about',
