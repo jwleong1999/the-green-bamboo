@@ -247,7 +247,7 @@
                         <div>
                             <div v-for="(review, index) in reviews" :key="index">
                                 <div style="display: flex" class="mb-3" v-if="review.userID?.$oid === displayUserID && review.reviewType === 'Listing'">
-                                    <img :src=" 'data:image/png;base64,' + (review.photo||defaultDrinkImage)" alt="" class="bottle-img me-3">
+                                    <img :src=" 'data:image/png;base64,' + (review.photo||defaultDrinkImage)" alt="" class="rounded bottle-img me-3">
                                     <div>
                                         <a :href="'/Producers/Bottle-Listings/' + review.reviewTarget.$oid" style="text-decoration: none; color: inherit;">
                                             <h3>{{ getListingName(review.reviewTarget) }}</h3>

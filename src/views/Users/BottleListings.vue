@@ -59,7 +59,9 @@
                             <div class="square primary-square rounded p-3 mb-3 text-start" style="height: 325px;">
                                 <!-- header text -->
                                 <div class="square-inline">
-                                    <h4 class="square-inline text-start mr-auto"> Your Drinks Shelf </h4>
+                                    <router-link :to="{ path: '/userprofile' }" class="reverse-clickable-text">
+                                        <h4 class="square-inline text-start mr-auto reverse-clickable-text"> Your Drinks Shelf </h4>
+                                    </router-link>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
                                     </svg>
@@ -936,23 +938,23 @@
                 let venue = this.venues.find(venue => venue._id.$oid == this.userID)
                 if (user) {
                     this.username = user.username
-
-                    console.log(user.choiceDrinks)
                     // check if user is a moderator
-                    if (user.choiceDrinks.length > 0) {
+                    if (user.isAdmin) {
                         this.isModerator = true
+                        // check number of moderator requests
+                        if (user.modType.length > 0) {
+                            this.totalRequests = user.modType.reduce((acc, drink) => {
+                                const matches = this.requestListings.filter(listing => listing.drinkType === drink);
+                                return acc + matches.length;
+                            }, 0);
+                        }
                     }
-                    // check number of moderator requests
-                    this.totalRequests = user.choiceDrinks.reduce((acc, drink) => {
-                        const matches = this.requestListings.filter(listing => listing.drinkType === drink);
-                        return acc + matches.length;
-                    }, 0);
                     // drink shelf
                     let allDrinkShelf = Object.values(user.drinkLists).flatMap(obj => obj.listItems);
                     console.log(allDrinkShelf)
                     let allDrinks = []
                     for (const item of allDrinkShelf) {
-                        const listing = this.listings.find(listing => listing._id.$oid === item.$oid);
+                        const listing = this.listings.find(listing => listing._id.$oid === item[1].$oid);
                         console.log(listing)
                         if (listing) {
                             allDrinks.push(listing);
