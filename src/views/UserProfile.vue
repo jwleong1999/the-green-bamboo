@@ -1,6 +1,6 @@
 <template>
     <NavBar />
-  <div v-if="displayUser" class="userprofile mt-3">
+  <div v-if="displayUser" class="userprofile mt-5">
 
     <div class="container text-start">
         <div class="row">
@@ -26,12 +26,22 @@
 
                     <!-- additional information -->
                     <div class="mt-3">
-                        <span class="float-start"><b>Member since</b></span>
-                        <!-- todo --> <span class="float-end">{{ joinDate }}</span>
-                        <br/>
-                        <span class="float-start"><b>Drink of Choice</b></span>
-                        <span class="float-end">{{ drinkChoice }}</span>
-                        <br/>
+                        <div class="row">
+                            <div class="col-5">
+                                <b>Member since</b>
+                            </div>
+                            <div class="col-7 text-end">
+                                {{ joinDate }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5">
+                                <b>Drink of Choice</b>
+                            </div>
+                            <div class="col-7 text-end">
+                                {{ drinkChoice }}
+                            </div>
+                        </div>
                     </div>
 
                     <!-- buttons -->
@@ -41,7 +51,7 @@
                         <button v-else-if="user" type="button" class="btn primary-btn-less-round" @click="editFollow('follow')">+ Follow User</button>
                         <button v-if="ownProfile && user" class="btn btn-warning mt-3">View My Analytics</button>
                         <button v-else-if="displayUser.modType != ''" class="btn btn-warning mt-3">★ Certified Moderator</button> 
-                        <a v-if="user" href="#" class="mt-3" data-bs-toggle="modal" data-bs-target="#applyModerator">Want to be a moderator? Apply here!</a>
+                        <a v-if="user" href="#" class="mt-3" data-bs-toggle="modal" data-bs-target="#applyModerator" style="color: black">Want to be a moderator? Apply here!</a>
                     </div>
 
                     <!-- editProfileModal start -->
@@ -82,10 +92,9 @@
                                             <!-- checkbox to choose drinks -->
                                             <div v-for="(type, index) in drinkType" :key="index" class="m-1" style="display: inline-block">
                                                 <input type="checkbox" class="btn-check" :id="index" autocomplete="off" v-model="selectedDrinks" :value="type">
-                                                <label class="btn primary-btn-outline-less-round" :for="index">{{type}}</label>
+                                                <label v-if="selectedDrinks.includes(type)" class="btn primary-btn-less-round" :for="index" style="color: whitesmoke; background-color: #535C72; border: 4px solid #535C72;">{{type}}</label>
+                                                <label v-else class="btn primary-btn-outline-less-round" :for="index">{{type}}</label>
                                             </div>
-
-                                           
                                         </div>
                                     </div>
                                 </div>
@@ -167,7 +176,7 @@
                         </div>
                         
                         <div>
-                            <a href="#">Learn more about badges.</a>
+                            <a href="#" style="color: black">Learn more about badges.</a>
                         </div>
 
                     </div>
@@ -324,8 +333,8 @@
                                     <p> {{ bookmarkList.listDesc }} </p>
                                     <div style="display: flex; margin-top: auto;" class="mb-1">
                                         <a class="me-4" @click="toggleView(name)" href="#" style="color: #535C72;">View List</a>
-                                        <a v-if="ownProfile" class="me-4" href="#" style="color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#editListModal${index}`" @click="resetEditList(name, bookmarkList.listDesc)">Edit List</a>
-                                        <a v-if="ownProfile" href="#" style="color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#deleteListModal${index}`">Delete List</a>
+                                        <a v-if="ownProfile && !(name == 'Drinks I Have Tried' || name == 'Drinks I Want To Try')" class="me-4" href="#" style="color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#editListModal${index}`" @click="resetEditList(name, bookmarkList.listDesc)">Edit List</a>
+                                        <a v-if="ownProfile && !(name == 'Drinks I Have Tried' || name == 'Drinks I Want To Try')" href="#" style="color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#deleteListModal${index}`">Delete List</a>
                                     </div>
                                 </div>
 
@@ -409,18 +418,33 @@
                                     <div class="modal-content">
                                     <div class="modal-header">
                                         <h5>Add Drink to List: {{currentList}}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body" style="height: 300px;">
-                                        <!-- search bar  -->
-                                        <div class="input-group mb-3">
-                                            <input type="text" class="form-control" placeholder="Search for drink" aria-label="Recipient's username" aria-describedby="button-addon2" v-model="drinkSearch" @keyup="searchResult">
-                                        </div>
-                                            <div class="form-check" v-for="(drinkName, index) in drinkSearchResults" :key="index">
-                                                <input class="form-check-input" type="checkbox" :value="drinkName" :id="'drinkCheckbox' + index" v-model="drinksToAdd">
-                                                <label class="form-check-label" :for="'drinkCheckbox' + index">
-                                                    {{ drinkName }}
-                                                </label>
+                                    <div class="modal-body" style="height: 400px;">
+                                        <!-- search -->
+                                        <div>
+                                            <!-- search bar  -->
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control" placeholder="Search for drink" aria-label="Recipient's username" aria-describedby="button-addon2" v-model="drinkSearch" @keyup="searchResult">
                                             </div>
+                                            <!-- search results -->
+                                            <div class="overflow-auto" :style="{ height: drinksToAdd.length > 0 ? '200px' : '300px' }">
+                                                <div class="form-check" v-for="(drinkName, index) in drinkSearchResults" :key="index">
+                                                    <input class="form-check-input" type="checkbox" :value="drinkName" :id="'drinkCheckbox' + index" v-model="drinksToAdd">
+                                                    <label class="form-check-label" :for="'drinkCheckbox' + index">
+                                                        {{ drinkName }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- selected results -->
+                                        <div v-if="drinksToAdd.length > 0" class="mt-2">
+                                            <hr>
+                                            <div class="overflow-auto" style="height: 75px">
+                                                <b>Selected Drinks: </b>
+                                                {{ drinksToAdd.join(', ') }}
+                                            </div>
+                                        </div>
 
                                     </div>
                                     <div class="modal-footer">
@@ -891,7 +915,10 @@ export default {
         },
         // return search items for bookmarking
         searchResult() {
-            this.drinkSearchResults = this.listings.filter(listing => listing.listingName.toLowerCase().includes(this.drinkSearch.toLowerCase())).map(listing => listing.listingName);
+            this.drinkSearchResults = this.listings
+                .filter(listing => listing.listingName.toLowerCase().includes(this.drinkSearch.toLowerCase()))
+                .filter(listing => !this.checkBookmarkStatus(listing._id.$oid))
+                .map(listing => listing.listingName);
         },
         // bookmark item through search
         async addDrinkToList(listName) {
@@ -1238,6 +1265,10 @@ export default {
     display: flex;
     justify-content: flex-start;
     flex-direction: row;
+}
+
+.selected-drink {
+  color: green; /* Replace with the color you want */
 }
 
 </style>
