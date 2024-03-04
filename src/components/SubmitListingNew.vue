@@ -459,7 +459,7 @@
 
                         if (this.types != []) {
                             powerValid = true;
-                            if (this.types.includes("admin")) {
+                            if (response.data["isAdmin"] == true) {
                                 this.types = [];
                             }
                         }

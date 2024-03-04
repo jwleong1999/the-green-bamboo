@@ -214,7 +214,9 @@
                                 <br/>
                                 <span style="display: inline-block; max-width: 150px;">
                                     <a :href="'/Producers/Bottle-Listings/' + listing._id.$oid" style="text-decoration: none; color: inherit;">
-                                        {{ listing.listingName }}
+                                        <div style="max-height: 72px; display: -webkit-box; -webkit-box-orient: vertical; overflow: auto;">
+                                            {{ listing.listingName }}
+                                        </div>
                                     </a>
                                 </span>
                             </div>
@@ -222,22 +224,24 @@
 
                         <h4 class="mt-4">Recent Activity</h4>
                         <div class="flex-start">
-                            <div class="image-container-150" v-for="(review, index) in recentActivity" :key="index" >
-                                <img :src=" 'data:image/png;base64,' + ( getListingPhoto(review.reviewTarget ) || defaultDrinkImage)" alt="" class="rounded bottle-img me-3">
+                            <div class="image-container-150" v-for="(activity, index) in recentActivity" :key="index" >
+                                <img :src=" 'data:image/png;base64,' + ( getListingPhoto(activity.listingID ) || defaultDrinkImage)" alt="" class="rounded bottle-img me-3">
                                 <!-- svg for bookmarked -->
-                                <svg v-if="checkBookmarkStatus(review.reviewTarget.$oid) && user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
-                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(review.reviewTarget)">
+                                <svg v-if="checkBookmarkStatus(activity.listingID.$oid) && user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
+                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(activity.listingID)">
                                     <path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/>
                                 </svg>
                                 <!-- svg for not bookmarked -->
                                 <svg v-else-if="user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
-                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(review.reviewTarget)">
+                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(activity.listingID)">
                                     <path d="M0 48C0 21.5 21.5 0 48 0l0 48V441.4l130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4V48H48V0H336c26.5 0 48 21.5 48 48V488c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488V48z"/>
                                 </svg>
                                 <br/>
                                 <span style="display: inline-block; max-width: 150px;">
-                                    <a :href="'/Producers/Bottle-Listings/' + review.reviewTarget.$oid" style="text-decoration: none; color: inherit;">
-                                        {{ review.listingName }}
+                                    <a :href="'/Producers/Bottle-Listings/' + activity.listingID.$oid" style="text-decoration: none; color: inherit;">
+                                        <div style="max-height: 72px; display: -webkit-box; -webkit-box-orient: vertical; overflow: auto;">
+                                            {{ getListingName(activity.listingID) }}
+                                        </div>
                                     </a>
                                 </span>
                             </div>
@@ -653,8 +657,6 @@ export default {
             try {
                 const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
                 this.reviews = response.data;
-                this.getUserFavourite();
-                this.getRecentActivity();
             }
             catch (error) {
                 console.error(error);
@@ -699,6 +701,8 @@ export default {
                 this.userDrinkChoice = this.getDrinkOfChoice(this.user);
                 this.displayUserDrinkChoice = this.getDrinkOfChoice(this.displayUser);
                 this.displayUserBookmarks = this.displayUser.drinkLists;
+                this.getUserFavourite();
+                this.getRecentActivity();
             } 
             catch (error) {
                 console.error(error);
@@ -1075,7 +1079,7 @@ export default {
             const favouriteListingReviews = this.reviews
                 .filter(review => review.reviewType === "Listing" && 
                     review.userID.$oid === this.displayUserID &&
-                    review.rating >= 4)
+                    review.rating >= 5)
                 .sort((a, b) => b.rating - a.rating);
 
             const favouriteListingIds = favouriteListingReviews
@@ -1094,17 +1098,32 @@ export default {
         },
         // get user's recent activity
         getRecentActivity() {
-            this.recentActivity = this.reviews
+
+            // // reviews
+            let userReviews = this.reviews
                 .filter(review => review.reviewType === "Listing" && 
                     review.userID.$oid === this.displayUserID)
+                .map(review => {
+                    review.listingID = review.reviewTarget;
+                    return review;
+                });
+
+            // bookmarks
+            let allUserBookmarks = Object.values(this.userBookmarks).map(item => item.listItems).flat();
+            let allUserBookmarksDict = allUserBookmarks.map(([createdDate, listingID]) => ({createdDate, listingID}));
+
+            // combine reviews and bookmarks
+            let userActivity = userReviews.concat(allUserBookmarksDict);
+
+            console.log(userActivity);
+
+            this.recentActivity = userActivity
                 .sort((a, b) => {
                     return new Date(b.createdDate) - new Date(a.createdDate);
                 })
                 .reverse()
                 .slice(0, 5);
-            for (const review of this.recentActivity) {
-                review.listingName = this.getListingName(review.reviewTarget);
-            }
+
         }, 
         getListingPhoto(listingID) {
             const listing = this.listings.find(listing => listing._id.$oid === listingID.$oid);

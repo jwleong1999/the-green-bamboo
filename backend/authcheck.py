@@ -1,5 +1,5 @@
 # Port: 5030
-# Routes: /authcheckUser (POST), /authcheckProducer (POST), /authcheckVenue (POST)
+# Routes: /authcheck (POST), /authcheckUser (POST), /authcheckProducer (POST), /authcheckVenue (POST)
 # -----------------------------------------------------------------------------------------
 
 import bson
@@ -23,6 +23,113 @@ db = PyMongo(app).db
 
 def parse_json(data):
     return json.loads(json_util.dumps(data))
+
+# -----------------------------------------------------------------------------------------
+# [POST] Authenticates an account
+# - Check if account exists in the "users", "producers", or "venues" collection. If so, check if the password matches.
+# - Possible return codes: 200 (Authenticated), 400 (Account not found), 401 (Incorrect password), 500 (Error during authentication)
+@app.route("/authcheck", methods= ['POST'])
+def authcheck():
+
+    try:
+        loginInfo = request.get_json()
+
+
+        # Check if user exists in the "users" collection
+        userExistsRaw = db.users.find_one({"username": loginInfo["username"]})
+        userExists = parse_json(userExistsRaw)
+        if (userExists != None):
+
+            # User exists, check if password matches
+            if(str(userExists["hashedPassword"]) == str(loginInfo["password"])):
+                return jsonify(
+                    {   
+                        "code": 200,
+                        "id": userExists["_id"]["$oid"],
+                        "role": "user",
+                        "message": "Authenticated!"
+                    }
+                ), 200
+            
+            # Password does not match
+            else:
+                return jsonify(
+                    {   
+                        "code": 401,
+                        "message": "Invalid username or password!"
+                    }
+                ), 401
+
+
+        # Check if producer exists in the "producers" collection
+        producerExistsRaw = db.producers.find_one({"producerName": loginInfo["username"]})
+        producerExists = parse_json(producerExistsRaw)
+        if (producerExists != None):
+
+            # Producer exists, check if password matches
+            if(str(producerExists["hashedPassword"]) == str(loginInfo["password"])):
+                return jsonify(
+                    {   
+                        "code": 200,
+                        "id": producerExists["_id"]["$oid"],
+                        "role": "producer",
+                        "message": "Authenticated!"
+                    }
+                ), 200
+            
+            # Password does not match
+            else:
+                return jsonify(
+                    {   
+                        "code": 401,
+                        "message": "Invalid username or password!"
+                    }
+                ), 401
+
+
+        # Check if venue exists in the "venues" collection
+        venueExistsRaw = db.venues.find_one({"venueName": loginInfo["username"]})
+        venueExists = parse_json(venueExistsRaw)
+        if (venueExists != None):
+
+            # Venue exists, check if password matches
+            if(str(venueExists["hashedPassword"]) == str(loginInfo["password"])):
+                return jsonify(
+                    {   
+                        "code": 200,
+                        "id": venueExists["_id"]["$oid"],
+                        "role": "venue",
+                        "message": "Authenticated!"
+                    }
+                ), 200
+            
+            # Password does not match
+            else:
+                return jsonify(
+                    {   
+                        "code": 401,
+                        "message": "Invalid username or password!"
+                    }
+                ), 401
+        
+
+        # Account does not exist
+        return jsonify(
+            {   
+                "code": 400,
+                "message": "An account of this username does not exist!"
+            }
+        ), 400
+
+
+    # Error during authentication
+    except Exception as e:
+        return jsonify(
+            {   
+                "code": 500,
+                "message": "An unknown error occurred while logging in, please try again."
+            }
+        ), 500
 
 # -----------------------------------------------------------------------------------------
 # [POST] Authenticates a user

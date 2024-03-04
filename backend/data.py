@@ -17,7 +17,7 @@ database = client["GreenBamboo"]
 # Dataclass (countries)
 @dataclass
 class countries:
-    originCountry: str
+    originCountry:str
     legalAge:str
 
 # Dataclass (listings)
@@ -49,10 +49,12 @@ class producers:
     hashedPassword: str
     photo: str
     hashedPassword:str
+    claimStatus: bool
     questionAnswers: Optional[list] = None
     updates:Optional[list]=None
     statusOB: Optional[str] = None
     producerLink: Optional[str] = None
+    
 
 # Dataclass (reviews)
 @dataclass
@@ -93,6 +95,7 @@ class users:
     firstName:str
     lastName:str
     email:str
+    isAdmin: bool
 
 # Dataclass (venues)
 @dataclass

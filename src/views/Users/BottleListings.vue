@@ -318,7 +318,7 @@
 
                                         <div class="row">
                                             <!-- image -->
-                                            <div class="col-4 image-container">
+                                            <div class="col-4 image-container" style="height: 300px; width: 300px">
                                                 <img v-if="listing['photo']" :src="'data:image/png;base64,'+listing['photo']" style="width: 300px; height: 300px;" class="img-border">
                                                 <img v-else src="../../../Images/Drinks/Placeholder.png" style="width: 300px; height: 300px;" class="img-border">
                                                 <!-- bookmark icon -->
@@ -520,7 +520,7 @@
                         <div v-if="user" class="modal fade" id="bookmarkModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
-                                <div class="modal-header">
+                                <div class="modal-header text-start">
                                     <h1 class="modal-title fs-5" id="exampleModalLabel">Add {{bookmarkModalItem}} to List</h1>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
