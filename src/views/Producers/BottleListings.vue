@@ -40,10 +40,10 @@
                                     <!-- [else] not correct producer -->
                                     <div v-else>
                                         <router-link :to="{ path: '/Users/request/modify/edit/' + this.listing_id }">
-                                        <p class="text-body-secondary no-margin text-decoration-underline fst-italic"> Suggest Edit </p>
+                                        <p class="text-body-secondary no-margin text-decoration-underline fst-italic text-end"> Suggest Edit </p>
                                         </router-link>
                                         <router-link :to="{ path: '/Users/request/modify/duplicate/' + this.listing_id }">
-                                            <p class="text-body-secondary no-margin text-decoration-underline fst-italic"> Report Duplicate </p>
+                                            <p class="text-body-secondary no-margin text-decoration-underline fst-italic text-end"> Report Duplicate </p>
                                         </router-link>
                                     </div>
                                 </div>

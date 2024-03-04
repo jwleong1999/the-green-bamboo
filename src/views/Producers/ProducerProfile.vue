@@ -69,7 +69,7 @@
                                     </span>
                                     <!-- [else] user type is NOT producer -->
                                     <div v-else> 
-                                        <p class="text-body-secondary no-margin text-decoration-underline fst-italic" @click="claimProducerAccount"> Claim This Distillery </p>
+                                        <p class="text-body-secondary no-margin text-decoration-underline fst-italic text-end" @click="claimProducerAccount"> Claim This Distillery </p>
                                     </div>
                                 </div>
                             </div>

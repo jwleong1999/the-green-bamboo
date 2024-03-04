@@ -391,6 +391,7 @@
                 let joinDate = new Date().toISOString();
                 let submitAPI =  "http://127.0.0.1:5031/createAccount"
                 let submitData = {
+                    // pass in first name, last name, email, isadmin
                     "username": this.username,
                     "displayName": this.username,
                     "choiceDrinks": [],

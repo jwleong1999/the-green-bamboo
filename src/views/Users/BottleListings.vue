@@ -10,7 +10,7 @@
                 <!-- tagline -->
                 <div class="col-8">
                     <h1 class="text-start" v-if="userID == ''"> What can we get you today? </h1>
-                    <h1 class="text-start" v-else> Hello, {{ username }}! </h1>
+                    <h1 class="text-start" v-else> Hello, {{ displayName }}! </h1>
                 </div>
                 <!-- button -->
                 <div v-if="!userID" class="col-4">
@@ -38,7 +38,7 @@
                     <div v-if="userType == 'user' || userType == ''" class="row">
                         <!-- [moderator] listing requests -->
                         <div v-if="isModerator" class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
+                            <div class="square primary-square rounded p-3 mb-3">
                                 <!-- header text -->
                                 <div class="square-inline text-start">
                                     <h4 v-if="totalRequests != 0" class="square-inline text-start mr-auto"> {{ totalRequests }} Pending Listing Requests </h4>
@@ -46,7 +46,7 @@
                                 </div>
                                 <!-- body -->
                                 <div v-if="totalRequests != 0" style="height: 85%;">
-                                    <div style="align-items: center; justify-content: center; height: 100%;" class="pt-5">
+                                    <div style="align-items: center; justify-content: center; height: 100%;" class="py-5">
                                         <router-link :to="{ path: '/producers/requests' }">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> View all requests </button>
                                         </router-link>
@@ -142,7 +142,7 @@
                     <div v-else-if="userType == 'producer'" class="row">
                         <!-- listing requests -->
                         <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
+                            <div class="square primary-square rounded p-3 mb-3">
                                 <!-- header text -->
                                 <div class="square-inline text-start">
                                     <h4 v-if="totalRequests != 0" class="square-inline text-start mr-auto"> {{ totalRequests }} Pending Listing Requests </h4>
@@ -150,7 +150,7 @@
                                 </div>
                                 <!-- body -->
                                 <div v-if="totalRequests != 0" style="height: 85%;">
-                                    <div style="align-items: center; justify-content: center; height: 100%;" class="pt-5">
+                                    <div style="align-items: center; justify-content: center; height: 100%;" class="py-5">
                                         <p>
                                             {{producerRequestListings.length}} New Listing Requests
                                             <br>
@@ -739,6 +739,7 @@
                 userID: "",
                 userType: "",
                 username: "",
+                displayName: "",
                 isModerator: "",
                 drinkShelf: [],
 
@@ -938,6 +939,7 @@
                 let venue = this.venues.find(venue => venue._id.$oid == this.userID)
                 if (user) {
                     this.username = user.username
+                    this.displayName = user.displayName
                     // check if user is a moderator
                     if (user.isAdmin) {
                         this.isModerator = true

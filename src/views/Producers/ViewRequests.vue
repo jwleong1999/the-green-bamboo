@@ -83,7 +83,7 @@
             </div>
 
             <!-- Display Listing Edit Requests -->
-            <div class="collapse row" id="collapseEdit">
+            <div class="collapse show row" id="collapseEdit">
                 <hr>
                 <p class="fw-bold fst-italic fs-4 m-0" v-if="requestEdits.length > 0">Viewing: Listing Edit Requests</p>
                 <p class="fw-bold fst-italic fs-4 m-0" v-else>No Listing Edit Requests!</p>
@@ -115,7 +115,7 @@
             </div>
 
             <!-- Display Duplicate Reports -->
-            <div class="collapse row" id="collapseDupe">
+            <div class="collapse show row" id="collapseDupe">
                 <hr>
                 <p class="fw-bold fst-italic fs-4 m-0" v-if="requestDupes.length > 0">Viewing: Duplicate Reports</p>
                 <p class="fw-bold fst-italic fs-4 m-0" v-else>No Duplicate Reports!</p>

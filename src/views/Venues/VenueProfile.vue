@@ -48,7 +48,7 @@
                                     <span class="row"> 
                                         <div class="col4"></div>
                                         <div class="col-10 d-grid no-padding text-end">
-                                            <p class="text-body-secondary no-margin text-decoration-underline fst-italic pb-2" @click="claimVenueAccount"> Claim This Venue </p>
+                                            <p class="text-body-secondary no-margin text-decoration-underline fst-italic" @click="claimVenueAccount"> Claim This Venue </p>
                                             <!-- Opens report inaccuracy modal -->
                                             <p class="text-body-secondary no-margin text-decoration-underline fst-italic" data-bs-toggle="modal" data-bs-target="#inaccurateModal"> Report Inaccuracy of Menu</p>
                                         </div>
@@ -145,10 +145,10 @@
                                     <h3 v-else class="text-body-secondary"> <b> {{ specified_venue["venueName"] }} </b> </h3>
                                 </div>
                                 <!-- edit profile  -->
-                                <div class="col-4">
+                                <div v-if="correctVenue" class="col-4">
                                     <span class="row"> 
                                         <div class="col4"></div>
-                                        <div class="col-10 d-grid no-padding text-end">
+                                        <div class="col-10 d-grid no-padding text-end pt-2">
                                             <!-- [if] not editing -->
                                             <button v-if="editing == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" v-on:click="editProfile()">
                                                 Edit profile
@@ -737,7 +737,7 @@
                         <div class="square secondary-square rounded p-3 mb-3">
                             <!-- header text -->
                             <div class="square-inline">
-                                <h4 class="square-inline text-start mr-auto"> Opening Hours and Reservation Details </h4>
+                                <h4 class="square-inline text-start mr-auto"> Opening Hours </h4>
                             </div>
                             <!-- body text -->
                             <div class="py-2 text-start">
