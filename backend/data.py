@@ -96,6 +96,7 @@ class users:
     lastName:str
     email:str
     isAdmin: bool
+    birthday:datetime
 
 # Dataclass (venues)
 @dataclass
