@@ -18,8 +18,17 @@
                         <div class="container text-start">
                             <!-- drink category -->
                             <div class="row">
-                                <div class="col">
+                                <div class="col-9">
                                     <h5 class="text-body-secondary fst-italic"> {{ specified_listing["drinkType"] }} </h5>
+                                </div>
+                                <div v-if="correctProducer" class="col-3">
+                                    <div class="text-start mb-3 m-1">
+                                        <div class="form-check form-switch form-check-inline">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="lockCheck" name="lockCheck" v-model="lockOperator">
+                                            <label class="form-check-label" for="IBCheck" v-if="lockOperator">Unlocked</label>
+                                            <label class="form-check-label" for="IBCheck" v-if="!lockOperator">Locked</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <!-- expression name -->
@@ -30,6 +39,7 @@
                                 <!-- suggest edit & report duplicate -->
                                 <div class="col-3">
                                     <!-- [if] correct producer-->
+                                    <!-- TODO: check if moderator type is for the listing -->
                                     <div v-if="correctProducer">
                                         <button type="button" class="btn tertiary-btn reverse-clickable-text m-1">
                                             <a class="reverse-clickable-text" v-bind:href="'/Producer/Producer-Edit-Listing/' + `${specified_listing._id.$oid}`">
@@ -858,6 +868,9 @@
                             },
                 haveTried: false,
                 wantToTry: false,
+
+                // For toggling lock button
+                lockOperator:false,
 
                 // For creating review
                 languages:[],
