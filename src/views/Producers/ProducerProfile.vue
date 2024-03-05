@@ -1092,7 +1092,9 @@
                 const averageRating = ratings.reduce((total, rating) => {
                     return total + rating["rating"];
                 }, 0) / ratings.length;
-                return averageRating;
+                // round to 1 decimal place
+                const roundedRating = Math.round(averageRating * 10) / 10;
+                return roundedRating;
             },
 
             // check if user has already added listing to shelf, add colour to button accordingly
