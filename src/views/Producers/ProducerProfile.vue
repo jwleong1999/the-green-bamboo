@@ -538,14 +538,14 @@
                             <!-- show buttons for answered & unanswered questions -->
                             <div v-if="correctProducer" class="row text-center px-2">
                                 <div class="col-6 d-grid gap-0 no-padding">
-                                    <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
+                                    <button type="button" class="btn tertiary-btn-qa rounded-0 reverse-clickable-text">
                                         <a class="reverse-clickable-text" v-on:click="showAnswered()">
                                             Answered
                                         </a>
                                     </button>
                                 </div>
                                 <div class="col-6 d-grid gap-0 no-padding">
-                                    <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
+                                    <button type="button" class="btn tertiary-btn-qa rounded-0 reverse-clickable-text">
                                         <a class="reverse-clickable-text" v-on:click="showUnanswered()">
                                             Unanswered
                                         </a>

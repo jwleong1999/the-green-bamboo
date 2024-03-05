@@ -251,7 +251,7 @@
                                     <button class="btn btn-sm" 
                                         :class="{ 'primary-btn': discovery, 'primary-btn-outline': !discovery }"
                                         v-on:click="changeDiscoveryStatus()">
-                                        <h4> Discover </h4>
+                                        <h4 class="mb-1"> Discover </h4>
                                     </button>
                                 </div>
                             </div>
@@ -261,7 +261,7 @@
                                     <button class="btn btn-sm"
                                         :class="{ 'primary-btn': following, 'primary-btn-outline': !following }"
                                         v-on:click="changeFollowingStatus()">
-                                        <h4> Following </h4>
+                                        <h4 class="mb-1"> Following </h4>
                                     </button>
                                 </div>
                             </div>
@@ -306,12 +306,11 @@
                         
                         <!-- listings -->
                         <div class="row scrollable-listings">
-                                                 
 
                             <!-- [if] discovery & following not clicked -->
                             <div v-if="discovery == false && following == false">
                                 <!-- Display error message when no results for filter-->
-                                <h5 v-if="filteredListings==''" style="display: inline-block;"> There is no listing available for the selected filter </h5>
+                                <h5 v-if="filteredListings==''" style="display: inline-block;" class="pt-5"> There is no listing available for the selected filter </h5>
                                 <!-- v-loop for each listing -->
                                 <div class="container text-start">
                                     <div v-for="listing in filteredListings" v-bind:key="listing._id" class="p-3">

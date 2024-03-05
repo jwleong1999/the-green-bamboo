@@ -107,10 +107,24 @@ body {
     border-radius: 10px;
 }
 
+.primary-light-dropdown:hover,
+.primary-light-dropdown:focus,
+.primary-light-dropdown:active {
+    color: whitesmoke;
+    background-color: #535C72;
+    border-radius: 10px;
+}
+
 .primary-btn-outline-thick {
     color: #535C72;
     background-color: whitesmoke;
     border: 2px solid #535C72;
+}
+
+.primary-btn-outline-thick:hover {
+    color: #747D92;
+    background-color: whitesmoke;
+    border: 2px solid #747D92;
 }
 
 .secondary-btn {
@@ -119,9 +133,22 @@ body {
     border-radius: 30px;
 }
 
+.secondary-btn:hover {
+    color: whitesmoke;
+    background-color: #c07c2d;
+    border-radius: 30px;
+}
+
 .secondary-btn-border {
     color: whitesmoke;
     background-color: #DD9E54;
+    border-radius: 30px;
+    border: 1px solid whitesmoke;
+}
+
+.secondary-btn-border:hover {
+    color: whitesmoke;
+    background-color: #c27e30;
     border-radius: 30px;
     border: 1px solid whitesmoke;
 }
@@ -133,9 +160,22 @@ body {
     border: 2px solid whitesmoke;
 }
 
+.secondary-btn-border-thick:hover  {
+    color: whitesmoke;
+    background-color: #c27e30;
+    border-radius: 30px;
+    border: 2px solid whitesmoke;
+}
+
+
 .secondary-btn-not-rounded {
     color: whitesmoke;
     background-color: #DD9E54;
+}
+
+.secondary-btn-not-rounded:hover {
+    color: whitesmoke;
+    background-color: #c27e30;
 }
 
 .secondary-square {
@@ -144,7 +184,8 @@ body {
     border: 3px solid #535C72;
 }
 
-.tertiary-btn {
+.tertiary-btn,
+.tertiary-btn-qa {
     color: whitesmoke;
     background-color: #747D92;
     border: 1px solid rgb(110, 110, 110);
@@ -156,9 +197,23 @@ body {
     border: 1px solid rgb(110, 110, 110);
 }
 
+.tertiary-btn-qa:hover,
+.tertiary-btn-qa:focus,
+.tertiary-btn-qa:active {
+    color: whitesmoke;
+    background-color: #19233a;
+    border: 1px solid rgb(110, 110, 110);
+}
+
 .success-btn {
     color: black;
     background-color: #94c692;
+    border: 1px solid rgb(110, 110, 110);
+}
+
+.success-btn:hover {
+    color: black;
+    background-color: #5fa05c;
     border: 1px solid rgb(110, 110, 110);
 }
 
@@ -169,7 +224,7 @@ body {
 
 .custom-drink-list-btn:hover {
     background-color: rgb(238, 214, 80);
-    border: 2px solid black;
+    border: 1px solid black;
 }
 
 .btn-outline {
