@@ -34,15 +34,19 @@
     <div class="body-login">
         <div class="container py-5">
 
-            <div class="row rounded" v-if="fillForm" style="background-color: #DDC8A9;">
+            <div class="row rounded px-5 py-2 my-5" v-if="fillForm" style="background-color: #DDC8A9;">
 
                 <!-- start of the elements -->
                 <div class="col-xl-8 col-lg-8 col-md-10 rounded" style="background-color:#DDC8A9;">
-                    <div class="d-grid gap-2 mb-3">
-                        <p class="fw-bold fs-2" style="font-style: italic; font-family: Radley, serif;">Are you a distiller, brewery or bar owner?</p>
+
+                    <div class="d-grid gap-2" style="position: relative;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="ms-1 mt-2 bi bi-arrow-left-circle" viewBox="0 0 16 16" style="position: absolute; top: 10; left: 0;" v-on:click="goBack">
+                            <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+                        </svg>
+                        <p class="fw-bold fs-1 mb-0" style="font-style: italic; font-family: Radley, serif;">Are you a distiller, brewery or bar owner?</p>
                     </div>
 
-                    <h3 class="text-start mb-5">Apply for a Business Account</h3>
+                    <h3 class="text-start my-3">Apply for a Business Account</h3>
 
 
                     <!-- Start of form -->
@@ -56,7 +60,7 @@
                             <div class = "col-md-12 justify-content-between">
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" id="inlineCheckbox1" v-model="businessType" value="producer" name="business">
-                                    <label class="form-check-label text-start fw-bold" for="inlineCheckbox1">Brand/Venue</label>
+                                    <label class="form-check-label text-start fw-bold" for="inlineCheckbox1">Brand/Producer</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" id="inlineCheckbox2" v-model="businessType" value="venue" name="business">
@@ -139,7 +143,6 @@
 
 
                         <button type="submit" class="btn secondary-btn mx-1 mb-3" @click="signUp">Sign Up</button>
-                        <button type="button" class="btn primary-btn mx-1 mb-3" @click="goBack">Return</button>
                     </form>
                 </div>
 
@@ -150,21 +153,32 @@
                     </div>
                     <div class="row justify-content-center">
                         <!-- <div class="col-xl-2 col-lg-1 col-md-1"></div> -->
-                        <button class="btn rounded p-3 text-start mx-3 mb-3 col-8" @click="toggleMonthlyPricing" :style="{ backgroundColor: selectedMonthlyPricing ? 'grey' :'white', borderColor: '#DD9E54', borderWidth:'3px' }">
-                            <p class="fw-bold mb-1">Monthly plan</p>
-                            $50.00/Month <br/>
-                            <i class="text-secondary" style="font-size: 12px;">Billed monthly</i>
+                        <button class="btn rounded p-3 text-start mx-3 mb-3 col-8" @click="toggleMonthlyPricing" :style="{ backgroundColor: selectedMonthlyPricing ? '#DD9E54' :'white', 
+                                                                                                                            color: selectedMonthlyPricing ? 'white' :'black', 
+                                                                                                                            borderColor: '#DD9E54', 
+                                                                                                                            borderWidth:'3px' }">
+                            <span>
+                                <h6> <b> Monthly plan </b> </h6>
+                                <p class="m-0"> $50.00/Month </p> 
+                                <small class="fst-italic p-0"> Billed monthly </small>
+                            </span>
                         </button>
                     </div>
                     <div class="row justify-content-center">
                         <!-- <div class="col-xl-2 col-lg-1 col-md-1"></div> -->
-                        <button class="btn rounded p-3 text-start mx-3 mb-3 col-8" @click="toggleYearlyPricing" :style="{ backgroundColor: selectedYearlyPricing ? 'grey' :'white', borderColor: '#DD9E54', borderWidth:'3px' }">
+                        <button class="btn rounded p-3 text-start mx-3 mb-3 col-8" @click="toggleYearlyPricing" :style="{ backgroundColor: selectedYearlyPricing ? '#DD9E54' :'white', 
+                                                                                                                            color: selectedYearlyPricing ? 'white' :'black', 
+                                                                                                                            borderColor: '#DD9E54', 
+                                                                                                                            borderWidth:'3px' }">
                             <div class="row">
-                                <p class="fw-bold mb-1 col-7">Yearly plan</p>
+                                <div class="col-7"> <h6> <b> Yearly plan </b> </h6> </div> 
                                 <div class="rounded col-5 text-center" style="background-color: green; color: white;">Save 16%</div>
                             </div>
-                            $42.00/Month <br/>
-                            <i class="text-secondary" style="font-size: 12px;">$504 Billed annually</i>
+                            <span>
+                                <p class="m-0"> $42/Month </p> 
+                                <small class="fst-italic p-0"> $504 Billed annually </small>
+                            </span>
+                        
                         </button>
                     </div>
                     <span v-if="missingPlan" class="text-danger">Please select a plan.</span>

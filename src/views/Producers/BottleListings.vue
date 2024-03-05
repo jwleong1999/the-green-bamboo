@@ -509,7 +509,7 @@
 
                                         </div>
                                     </div>
-                                     <!-- End of left side elements -->
+                                    <!-- End of left side elements -->
 
                                     <!-- Start of right side elements, photo, location and friend tags -->
                                     <div class="col-md-3">
@@ -531,7 +531,7 @@
                                         <!-- Start of location input -->
                                         <div class="form-group mb-3">
                                             <p class="text-start mb-1 fw-bold">Location</p>                                            
-                                                               
+
                                             <!-- Link filteredOptions to venues location -->
                                             <div class="input-group">
                                                 <select class="form-control" v-model="selectedLocation" @input="filterOptions($event)">
@@ -552,8 +552,8 @@
                                 <!-- End of modal body -->
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button v-if="!inEdit" type="button" @click="addReview" class="btn btn-primary">Submit Review</button>
-                                    <button v-else type="button" @click="editReview" class="btn btn-primary">Update Review</button>
+                                    <button v-if="!inEdit" type="button" @click="addReview" class="btn primary-square">Submit Review</button>
+                                    <button v-else type="button" @click="editReview" class="btn primary-btn">Update Review</button>
                                 </div>
                             </div>
                         </div>
@@ -569,7 +569,7 @@
                         <div class="d-flex justify-content-start">
                             <!-- add new photo -->
                             <div class="add-review-photo-container">
-                                <div class="add-review-photo-background centered rounded" v-on:click="addPhoto">
+                                <div class="add-review-photo-background centered rounded" v-if="userID !== 'defaultUser' && !inEdit" data-bs-toggle="modal" data-bs-target="#reviewModal">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
                                         <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
                                     </svg>
