@@ -768,7 +768,7 @@
                             <!-- [function] where to try -->
                             <div v-for="venue in venueListings" v-bind:key="venue._id">
                                 <router-link :to="{ path: '/Venues/Profile-Page/' + venue._id.$oid }" class="reverse-clickable-text">
-                                    <p> {{ venue.venueName }} </p>
+                                    <p class="mb-1"> {{ venue.venueName }} </p>
                                 </router-link>
                             </div>
                         </div>
