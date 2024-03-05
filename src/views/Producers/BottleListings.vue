@@ -329,6 +329,21 @@
                                                 <p class='text-danger text-start mb-2 fw-bold'>Please select a language</p>
                                             </div>
                                         </div>
+                                        <!-- location -->
+                                        <div class="col-6 justify-content-start form-group mb-3">
+                                            <p class="text-start mb-1 fw-bold">Location</p>                                            
+                                            <!-- Link filteredOptions to venues location -->
+                                            <div class="input-group mb-2">
+                                                <select class="form-control" v-model="selectedLocation" @input="filterOptions($event)">
+                                                    <option v-for="option in filteredOptions" :key="option.id" :value="option.name">{{ option.name }}</option>
+                                                </select>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6 d-flex justify-content-start">
+                                                    <button v-if="selectedLocation!==''" class="btn text-start mb-1" style="background-color: #535C72;color: white;" @click="clearLocation">Clear Selection</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <!-- row 2: tag friends, add photo -->
