@@ -98,10 +98,15 @@ body {
 
 .primary-square {
     color: whitesmoke;
+    background-color: #535C72;
+}
+
+.primary-square-btn {
+    color: whitesmoke;
     background-color: #747D92;
 }
 
-.primary-square:hover {
+.primary-square-btn:hover {
     color: whitesmoke;
     background-color: #535C72;
 }
@@ -208,6 +213,16 @@ body {
     color: whitesmoke;
     background-color: #19233a;
     border: 1px solid rgb(110, 110, 110);
+}
+
+.tertiary-square-btn {
+    color: whitesmoke;
+    background-color: #535C72;
+}
+
+.tertiary-square-btn:hover {
+    color: whitesmoke;
+    background-color: #747D92;
 }
 
 .success-btn {
@@ -465,4 +480,9 @@ body {
 
 .form-box-outline {
     border: 3px solid #535C72;
+}
+
+.review-preview-photo {
+    width:100%;
+    max-width:200px;
 }
