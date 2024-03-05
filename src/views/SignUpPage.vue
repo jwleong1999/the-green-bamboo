@@ -173,6 +173,7 @@
                                     <div class="text-center mb-3">
                                         <span v-if="missingBirthday" class="text-danger mt-0 mb-3">Please enter your birthday.</span>
                                         <span v-if="underAge" class="text-danger mt-0 mb-3">You are underage, creation of account is not allowed.</span>
+                                        <span v-if="illegalCountry" class="text-danger mt-0 mb-3">It is illegal to drink in your country, creation of account is not allowed.</span>
                                     </div>
                                 </div>
                             </div>
@@ -261,6 +262,7 @@
                 duplicateUser:false,
                 missingCountry:false,
                 underAge:false,
+                illegalCountry: false,
 
                 submitForm: false,
                 successSubmission: false,
@@ -361,20 +363,25 @@
                 }
 
                 // Uncomment to allow age checker
-                // }else{
-                //     var dob = new Date(this.birthday);
-                //     dob.setDate(dob.getDate() - 1);
-                //     var month_diff = Date.now() - dob.getTime();
-                //     var age_dt = new Date(month_diff);  
-                //     var year = age_dt.getUTCFullYear();  
-                //     var age = Math.abs(year - 1970);  
-                //     const searchResult = this.countries.filter((country) => {
-                //         return country.originCountry==this.selectedCountry;
-                //     });
-                //     if(age<searchResult['legalAge']){
-                //         this.underAge = true
-                //     }
-                // }
+                else{
+                    var dob = new Date(this.birthday);
+                    dob.setDate(dob.getDate() - 1);
+                    var month_diff = Date.now() - dob.getTime();
+                    var age_dt = new Date(month_diff);  
+                    var year = age_dt.getUTCFullYear();  
+                    var age = Math.abs(year - 1970);  
+                    let searchResult = this.countries.filter((country) => {
+                        return country.originCountry==this.selectedCountry;
+                    });
+                    if(age<searchResult[0]['legalAge']){
+                        this.underAge = true
+                        errorCount++
+                    }
+                    else if(searchResult[0]['legalAge'] == 'Prohibited'){
+                        this.illegalCountry = true
+                        errorCount++
+                    }
+                }
 
                 // Age Check validation
                 if(!this.ageCheck){
@@ -427,7 +434,7 @@
                         this.reviewResponseCode = response.data.code
                     })
                     .catch((error)=>{
-                        console.log(error);
+                        console.error(error);
                         this.reviewResponseCode = error.response.data.code
                         this.submitForm = false
                     });
@@ -447,7 +454,7 @@
                     return response
                 }
                 catch(error){
-                    console.log(error)
+                    console.error(error)
                     this.errorSubmission = true
                     this.errorMessage = true
                     this.submitForm = false
@@ -485,6 +492,7 @@
                 this.missingLastName=false
                 this.missingBirthday=false
                 this.missingAgeCheck=false
+                this.missingCountry=false
             },
 
             async checkUsername(username){
