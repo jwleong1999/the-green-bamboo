@@ -538,7 +538,9 @@
                                             <div class="col-7">
                                                 <div class="row pt-2">
                                                     <h4 class="default-text"> 
-                                                        <u> <b> {{ listing["listingName"] }}  </b> </u>
+                                                        <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="default-text-no-background">
+                                                            <u> <b> {{ listing["listingName"] }}  </b> </u>
+                                                        </router-link>
                                                     </h4> 
                                                 </div>
                                             </div>
@@ -568,7 +570,9 @@
                                             <!-- official description -->
                                             <div class="col-10">
                                                 <div class="row pt-2 pb-5">
-                                                    <h5 class="fst-italic scrollable-long"> {{ listing["officialDesc"] }} </h5>
+                                                    <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="default-clickable-text">
+                                                        <h5 class="fst-italic scrollable-long default-clickable-text"> {{ listing["officialDesc"] }} </h5>
+                                                    </router-link>
                                                 </div>
                                             </div>
                                             <!-- rating -->
