@@ -486,3 +486,8 @@ body {
     width:100%;
     max-width:200px;
 }
+
+.submit-listing-preview-photo {
+    width:100%;
+    max-width:150px;
+}
