@@ -24,13 +24,43 @@
                                 <div v-if="correctProducer" class="col-3">
                                     <div class="text-start mb-3 m-1">
                                         <div class="form-check form-switch form-check-inline">
-                                            <input class="form-check-input" type="checkbox" role="switch" id="lockCheck" name="lockCheck" v-model="lockOperator">
-                                            <label class="form-check-label" for="IBCheck" v-if="lockOperator">Unlocked</label>
-                                            <label class="form-check-label" for="IBCheck" v-if="!lockOperator">Locked</label>
+                                            <input class="form-check-input"  type="checkbox" role="switch" id="lockCheck" name="lockCheck" v-model="specified_listing.allowMod" data-bs-toggle="modal" data-bs-target="#lockModal">
+                                            <label class="form-check-label" for="IBCheck" v-if="specified_listing.allowMod">Unlocked</label>
+                                            <label class="form-check-label" for="IBCheck" v-if="!specified_listing.allowMod">Locked</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <!-- modal for lock listing to moderators -->
+                            <div class="modal fade" id="lockModal" tabindex="-1" data-bs-keyboard="false" aria-labelledby="lockModalLabel" aria-hidden="true" data-bs-backdrop="static">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="background-color: #535C72">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Toggle Moderator</h1>
+                                            <button type="button" @click="resetToggle" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <p v-if="specified_listing.allowMod && inToggle" class="text-primary fst-italic fw-bold fs-3">Are you sure you want to allow moderators to edit this listing?</p>
+                                            <p v-if="!specified_listing.allowMod && inToggle" class="text-primary fst-italic fw-bold fs-3">Are you sure you want to stop moderators from editing this listing?</p>  
+
+                                            <!-- if toggle is successful -->
+                                            <p v-if="specified_listing.allowMod && toggleSuccess" class="text-success fst-italic fw-bold fs-3">Moderators are now allowed to edit this listing!</p>
+                                            <p v-if="!specified_listing.allowMod && toggleSuccess" class="text-success fst-italic fw-bold fs-3">Moderators are now not allowed to edit this listing!</p>      
+                                            
+                                            <!-- if toggle faces error -->
+                                            <p v-if="toggleError" class ="text-danger fst-italic fw-bold fs-3">There is an error toggling the permission, please try again later!</p>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" @click="resetToggle" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button v-if="inToggle" type="button" @click="updateToggle" class="btn btn-primary">Save Changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end of modal-->
+
                             <!-- expression name -->
                             <div class="row">
                                 <div class="col-9">
@@ -243,7 +273,6 @@
                 </div>
                     
                     <!-- Modal -->
-                    <!-- TODO component for modal <ReviewModal :isEditing='false' :reviewData="reviewData" :showReviewButton="userID.$oid !== 'defaultUser'" /> -->
                     <div v-if="userID != 'defaultUser'" class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-lg">
                             <div class="text-success fst-italic fw-bold fs-3 modal-content" v-if='successSubmission'>
@@ -487,7 +516,7 @@
                                             <!-- Start of observation tags -->
                                             <!-- Make this a search/dropdown -->
                                             <div class="form-group mb-3">
-                                                <p class="text-start mb-1 fw-bold">Observation Tags</p>
+                                                <p class="text-start mb-1 fw-bold">Action Tags</p>
                                                 <!-- Buttons for the first 8 observations -->
                                                 <button v-for="observation in observationTags.slice(0, 8)" @click="toggleObservationSelection(observation)" v-bind:key="observation" class="btn mb-2 me-2" data-bs-toggle="button" :style="{ color:'white', backgroundColor: selectedObservations.includes(observation) ? 'blue' : 'grey', borderColor:'grey', borderWidth:'1px' }">{{ observation }}</button>
                                                 
@@ -843,6 +872,11 @@
                 willRecommend: null,
                 willDrinkAgain: null,
 
+                // to toggle moderator lock
+                inToggle: true,
+                toggleSuccess: false,
+                toggleError: false,
+
                 // user
                 userType: "",
 
@@ -869,8 +903,6 @@
                 haveTried: false,
                 wantToTry: false,
 
-                // For toggling lock button
-                lockOperator:false,
 
                 // For creating review
                 languages:[],
@@ -1040,7 +1072,6 @@
                                 obj[item.colour] = item.hexList;
                                 return obj;
                             }, {});
-                            console.log(this.specialColours)
                         } 
                         catch(error){
                             console.error(error)
@@ -1099,11 +1130,8 @@
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
                         this.users = response.data;
-                        console.log(this.users);
                         this.user = this.users.find(user => user._id.$oid == this.userID)
                         this.userBookmarks = this.user.drinkLists;
-                        console.log(this.user);
-                        console.log(this.userBookmarks);
                     } 
                     catch (error) {
                         console.error(error);
@@ -1229,7 +1257,7 @@
                 try {
                     return rating["reviewTarget"]['$oid'] == listing['_id']['$oid'];
                 }
-                catch(error){console.log(error)}
+                catch(error){console.error(error)}
                 });
                 // if there are no ratings
                 if (ratings.length == 0) {
@@ -1248,7 +1276,7 @@
                 try {
                     return rating["reviewTarget"]['$oid'] == listing['_id']['$oid'];
                 }
-                catch(error){console.log(error)}
+                catch(error){console.error(error)}
                 });
                 // if there are no ratings
                 if (ratings.length == 0) {
@@ -1268,7 +1296,7 @@
                 try {
                     return rating["reviewTarget"]['$oid'] == listing['_id']['$oid'];
                 }
-                catch(error){console.log(error)}
+                catch(error){console.error(error)}
                 });
                 // if there are no ratings
                 if (ratings.length == 0) {
@@ -1471,7 +1499,7 @@
                     this.reviewResponseCode = response.data.code
                 })
                 .catch((error)=>{
-                    console.log(error);
+                    console.error(error);
                     this.reviewResponseCode = error.response.data.code
                 });
                 if(this.reviewResponseCode==200){
@@ -1495,7 +1523,7 @@
                     this.reviewResponseCode = response.data.code
                 })
                 .catch((error)=>{
-                    console.log(error);
+                    console.error(error);
                     this.reviewResponseCode = error.response.data.code
                 });
                 if(this.reviewResponseCode==201){
@@ -1582,7 +1610,7 @@
                     this.deleteReviewCode = response.data.code
                 })
                 .catch((error)=>{
-                    console.log(error);
+                    console.error(error);
                     this.deleteReviewCode = error.response.data.code
                 });
                 if(this.deleteReviewCode==200){
@@ -1683,7 +1711,6 @@
             },
             getListingID(listingName) {
                 const listing = this.listings.find(listing => listing.listingName === listingName);
-                console.log(listing);
                 return listing._id;
             },
             // checks which lists the item is in
@@ -1743,7 +1770,7 @@
                 }
 
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5100/updateBookmark', 
+                    await this.$axios.post('http://127.0.0.1:5100/updateBookmark', 
                         {
                             userID: this.userID,
                             bookmark: this.userBookmarks,
@@ -1752,13 +1779,46 @@
                             'Content-Type': 'application/json'
                         }
                     });
-                    console.log(response.data);
                 } catch (error) {
                     console.error(error);
                 }
                 
                 window.location.reload();
 
+            },
+            
+            resetToggle(){
+                if(!this.toggleSuccess){
+                    this.specified_listing.allowMod = !this.specified_listing.allowMod
+                }
+                this.toggleSuccess=false
+                this.toggleError=false
+                this.inToggle=true
+            },
+
+            async updateToggle(){
+                let responseCode = "";
+                this.inToggle=false;
+                let submitData = {
+                            "listingName": this.specified_listing.listingName,
+                            "allowMod": this.specified_listing.allowMod,
+                }
+                const response = await this.$axios.post('http://127.0.0.1:5002/updateListing/' + this.listing_id, submitData)
+                .then((response)=>{
+                    responseCode = response.data.code
+                })
+                .catch((error)=>{
+                    console.error(error);
+                    responseCode = error.response.data.code
+                });
+
+                if(responseCode == 200){
+                    this.toggleSuccess = true
+                }else{
+                    this.toggleError = true
+                }
+
+                return response
             },
         }
     };
