@@ -298,6 +298,38 @@ def editOpeningHours():
         ), 500
 
 # -----------------------------------------------------------------------------------------
+# [POST] Edit reservation details
+# - Edit reservation details
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/editReservationDetails', methods=['POST'])
+def editReservationDetails():
+    data = request.get_json()
+    print(data)
+    venueID = data['venueID']
+    updatedReservationDetails = data['updatedReservationDetails']
+
+    try: 
+        editOpeningHours = db.venues.update_one(
+            {'_id': ObjectId(venueID)},
+            {'$set': {'reservationDetails': updatedReservationDetails}}
+        )
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Reservation details edited successfully!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "An error occurred editing the reservation details!"
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------
 # [POST] Add listing to menu
 # - Add listing to menu
 # - Possible return codes: 201 (Updated), 500 (Error during update)
@@ -330,5 +362,6 @@ def addListingToMenu():
             }
         ), 500
 # -----------------------------------------------------------------------------------------
+
 if __name__ == '__main__':
     app.run(debug=True, port=5300)

@@ -707,7 +707,7 @@
 
             </div> <!-- end of venue information -->
             
-            <!-- view analytics & q&a for producer & opening hours and reservation details -->
+            <!-- view analytics & q&a for venues & opening hours and reservation details -->
             <div class="col-3">
                 <div class="row">
                     <!-- view analytics -->
@@ -824,7 +824,7 @@
                             <div class="square-inline">
                                 <h4 class="square-inline text-start mr-auto"> Opening Hours and Reservation Details </h4>
                             </div>
-                            <!-- body text -->
+                            <!-- edit opening hours-->
                             <div class="py-2 text-start">
                                 <!-- buttons -->
                                 <div class="pb-3">
@@ -837,7 +837,6 @@
                                         Save
                                     </button>
                                 </div>
-
                                 <!-- opening hours -->
                                 <div class="text-left default-text-no-background" v-for = "(hours, day) in openingHours" v-bind:key="day">
                                     <b>{{ day }}: </b>
@@ -854,6 +853,35 @@
                                         <span :id="day + 'error'" class="text-danger mx-2"></span>
                                     </div>
                                 </div>
+                            </div>
+                            <!-- edit reservation details -->
+                            <div class="py-2 text-start">
+                                <!-- buttons -->
+                                <div class="pb-3">
+                                    <!-- [if] not editing reservation details -->
+                                    <button v-if="editingReservationDetails == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" v-on:click="editReservationDetails()">
+                                        Edit reservation details
+                                    </button>
+                                    <!-- [else] if editing -->
+                                    <button v-else type="button" class="btn success-btn rounded-0 reverse-clickable-text" v-on:click="saveReservationDetails()">
+                                        Save
+                                    </button>
+                                </div>
+                                <!-- reservation details  -->
+                                <!-- [if] editing -->
+                                <div v-if="editingReservationDetails">
+                                        <label for="reservationDetailsInput"> Reservation details </label>
+                                        <input type="text" class="form-control mb-3" id="reservationDetailsInput" aria-describedby="reservationDetails" v-model="edited_reservationDetails">
+                                    </div>
+                                    <!-- [else] not editing -->
+                                    <span v-else class="text-body-secondary">
+                                        <div v-if="specified_venue['reservationDetails'] == ''" class="fst-italic">
+                                            No reservation details available!
+                                        </div>
+                                        <div v-else>
+                                            {{ specified_venue["reservationDetails"] }}
+                                        </div>
+                                    </span>
                             </div>
                             <div class="py-2"></div>
                         </div>
@@ -927,8 +955,8 @@
                 image64: null, // original image
 
                 // edit other fields
-                edit_producerName: '',
-                edit_producerDesc: '',
+                edit_venueName: '',
+                edit_venueDesc: '',
                 edit_originLocation: '',
 
                 // search
@@ -970,6 +998,10 @@
                 edited_openingHours: {},
                 saveOpeningHoursError: false,
                 countOpeningHoursError: 0,
+
+                // reservation details
+                editingReservationDetails: false,
+                edited_reservationDetails: "",
 
                 // customization for drinkLists buttons
                 // [TODO] get drink list of user, for now is hardcoded
@@ -1857,7 +1889,6 @@
 
                 // force page to reload
                 window.location.reload();
-                    
             },
 
             // Send request for modification of listing
@@ -2038,7 +2069,41 @@
                 else {
                     this.showRemainingUpdates = true;
                 }
-            }
+            },
+
+            // to edit reservation details
+            editReservationDetails() {
+                // set the current details to the edit details
+                this.edited_reservationDetails = this.specified_venue["reservationDetails"];
+                this.editingReservationDetails = true;
+            },
+
+            // to save reservation details
+            saveReservationDetails() {
+                this.editingReservationDetails = false;
+
+                console.log(this.edited_reservationDetails);
+
+                // update database
+                try {
+                    this.$axios.post('http://localhost:5300/editReservationDetails', 
+                        {
+                            venueID: this.venue_id,
+                            updatedReservationDetails: this.edited_reservationDetails,
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                }
+                catch (error) {
+                    console.error(error);
+                }
+
+                // force page to reload
+                window.location.reload();
+            },
 
         }
     };
