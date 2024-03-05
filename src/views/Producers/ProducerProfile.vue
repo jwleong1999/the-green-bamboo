@@ -231,7 +231,71 @@
                     </div>
                     <!-- view more -->
                     <div class="row">
-                        <p class="tertiary-text text-decoration-underline pt-2 no-margin"> View more </p>
+                        <button v-if="showRemainingUpdates == false" class="btn tertiary-text text-decoration-underline pt-2 no-margin" @click="checkToShowRemainingUpdates()"> View more </button>
+                    </div>
+
+                    <!-- show remaining updates when "view more" is clicked -->
+                    <div v-if="showRemainingUpdates">
+
+                        <!-- check if there are any updates -->
+
+                        <!-- [if] more updates -->
+                        <div v-if="remainingUpdates.length > 0">
+                            <div v-for="update in remainingUpdates" v-bind:key="update._id">
+                                <h5 class="text-decoration-underline text-start pb-3">
+                                    Posted on:
+                                    {{ this.formatDate(update.date.$date) }}
+                                </h5>
+                                <!-- other info -->
+                                <div class="row pb-2">
+                                    <!-- photo & # of likes -->
+                                    <div class="col-2">
+                                        <img :src=" 'data:image/jpeg;base64,' + (update['photo'] || defaultProfilePhoto)" alt="" style="width: 150px; height: 150px;"> 
+                                        <!-- # of likes -->
+                                        <div class="row pt-3"> 
+                                            <div class="col-6 text-end">
+                                                <!-- [else] not liked -->
+                                                <div style="display: inline-block;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.090.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 text-start">
+                                                <h4> {{ update['likes'].length }} </h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- description & image-->
+                                    <div class="col-10">
+                                        <div class="row">
+                                            <!-- description -->
+                                            <div class="col">
+                                                <p class="text-start p-text-lg"> 
+                                                    {{update['text']}}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- [else] no more updates -->
+                        <div v-else>
+                            <h5 class="text-body-secondary text-start"> 
+                                <b> 
+                                    No more updates from
+                                    {{ specified_producer["producerName"] }} 
+                                </b> 
+                            </h5>
+                        </div>
+
+                        <!-- view less -->
+                        <div class="row">
+                            <button v-if="showRemainingUpdates" class="btn tertiary-text text-decoration-underline pt-2 no-margin" @click="checkToShowRemainingUpdates()"> View less </button>
+                        </div>
+
                     </div>
 
                     <hr>
@@ -742,6 +806,10 @@
                 updateLikes: [],
                 likeStatus: false,
                 updateLikesCount: 0,
+
+                // to fetch producer's remaining updates
+                showRemainingUpdates: false,
+                remainingUpdates: [],
 
                 // to get producer's answered questions
                 answeredQuestions: [],
@@ -1326,6 +1394,13 @@
                 if (updatesList.length > 0) {
                     let latestUpdate = updatesList[updatesList.length - 1];
 
+                    // check that there is more than 1 update
+                    if (updatesList.length > 1) {
+                        // for remaining updates
+                        this.remainingUpdates = updatesList.slice(0, updatesList.length - 1);
+                    }
+
+
                     // format date
                     let dateTimeString = latestUpdate["date"]["$date"]
                     let formattedDate = this.formatDate(dateTimeString)
@@ -1621,6 +1696,16 @@
                 window.location.reload();
 
             },
+
+            // to check if all updates should be shown
+            checkToShowRemainingUpdates() {
+                if (this.showRemainingUpdates == true) {
+                    this.showRemainingUpdates = false;
+                } 
+                else {
+                    this.showRemainingUpdates = true;
+                }
+            }
 
         }
     };
