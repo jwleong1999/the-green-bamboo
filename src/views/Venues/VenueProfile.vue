@@ -827,7 +827,7 @@
                             <!-- edit opening hours-->
                             <div class="py-2 text-start">
                                 <!-- buttons -->
-                                <div class="pb-3">
+                                <div class="pb-3" v-if="correctVenue">
                                     <!-- [if] not editing -->
                                     <button v-if="editingOpeningHours == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" v-on:click="editOpeningHours()">
                                         Edit opening hours
@@ -857,7 +857,7 @@
                             <!-- edit reservation details -->
                             <div class="py-2 text-start">
                                 <!-- buttons -->
-                                <div class="pb-3">
+                                <div class="pb-3" v-if="correctVenue">
                                     <!-- [if] not editing reservation details -->
                                     <button v-if="editingReservationDetails == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" v-on:click="editReservationDetails()">
                                         Edit reservation details
