@@ -316,7 +316,9 @@
                     <div class="container">
                         <div class="row">
                             <div v-for="drinkInfo in mostPopular" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container image-container-150">
-                                <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromDrink(drinkInfo[0]) || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
+                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + drinkInfo[2].$oid }" class="default-text-no-background">
+                                    <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromDrink(drinkInfo[0]) || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
+                                </router-link>
                                 <!-- bookmark icon -->
                                 <svg v-if="checkBookmarkStatus(drinkInfo[2].$oid) && user" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bookmark-fill overlay-icon" viewBox="0 0 16 16"
                                     data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(drinkInfo[2])">
@@ -330,7 +332,9 @@
                         </div>
                         <div class="row">
                             <div v-for="drinkInfo in mostPopular" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container-text scrollable">
-                                {{ drinkInfo[0] }}
+                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + drinkInfo[2].$oid }" class="default-clickable-text">
+                                    {{ drinkInfo[0] }}
+                                </router-link>
                             </div>
                         </div>
                     </div>
@@ -342,7 +346,9 @@
                     <div class="container">
                         <div class="row">
                             <div v-for="drinkInfo in mostDiscussed" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container image-container">
-                                <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromDrink(drinkInfo[0]) || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
+                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + drinkInfo[2].$oid }" class="default-text-no-background">
+                                    <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromDrink(drinkInfo[0]) || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
+                                </router-link>
                                 <!-- bookmark icon -->
                                 <svg v-if="checkBookmarkStatus(drinkInfo[2].$oid) && user" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bookmark-fill overlay-icon" viewBox="0 0 16 16"
                                     data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(drinkInfo[2])">
@@ -356,7 +362,9 @@
                         </div>
                         <div class="row">
                             <div v-for="drinkInfo in mostDiscussed" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container-text scrollable">
-                                {{ drinkInfo[0] }}
+                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + drinkInfo[2].$oid }" class="default-clickable-text">
+                                    {{ drinkInfo[0] }}
+                                </router-link>
                             </div>
                         </div>
                     </div>
@@ -368,7 +376,9 @@
                     <div class="container">
                         <div class="row">
                             <div v-for="drinkInfo in recentlyAdded" v-bind:key="drinkInfo._id"  class="add-drink-photo-container image-container">
-                                <img :src=" 'data:image/jpeg;base64,' + (drinkInfo['photo'] || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
+                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + drinkInfo._id.$oid }" class="default-text-no-background">
+                                    <img :src=" 'data:image/jpeg;base64,' + (drinkInfo['photo'] || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
+                                </router-link>
                                 <!-- bookmark icon -->
                                 <svg v-if="checkBookmarkStatus(drinkInfo._id.$oid) && user" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bookmark-fill overlay-icon" viewBox="0 0 16 16"
                                     data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(drinkInfo._id)">
@@ -382,7 +392,9 @@
                         </div>
                         <div class="row">
                             <div v-for="drinkInfo in recentlyAdded" v-bind:key="drinkInfo._id" class="add-drink-photo-container-text scrollable">
-                                {{ drinkInfo["listingName"] }}
+                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + drinkInfo._id.$oid }" class="default-clickable-text">
+                                    {{ drinkInfo["listingName"] }}
+                                </router-link>
                             </div>
                         </div>
                     </div>
@@ -737,7 +749,7 @@
                         <div class="square secondary-square rounded p-3 mb-3">
                             <!-- header text -->
                             <div class="square-inline">
-                                <h4 class="square-inline text-start mr-auto"> Opening Hours </h4>
+                                <h4 class="square-inline text-start mr-auto"> Opening Hours and Reservation Details </h4>
                             </div>
                             <!-- body text -->
                             <div class="py-2 text-start">
