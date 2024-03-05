@@ -105,6 +105,21 @@ const routes = [
     name: 'usersrequestlistingmodify',
     component: () => import('../views/Users/RequestListingModify.vue')
   },
+
+  // -------------------------------------------------------------------------------------
+
+  // ----------------- Q&A PAGES -----------------
+  {
+    path: '/Producers/ProducersQA/:id',
+    name: 'producersqanda',
+    component: () => import('../views/Producers/ProducersQA.vue')
+  },
+  {
+    path: '/Venues/VenuesQA/:id',
+    name: 'venuessqanda',
+    component: () => import('../views/Venues/VenuesQA.vue')
+  },
+
   // -------------------------------------------------------------------------------------
   
   {

@@ -720,7 +720,12 @@
                             <!-- header text -->
                             <div class="square-inline text-start">
                                 <!-- [if] user type venue -->
-                                <div v-if="correctVenue" class="mr-auto"> <h4> Q&A for You! </h4> </div>
+                                <div v-if="correctVenue" class="mr-auto"> 
+                                    <h4> Q&A for You! </h4> 
+                                    <router-link :to="{ path: '/Venues/VenuesQA/' + venue_id}" class="default-text-no-background">
+                                        <p class="reverse-text no-margin text-decoration-underline text-start pb-2"> View All </p>
+                                    </router-link> 
+                                </div>
                                 <!-- [else] user type is NOT producer -->
                                 <h4 v-else class="mr-auto"> Q&As for {{ specified_venue["venueName"] }} </h4>
                             </div>

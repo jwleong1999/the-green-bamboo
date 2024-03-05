@@ -491,3 +491,25 @@ body {
     width:100%;
     max-width:150px;
 }
+
+.nav-tabs {
+    border-bottom: 2px solid #535C72;
+}
+
+.nav-tabs .nav-link.active {
+    color: whitesmoke;
+    background-color: #535C72;
+}
+
+.nav-tabs .nav-link {
+    color: #535C72;
+}
+
+.nav-tabs .nav-link:hover {
+    color: whitesmoke;
+    background-color: #747D92;
+}
+
+.card {
+    background-color: #D9D9D9;
+}
