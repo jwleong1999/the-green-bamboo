@@ -155,10 +155,17 @@
 
                             <div class="col-4 text-end" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
                                 <!-- Drink Type / Type Category -->
-                                <p class="m-0">Type: {{ resultListing['drinkType'] }}</p>
-                                <p class="m-0" v-if="resultListing['typeCategory']">Category: {{ resultListing['typeCategory'] }}</p>
+                                <p class="m-0">
+                                    <b> Type: </b>
+                                    {{ resultListing['drinkType'] }}
+                                </p>
+                                <p class="m-0" v-if="resultListing['typeCategory']">
+                                    <b> Category: </b>
+                                    {{ resultListing['typeCategory'] }}</p>
                                 <!-- Country of Origin -->
-                                <p>Origin: {{ resultListing['originCountry'] }}</p>
+                                <p>
+                                    <b> Origin: </b>
+                                    {{ resultListing['originCountry'] }}</p>
                             </div>
 
                             <!-- Description -->

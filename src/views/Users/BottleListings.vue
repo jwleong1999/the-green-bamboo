@@ -270,7 +270,7 @@
                                 <div class="d-grid gap-2 dropdown">
                                     <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         {{ selectedDrinkType ? selectedDrinkType['drinkType'] : 'Filter by drink type' }}
-                                        <span class="cross-icon" @click="clearSelection">&#10005;</span>
+                                        <span v-if="selectedDrinkType != ''" class="cross-icon" @click="clearSelection">&#10005;</span>
                                     </button>
                                     <ul class="dropdown-menu">
                                         <!-- Filter button for drink type -->
@@ -287,7 +287,7 @@
                                 <div class="d-grid gap-2 dropdown">
                                     <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         {{ selectedCategory ? selectedCategory : 'Filter by drink category' }}
-                                        <span class="cross-icon" @click="clearCategory">&#10005;</span>
+                                        <span v-if="selectedCategory != null" class="cross-icon" @click="clearCategory">&#10005;</span>
                                     </button>
                                     <ul v-if="selectedTypeCategory != ''" class="dropdown-menu">
                                         <!-- Filter button for drink category -->
