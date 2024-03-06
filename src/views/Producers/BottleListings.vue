@@ -2178,11 +2178,11 @@
                 let sorted_observationTagCounts = Object.fromEntries(
                     Object.entries(observationTagCounts).sort(([,a],[,b]) => b-a)
                 );
-                // get top 5 flavor tags if there are more than 5
-                if (Object.keys(sorted_observationTagCounts).length > 5) {
-                    let top5 = Object.keys(sorted_observationTagCounts).slice(0, 5)
+                // get top 5 flavor tags if there are more than 3
+                if (Object.keys(sorted_observationTagCounts).length > 3) {
+                    let top3 = Object.keys(sorted_observationTagCounts).slice(0, 3)
                     this.sorted_observationTagCounts = {}
-                    for (let tag of top5) {
+                    for (let tag of top3) {
                         this.sorted_observationTagCounts[tag] = sorted_observationTagCounts[tag]
                     }
                 } else {
