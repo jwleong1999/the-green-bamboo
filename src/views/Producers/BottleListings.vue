@@ -24,13 +24,43 @@
                                 <div v-if="correctProducer" class="col-3">
                                     <div class="text-start mb-3 m-1">
                                         <div class="form-check form-switch form-check-inline">
-                                            <input class="form-check-input" type="checkbox" role="switch" id="lockCheck" name="lockCheck" v-model="lockOperator">
-                                            <label class="form-check-label" for="IBCheck" v-if="lockOperator">Unlocked</label>
-                                            <label class="form-check-label" for="IBCheck" v-if="!lockOperator">Locked</label>
+                                            <input class="form-check-input"  type="checkbox" role="switch" id="lockCheck" name="lockCheck" v-model="specified_listing.allowMod" data-bs-toggle="modal" data-bs-target="#lockModal">
+                                            <label class="form-check-label" for="IBCheck" v-if="specified_listing.allowMod">Unlocked</label>
+                                            <label class="form-check-label" for="IBCheck" v-if="!specified_listing.allowMod">Locked</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <!-- modal for lock listing to moderators -->
+                            <div class="modal fade" id="lockModal" tabindex="-1" data-bs-keyboard="false" aria-labelledby="lockModalLabel" aria-hidden="true" data-bs-backdrop="static">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header" style="background-color: #535C72">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Toggle Moderator</h1>
+                                            <button type="button" @click="resetToggle" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <p v-if="specified_listing.allowMod && inToggle" class="text-primary fst-italic fw-bold fs-3">Are you sure you want to allow moderators to edit this listing?</p>
+                                            <p v-if="!specified_listing.allowMod && inToggle" class="text-primary fst-italic fw-bold fs-3">Are you sure you want to stop moderators from editing this listing?</p>  
+
+                                            <!-- if toggle is successful -->
+                                            <p v-if="specified_listing.allowMod && toggleSuccess" class="text-success fst-italic fw-bold fs-3">Moderators are now allowed to edit this listing!</p>
+                                            <p v-if="!specified_listing.allowMod && toggleSuccess" class="text-success fst-italic fw-bold fs-3">Moderators are now not allowed to edit this listing!</p>      
+                                            
+                                            <!-- if toggle faces error -->
+                                            <p v-if="toggleError" class ="text-danger fst-italic fw-bold fs-3">There is an error toggling the permission, please try again later!</p>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" @click="resetToggle" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button v-if="inToggle" type="button" @click="updateToggle" class="btn btn-primary">Save Changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end of modal-->
+
                             <!-- expression name -->
                             <div class="row">
                                 <div class="col-9">
@@ -243,7 +273,6 @@
                 </div>
                     
                     <!-- Modal -->
-                    <!-- TODO component for modal <ReviewModal :isEditing='false' :reviewData="reviewData" :showReviewButton="userID.$oid !== 'defaultUser'" /> -->
                     <div v-if="userID != 'defaultUser'" class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-lg">
                             <div class="text-success fst-italic fw-bold fs-3 modal-content" v-if='successSubmission'>
@@ -283,277 +312,287 @@
                                 </div>
 
                                 <!-- This is where modal starts for review-->
-                                <div class="modal-body">
+                                <div class="modal-body px-4">
 
+                                    <!-- row 1: language, location -->
                                     <div class="row">
-                                    <!-- Start of left side elements -->
-                                    <div class="col-md-9">                                     
-                                        <div class="container-fluid">
-
-                                            <!-- Dropdown for language selection -->
-                                            <div class = 'row justify-content-start mb-4'>
-                                                <div class="col-md-4"> 
-                                                    <p class = 'text-start mb-2 fw-bold'>Language <span class="text-danger">*</span></p>
-                                                    <div class="input-group">                                                    
-                                                        <select v-model="selectedLanguage" class="form-select" id="inputGroupSelect01">
-                                                            <!-- Add in the languages here -->
-                                                            <option v-for="language in languages" v-bind:key="language['_id']">{{ language['language'] }}</option>
-                                                        </select>
-                                                    </div>
-                                                    <div v-if="nullSelectedLanguage" class ="col-md-12">
-                                                        <p class='text-danger text-start mb-2 fw-bold'>Please select a language</p>
-                                                    </div>
-                                                </div>
+                                        <!-- language-->
+                                        <div class="col-6 justify-content-start">
+                                            <p class = 'text-start mb-2 fw-bold'>Language <span class="text-danger">*</span></p>
+                                            <div class="input-group">                                                    
+                                                <select v-model="selectedLanguage" class="form-select" id="inputGroupSelect01">
+                                                    <!-- Add in the languages here -->
+                                                    <option v-for="language in languages" v-bind:key="language['_id']">{{ language['language'] }}</option>
+                                                </select>
                                             </div>
-                                            <!-- end of dropdown for language selection -->
-
-                                            <!-- Text input are for review -->
-                                            <div class = 'row justify-content-start mb-3'>
-                                                <div class = "col-md-12">
-                                                    <p class='text-start mb-2 fw-bold'>Review <span class="text-danger">*</span></p>
-                                                    <textarea v-model="reviewDesc" class="form-control" id="reviewTextarea" rows="3" placeholder="Min 20 characters"></textarea>
-                                                </div>
-                                                <div v-if="reviewDescError!==''" class ="col-md-12">
-                                                    <p class='text-danger text-start mb-2 fw-bold'>{{ reviewDescError }}</p>
-                                                </div>
+                                            <div v-if="nullSelectedLanguage" class ="col-md-12">
+                                                <p class='text-danger text-start mb-2 fw-bold'>Please select a language</p>
                                             </div>
-
-                                            <!-- Checkboxes for would recommend and would buy again -->
-                                            <div class = 'row justify-content-start mb-3 text-start'>
-                                                <div class = "col-md-12">
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" v-model="wouldRecommend" value="option1">
-                                                        <label class="form-check-label text-start fw-bold" for="inlineCheckbox1">Would Recommend</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" v-model="wouldBuyAgain" value="option2">
-                                                        <label class="form-check-label text-start fw-bold" for="inlineCheckbox2">Would Buy Again</label>
-                                                    </div>                                                                                                   
-                                                </div>                                         
-                                            </div>
-                                            <!-- End of checkboxes -->
-
-                                            <!-- Buttons to expand -->
-                                            <div v-if="!extendReview" class = 'row justify-content-start mb-3 text-start'>
-                                                <div class = "col-md-12 text-center">
-                                                    <button class="btn primary-btn-less-round btn-sm" @click="controlModal"> 
-                                                        Extend Review <span style="color: white;">&#9660;</span>
-                                                    </button>                                                                  
-                                                </div>                                         
-                                            </div>
-
-                                            <!-- Button to collapse -->
-                                            <div v-if="extendReview" class = 'row justify-content-start mb-3 text-start'>
-                                                <div class = "col-md-12 text-center">
-                                                    <button class="btn primary-btn-less-round btn-sm" @click="controlModal"> 
-                                                        Condense Review <span style="color: white;">&#9650;</span>
-                                                    </button>                                                                  
-                                                </div>                                         
-                                            </div>
-                                            <!-- end of button -->
-
-                                            <!-- Dashed line -->
-                                            <div class = 'row justify-content-start mb-1 text-start'>
-                                                <div class = "col-md-12 text-center">
-                                                    <p class="dotted-line">
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <!-- end of dash line -->
-
-
-                                            <!-- DONE: Make a colour grid/tables containing all the colour -->
-                                            <div v-if="extendReview">
-                                                <div class="row">
-                                                    <div class="col-md-2">
-                                                        <p class="text-start mb-1 fw-bold">Colour:</p>    
-                                                    </div>
-                                                    <div v-if="selectedColour=== ''" class="col-md-2"></div>
-                                                    <div v-else-if="selectedColour.includes('#')" class="col-md-1">
-                                                        <button class="btn text-start mb-1" :style="{ 
-                                                                        width: '30px', 
-                                                                        height: '30px', 
-                                                                        backgroundColor: selectedColour, 
-                                                                        color: selectedColour, 
-                                                                        borderRadius: '0', 
-                                                                        borderColor:'grey', 
-                                                                        borderWidth:'1px'
-                                                                    }"></button>
-                                                    </div>
-                                                    <div v-else class="col-md-1">
-                                                        <button class="btn text-start mb-1" :style="{ width: '30px', height: '30px', borderRadius: '0', borderColor:'grey', borderWidth:'1px', backgroundImage: `linear-gradient(to bottom right, ${specialColours[selectedColour][0]}, ${specialColours[selectedColour][1]}`}"></button>
-                                                    </div>
-                                                    <div v-if="selectedColour!== ''" class="col-md-4">
-                                                        <button @click="clearColour" class="btn text-start mb-1" style="background-color: #535C72;color: white;">Clear Selection</button>
-                                                    </div>
-                                                </div>                                   
-                                                <div class="row justify-content-start mb-1 text-start">
-                                                    <div class="col-md-5 mr-0 text-start">
-                                                        <div class="row">
-                                                            <div class="col">
-                                                            <button @click="displaySelectColour(colour)" v-for="(colour, i) in colours.slice(0, 7)" :key="i" :value="colour" class="btn" data-bs-toggle="button"
-                                                                    :style="{ 
-                                                                        width: '30px', 
-                                                                        height: '30px', 
-                                                                        backgroundColor: colour, 
-                                                                        color: colour, 
-                                                                        borderRadius: '0', 
-                                                                        borderColor:'grey', 
-                                                                        borderWidth:'1px'
-                                                                    }">                                
-                                                            </button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col">
-                                                            <button @click="displaySelectColour(colour)" v-for="(colour, i) in colours.slice(7, 14)" :key="i" :value="colour" class="btn" data-bs-toggle="button" 
-                                                                    :style="{ 
-                                                                        width: '30px', 
-                                                                        height: '30px', 
-                                                                        backgroundColor: colour, 
-                                                                        color: colour, 
-                                                                        borderRadius: '0', 
-                                                                        borderColor:'grey', 
-                                                                        borderWidth:'1px'
-                                                                    }">                                
-                                                            </button>
-                                                            </div>
-                                                        </div>
-                                                        </div>
-
-                                                    <!-- Special gradient -->
-                                                    <div class="col-md-5 ml-0 text-start">
-                                                        <button @click="displaySelectColour(key)" v-for="(value, key) in specialColours" :key="key" type="button" :value="key" class="btn" data-bs-toggle="button" :style="{ width: '30px', height: '30px', borderRadius: '0', borderColor:'grey', borderWidth:'1px', backgroundImage: `linear-gradient(to bottom right, ${value[0]}, ${value[1]}`}">                                
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- END OF COLOURS -->
-
-
-                                            <!-- Aroma taste and finish inputs -->
-                                            <div v-if="extendReview" class="form-group mb-3">
-                                                <p class="text-start mb-1 fw-bold">Aroma:</p>
-                                                <input v-model="aroma" type="text" class="form-control" id="aroma">
-                                            </div>
-                                            <div v-if="extendReview" class="form-group mb-3">
-                                                <p class="text-start mb-1 fw-bold">Taste:</p>
-                                                <input v-model="taste" type="text" class="form-control" id="taste">
-                                            </div>
-                                            <div v-if="extendReview" class="form-group mb-3">
-                                                <p class="text-start mb-1 fw-bold">Finish:</p>
-                                                <input v-model="finish" type="text" class="form-control" id="finish">
-                                            </div>
-                                            <!-- End of armoa taste and finish inputs -->
-
-                                            <!-- Range slider for rating -->
-                                            <div class="col-md-5 mb-3"> 
-                                                <div class="row align-items-center text-start">
-                                                    <label for="customRange2" class="form-label fw-bold">Rating<span class="text-danger">*</span>: {{ rating }}</label>
-                                                    <div class="col-auto">
-                                                        <label for="customRange" class="form-label fw-bold">1</label>
-                                                    </div>
-                                                    <div class="col">
-                                                        <input v-model="rating" type="range" class="form-range" min="1" max="10" step="0.5" id="customRange">
-                                                    </div>
-                                                    <div class="col-auto">
-                                                        <label for="customRange" class="form-label fw-bold">10</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Start of flavour tag -->
-                                            <div class="form-group mb-3">
-                                                <p class="text-start mb-1 fw-bold">Flavour Tags</p> 
-
-                                                <div class ='container'>
-                                                    <button class="btn mb-2 me-2" @click="toggleBox(family)" v-for="family in flavourTags" v-bind:key="family['_id']" :style="{ color:'white', backgroundColor: family['hexcode'], borderColor:family['hexcode'], borderWidth:'1px' }">{{ family['familyTag'] }}</button>
-                                                    
-                                                    <!-- This is the conatiner/dropdown box for the subtags -->
-                                                    <div v-for="family in flavourTags" :key="family['_id']">
-                                                        <div v-if="family.showBox" class="rounded p-3" :style="{border: '3px solid ' + family['hexcode'] }">
-                                                            <div class="row">
-                                                                <div class="col-3" v-for="(element, index) in family.subtag" :key="index">
-                                                                    <button @click="toggleFlavourSelection(element, family['hexcode'])" class="btn mb-2" :style="{ width: '100px', height: '60px',color:'white', backgroundColor: selectedFlavourTags.includes(element+family['hexcode']) ? 'grey' :family['hexcode'], borderColor: family['hexcode'], borderWidth:'1px' }">{{ element }}</button>
-                                                                </div>                        
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <!-- End of dropdown -->
-                                                </div>
-                                            </div>
-                                            <!-- End of flavour tag -->
-
-                                            <!-- Start of observation tags -->
-                                            <!-- Make this a search/dropdown -->
-                                            <div class="form-group mb-3">
-                                                <p class="text-start mb-1 fw-bold">Observation Tags</p>
-                                                <!-- Buttons for the first 8 observations -->
-                                                <button v-for="observation in observationTags.slice(0, 8)" @click="toggleObservationSelection(observation)" v-bind:key="observation" class="btn mb-2 me-2" data-bs-toggle="button" :style="{ color:'white', backgroundColor: selectedObservations.includes(observation) ? 'blue' : 'grey', borderColor:'grey', borderWidth:'1px' }">{{ observation }}</button>
-                                                
-                                                <!-- Buttons for additional observations (shown only when extendObservation is true) -->
-                                                <div v-if="extendObservation">
-                                                    <button v-for="observation in observationTags.slice(8)" @click="toggleObservationSelection(observation)" v-bind:key="observation" class="btn mb-2 me-2" :style="{ color:'white', backgroundColor: selectedObservations.includes(observation) ? 'blue' : 'grey', borderColor:'grey', borderWidth:'1px' }">{{ observation }}</button>
-                                                </div>
-                                                
-                                                <!-- Button to toggle between View All and View Less -->
-                                                <button @click="toggleObservations" class="btn" style="color:black; background-color:white; border-color:black; border-width: 1px;" v-if="!extendObservation">
-                                                    View All
-                                                </button>
-                                                <button @click="toggleObservations" class="btn" style="color:black; background-color:white; border-color:black; border-width: 1px;" v-else>
-                                                    View Less
-                                                </button>
-                                                
-                                            </div>
-
-
                                         </div>
-                                    </div>
-                                     <!-- End of left side elements -->
-
-                                    <!-- Start of right side elements, photo, location and friend tags -->
-                                    <div class="col-md-3">
-                                        <p class = 'text-start mb-2 fw-bold'>Add Photo</p>
-                                        <div class="mb-3">
-                                            <!-- DONE v:model here the file -->
-                                            <input class="form-control mb-2" @change="onFileChange" type="file" id="reviewPhoto">
-                                            <div class = "row">
-                                                <img :src="image64 ? 'data:image/jpeg;base64,' + image64 : 'none'" alt="" id="output">
-                                            </div>
-                                            <button v-if="image64!==null" class="btn text-start mb-1" style="background-color: #535C72;color: white;" @click="clearPhoto">Clear Photo</button>
-                                        </div>
-                                        
-                                        <div class="form-group mb-3">
-                                            <p class="text-start mb-1 fw-bold">Tag Friends</p>
-                                            <input type="text" class="form-control" id="friendTag">
-                                        </div>
-                                        
-                                        <!-- Start of location input -->
-                                        <div class="form-group mb-3">
+                                        <!-- location -->
+                                        <div class="col-6 justify-content-start form-group mb-3">
                                             <p class="text-start mb-1 fw-bold">Location</p>                                            
-                                                               
                                             <!-- Link filteredOptions to venues location -->
-                                            <div class="input-group">
+                                            <div class="input-group mb-2">
                                                 <select class="form-control" v-model="selectedLocation" @input="filterOptions($event)">
                                                     <option v-for="option in filteredOptions" :key="option.id" :value="option.name">{{ option.name }}</option>
                                                 </select>
                                             </div>
-                                            <button v-if="selectedLocation!==''" class="btn text-start mb-1" style="background-color: #535C72;color: white;" @click="clearLocation">Clear Selection</button>
+                                            <div class="row">
+                                                <div class="col-6 d-flex justify-content-start">
+                                                    <button v-if="selectedLocation!==''" class="btn text-start mb-1" style="background-color: #535C72;color: white;" @click="clearLocation">Clear Selection</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- row 2: tag friends, add photo -->
+                                    <div class="row">
+                                        <!-- language-->
+                                        <div class="col-6 justify-content-start">
+                                            <p class = 'text-start mb-2 fw-bold'>Tag Friends<span class="text-danger">*</span></p>
+                                            <div class="form-group mb-2">
+                                                <input type="text" class="form-control" id="friendTag">
+                                            </div>
+                                        </div>
+                                        <!-- add photo -->
+                                        <div class="col-6 justify-content-start">
+                                            <p class = 'text-start mb-2 fw-bold'>Add Photo<span class="text-danger">*</span></p>
+                                            <input class="form-control mb-2" @change="onFileChange" type="file" id="reviewPhoto">
+                                            <div class = "row">
+                                                <img :src="image64 ? 'data:image/jpeg;base64,' + image64 : 'none'" alt="" id="output" class="py-2 review-preview-photo">
+                                                <div class="col-6 d-flex justify-content-start">
+                                                    <button v-if="image64!==null" class="btn tertiary-square-btn mb-1" @click="clearPhoto">Clear Photo</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- row 3: review -->
+                                    <div class="row">
+                                        <div class = 'col justify-content-start mb-3'>
+                                            <div class = "col-md-12">
+                                                <p class='text-start mb-2 fw-bold'>Review <span class="text-danger">*</span></p>
+                                                <textarea v-model="reviewDesc" class="form-control" id="reviewTextarea" rows="3" placeholder="Min 20 characters"></textarea>
+                                            </div>
+                                            <div v-if="reviewDescError!==''" class ="col-md-12">
+                                                <p class='text-danger text-start mb-2 fw-bold'>{{ reviewDescError }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- row 4: buttons (would recommend, would buy again) -->
+                                    <div class="row">
+                                        <div class = 'col justify-content-start mb-3 text-start'>
+                                            <div class = "col-md-12">
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" v-model="wouldRecommend" value="option1">
+                                                    <label class="form-check-label text-start fw-bold" for="inlineCheckbox1">Would Recommend</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" v-model="wouldBuyAgain" value="option2">
+                                                    <label class="form-check-label text-start fw-bold" for="inlineCheckbox2">Would Buy Again</label>
+                                                </div>                                                                                                   
+                                            </div>                                         
+                                        </div>
+                                    </div>
+
+                                    <!-- row 5: extend review -->
+                                    <div class="row">
+                                        <!-- Buttons to expand -->
+                                        <div v-if="!extendReview" class = 'col justify-content-start mb-3 text-start'>
+                                            <div class = "col-md-12 text-center">
+                                                <button class="btn primary-btn-less-round btn-sm" @click="controlModal"> 
+                                                    Extend Review <span style="color: white;">&#9660;</span>
+                                                </button>                                                                  
+                                            </div>                                         
+                                        </div>
+                                        <!-- Button to collapse -->
+                                        <div v-if="extendReview" class = 'col justify-content-start mb-3 text-start'>
+                                            <div class = "col-md-12 text-center">
+                                                <button class="btn primary-btn-less-round btn-sm" @click="controlModal"> 
+                                                    Condense Review <span style="color: white;">&#9650;</span>
+                                                </button>                                                                  
+                                            </div>                                         
+                                        </div>
+                                    </div>
+
+                                    <!-- row 6: section breaker (horizontal line) -->
+                                    <div class="row">
+                                        <!-- Dashed line -->
+                                        <div class = 'col justify-content-start mb-1 text-start'>
+                                            <div class = "col-md-12 text-center">
+                                                <p class="dotted-line">
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- TOGGLEABLE SECTION -->
+                                    <div v-if="extendReview">
+
+                                        <!-- row 7: colours -->
+                                        <div class="row">
+                                            <div class="col-6 justify-content-start">
+                                                <p class = 'text-start mb-2 fw-bold'>Colour <span class="text-danger">*</span></p>
+                                            </div>
                                         </div>
 
+                                        <!-- row 7A: selected colours  -->
+                                        <div class="row">
+                                            <div v-if="selectedColour=== ''" class="col-md-2"></div>
+                                                <div v-else-if="selectedColour.includes('#')" class="col-md-1">
+                                                    <button class="btn text-start mb-1" :style="{ 
+                                                                    width: '30px', 
+                                                                    height: '30px', 
+                                                                    backgroundColor: selectedColour, 
+                                                                    color: selectedColour, 
+                                                                    borderRadius: '0', 
+                                                                    borderColor:'grey', 
+                                                                    borderWidth:'1px'
+                                                                }"></button>
+                                                </div>
+                                                <div v-else class="col-md-1">
+                                                    <button class="btn text-start mb-1" :style="{ width: '30px', height: '30px', borderRadius: '0', borderColor:'grey', borderWidth:'1px', backgroundImage: `linear-gradient(to bottom right, ${specialColours[selectedColour][0]}, ${specialColours[selectedColour][1]}`}"></button>
+                                                </div>
+                                                <div v-if="selectedColour!== ''" class="col-md-4">
+                                                    <button @click="clearColour" class="btn text-start mb-1" style="background-color: #535C72;color: white;">Clear Selection</button>
+                                                </div>
+                                        </div>
 
-                                    </div> 
-                                    <!-- End of right side elements -->
+                                        <!-- row 7B: all colours -->
+                                        <div class="row justify-content-start mb-1 text-start">
+                                            <!-- normal colours-->
+                                            <div class="col-7">
+                                                <button @click="displaySelectColour(colour)" v-for="(colour, i) in colours.slice(0, 14)" :key="i" :value="colour" class="btn" data-bs-toggle="button"
+                                                        :style="{ 
+                                                            width: '30px', 
+                                                            height: '30px', 
+                                                            backgroundColor: colour, 
+                                                            color: colour, 
+                                                            borderRadius: '0', 
+                                                            borderColor:'grey', 
+                                                            borderWidth:'1px'
+                                                        }">                                
+                                                </button>
+                                            </div>
+                                            <!-- Special gradient -->
+                                            <div class="col-5">
+                                                <button @click="displaySelectColour(key)" v-for="(value, key) in specialColours" :key="key" type="button" :value="key" class="btn" data-bs-toggle="button" :style="{ width: '30px', height: '30px', borderRadius: '0', borderColor:'grey', borderWidth:'1px', backgroundImage: `linear-gradient(to bottom right, ${value[0]}, ${value[1]}`}">                                
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- row 8: aroma, taste and finish -->
+                                        <div class="row pt-2">
+                                            <div class = 'col justify-content-start mb-3'>
+                                                <div class="form-group mb-3">
+                                                    <p class='text-start mb-2 fw-bold'>Aroma<span class="text-danger">*</span></p>
+                                                    <input v-model="aroma" type="text" class="form-control" id="aroma">
+                                                </div>
+                                                <div class="form-group mb-3">
+                                                    <p class='text-start mb-2 fw-bold'>Taste<span class="text-danger">*</span></p>
+                                                    <input v-model="taste" type="text" class="form-control" id="taste">
+                                                </div>
+                                                <div class="form-group mb-2">
+                                                    <p class='text-start mb-2 fw-bold'>Finish<span class="text-danger">*</span></p>
+                                                    <input v-model="finish" type="text" class="form-control" id="finish">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div> <!-- end of v-if check for extendReview -->
+
+                                    <!-- row 9: rating -->
+                                    <div class="row">
+                                        <div class="col-md-5 mb-3"> 
+                                            <div class="row align-items-center text-start">
+                                                <p class='text-star mb-1 fw-bold'>Rating<span class="text-danger">*</span></p>
+                                                <label for="customRange2" class="form-label"> Selected: {{ rating }} 
+                                                </label>
+                                                <div class="col-auto">
+                                                    <label for="customRange" class="form-label fw-bold">1</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input v-model="rating" type="range" class="form-range" min="1" max="10" step="0.5" id="customRange">
+                                                </div>
+                                                <div class="col-auto">
+                                                    <label for="customRange" class="form-label fw-bold">10</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- row 10: flavour tags -->
+                                    <div class="row">
+                                        <div class="form-group mb-3 text-start">
+                                            <p class="text-start mb-1 fw-bold">Flavour Tags</p> 
+                                            <div v-if="selectedFlavourTags.length > 0" class="form-label"> 
+                                                Selected: 
+                                                <ul v-for="flavourTag in selectedFlavourTags" v-bind:key="flavourTag" class="mb-0 pb-0">
+                                                    <li class="pb-1"> 
+                                                        <button :style="{ backgroundColor: '#' + flavourTag.split('#')[1] }" class="btn"> {{ flavourTag.split("#")[0] }} </button> 
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <button class="btn mb-2 me-2" @click="toggleBox(family)" v-for="family in flavourTags" v-bind:key="family['_id']" :style="{ color:'white', backgroundColor: family['hexcode'], borderColor:family['hexcode'], borderWidth:'1px' }">{{ family['familyTag'] }}</button>
+                                            <!-- This is the container/dropdown box for the subtags -->
+                                            <div v-for="family in flavourTags" :key="family['_id']">
+                                                <div v-if="family.showBox" class="rounded p-3" :style="{border: '3px solid ' + family['hexcode'] }">
+                                                    <div class="row">
+                                                        <div class="col-3" v-for="(element, index) in family.subtag" :key="index">
+                                                            <button @click="toggleFlavourSelection(element, family['hexcode'])" class="btn mb-2" :style="{ width: '100px', height: '60px',color:'white', backgroundColor: selectedFlavourTags.includes(element+family['hexcode']) ? 'grey' :family['hexcode'], borderColor: family['hexcode'], borderWidth:'1px' }">{{ element }}</button>
+                                                        </div>                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- End of dropdown -->
+                                        </div>
+                                    </div>
+
+                                    <!-- row 11: observation tags -->
+                                    <div class="row">
+                                        <div class="form-group mb-3 text-start">
+                                            <p class="text-start mb-1 fw-bold">Observation Tags</p>
+                                            <div v-if="selectedObservations.length > 0" class="form-label"> 
+                                                Selected: 
+                                                <ul v-for="observationTag in selectedObservations" v-bind:key="observationTag" class="mb-0 pb-0">
+                                                    <li>  {{ observationTag.split("#")[0] }} </li>
+                                                </ul>
+                                            </div>
+                                            <!-- Buttons for the first 8 observations -->
+                                            <button v-for="observation in observationTags.slice(0, 8)" @click="toggleObservationSelection(observation)" v-bind:key="observation" class="btn mb-2 me-2" data-bs-toggle="button" :style="{ color: selectedObservations.includes(observation) ? 'white' : 'black',
+                                                                                                                                                                                                                                        backgroundColor: selectedObservations.includes(observation) ? '#747D92' : 'lightgrey', 
+                                                                                                                                                                                                                                        borderColor:'grey', 
+                                                                                                                                                                                                                                        borderWidth:'1px' }">
+                                                {{ observation }}
+                                            </button>
+                                            <!-- Buttons for additional observations (shown only when extendObservation is true) -->
+                                            <div v-if="extendObservation">
+                                                <button v-for="observation in observationTags.slice(8)" @click="toggleObservationSelection(observation)" v-bind:key="observation" class="btn mb-2 me-2" :style="{ color: selectedObservations.includes(observation) ? 'white' : 'black',
+                                                                                                                                                                                                                                        backgroundColor: selectedObservations.includes(observation) ? '#747D92' : 'lightgrey', 
+                                                                                                                                                                                                                                        borderColor:'grey', 
+                                                                                                                                                                                                                                        borderWidth:'1px' }">
+                                                    {{ observation }}
+                                                </button>
+                                            </div>
+                                            <!-- Button to toggle between View All and View Less -->
+                                            <button @click="toggleObservations" class="btn mt-2" style="color:black; background-color:white; border-color:black; border-width: 1px;" v-if="!extendObservation">
+                                                View All
+                                            </button>
+                                            <button @click="toggleObservations" class="btn mt-2" style="color:black; background-color:white; border-color:black; border-width: 1px;" v-else>
+                                                View Less
+                                            </button>
+                                        </div>
+                                    </div>
 
                                 </div>
-                                <!-- End of bootstrap row -->
-
-                                </div>
+                                
                                 <!-- End of modal body -->
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button v-if="!inEdit" type="button" @click="addReview" class="btn btn-primary">Submit Review</button>
-                                    <button v-else type="button" @click="editReview" class="btn btn-primary">Update Review</button>
+                                    <button v-if="!inEdit" type="button" @click="addReview" class="btn primary-square">Submit Review</button>
+                                    <button v-else type="button" @click="editReview" class="btn primary-btn">Update Review</button>
                                 </div>
                             </div>
                         </div>
@@ -569,7 +608,7 @@
                         <div class="d-flex justify-content-start">
                             <!-- add new photo -->
                             <div class="add-review-photo-container">
-                                <div class="add-review-photo-background centered rounded" v-on:click="addPhoto">
+                                <div class="add-review-photo-background centered rounded" v-if="userID !== 'defaultUser' && !inEdit" data-bs-toggle="modal" data-bs-target="#reviewModal">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
                                         <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
                                     </svg>
@@ -768,7 +807,7 @@
                             <!-- [function] where to try -->
                             <div v-for="venue in venueListings" v-bind:key="venue._id">
                                 <router-link :to="{ path: '/Venues/Profile-Page/' + venue._id.$oid }" class="reverse-clickable-text">
-                                    <p> {{ venue.venueName }} </p>
+                                    <p class="mb-1"> {{ venue.venueName }} </p>
                                 </router-link>
                             </div>
                         </div>
@@ -843,6 +882,11 @@
                 willRecommend: null,
                 willDrinkAgain: null,
 
+                // to toggle moderator lock
+                inToggle: true,
+                toggleSuccess: false,
+                toggleError: false,
+
                 // user
                 userType: "",
 
@@ -869,8 +913,6 @@
                 haveTried: false,
                 wantToTry: false,
 
-                // For toggling lock button
-                lockOperator:false,
 
                 // For creating review
                 languages:[],
@@ -1040,7 +1082,6 @@
                                 obj[item.colour] = item.hexList;
                                 return obj;
                             }, {});
-                            console.log(this.specialColours)
                         } 
                         catch(error){
                             console.error(error)
@@ -1099,11 +1140,8 @@
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
                         this.users = response.data;
-                        console.log(this.users);
                         this.user = this.users.find(user => user._id.$oid == this.userID)
                         this.userBookmarks = this.user.drinkLists;
-                        console.log(this.user);
-                        console.log(this.userBookmarks);
                     } 
                     catch (error) {
                         console.error(error);
@@ -1229,7 +1267,7 @@
                 try {
                     return rating["reviewTarget"]['$oid'] == listing['_id']['$oid'];
                 }
-                catch(error){console.log(error)}
+                catch(error){console.error(error)}
                 });
                 // if there are no ratings
                 if (ratings.length == 0) {
@@ -1248,7 +1286,7 @@
                 try {
                     return rating["reviewTarget"]['$oid'] == listing['_id']['$oid'];
                 }
-                catch(error){console.log(error)}
+                catch(error){console.error(error)}
                 });
                 // if there are no ratings
                 if (ratings.length == 0) {
@@ -1268,7 +1306,7 @@
                 try {
                     return rating["reviewTarget"]['$oid'] == listing['_id']['$oid'];
                 }
-                catch(error){console.log(error)}
+                catch(error){console.error(error)}
                 });
                 // if there are no ratings
                 if (ratings.length == 0) {
@@ -1471,7 +1509,7 @@
                     this.reviewResponseCode = response.data.code
                 })
                 .catch((error)=>{
-                    console.log(error);
+                    console.error(error);
                     this.reviewResponseCode = error.response.data.code
                 });
                 if(this.reviewResponseCode==200){
@@ -1495,7 +1533,7 @@
                     this.reviewResponseCode = response.data.code
                 })
                 .catch((error)=>{
-                    console.log(error);
+                    console.error(error);
                     this.reviewResponseCode = error.response.data.code
                 });
                 if(this.reviewResponseCode==201){
@@ -1582,7 +1620,7 @@
                     this.deleteReviewCode = response.data.code
                 })
                 .catch((error)=>{
-                    console.log(error);
+                    console.error(error);
                     this.deleteReviewCode = error.response.data.code
                 });
                 if(this.deleteReviewCode==200){
@@ -1683,7 +1721,6 @@
             },
             getListingID(listingName) {
                 const listing = this.listings.find(listing => listing.listingName === listingName);
-                console.log(listing);
                 return listing._id;
             },
             // checks which lists the item is in
@@ -1743,7 +1780,7 @@
                 }
 
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5100/updateBookmark', 
+                    await this.$axios.post('http://127.0.0.1:5100/updateBookmark', 
                         {
                             userID: this.userID,
                             bookmark: this.userBookmarks,
@@ -1752,13 +1789,46 @@
                             'Content-Type': 'application/json'
                         }
                     });
-                    console.log(response.data);
                 } catch (error) {
                     console.error(error);
                 }
                 
                 window.location.reload();
 
+            },
+            
+            resetToggle(){
+                if(!this.toggleSuccess){
+                    this.specified_listing.allowMod = !this.specified_listing.allowMod
+                }
+                this.toggleSuccess=false
+                this.toggleError=false
+                this.inToggle=true
+            },
+
+            async updateToggle(){
+                let responseCode = "";
+                this.inToggle=false;
+                let submitData = {
+                            "listingName": this.specified_listing.listingName,
+                            "allowMod": this.specified_listing.allowMod,
+                }
+                const response = await this.$axios.post('http://127.0.0.1:5002/updateListing/' + this.listing_id, submitData)
+                .then((response)=>{
+                    responseCode = response.data.code
+                })
+                .catch((error)=>{
+                    console.error(error);
+                    responseCode = error.response.data.code
+                });
+
+                if(responseCode == 200){
+                    this.toggleSuccess = true
+                }else{
+                    this.toggleError = true
+                }
+
+                return response
             },
         }
     };

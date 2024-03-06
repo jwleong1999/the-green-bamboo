@@ -237,7 +237,7 @@
                     </div>
                     <!-- information -->
                     <div class="row">
-                        <!-- profile photo & post timestamp & # of likes -->
+                        <!-- photo & # of likes -->
                         <div class="col-2">
                             <img :src=" 'data:image/jpeg;base64,' + (latestUpdate['photo'] || defaultProfilePhoto)" alt="" style="width: 150px; height: 150px;"> 
                             <!-- # of likes -->
@@ -304,7 +304,71 @@
                     </div>
                     <!-- view more -->
                     <div class="row">
-                        <p class="tertiary-text text-decoration-underline pt-2 no-margin"> View more </p>
+                        <button v-if="showRemainingUpdates == false" class="btn tertiary-text text-decoration-underline pt-2 no-margin" @click="checkToShowRemainingUpdates()"> View more </button>
+                    </div>
+
+                    <!-- show remaining updates when "view more" is clicked -->
+                    <div v-if="showRemainingUpdates">
+
+                        <!-- check if there are any updates -->
+
+                        <!-- [if] more updates -->
+                        <div v-if="remainingUpdates.length > 0">
+                            <div v-for="update in remainingUpdates" v-bind:key="update._id">
+                                <h5 class="text-decoration-underline text-start pb-3">
+                                    Posted on:
+                                    {{ this.formatDate(update.date.$date) }}
+                                </h5>
+                                <!-- other info -->
+                                <div class="row pb-2">
+                                    <!-- photo & # of likes -->
+                                    <div class="col-2">
+                                        <img :src=" 'data:image/jpeg;base64,' + (update['photo'] || defaultProfilePhoto)" alt="" style="width: 150px; height: 150px;"> 
+                                        <!-- # of likes -->
+                                        <div class="row pt-3"> 
+                                            <div class="col-6 text-end">
+                                                <!-- [else] not liked -->
+                                                <div style="display: inline-block;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.090.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 text-start">
+                                                <h4> {{ update['likes'].length }} </h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- description & image-->
+                                    <div class="col-10">
+                                        <div class="row">
+                                            <!-- description -->
+                                            <div class="col">
+                                                <p class="text-start p-text-lg"> 
+                                                    {{update['text']}}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- [else] no more updates -->
+                        <div v-else>
+                            <h5 class="text-body-secondary text-start"> 
+                                <b> 
+                                    No more updates from
+                                    {{ specified_venue["venueName"] }} 
+                                </b> 
+                            </h5>
+                        </div>
+
+                        <!-- view less -->
+                        <div class="row">
+                            <button v-if="showRemainingUpdates" class="btn tertiary-text text-decoration-underline pt-2 no-margin" @click="checkToShowRemainingUpdates()"> View less </button>
+                        </div>
+
                     </div>
 
                     <hr>
@@ -316,7 +380,9 @@
                     <div class="container">
                         <div class="row">
                             <div v-for="drinkInfo in mostPopular" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container image-container-150">
-                                <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromDrink(drinkInfo[0]) || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
+                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + drinkInfo[2].$oid }" class="default-text-no-background">
+                                    <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromDrink(drinkInfo[0]) || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
+                                </router-link>
                                 <!-- bookmark icon -->
                                 <svg v-if="checkBookmarkStatus(drinkInfo[2].$oid) && user" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bookmark-fill overlay-icon" viewBox="0 0 16 16"
                                     data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(drinkInfo[2])">
@@ -330,7 +396,9 @@
                         </div>
                         <div class="row">
                             <div v-for="drinkInfo in mostPopular" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container-text scrollable">
-                                {{ drinkInfo[0] }}
+                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + drinkInfo[2].$oid }" class="default-clickable-text">
+                                    {{ drinkInfo[0] }}
+                                </router-link>
                             </div>
                         </div>
                     </div>
@@ -342,7 +410,9 @@
                     <div class="container">
                         <div class="row">
                             <div v-for="drinkInfo in mostDiscussed" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container image-container">
-                                <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromDrink(drinkInfo[0]) || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
+                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + drinkInfo[2].$oid }" class="default-text-no-background">
+                                    <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromDrink(drinkInfo[0]) || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
+                                </router-link>
                                 <!-- bookmark icon -->
                                 <svg v-if="checkBookmarkStatus(drinkInfo[2].$oid) && user" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bookmark-fill overlay-icon" viewBox="0 0 16 16"
                                     data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(drinkInfo[2])">
@@ -356,7 +426,9 @@
                         </div>
                         <div class="row">
                             <div v-for="drinkInfo in mostDiscussed" v-bind:key="drinkInfo[0]"  class="add-drink-photo-container-text scrollable">
-                                {{ drinkInfo[0] }}
+                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + drinkInfo[2].$oid }" class="default-clickable-text">
+                                    {{ drinkInfo[0] }}
+                                </router-link>
                             </div>
                         </div>
                     </div>
@@ -368,7 +440,9 @@
                     <div class="container">
                         <div class="row">
                             <div v-for="drinkInfo in recentlyAdded" v-bind:key="drinkInfo._id"  class="add-drink-photo-container image-container">
-                                <img :src=" 'data:image/jpeg;base64,' + (drinkInfo['photo'] || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
+                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + drinkInfo._id.$oid }" class="default-text-no-background">
+                                    <img :src=" 'data:image/jpeg;base64,' + (drinkInfo['photo'] || defaultProfilePhoto)" class="add-drink-photo-background centered rounded"> 
+                                </router-link>
                                 <!-- bookmark icon -->
                                 <svg v-if="checkBookmarkStatus(drinkInfo._id.$oid) && user" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-bookmark-fill overlay-icon" viewBox="0 0 16 16"
                                     data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(drinkInfo._id)">
@@ -382,7 +456,9 @@
                         </div>
                         <div class="row">
                             <div v-for="drinkInfo in recentlyAdded" v-bind:key="drinkInfo._id" class="add-drink-photo-container-text scrollable">
-                                {{ drinkInfo["listingName"] }}
+                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + drinkInfo._id.$oid }" class="default-clickable-text">
+                                    {{ drinkInfo["listingName"] }}
+                                </router-link>
                             </div>
                         </div>
                     </div>
@@ -526,7 +602,9 @@
                                             <div class="col-7">
                                                 <div class="row pt-2">
                                                     <h4 class="default-text"> 
-                                                        <u> <b> {{ listing["listingName"] }}  </b> </u>
+                                                        <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="default-text-no-background">
+                                                            <u> <b> {{ listing["listingName"] }}  </b> </u>
+                                                        </router-link>
                                                     </h4> 
                                                 </div>
                                             </div>
@@ -556,7 +634,9 @@
                                             <!-- official description -->
                                             <div class="col-10">
                                                 <div class="row pt-2 pb-5">
-                                                    <h5 class="fst-italic scrollable-long"> {{ listing["officialDesc"] }} </h5>
+                                                    <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="default-clickable-text">
+                                                        <h5 class="fst-italic scrollable-long default-clickable-text"> {{ listing["officialDesc"] }} </h5>
+                                                    </router-link>
                                                 </div>
                                             </div>
                                             <!-- rating -->
@@ -627,7 +707,7 @@
 
             </div> <!-- end of venue information -->
             
-            <!-- view analytics & q&a for producer & opening hours and reservation details -->
+            <!-- view analytics & q&a for venues & opening hours and reservation details -->
             <div class="col-3">
                 <div class="row">
                     <!-- view analytics -->
@@ -640,7 +720,12 @@
                             <!-- header text -->
                             <div class="square-inline text-start">
                                 <!-- [if] user type venue -->
-                                <div v-if="correctVenue" class="mr-auto"> <h4> Q&A for You! </h4> </div>
+                                <div v-if="correctVenue" class="mr-auto"> 
+                                    <h4> Q&A for You! </h4> 
+                                    <router-link :to="{ path: '/Venues/VenuesQA/' + venue_id}" class="default-text-no-background">
+                                        <p class="reverse-text no-margin text-decoration-underline text-start pb-2"> View All </p>
+                                    </router-link> 
+                                </div>
                                 <!-- [else] user type is NOT producer -->
                                 <h4 v-else class="mr-auto"> Q&As for {{ specified_venue["venueName"] }} </h4>
                             </div>
@@ -737,12 +822,12 @@
                         <div class="square secondary-square rounded p-3 mb-3">
                             <!-- header text -->
                             <div class="square-inline">
-                                <h4 class="square-inline text-start mr-auto"> Opening Hours </h4>
+                                <h4 class="square-inline text-start mr-auto"> Opening Hours and Reservation Details </h4>
                             </div>
-                            <!-- body text -->
+                            <!-- edit opening hours-->
                             <div class="py-2 text-start">
                                 <!-- buttons -->
-                                <div class="pb-3">
+                                <div class="pb-3" v-if="correctVenue">
                                     <!-- [if] not editing -->
                                     <button v-if="editingOpeningHours == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" v-on:click="editOpeningHours()">
                                         Edit opening hours
@@ -752,7 +837,6 @@
                                         Save
                                     </button>
                                 </div>
-
                                 <!-- opening hours -->
                                 <div class="text-left default-text-no-background" v-for = "(hours, day) in openingHours" v-bind:key="day">
                                     <b>{{ day }}: </b>
@@ -769,6 +853,35 @@
                                         <span :id="day + 'error'" class="text-danger mx-2"></span>
                                     </div>
                                 </div>
+                            </div>
+                            <!-- edit reservation details -->
+                            <div class="py-2 text-start">
+                                <!-- buttons -->
+                                <div class="pb-3" v-if="correctVenue">
+                                    <!-- [if] not editing reservation details -->
+                                    <button v-if="editingReservationDetails == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" v-on:click="editReservationDetails()">
+                                        Edit reservation details
+                                    </button>
+                                    <!-- [else] if editing -->
+                                    <button v-else type="button" class="btn success-btn rounded-0 reverse-clickable-text" v-on:click="saveReservationDetails()">
+                                        Save
+                                    </button>
+                                </div>
+                                <!-- reservation details  -->
+                                <!-- [if] editing -->
+                                <div v-if="editingReservationDetails">
+                                        <label for="reservationDetailsInput"> Reservation details </label>
+                                        <input type="text" class="form-control mb-3" id="reservationDetailsInput" aria-describedby="reservationDetails" v-model="edited_reservationDetails">
+                                    </div>
+                                    <!-- [else] not editing -->
+                                    <span v-else class="text-body-secondary">
+                                        <div v-if="specified_venue['reservationDetails'] == ''" class="fst-italic">
+                                            No reservation details available!
+                                        </div>
+                                        <div v-else>
+                                            {{ specified_venue["reservationDetails"] }}
+                                        </div>
+                                    </span>
                             </div>
                             <div class="py-2"></div>
                         </div>
@@ -842,8 +955,8 @@
                 image64: null, // original image
 
                 // edit other fields
-                edit_producerName: '',
-                edit_producerDesc: '',
+                edit_venueName: '',
+                edit_venueDesc: '',
                 edit_originLocation: '',
 
                 // search
@@ -886,6 +999,10 @@
                 saveOpeningHoursError: false,
                 countOpeningHoursError: 0,
 
+                // reservation details
+                editingReservationDetails: false,
+                edited_reservationDetails: "",
+
                 // customization for drinkLists buttons
                 // [TODO] get drink list of user, for now is hardcoded
                 drinkList:  {
@@ -904,6 +1021,10 @@
                 updateLikes: [],
                 likeStatus: false,
                 updateLikesCount: 0,
+
+                // to fetch venue's remaining updates
+                showRemainingUpdates: false,
+                remainingUpdates: [],
 
                 // to get producer's answered questions
                 answeredQuestions: [],
@@ -1274,7 +1395,9 @@
                 const averageRating = ratings.reduce((total, rating) => {
                     return total + rating["rating"];
                 }, 0) / ratings.length;
-                return averageRating;
+                // round to 1 decimal place
+                const roundedRating = Math.round(averageRating * 10) / 10;
+                return roundedRating;
             },
 
             // check if user has already added listing to shelf, add colour to button accordingly
@@ -1496,6 +1619,12 @@
 
                 if (updatesList.length > 0) {
                     let latestUpdate = updatesList[updatesList.length - 1];
+
+                    // check that there is more than 1 update
+                    if (updatesList.length > 1) {
+                        // for remaining updates
+                        this.remainingUpdates = updatesList.slice(0, updatesList.length - 1);
+                    }
 
                     // format date
                     let dateTimeString = latestUpdate["date"]["$date"]
@@ -1760,7 +1889,6 @@
 
                 // force page to reload
                 window.location.reload();
-                    
             },
 
             // Send request for modification of listing
@@ -1931,6 +2059,50 @@
                 
                 window.location.reload();
 
+            },
+
+            // to check if all updates should be shown
+            checkToShowRemainingUpdates() {
+                if (this.showRemainingUpdates == true) {
+                    this.showRemainingUpdates = false;
+                } 
+                else {
+                    this.showRemainingUpdates = true;
+                }
+            },
+
+            // to edit reservation details
+            editReservationDetails() {
+                // set the current details to the edit details
+                this.edited_reservationDetails = this.specified_venue["reservationDetails"];
+                this.editingReservationDetails = true;
+            },
+
+            // to save reservation details
+            saveReservationDetails() {
+                this.editingReservationDetails = false;
+
+                console.log(this.edited_reservationDetails);
+
+                // update database
+                try {
+                    this.$axios.post('http://localhost:5300/editReservationDetails', 
+                        {
+                            venueID: this.venue_id,
+                            updatedReservationDetails: this.edited_reservationDetails,
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                }
+                catch (error) {
+                    console.error(error);
+                }
+
+                // force page to reload
+                window.location.reload();
             },
 
         }

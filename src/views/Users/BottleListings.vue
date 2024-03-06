@@ -251,7 +251,7 @@
                                     <button class="btn btn-sm" 
                                         :class="{ 'primary-btn': discovery, 'primary-btn-outline': !discovery }"
                                         v-on:click="changeDiscoveryStatus()">
-                                        <h4> Discover </h4>
+                                        <h4 class="mb-1"> Discover </h4>
                                     </button>
                                 </div>
                             </div>
@@ -261,7 +261,7 @@
                                     <button class="btn btn-sm"
                                         :class="{ 'primary-btn': following, 'primary-btn-outline': !following }"
                                         v-on:click="changeFollowingStatus()">
-                                        <h4> Following </h4>
+                                        <h4 class="mb-1"> Following </h4>
                                     </button>
                                 </div>
                             </div>
@@ -270,7 +270,7 @@
                                 <div class="d-grid gap-2 dropdown">
                                     <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         {{ selectedDrinkType ? selectedDrinkType['drinkType'] : 'Filter by drink type' }}
-                                        <span class="cross-icon" @click="clearSelection">&#10005;</span>
+                                        <span v-if="selectedDrinkType != ''" class="cross-icon" @click="clearSelection">&#10005;</span>
                                     </button>
                                     <ul class="dropdown-menu">
                                         <!-- Filter button for drink type -->
@@ -287,7 +287,7 @@
                                 <div class="d-grid gap-2 dropdown">
                                     <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         {{ selectedCategory ? selectedCategory : 'Filter by drink category' }}
-                                        <span class="cross-icon" @click="clearCategory">&#10005;</span>
+                                        <span v-if="selectedCategory != null" class="cross-icon" @click="clearCategory">&#10005;</span>
                                     </button>
                                     <ul v-if="selectedTypeCategory != ''" class="dropdown-menu">
                                         <!-- Filter button for drink category -->
@@ -306,12 +306,11 @@
                         
                         <!-- listings -->
                         <div class="row scrollable-listings">
-                                                 
 
                             <!-- [if] discovery & following not clicked -->
                             <div v-if="discovery == false && following == false">
                                 <!-- Display error message when no results for filter-->
-                                <h5 v-if="filteredListings==''" style="display: inline-block;"> There is no listing available for the selected filter </h5>
+                                <h5 v-if="filteredListings==''" style="display: inline-block;" class="pt-5"> There is no listing available for the selected filter </h5>
                                 <!-- v-loop for each listing -->
                                 <div class="container text-start">
                                     <div v-for="listing in filteredListings" v-bind:key="listing._id" class="p-3">
@@ -353,10 +352,10 @@
                                                 </div>
                                                 <!-- rating -->
                                                 <div class="row pt-4"> 
-                                                    <div class="col-6">
-                                                        <h1 class="rating-text">
+                                                    <div class="col-6 d-flex align-items-center">
+                                                        <h1 class="rating-text text-end d-flex align-items-center">
                                                             {{ getRatings(listing) }}
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
                                                                 <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                                             </svg>
                                                         </h1>
@@ -423,10 +422,10 @@
                                                 </div>
                                                 <!-- rating -->
                                                 <div class="row pt-4"> 
-                                                    <div class="col-6">
-                                                        <h1 class="rating-text">
+                                                    <div class="col-6 d-flex align-items-center">
+                                                        <h1 class="rating-text text-end d-flex align-items-center">
                                                             {{ getRatings(listing) }}
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
                                                                 <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                                             </svg>
                                                         </h1>
@@ -493,10 +492,10 @@
                                                 </div>
                                                 <!-- rating -->
                                                 <div class="row pt-4"> 
-                                                    <div class="col-6">
-                                                        <h1 class="rating-text">
+                                                    <div class="col-6 d-flex align-items-center">
+                                                        <h1 class="rating-text text-end d-flex align-items-center">
                                                             {{ getRatings(listing) }}
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
                                                                 <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                                             </svg>
                                                         </h1>
@@ -680,10 +679,10 @@
                                         </div>
                                     </div>
                                     <!-- rating -->
-                                    <div class="col-2">
-                                        <h1 class="rating-text text-end">
+                                    <div class="col-2 d-flex align-items-center">
+                                        <h1 class="rating-text text-end d-flex align-items-center">
                                             {{ getRatings(listing) }}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
                                                 <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                             </svg>
                                         </h1>

@@ -88,8 +88,10 @@
                         <div class="col">
                             <p>
                                 <b>
-                                    If you are a drinks brand, bottler or venue owner trying to create an account, 
-                                    <router-link :to="{ path: '/businessSignup' }"  class="default-body-text-no-background">click here</router-link>.
+                                    <i>
+                                        If you are a drinks brand, bottler or venue owner trying to create an account, 
+                                        <router-link :to="{ path: '/businessSignup' }"  class="default-body-text-no-background">click here</router-link>.
+                                    </i>
                                 </b>
                             </p>
                         </div>
