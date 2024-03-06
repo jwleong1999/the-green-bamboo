@@ -155,11 +155,11 @@
                     </div>
                     <!-- have tried button -->
                     <div class="col-2 pe-0">
-                        <div v-html="checkDrinkLists(specified_listing).buttons.haveTried" class="d-grid"> </div>
+                        <div v-html="checkDrinkLists(specified_listing).buttons.haveTried" class="d-grid" @click="addToTriedList"> </div>
                     </div>
                     <!-- want to try button -->
                     <div class="col-2 ps-0">
-                        <div v-html="checkDrinkLists(specified_listing).buttons.wantToTry" class="d-grid"> </div>
+                        <div v-html="checkDrinkLists(specified_listing).buttons.wantToTry" class="d-grid" @click="addToWantList"> </div>
                     </div>
                     <!-- bookmark button -->
                     <div class="col-1 text-end">
@@ -925,8 +925,10 @@
                         <div class="py-5"></div>
                     </div>
                 </div>
+
                 <!-- not sure what this line supposed to do -->
                 <!-- {{ drinkList }} -->
+                
                 <!-- where to try -->
                 <div class="row">
                     <div class="square primary-square rounded p-3 mb-3">
@@ -2030,11 +2032,59 @@
 
                 return response
             },
-            async editTriedList(){
-                this.haveTried=!this.haveTried
+            async addToTriedList(){
+                
+                
+                let responseCode = "";
+                
+                let submitData = {
+                            "date": new Date(),
+                            "listingID": this.specified_listing._id,
+                            "userID": this.userID,
+                            
+                }
+                console.log(submitData)
+                await this.$axios.put('http://127.0.0.1:5005/addToTried/', submitData)
+                    .then((response) => {
+                        responseCode = response.data.code;
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        responseCode = error.response.data.code;
+                    });
+
+                if (responseCode == 200) {
+                    console.log("Success")
+                } else {
+                    console.log("Fail");
+                }
+                window.location.reload();
             },
-            async editWantList(){
-                this.wantToTry=!this.wantToTry
+            async addToWantList(){
+                let responseCode = "";
+                
+                let submitData = {
+                            "date": new Date(),
+                            "listingID": this.specified_listing._id,
+                            "userID": this.userID,
+                            
+                }
+                console.log(submitData)
+                await this.$axios.put('http://127.0.0.1:5005/addToWant/', submitData)
+                    .then((response) => {
+                        responseCode = response.data.code;
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        responseCode = error.response.data.code;
+                    });
+
+                if (responseCode == 200) {
+                    console.log("Success")
+                } else {
+                    console.log("Fail");
+                }
+                window.location.reload();
             },
             
             getFilteredReviewsWithImages() {
@@ -2046,7 +2096,7 @@
                 } else {
                     this.filteredReviewsWithImages = reviewsWithImages
                 }
-            },
+            }
 
         }
     };
