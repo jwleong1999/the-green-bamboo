@@ -952,6 +952,9 @@
                     }
                     // drink shelf
                     let allDrinkShelf = Object.values(user.drinkLists).flatMap(obj => obj.listItems);
+                    allDrinkShelf.sort((a, b) => {
+                        return new Date(b[0].$date) - new Date(a[0].$date);
+                    })
                     console.log(allDrinkShelf)
                     let allDrinks = []
                     for (const item of allDrinkShelf) {
