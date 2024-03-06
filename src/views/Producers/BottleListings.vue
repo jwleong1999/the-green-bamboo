@@ -605,45 +605,27 @@
                 <!-- photos posted by other users -->
                 <div class="row text-start">
                     <div class="col">
-                        <div class="d-flex justify-content-start">
-                            <!-- add new photo -->
-                            <div class="add-review-photo-container">
-                                <div class="add-review-photo-background centered rounded" v-if="userID !== 'defaultUser' && !inEdit" data-bs-toggle="modal" data-bs-target="#reviewModal">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
-                                        <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
-                                    </svg>
+                        <div class="justify-content-start row">
+                            <!-- [if] user has not added a review yet, add new photo -->
+                            <div v-if="userID !== 'defaultUser' && !inEdit" class="row">
+                                <!-- (1) add button -->
+                                <div class="col-2">
+                                    <div data-bs-toggle="modal" data-bs-target="#reviewModal">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <!-- (2) to (5) other photos -->
+                                <div v-for="review in filteredReviewsWithImages.slice(0,4)" v-bind:key="review" class="col-2">
+                                    <img :src=" 'data:image/jpeg;base64,' + (review['photo'] || defaultProfilePhoto)" alt="" class="review-image" style="width: 150px; height: 150px">
                                 </div>
                             </div>
-                            <!-- display other photos -->
-                            <!-- [TODO] THIS FOLLOWING PART IS HARDCODED FOR NOW (FOR UI SAKE), need to loop thru db to get the photos and display here -->
-                            <div class="add-review-photo-container">
-                                <div class="add-review-photo-background centered rounded">
-                                    
-                                </div>
-                            </div>
-                            <div class="add-review-photo-container">
-                                <div class="add-review-photo-background centered rounded">
-                                    
-                                </div>
-                            </div>
-                            <div class="add-review-photo-container">
-                                <div class="add-review-photo-background centered rounded">
-                                    
-                                </div>
-                            </div>
-                            <div class="add-review-photo-container">
-                                <div class="add-review-photo-background centered rounded">
-                                    
-                                </div>
-                            </div>
-                            <div class="add-review-photo-container">
-                                <div class="add-review-photo-background centered rounded">
-                                    
-                                </div>
-                            </div>
-                            <div class="add-review-photo-container">
-                                <div class="add-review-photo-background centered rounded">
-                                    
+                            <!-- [else] user has added a review -->
+                            <!-- (1) to (5) display all photos -->
+                            <div v-else class="row">
+                                <div v-for="review in filteredReviewsWithImages" v-bind:key="review" class="col-2">
+                                    <img :src="'data:image/jpeg;base64,' + (review['photo'] || defaultProfilePhoto)" alt="" class="review-image" style="width: 150px; height: 150px">
                                 </div>
                             </div>
                         </div>
@@ -1024,6 +1006,8 @@
                 searchResults: [],
                 filteredListings: [],
                 filteredReviews:[],
+                filteredReviewsWithImages: [],
+
 
                 // specified listing listing_id used for createReview
                 listing_id: null,
@@ -1267,6 +1251,7 @@
                         this.whereToBuy(); // find where to buy specified listing
                         this.whereToTry(); // find where to try specified listing [RE-ENABLE WHEN VENUES HAVE MENU ATTRIBUTE]
                         this.filteredReviews = this.getReviewsForListing(this.specified_listing);
+                        this.getFilteredReviewsWithImages() // to get only those filtered reviews with photos
                         this.specificReview = this.getLoggedUserReview();
                         this.formatDeepDiveLink();
                     } 
@@ -2050,7 +2035,19 @@
             },
             async editWantList(){
                 this.wantToTry=!this.wantToTry
-            }
+            },
+            
+            getFilteredReviewsWithImages() {
+                let allReviews = this.filteredReviews
+                let reviewsWithImages = allReviews.filter(review => review.photo !== null)
+                // if reviewsWithImages more than 5, get the first 5
+                if (reviewsWithImages.length > 5) {
+                    this.filteredReviewsWithImages = reviewsWithImages.slice(0, 5)
+                } else {
+                    this.filteredReviewsWithImages = reviewsWithImages
+                }
+            },
+
         }
     };
 </script>
