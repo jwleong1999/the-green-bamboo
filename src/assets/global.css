@@ -10,14 +10,23 @@ body {
     background-image: url("../../Images/Background/SignupLogin.png");
     background-size: cover;
     background-repeat: no-repeat;
-    height: 100vh;
+    background-attachment: fixed !important;
+    height: calc(100vh - 90px);
+    /* height: 100vh; */
     width: 100vw;
+    overflow-x: hidden;
 }
 
 .navbar-container {
     justify-content: center;
     align-items: center;
     border-bottom: 3px solid #535C72;
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%; 
+    background-color: #D9D9D9;
+    z-index: 99;
 }
 
 .navbar {
@@ -236,7 +245,6 @@ body {
     right: 0;
     margin-top: 10px;
     margin-right: 25px;
-    z-index: 1;
 }
 
 .image-container-150 .overlay-icon {
@@ -245,7 +253,6 @@ body {
     right: 0;
     margin-top: 11px;
     margin-right: 8px;
-    z-index: 1;
 }
 
 .add-review-photo-container {
