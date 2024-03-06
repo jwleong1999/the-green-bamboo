@@ -854,6 +854,35 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- edit public holidays -->
+                            <div class="py-2 text-start">
+                                <!-- buttons -->
+                                <div class="pb-3" v-if="correctVenue">
+                                    <!-- [if] not editing public holidays -->
+                                    <button v-if="editingPublicHolidays == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" v-on:click="editPublicHolidays()">
+                                        Edit public holidays information
+                                    </button>
+                                    <!-- [else] if editing -->
+                                    <button v-else type="button" class="btn success-btn rounded-0 reverse-clickable-text" v-on:click="savePublicHolidays()">
+                                        Save
+                                    </button>
+                                </div>
+                                <!-- public holidays -->
+                                <!-- [if] editing -->
+                                <div v-if="editingPublicHolidays">
+                                    <label for="openingHoursInput"> Public holidays information </label>
+                                    <input type="text" class="form-control mb-3" id="openingHoursInput" aria-describedby="openingHours" v-model="edited_publicHolidays">
+                                </div>
+                                <!-- [else] not editing -->
+                                <span v-else class="text-body-secondary">
+                                    <div v-if="specified_venue['publicHolidays'] == ''" class="fst-italic">
+                                        No information about public holiday opening hours!
+                                    </div>
+                                    <div v-else>
+                                        {{ specified_venue["publicHolidays"] }}
+                                    </div>
+                                </span>
+                            </div>
                             <!-- edit reservation details -->
                             <div class="py-2 text-start">
                                 <!-- buttons -->
@@ -870,18 +899,18 @@
                                 <!-- reservation details  -->
                                 <!-- [if] editing -->
                                 <div v-if="editingReservationDetails">
-                                        <label for="reservationDetailsInput"> Reservation details </label>
-                                        <input type="text" class="form-control mb-3" id="reservationDetailsInput" aria-describedby="reservationDetails" v-model="edited_reservationDetails">
+                                    <label for="reservationDetailsInput"> Reservation details </label>
+                                    <input type="text" class="form-control mb-3" id="reservationDetailsInput" aria-describedby="reservationDetails" v-model="edited_reservationDetails">
+                                </div>
+                                <!-- [else] not editing -->
+                                <span v-else class="text-body-secondary">
+                                    <div v-if="specified_venue['reservationDetails'] == ''" class="fst-italic">
+                                        No reservation details available!
                                     </div>
-                                    <!-- [else] not editing -->
-                                    <span v-else class="text-body-secondary">
-                                        <div v-if="specified_venue['reservationDetails'] == ''" class="fst-italic">
-                                            No reservation details available!
-                                        </div>
-                                        <div v-else>
-                                            {{ specified_venue["reservationDetails"] }}
-                                        </div>
-                                    </span>
+                                    <div v-else>
+                                        {{ specified_venue["reservationDetails"] }}
+                                    </div>
+                                </span>
                             </div>
                             <div class="py-2"></div>
                         </div>
@@ -998,6 +1027,10 @@
                 edited_openingHours: {},
                 saveOpeningHoursError: false,
                 countOpeningHoursError: 0,
+
+                // reservation details
+                editingPublicHolidays: false,
+                edited_publicHolidays: "",
 
                 // reservation details
                 editingReservationDetails: false,
@@ -2071,6 +2104,40 @@
                 }
             },
 
+            // to edit public holidays
+            editPublicHolidays() {
+                // set the current details to the edit details
+                this.edited_publicHolidays = this.specified_venue["publicHolidays"];
+                this.editingPublicHolidays = true;
+            },
+
+            /// to save public holidays
+            savePublicHolidays() {
+                this.editingPublicHolidays = false;
+
+                console.log(this.edited_publicHolidays)
+
+                // update database
+                try {
+                    this.$axios.post('http://localhost:5300/editPublicHolidays', 
+                        {
+                            venueID: this.venue_id,
+                            updatedPublicHolidays: this.edited_publicHolidays
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                }
+                catch (error) {
+                    console.error(error);
+                }
+
+                // force page to reload
+                window.location.reload();
+            },
+
             // to edit reservation details
             editReservationDetails() {
                 // set the current details to the edit details
@@ -2081,8 +2148,6 @@
             // to save reservation details
             saveReservationDetails() {
                 this.editingReservationDetails = false;
-
-                console.log(this.edited_reservationDetails);
 
                 // update database
                 try {

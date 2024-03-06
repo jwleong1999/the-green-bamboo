@@ -298,6 +298,38 @@ def editOpeningHours():
         ), 500
 
 # -----------------------------------------------------------------------------------------
+# [POST] Edit public holidays
+# - Edit public holidays
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/editPublicHolidays', methods=['POST'])
+def editPublicHolidays():
+    data = request.get_json()
+    print(data)
+    venueID = data['venueID']
+    updatedPublicHolidays = data['updatedPublicHolidays']
+
+    try: 
+        editOpeningHours = db.venues.update_one(
+            {'_id': ObjectId(venueID)},
+            {'$set': {'publicHolidays': updatedPublicHolidays}}
+        )
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Public holidays details edited successfully!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "An error occurred editing the public holidays!"
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------
 # [POST] Edit reservation details
 # - Edit reservation details
 # - Possible return codes: 201 (Updated), 500 (Error during update)
