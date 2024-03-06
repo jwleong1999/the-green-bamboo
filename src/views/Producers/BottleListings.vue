@@ -2119,7 +2119,7 @@
                 } else {
                     this.filteredReviewsWithImages = reviewsWithImages
                 }
-            }
+            },
 
             // from filtered reviews, create a dictionary with the count of each observation tag
             getFlavorTagCounts() {
