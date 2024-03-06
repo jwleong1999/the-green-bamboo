@@ -795,6 +795,7 @@
                         <div class="py-5"></div>
                     </div>
                 </div>
+                {{ drinkList }}
                 <!-- where to try -->
                 <div class="row">
                     <div class="square primary-square rounded p-3 mb-3">
@@ -912,6 +913,7 @@
                             },
                 haveTried: false,
                 wantToTry: false,
+                
 
 
                 // For creating review
@@ -1141,7 +1143,24 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
                         this.users = response.data;
                         this.user = this.users.find(user => user._id.$oid == this.userID)
-                        this.userBookmarks = this.user.drinkLists;
+                        this.userBookmarks = this.user.drinkLists
+                        let triedDrinks=[]
+                        let wantToTryDrinks=[]
+                        for (let drink of this.user.drinkLists["Drinks I Have Tried"]["listItems"]) {
+                            let triedDrink = this.listings.find(listing => listing._id.$oid === drink[1].$oid).listingName;
+                            // let triedDrinkName = triedDrink ? triedDrink.listingName : null;
+                            triedDrinks.push(triedDrink)
+                        }
+                        for (let drink of this.user.drinkLists["Drinks I Want To Try"]["listItems"]) {
+                            let wantDrinkName = this.listings.find(listing => listing._id.$oid === drink[1].$oid).listingName;   
+                            wantToTryDrinks.push(wantDrinkName)
+                        }
+                        this.drinkList = {
+                            haveTried: triedDrinks,
+                            wantToTry: wantToTryDrinks
+                        }
+                        
+                        
                     } 
                     catch (error) {
                         console.error(error);
@@ -1830,6 +1849,12 @@
 
                 return response
             },
+            async editTriedList(){
+                this.haveTried=!this.haveTried
+            },
+            async editWantList(){
+                this.wantToTry=!this.wantToTry
+            }
         }
     };
 </script>
