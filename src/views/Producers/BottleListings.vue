@@ -271,6 +271,24 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- popular flavorTag -->
+                <div class="row pt-3">
+                    <div class="text-start mb-2">
+                        <p class="mb-2"> <u> Most Popular Flavour Tags </u> </p>
+                        <!-- flavor tag -->
+                        <span v-for="(count, tag) in sorted_flavorTagCounts" :key="tag" class="badge rounded-pill me-2" :style="{ backgroundColor: '#' + tag.split('#')[1] }">{{ tag.split('#')[0] }}</span>
+                    </div>
+                </div>
+
+                <!-- popular observationTag -->
+                <div class="row pt-3">
+                    <div class="text-start mb-2">
+                        <p class="mb-2"> <u> Most Popular Action Tags </u> </p>
+                        <!-- flavor tag -->
+                        <span v-for="(count, tag) in sorted_observationTagCounts" :key="tag" class="badge rounded-pill me-2" style="background-color: grey" >{{ tag }}</span>
+                    </div>
+                </div>
                     
                     <!-- Modal -->
                     <div v-if="userID != 'defaultUser'" class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true" data-bs-backdrop="static">
@@ -350,7 +368,7 @@
                                     <div class="row">
                                         <!-- language-->
                                         <div class="col-6 justify-content-start">
-                                            <p class = 'text-start mb-2 fw-bold'>Tag Friends<span class="text-danger">*</span></p>
+                                            <p class = 'text-start mb-2 fw-bold'>Tag Friends</p>
                                             <div class="form-group mb-2">
                                                 <input type="text" class="form-control" id="friendTag">
                                             </div>
@@ -1051,6 +1069,9 @@
                 wantToTry: false,
                 
 
+                // for sorted flavorTags and observationTags
+                sorted_flavorTagCounts: [],
+                sorted_observationTagCounts: [],
 
                 // For creating review
                 languages:[],
@@ -1252,6 +1273,8 @@
                         this.whereToTry(); // find where to try specified listing [RE-ENABLE WHEN VENUES HAVE MENU ATTRIBUTE]
                         this.filteredReviews = this.getReviewsForListing(this.specified_listing);
                         this.getFilteredReviewsWithImages() // to get only those filtered reviews with photos
+                        this.getFlavorTagCounts(); // to get the flavor tag counts
+                        this.getObservationTagCounts(); // to get the observation tag counts
                         this.specificReview = this.getLoggedUserReview();
                         this.formatDeepDiveLink();
                     } 
@@ -2048,6 +2071,75 @@
                 }
             },
 
+            // from filtered reviews, create a dictionary with the count of each observation tag
+            getFlavorTagCounts() {
+                let allReviews = this.filteredReviews
+                let flavorTags = []
+                for (let review of allReviews) {
+                    for (let tag of review.flavorTag) {
+                        flavorTags.push(tag)
+                    }
+                }
+                let flavorTagCounts = {}
+                for (let tag of flavorTags) {
+                    console.log(tag)
+                    if (tag in flavorTagCounts) {
+                        flavorTagCounts[tag] += 1
+                    } else {
+                        flavorTagCounts[tag] = 1
+                    }
+                }
+                // sort flavorTagCounts by value
+                let sorted_flavorTagCounts = Object.fromEntries(
+                    Object.entries(flavorTagCounts).sort(([,a],[,b]) => b-a)
+                );
+                // get top 5 flavor tags if there are more than 5
+                if (Object.keys(sorted_flavorTagCounts).length > 5) {
+                    let top5 = Object.keys(sorted_flavorTagCounts).slice(0, 5)
+                    this.sorted_flavorTagCounts = {}
+                    for (let tag of top5) {
+                        this.sorted_flavorTagCounts[tag] = sorted_flavorTagCounts[tag]
+                    }
+                } else {
+                    this.sorted_flavorTagCounts = sorted_flavorTagCounts
+                }
+                console.log(this.sorted_flavorTagCounts)
+            },
+
+            // from filtered reviews, create a dictionary with the count of each flavour tag
+            getObservationTagCounts() {
+                let allReviews = this.filteredReviews
+                let observationTags = []
+                for (let review of allReviews) {
+                    for (let tag of review.observationTag) {
+                        observationTags.push(tag)
+                    }
+                }
+                let observationTagCounts = {}
+                for (let tag of observationTags) {
+                    console.log(tag)
+                    if (tag in observationTagCounts) {
+                        observationTagCounts[tag] += 1
+                    } else {
+                        observationTagCounts[tag] = 1
+                    }
+                }
+                // sort observationTagCounts by value
+                let sorted_observationTagCounts = Object.fromEntries(
+                    Object.entries(observationTagCounts).sort(([,a],[,b]) => b-a)
+                );
+                // get top 5 flavor tags if there are more than 5
+                if (Object.keys(sorted_observationTagCounts).length > 5) {
+                    let top5 = Object.keys(sorted_observationTagCounts).slice(0, 5)
+                    this.sorted_observationTagCounts = {}
+                    for (let tag of top5) {
+                        this.sorted_observationTagCounts[tag] = sorted_observationTagCounts[tag]
+                    }
+                } else {
+                    this.sorted_observationTagCounts = sorted_observationTagCounts
+                }
+                console.log(this.sorted_observationTagCounts)
+            },
         }
     };
 </script>
