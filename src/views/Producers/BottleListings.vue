@@ -70,7 +70,7 @@
                                 <div class="col-3">
                                     <!-- [if] correct producer-->
                                     <!-- TODO: check if moderator type is for the listing -->
-                                    <div v-if="correctProducer">
+                                    <div v-if="correctProducer || correctModerator">
                                         <button type="button" class="btn tertiary-btn reverse-clickable-text m-1">
                                             <a class="reverse-clickable-text" v-bind:href="'/Producer/Producer-Edit-Listing/' + `${specified_listing._id.$oid}`">
                                                 Edit Listing
@@ -943,7 +943,8 @@
                         <div class="py-5"></div>
                     </div>
                 </div>
-                {{ drinkList }}
+                <!-- not sure what this line supposed to do -->
+                <!-- {{ drinkList }} -->
                 <!-- where to try -->
                 <div class="row">
                     <div class="square primary-square rounded p-3 mb-3">
@@ -1042,6 +1043,9 @@
                 // specified producer
                 producer_id: null,
                 correctProducer: false,
+
+                // check whether user is moderator, whether correct type and whether listing allows mod
+                correctModerator: false,
 
                 // where to buy
                 producerListings: [],
@@ -1363,13 +1367,25 @@
                     // catch (error) {
                     //     console.error(error);
                     // }
-                    this.specificReviewRating = this.getRatings(this.specified_listing)
-                    this.willRecommend = this.getWillRecommend(this.specified_listing)
-                    this.willDrinkAgain = this.getWillDrinkAgain(this.specified_listing)
+                this.specificReviewRating = this.getRatings(this.specified_listing)
+                this.willRecommend = this.getWillRecommend(this.specified_listing)
+                this.willDrinkAgain = this.getWillDrinkAgain(this.specified_listing)
 
-            if (this.userID == this.producer_id && this.userType == "producer") {
-                this.correctProducer = true;
-            }
+                if (this.userID == this.producer_id && this.userType == "producer") {
+                    this.correctProducer = true;
+                }
+
+                // Check if logged in, then check if moderator is allowed to edit listing
+                if(this.userID!='defaultUser' && this.userType=='user'){
+                    if(this.user.modType.includes(this.specified_listing.drinkType) && this.specified_listing.allowMod){
+                        this.correctModerator = true
+                    }else{
+                        this.correctModerator = false
+                    }
+                }else{
+                    this.correctModerator=false
+                }
+            
             },
 
             // view which producers have specified listing
