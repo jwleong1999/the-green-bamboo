@@ -666,17 +666,20 @@
                         <div class="col-9">
                             <div class="row">
                                 <div class="d-flex align-items-center text-start mb-2">
-                                    <a :href="`../../userProfile/${review.userID.$oid}`" style="text-decoration: none; color: inherit">
-                                        @{{ getUsernameFromReview(review) }}
+                                    <a :href="`../../userProfile/${review.userID.$oid}`" style="color: inherit">
+                                        <b>
+                                            @{{ getUsernameFromReview(review) }}
+                                        </b>
                                     </a> 
                                     &nbsp;rated {{ review['rating'] }}
                                     <!-- star icon -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill me-5" viewBox="0 0 16 16">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill me-3" viewBox="0 0 16 16">
                                         <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                     </svg>
+                                    <span v-if="checkModFromUserID(review.userID)" class="badge rounded-pill" style="color: black; background-color: white;">Moderator</span>
                                     <!-- Insert Edit modal here -->
 
-                                    <div v-if="review.userID['$oid'] === userID" class="ms-2 ml-auto">
+                                    <div v-if="review.userID['$oid'] === userID" class="ms-5 me-2 ml-auto">
                                         <button class="btn btn-warning me-1" @click="setUpdateID(review)" data-bs-toggle="modal" data-bs-target="#reviewModal">Edit</button>
                                         <button class="btn btn-danger ms-1" @click="setDeleteID(review)" data-bs-toggle="modal" data-bs-target="#deleteReview">Delete</button>
                                     </div>
@@ -688,6 +691,7 @@
                                 <div class="text-start mb-2">
                                     <!-- flavor tag -->
                                         <span v-for="(tag, index) in review.flavorTag" :key="index" class="badge rounded-pill me-2" :style="{ backgroundColor: getTagColor(tag) }">{{ getTagName(tag) }}</span>
+                                        <span v-for="(tag, index) in review.observationTag" :key="index" class="badge rounded-pill me-2" style="backgroundColor: grey;">{{ tag }}</span>
                                 </div>
                                 <div style="display: inline;" class="text-start">
                                     <!-- voting -->
@@ -704,7 +708,7 @@
                                     <svg v-else @click="voteReview(review, 'undownvote')" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-caret-down-fill me-3" viewBox="0 0 16 16">
                                         <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
                                     </svg>
-                                    <a href="#" class="text-decoration-underline text-secondary">Detailed Review ></a>
+                                    <a href="#" class="text-decoration-underline text-secondary" data-bs-toggle="modal" data-bs-target="#detailedReviewModal" @click="updateDetailedReview(review)">Detailed Review ></a>
                                 </div>
                             </div>
                         </div>
@@ -767,6 +771,150 @@
 
                         </div>
                     </div>
+                    <!-- detailed review modal start -->
+                    <div class="modal fade" id="detailedReviewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">{{ specified_listing["listingName"] }} Review</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-start">
+                                <!-- username -->
+                                <div class="row">
+                                    <div class="col-3">
+                                        <b>Username</b>
+                                    </div>
+                                    <div class="col-9">
+                                        @{{ getUsernameFromReview(detailedReview) }}
+                                    </div>
+                                </div>
+                                <!-- rating -->
+                                <div class="row mt-2">
+                                    <div class="col-3">
+                                        <b>Rating</b>
+                                    </div>
+                                    <div class="col-9">
+                                        {{ detailedReview.rating }}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill me-3" viewBox="0 0 16 16">
+                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <!-- review -->
+                                <div class="row mt-2">
+                                    <div class="col-3">
+                                        <b>Review</b>
+                                    </div>
+                                    <div class="col-9">
+                                        {{ detailedReview.reviewDesc }}
+                                    </div>
+                                </div>
+                                <!-- location -->
+                                <div class="row mt-2">
+                                    <div class="col-3">
+                                        <b>Locaion</b>
+                                    </div>
+                                    <div class="col-9">
+                                        <div v-if="detailedReview.location">
+                                            {{ getVenueName(detailedReview.location) }}
+                                        </div>
+                                        <div v-else>-</div>
+                                    </div>
+                                </div>
+                                <!-- feedback -->
+                                <div class="row mt-2">
+                                    <div class="col-3">
+                                        <b>Feedback</b>
+                                    </div>
+                                    <div class="col-9">
+                                        <div v-if="detailedReview.willRecommend">Would Recommend</div>
+                                        <div v-if="detailedReview.wouldBuyAgain">Would Buy Again</div>
+                                    </div>
+                                </div>
+                                <!-- more information -->
+                                <hr>
+                                <h5 class="text-center">More Information</h5>
+                                <hr>
+                                <!-- colour -->
+                                <div class="row mt-2">
+                                    <div class="col-3">
+                                        <b>Colour</b>
+                                    </div>
+                                    <div class="col-9">
+                                        <div v-if="detailedReview.colour" :style="{ width: '50%', height: '100%', backgroundColor: detailedReview.colour }"></div>
+                                        <div v-else>-</div>
+                                    </div>
+                                </div>
+                                <!-- aroma -->
+                                <div class="row mt-2">
+                                    <div class="col-3">
+                                        <b>Aroma</b>
+                                    </div>
+                                    <div class="col-9">
+                                        <div v-if="detailedReview.aroma">
+                                            {{ detailedReview.aroma }}
+                                        </div>
+                                        <div v-else>-</div>
+                                    </div>
+                                </div>
+                                <!-- aroma -->
+                                <div class="row mt-2">
+                                    <div class="col-3">
+                                        <b>Taste</b>
+                                    </div>
+                                    <div class="col-9">
+                                        <div v-if="detailedReview.taste">
+                                            {{ detailedReview.taste }}
+                                        </div>
+                                        <div v-else>-</div>
+                                    </div>
+                                </div>
+                                <!-- finish -->
+                                <div class="row mt-2">
+                                    <div class="col-3">
+                                        <b>Finish</b>
+                                    </div>
+                                    <div class="col-9">
+                                        <div v-if="detailedReview.finish">
+                                            {{ detailedReview.finish }}
+                                        </div>
+                                        <div v-else>-</div>
+                                    </div>
+                                </div>
+                                <!-- tags -->
+                                <hr>
+                                <h5 class="text-center">Tags</h5>
+                                <hr>
+                                <!-- flavour tag -->
+                                <div class="row mt-2">
+                                    <div class="col-3">
+                                        <b>Flavour Tags</b>
+                                    </div>
+                                    <div class="col-9">
+                                        <span v-for="(tag, index) in detailedReview.flavorTag" :key="index" class="badge rounded-pill me-2" :style="{ backgroundColor: getTagColor(tag) }">{{ getTagName(tag) }}</span>
+                                    </div>
+                                </div>
+                                <!-- observation tag -->
+                                <div class="row mt-2">
+                                    <div class="col-3">
+                                        <b>Action Tags</b>
+                                    </div>
+                                    <div class="col-9">
+                                        <span v-for="(tag, index) in detailedReview.observationTag" :key="index" class="badge rounded-pill me-2" style="backgroundColor: grey;">{{ tag }}</span>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- modal end -->
                 </div>
 
                 <hr>
@@ -960,6 +1108,9 @@
                 // To edit review
                 inEdit:false,
                 specificReview:[],
+
+                // to view detailed review
+                detailedReview: {},
                 
                 // matched user
                 matchedUser: {},
@@ -1037,6 +1188,7 @@
                         try {
                             const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
                             this.reviews = response.data;
+                            this.detailedReview = this.reviews[0];
                         }
                         catch (error) {
                             console.error(error);
@@ -1236,6 +1388,21 @@
                 }
             },
 
+            // get VenueName for a listing based on producerID
+            getVenueName(venueID) {
+                const venue = this.venues.find((venue) => {
+                    return venue["_id"]["$oid"] == venueID["$oid"];
+                });
+                // ensures that producer is found before accessing "producerName"
+                if (venue) {
+                    const venueName = venue["venueName"];
+                    return venueName;
+                }
+                else {
+                    return null;
+                }
+            },
+
             // check if user has already added listing to shelf, add colour to button accordingly
             checkDrinkLists(listing) {
                 const haveTried = this.drinkList.haveTried.includes(listing.listingName);
@@ -1376,6 +1543,14 @@
                 });
                 if (user) {
                     return user["photo"];
+                }
+            },
+            checkModFromUserID(userID){
+                const user = this.users.find((user) => {
+                    return user["_id"]["$oid"] == userID["$oid"];
+                });
+                if (user) {
+                    return user["modType"].length > 0;
                 }
             },
 
@@ -1677,6 +1852,11 @@
                 } catch (error) {
                     console.error(error);
                 }
+            },
+
+            // view detailed review
+            updateDetailedReview(review) {
+                this.detailedReview = review;
             },
 
             reloadRoute() {
