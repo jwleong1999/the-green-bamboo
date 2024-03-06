@@ -207,6 +207,12 @@
                         return user["_id"]["$oid"] == userID;
                     });
                     if (user == undefined) {
+                        const producer = this.producers.find((producer) => {
+                            return producer["_id"]["$oid"] == userID;
+                        });
+                        if (producer != undefined) {
+                            return producer["producerName"];
+                        }
                         return "(Anonymous)";
                     }
                     return user["username"];

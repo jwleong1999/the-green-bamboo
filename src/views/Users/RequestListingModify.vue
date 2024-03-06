@@ -17,7 +17,9 @@
             SubmitListingNew
         },
         mounted() {
-            if (localStorage.getItem('88B_accType') != "user") {
+            // if (localStorage.getItem('88B_accType') != "user") {
+            if (localStorage.getItem('88B_accType') == "venue" || (localStorage.getItem('88B_accType') == "producer" && this.$route.params.mode != "edit") ) {
+            
                 alert("This page is only accessible to users! Please log in as a user to access this page.")
                 this.$router.push({path: '/login'});
             }

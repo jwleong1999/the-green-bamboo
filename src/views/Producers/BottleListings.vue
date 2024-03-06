@@ -842,7 +842,7 @@
                                         <b>Colour</b>
                                     </div>
                                     <div class="col-9">
-                                        <div v-if="detailedReview.colour" :style="{ width: '50%', height: '100%', backgroundColor: detailedReview.colour }"></div>
+                                        <div v-if="detailedReview.colour" :style="{ width: '24px', height: '24px', backgroundColor: detailedReview.colour }"></div>
                                         <div v-else>-</div>
                                     </div>
                                 </div>
