@@ -826,6 +826,10 @@
                             </div>
                             <!-- edit opening hours-->
                             <div class="py-2 text-start">
+                                <!-- header text -->
+                                <div class="square-inline">
+                                    <h5 class="square-inline text-start mr-auto"> Opening Hours </h5>
+                                </div>
                                 <!-- buttons -->
                                 <div class="pb-3" v-if="correctVenue">
                                     <!-- [if] not editing -->
@@ -856,6 +860,10 @@
                             </div>
                             <!-- edit public holidays -->
                             <div class="py-2 text-start">
+                                <!-- header text -->
+                                <div class="square-inline">
+                                    <h5 class="square-inline text-start mr-auto"> Public Holiday Information </h5>
+                                </div>
                                 <!-- buttons -->
                                 <div class="pb-3" v-if="correctVenue">
                                     <!-- [if] not editing public holidays -->
@@ -885,6 +893,10 @@
                             </div>
                             <!-- edit reservation details -->
                             <div class="py-2 text-start">
+                                <!-- header text -->
+                                <div class="square-inline">
+                                    <h5 class="square-inline text-start mr-auto"> Reservation Details </h5>
+                                </div>
                                 <!-- buttons -->
                                 <div class="pb-3" v-if="correctVenue">
                                     <!-- [if] not editing reservation details -->
