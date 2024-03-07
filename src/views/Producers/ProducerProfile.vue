@@ -363,7 +363,19 @@
                                 </div>
                             </div>
                             <!-- [else] user type is NOT producer -->
-                            <input v-else class="search-bar form-control rounded fst-italic" type="text" placeholder="Search for expressions" style="height: 50px;" v-model="searchExpressions" v-on:keyup.enter="searchForExpressions()">
+                            <div v-else class="row">
+                                <div v-if="canMod || isAdmin" class="col-3 d-grid no padding">
+                                    <button type="button" class="btn primary-btn-outline-thick rounded-0" v-on:click="editCatalogue()">
+                                        <a class="default-clickable-text"> Edit catalogue </a> 
+                                    </button>
+                                </div>
+                                <div v-if="canMod || isAdmin" class="col-9 d-grid no padding">
+                                    <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Search for expressions" style="height: 50px;" v-model="searchExpressions" v-on:keyup.enter="searchForExpressions()">
+                                </div>
+                                <div v-else class="col-12 d-grid no padding">
+                                    <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Search for expressions" style="height: 50px;" v-model="searchExpressions" v-on:keyup.enter="searchForExpressions()">
+                                </div>
+                            </div>
                         </div>
                 
                         <!-- sort by -->
@@ -391,13 +403,18 @@
                                             <img :src=" 'data:image/jpeg;base64,' + (listing['photo'] || defaultProfilePhoto)" style="width: 150px; height: 150px;">
                                         </router-link>
                                         <!-- edit listing -->
-                                        <button v-if="editingCatalogue == true" type="button" class="btn tertiary-btn reverse-clickable-text m-1">
+                                        <button v-if="(correctProducer || isAdmin) && editingListing" type="button" class="btn tertiary-btn reverse-clickable-text m-1">
+                                            <a class="reverse-clickable-text" v-bind:href="'/Producer/Producer-Edit-Listing/' + `${listing._id.$oid}`">
+                                                Edit Listing
+                                            </a>
+                                        </button>
+                                        <button v-else-if="editingListing && user.modType.includes(listing.drinkType) && listing.allowMod" type="button" class="btn tertiary-btn reverse-clickable-text m-1">
                                             <a class="reverse-clickable-text" v-bind:href="'/Producer/Producer-Edit-Listing/' + `${listing._id.$oid}`">
                                                 Edit Listing
                                             </a>
                                         </button>
                                         <!-- delete listing -->
-                                        <button v-if="editingCatalogue == true" type="button" class="btn btn-danger reverse-clickable-text p-1" v-on:click="deleteListings(listing)">
+                                        <button v-if="deletingListing" type="button" class="btn btn-danger reverse-clickable-text p-1" v-on:click="deleteListings(listing)">
                                             <a class="reverse-clickable-text">
                                                 Delete Listing
                                             </a>
@@ -690,6 +707,12 @@
                 producer_id: null,
                 specified_producer: {},
 
+                // flag for if mod can edit any listings
+                canMod: false,
+
+                // flag for admin
+                isAdmin:false,
+
                 // q&a
                 question: '',
                 answer: '',
@@ -707,7 +730,8 @@
                 wantToTry: false,
 
                 // to track if catalogue is being edited
-                editingCatalogue: false,
+                editingListing:false,
+                deletingListing:false,
 
                 // to fetch producer's latest updates
                 update_id: null,
@@ -832,7 +856,9 @@
                         if (this.userType == "user") {
                             this.user = this.users.find(user => user["_id"]["$oid"] == this.user_id);
                             this.following = JSON.stringify(this.user.followLists.producers).includes(JSON.stringify({$oid: this.producer_id}));
+                            this.isAdmin=this.user.isAdmin
                         }
+                        console.log(this.user)
                     } 
                     catch (error) {
                         console.error(error);
@@ -846,6 +872,17 @@
                     catch (error) {
                         console.error(error);
                     }
+
+                // check whether mod can edit any listing at all in the producer page
+                if(this.user_id != "" && this.userType=="user"){                    
+                    if(this.user.modType.length>0){
+                        const editableListing = this.allDrinks.filter(listing => this.user.modType.includes(listing.drinkType) && listing.allowMod)
+                        if(editableListing.length>0){
+                            this.canMod = true
+                        }
+                    }
+                }
+
                 // venuesAPI
                 // _id, venueName, venueDesc, originCountry
                 // try {
@@ -1253,8 +1290,14 @@
             },
 
             // for user to edit their catalogue
+            // check user type:producer, admin or mod and set accordingly
             editCatalogue () {
-                this.editingCatalogue = true;
+                if(this.correctProducer || this.isAdmin){
+                    this.deletingListing=true
+                    this.editingListing=true
+                }else if(this.canMod){
+                    this.editingListing=true
+                }
             },
 
             // delete bottle listing
