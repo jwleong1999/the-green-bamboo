@@ -72,9 +72,11 @@
                                     <!-- TODO: check if moderator type is for the listing -->
                                     <div v-if="correctProducer || correctModerator">
                                         <button type="button" class="btn tertiary-btn reverse-clickable-text m-1">
-                                            <a class="reverse-clickable-text" v-bind:href="'/Producer/Producer-Edit-Listing/' + `${specified_listing._id.$oid}`">
+                                            <router-link :to="`/Producer/Producer-Edit-Listing/${specified_listing._id.$oid}`" class="reverse-clickable-text">
                                                 Edit Listing
-                                            </a>
+                                            </router-link>
+                                                
+                                            
                                         </button>
                                     </div>
                                     <!-- [else] not correct producer -->
@@ -658,19 +660,19 @@
                     <div class="row mb-3" v-for="review in filteredReviews" v-bind:key="review._id">
                         <!-- profile photo -->
                         <div class="col-1">
-                            <a :href="`../../userProfile/${review.userID.$oid}`">
+                            <router-link :to="`/userProfile/${review.userID.$oid}`">
                                 <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromReview(review) || defaultProfilePhoto)" alt="" class="profile-image">
-                            </a>
+                            </router-link>
                         </div>
                         <!-- user reviews -->
                         <div class="col-9">
                             <div class="row">
                                 <div class="d-flex align-items-center text-start mb-2">
-                                    <a :href="`../../userProfile/${review.userID.$oid}`" style="color: inherit">
+                                    <router-link :to="`/userProfile/${review.userID.$oid}`" style="color: inherit">
                                         <b>
                                             @{{ getUsernameFromReview(review) }}
                                         </b>
-                                    </a> 
+                                    </router-link>
                                     &nbsp;rated {{ review['rating'] }}
                                     <!-- star icon -->
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill me-3" viewBox="0 0 16 16">
@@ -945,8 +947,8 @@
                 </div>
 
                 <!-- not sure what this line supposed to do -->
-                {{ drinkList }}
-                
+                <!-- {{ drinkList }} -->
+            
                 <!-- where to try -->
                 <div class="row">
                     <div class="square primary-square rounded p-3 mb-3">
