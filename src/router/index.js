@@ -3,19 +3,20 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   // ----------------- MAIN PAGES -----------------
   {
-    // path: '/',
-    // name: 'home',
-    path: '/Users/Bottle-Listings',
-    name: 'usersbottlelistings',
+    path: '/',
+    name: 'homepage',
+    // path: '/Users/Bottle-Listings',
+    // name: 'usersbottlelistings',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
+    // component: () => import('../views/Users/BottleListings.vue')
     component: () => import(/* webpackChunkName: "about" */ '../views/Users/BottleListings.vue')
   },
   {
     path: '/login',
     // name: 'login',
-    name: 'loginpage',
+    name: 'login',
     component: () => import('../views/LoginPage.vue')
   },
   {
@@ -37,72 +38,96 @@ const routes = [
   
   // ----------------- PROFILE PAGES -----------------
   {
-    // path: '/profile/user/:userID?',
-    // name: 'profileuser',
-    path: '/userprofile/:id?',
-    name: 'userprofile',
+    path: '/profile/user/:userID?',
+    name: 'profileuser',
+
+    // OLD LINK FOR REFERENECE
+    // path: '/Users/Profile-Page/:id',
+    // name: 'userprofilepage',
+
     component: () => import('../views/UserProfile.vue')
   },
   {
-    // path: '/profile/producer/:producerID?',
-    // name: 'profileproducer',
-    path: '/Producers/Profile-Page/:id',
-    name: 'producersprofilepage',
+    path: '/profile/producer/:producerID?',
+    name: 'profileproducer',
+
+    // OLD LINK FOR REFERENECE
+    // path: '/Producers/Profile-Page/:id',
+    // name: 'producersprofilepage',
+
     component: () => import('../views/Producers/ProducerProfile.vue')
   },
   {
-    // path: '/profile/venue/:venueID?',
-    // name: 'profilevenue',
-    path: '/Venues/Profile-Page/:id',
-    name: 'venuesprofilepage',
+    path: '/profile/venue/:venueID?',
+    name: 'profilevenue',
+
+    // OLD LINK FOR REFERENECE
+    // path: '/Venues/Profile-Page/:id',
+    // name: 'venuesprofilepage',
+
     component: () => import('../views/Venues/VenueProfile.vue')
   },
   // -------------------------------------------------------------------------------------
 
   // ----------------- LISTING PAGES -----------------
   {
-    // path: '/listing/view/:listingID',
-    // name: 'listingview',
-    path: '/Producers/Bottle-Listings/:id',
-    name: 'producersbottlelistings',
+    path: '/listing/view/:listingID',
+    name: 'listingview',
+
+    // OLD LINK FOR REFERENECE
+    // path: '/Producers/Bottle-Listings/:id', 
+    // name: 'producersbottlelistings',
+
     component: () => import('../views/Producers/BottleListings.vue')
   },
   {
-    // path: '/listing/create/:requestID?',
-    // name: 'listingcreate',
-    path: '/Producer/Producer-Create-Listing/:requestID?',
-    name: 'producercreatelistings',
+    path: '/listing/create/:requestID?',
+    name: 'listingcreate',
+
+    // OLD LINK FOR REFERENECE
+    // path: '/Producer/Producer-Create-Listing/:requestID?',
+    // name: 'producercreatelistings',
+
     component: () => import('../views/Producers/CreateListing.vue')
   },
   {
-    // path: '/listing/edit/:listingID/:requestID?',
-    // name: 'listingedit',
-    path: '/Producer/Producer-Edit-Listing/:listingID/:requestID?',
-    name: 'producerupdatelistingsdetails',
+    path: '/listing/edit/:listingID/:requestID?',
+    name: 'listingedit',
+
+    // OLD LINK FOR REFERENECE
+    // path: '/Producer/Producer-Edit-Listing/:listingID/:requestID?',
+    // name: 'producerupdatelistingsdetails',
     component: () => import('../views/Producers/EditListing.vue')
   },
   // -------------------------------------------------------------------------------------
   
   // ----------------- REQUEST PAGES -----------------
   {
-    // path: '/request/view',
-    // name: 'requestview',
-    path: '/producers/requests',
-    name: 'producersrequests',
+    path: '/request/view',
+    name: 'requestview',
+
+    // OLD LINK FOR REFERENECE
+    // path: '/producers/requests',
+    // name: 'producersrequests',
     component: () => import('../views/Producers/ViewRequests.vue')
   },
   {
-    // path: '/request/new/:requestID?',
-    // name: 'requestnew',
-    path: '/Users/request/new/:requestID?',
-    name: 'usersrequestlistingnew',
+    path: '/request/new/:requestID?',
+    name: 'requestnew',
+
+    // OLD LINK FOR REFERENECE
+    // path: '/Users/request/new/:requestID?',
+    // name: 'usersrequestlistingnew',
     component: () => import('../views/Users/RequestListingNew.vue')
   },
   {
-    // path: '/request/modify/:mode/:listingID/:requestID?',
-    // name: 'requestmodify',
-    path: '/Users/request/modify/:mode/:listingID/:requestID?',
-    name: 'usersrequestlistingmodify',
+    path: '/request/modify/:mode/:listingID/:requestID?',
+    name: 'requestmodify',
+
+    // OLD LINK FOR REFERENECE
+
+    // path: '/Users/request/modify/:mode/:listingID/:requestID?',
+    // name: 'usersrequestlistingmodify',
     component: () => import('../views/Users/RequestListingModify.vue')
   },
 

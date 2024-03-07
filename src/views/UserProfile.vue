@@ -230,7 +230,7 @@
                                 <div style="display: flex" class="mb-3" v-if="review.userID?.$oid === displayUserID && review.reviewType === 'Listing'">
                                     <img :src=" 'data:image/png;base64,' + (review.photo||defaultDrinkImage)" alt="" class="rounded bottle-img me-3">
                                     <div>
-                                        <a :href="'/Producers/Bottle-Listings/' + review.reviewTarget.$oid" style="text-decoration: none; color: inherit;">
+                                        <a :href="'/listing/view/' + review.reviewTarget.$oid" style="text-decoration: none; color: inherit;">
                                             <h3>{{ getListingName(review.reviewTarget) }}</h3>
                                         </a>
                                         <h2>
@@ -427,7 +427,7 @@
                                 <div class="col-10" style="display: flex">
                                     <img :src=" 'data:image/png;base64,' + ( getListingFromID(listingID[1].$oid).photo || defaultDrinkImage )" alt="" class="bottle-img me-3">
                                     <div style="height: 150px; display: flex; flex-direction: column;">
-                                        <a :href="'/Producers/Bottle-Listings/' + listingID[1].$oid" style="text-decoration: none; color: inherit;">
+                                        <a :href="'/listing/view/' + listingID[1].$oid" style="text-decoration: none; color: inherit;">
                                             <h4>{{ getListingFromID(listingID[1].$oid).listingName }}</h4>
                                         </a>
                                         <p style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;"> {{ getListingFromID(listingID[1].$oid).officialDesc }} </p>
@@ -584,7 +584,7 @@ export default {
         try {
             this.displayUserID = this.$route.params.id;
             if (this.displayUserID === this.userID) {
-                this.$router.push('/userProfile');
+                this.$router.push('/profile/user/${this.userID}');
             }
             else if (!this.displayUserID) {
                 this.displayUserID = this.userID;

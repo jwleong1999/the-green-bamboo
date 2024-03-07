@@ -72,7 +72,7 @@
                                     <!-- TODO: check if moderator type is for the listing -->
                                     <div v-if="correctProducer || correctModerator">
                                         <button type="button" class="btn tertiary-btn reverse-clickable-text m-1">
-                                            <router-link :to="`/Producer/Producer-Edit-Listing/${specified_listing._id.$oid}`" class="reverse-clickable-text">
+                                            <router-link :to="`/listing/edit/${specified_listing._id.$oid}`" class="reverse-clickable-text">
                                                 Edit Listing
                                             </router-link>
                                                 
@@ -81,10 +81,10 @@
                                     </div>
                                     <!-- [else] not correct producer -->
                                     <div v-else>
-                                        <router-link :to="{ path: '/Users/request/modify/edit/' + this.listing_id }">
+                                        <router-link :to="{ path: '/request/modify/edit/' + this.listing_id }">
                                         <p class="text-body-secondary no-margin text-decoration-underline fst-italic text-end"> Suggest Edit </p>
                                         </router-link>
-                                        <router-link :to="{ path: '/Users/request/modify/duplicate/' + this.listing_id }">
+                                        <router-link :to="{ path: '/request/modify/duplicate/' + this.listing_id }">
                                             <p class="text-body-secondary no-margin text-decoration-underline fst-italic text-end"> Report Duplicate </p>
                                         </router-link>
                                     </div>
@@ -95,7 +95,7 @@
                                 <!-- producer -->
                                 <div class="col-6">
                                     <h5 class="text-body-secondary">
-                                        <router-link :to="{ path: '/Producers/Profile-Page/' + this.producer_id }" class="default-text-no-background">
+                                        <router-link :to="{ path: '/profile/producer/' + this.producer_id }" class="default-text-no-background">
                                             <p> {{ getProducerName(specified_listing["producerID"]) }} </p>
                                         </router-link>
                                     </h5>
@@ -104,7 +104,7 @@
                                 <div class="col-6">
                                     <h5 v-if="specified_listing['bottler'] != 'OB'" class="text-body-secondary"> Bottler: <u> {{ specified_listing["bottler"] }} </u>  </h5>
                                         <h5 v-else class="text-body-secondary"> Bottler:
-                                            <router-link :to="{ path: '/Producers/Profile-Page/' + this.producer_id }" class="default-text-no-background"> 
+                                            <router-link :to="{ path: '/profile/producer/' + this.producer_id }" class="default-text-no-background"> 
                                                 <u> {{ getProducerName(specified_listing["producerID"]) }} </u>  
                                             </router-link>
                                         </h5>
@@ -660,7 +660,7 @@
                     <div class="row mb-3" v-for="review in filteredReviews" v-bind:key="review._id">
                         <!-- profile photo -->
                         <div class="col-1">
-                            <router-link :to="`/userProfile/${review.userID.$oid}`">
+                            <router-link :to="`/profile/user/${review.userID.$oid}`">
                                 <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromReview(review) || defaultProfilePhoto)" alt="" class="profile-image">
                             </router-link>
                         </div>
@@ -668,7 +668,7 @@
                         <div class="col-9">
                             <div class="row">
                                 <div class="d-flex align-items-center text-start mb-2">
-                                    <router-link :to="`/userProfile/${review.userID.$oid}`" style="color: inherit">
+                                    <router-link :to="`/profile/user/${review.userID.$oid}`" style="color: inherit">
                                         <b>
                                             @{{ getUsernameFromReview(review) }}
                                         </b>
@@ -937,7 +937,7 @@
                         <div class="text-start pt-2">
                             <!-- [function] where to buy -->
                             <div v-for="producer in producerListings" v-bind:key="producer._id">
-                                <router-link :to="{ path: '/Producers/Profile-Page/' + producer.$oid }" class="reverse-clickable-text">
+                                <router-link :to="{ path: '/profile/producer/' + producer.$oid }" class="reverse-clickable-text">
                                     <p> {{ getProducerName(producer) }} </p>
                                 </router-link>
                             </div>
@@ -960,7 +960,7 @@
                         <div class="text-start pt-2">
                             <!-- [function] where to try -->
                             <div v-for="venue in venueListings" v-bind:key="venue._id">
-                                <router-link :to="{ path: '/Venues/Profile-Page/' + venue._id.$oid }" class="reverse-clickable-text">
+                                <router-link :to="{ path: '/profile/venue/' + venue._id.$oid }" class="reverse-clickable-text">
                                     <p class="mb-1"> {{ venue.venueName }} </p>
                                 </router-link>
                             </div>
@@ -1148,10 +1148,10 @@
         mounted() {
             try {
                     // Get the query string parameters (listing ID) from the URL
-                    this.listing_id = this.$route.params.id;
+                    this.listing_id = this.$route.params.listingID;
                     if (this.listing_id == null) {
                         // redirect to page
-                        this.$router.push('/Users/Bottle-Listings');
+                        this.$router.push('/');
                     }
                 } 
                 catch (error) {

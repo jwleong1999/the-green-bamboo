@@ -528,7 +528,7 @@
                     if(response.data.username== this.username){
                         localStorage.setItem("88B_accID", response.data['_id']['$oid']);
                         localStorage.setItem("88B_accType", "user");
-                        this.$router.push({path: '/Users/Bottle-Listings'});
+                        this.$router.push({path: '/'});
                     }
                 } 
                 catch (error) {

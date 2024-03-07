@@ -60,7 +60,7 @@
                                 <div class="col-8 ps-5">
                                     <!-- expression name -->
                                     <div class="row pt-1">
-                                        <router-link :to="{ path: '/Producers/Bottle-Listings/' + selectedListing._id.$oid }" class="primary-clickable-text">
+                                        <router-link :to="{ path: '/listing/view/' + selectedListing._id.$oid }" class="primary-clickable-text">
                                             <h4> <b> {{ selectedListing["listingName"] }} </b> </h4>
                                         </router-link>
                                     </div>
@@ -72,7 +72,7 @@
                                     </div>
                                     <!-- review -->
                                     <div class="row pt-3">
-                                        <router-link :to="{ path: '/Producers/Bottle-Listings/' + selectedListing._id.$oid }" class="default-clickable-text scrollable fst-italic">
+                                        <router-link :to="{ path: '/listing/view/' + selectedListing._id.$oid }" class="default-clickable-text scrollable fst-italic">
                                             <h5> {{ selectedListing["officialDesc"] }}. </h5>
                                         </router-link>
                                     </div>
@@ -164,7 +164,7 @@
                 this.venue_id = this.$route.params.id;
                 if (this.userID != this.venue_id && this.userType != 'venue') {
                     // redirect to page
-                    this.$router.push('/Users/Bottle-Listings');
+                    this.$router.push('/');
                 }
                 else {
                     this.correctVenue = true

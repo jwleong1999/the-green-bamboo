@@ -583,9 +583,9 @@
                                         </router-link>
                                         <!-- edit listing -->
                                         <button v-if="editingCatalogue == true" type="button" class="btn tertiary-btn reverse-clickable-text m-1">
-                                            <a class="reverse-clickable-text" v-bind:href="'/Producer/Producer-Edit-Listing/' + `${listing._id.$oid}`">
+                                            <router-link :to="`/listing/edit/${listing._id.$oid}`" class="reverse-clickable-text">
                                                 Edit Listing
-                                            </a>
+                                            </router-link>
                                         </button>
                                         <!-- delete listing -->
                                         <button v-if="editingCatalogue == true" type="button" class="btn btn-danger reverse-clickable-text p-1" v-on:click="deleteListings(listing)">
@@ -1118,10 +1118,10 @@
             // load data from database
             async loadData() {
                 // Get the query string parameters (listing ID) from the URL
-                this.venue_id = this.$route.params.id;
+                this.venue_id = this.$route.params.venueID;
                     if (this.venue_id == null || this.venue_id =='') {
                         // redirect to page
-                        this.$router.push('/Users/Bottle-Listings');
+                        this.$router.push('/');
                     }else if(this.venue_id == this.user_id && this.userType == 'venue'){
                         this.correctVenue = true
                     }

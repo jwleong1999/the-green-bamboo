@@ -144,7 +144,7 @@
                 this.venue_id = this.$route.params.id;
                     if (this.venue_id == null) {
                         // redirect to page
-                        this.$router.push('/Users/Bottle-Listings');
+                        this.$router.push('/');
                     }
                     else {
                         // check if user_id same as venue_id

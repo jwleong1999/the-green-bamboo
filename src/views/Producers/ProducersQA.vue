@@ -143,7 +143,7 @@
                 this.producer_id = this.$route.params.id;
                     if (this.producer_id == null) {
                         // redirect to page
-                        this.$router.push('/Users/Bottle-Listings');
+                        this.$router.push('/');
                     }
                     else {
                         // check if user_id same as producer_id

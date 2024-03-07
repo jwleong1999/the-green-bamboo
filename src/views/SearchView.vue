@@ -93,7 +93,7 @@
                     <p class="d-none d-md-block fs-5 fst-italic text-start">Don't see what you're looking for? Create a new listing here!</p>
                     <p class="d-md-none fs-6 fst-italic text-start">Don't see what you're looking for? Create a new listing here!</p>
                 </router-link>
-                <router-link class="col-12 text-decoration-none" v-if="role == 'user'" :to="{ path: '/Users/request/new/' }">
+                <router-link class="col-12 text-decoration-none" v-if="role == 'user'" :to="{ path: '/request/new/' }">
                     <p class="d-none d-md-block fs-5 fst-italic text-start">Don't see what you're looking for? Request a new listing here!</p>
                     <p class="d-md-none fs-6 fst-italic text-start">Don't see what you're looking for? Request a new listing here!</p>
                 </router-link>
@@ -147,7 +147,7 @@
                                     <h4 class="fw-bold">{{ resultListing['listingName'] }}</h4>
                                 </router-link>
                                 <!-- Producer Name + Router Link -->
-                                <router-link class="text-secondary-emphasis text-decoration-none" :to="{ path: '/Producers/Profile-Page/' + resultListing.producerID['$oid'] }">
+                                <router-link class="text-secondary-emphasis text-decoration-none" :to="{ path: '/profile/producer/' + resultListing.producerID['$oid'] }">
                                     <h5 class="fw-bold mb-0">{{ resultListing['producerName'] }}</h5>
                                     <p class="fw-bold fst-italic" v-if="resultListing['bottler'] != 'OB'">Bottler: {{ resultListing['bottler'] }}</p>
                                 </router-link>
@@ -275,7 +275,7 @@
                 this.runSearch();
             }
             else {
-                this.$router.push({path: '/Users/Bottle-Listings'});
+                this.$router.push({path: '/'});
             }
         },
         methods: {

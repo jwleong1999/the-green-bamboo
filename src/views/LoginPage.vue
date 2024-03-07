@@ -239,15 +239,16 @@
 
                 // [User]
                 if (this.role == "user") {
-                    this.$router.push({path: '/Users/Bottle-Listings'});
+                    console.log("here")
+                    this.$router.push({path: '/'});
                 }
                 // [Producer]
                 if (this.role == "producer") {
-                    this.$router.push({path: `/producers/profile-page/${this.accountID}`});
+                    this.$router.push({path: `/profile/producer/${this.accountID}`});
                 }
                 // [Venue]
                 if (this.role == "venue") {
-                    this.$router.push({path: `/venues/profile-page/${this.accountID}`});
+                    this.$router.push({path: `/profile/venue/${this.accountID}`});
                 }
             }
         }

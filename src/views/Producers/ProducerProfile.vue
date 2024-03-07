@@ -50,9 +50,9 @@
                                         <div class="col-6 d-grid no-padding">
                                             <!-- if not editing -->
                                             <button v-if="editing == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
-                                                <a class="reverse-clickable-text" v-bind:href="'/Producer/Producer-Create-Listing/' + `${producer_id}`">
+                                                <router-link :to="`/listing/create/${producer_id}`" class="reverse-clickable-text">
                                                     Add Listing
-                                                </a>
+                                                </router-link>
                                             </button>
                                         </div>
                                         <!-- edit profile -->
@@ -353,9 +353,9 @@
                                 </div>
                                 <div class="col-3 d-grid no padding">
                                     <button type="button" class="btn primary-btn-outline-thick rounded-0">
-                                        <a v-bind:href="'/Producer/Producer-Create-Listing/' + `${producer_id}`" class="default-clickable-text">
+                                        <router-link :to="`/listing/create/${producer_id}`" class="default-clickable-text">
                                             Add Listing
-                                        </a>
+                                        </router-link>
                                     </button>
                                 </div>
                                 <div class="col-6 d-grid no padding">
@@ -399,19 +399,19 @@
                                 <div class="row">
                                     <!-- image -->
                                     <div class="col-2 image-container text-center mx-auto">
-                                        <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="default-text-no-background">
+                                        <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="default-text-no-background">
                                             <img :src=" 'data:image/jpeg;base64,' + (listing['photo'] || defaultProfilePhoto)" style="width: 150px; height: 150px;">
                                         </router-link>
                                         <!-- edit listing -->
                                         <button v-if="(correctProducer || isAdmin) && editingListing" type="button" class="btn tertiary-btn reverse-clickable-text m-1">
-                                            <a class="reverse-clickable-text" v-bind:href="'/Producer/Producer-Edit-Listing/' + `${listing._id.$oid}`">
+                                            <router-link :to="`/listing/edit/${listing._id.$oid}`" class="reverse-clickable-text">
                                                 Edit Listing
-                                            </a>
+                                            </router-link>
                                         </button>
                                         <button v-else-if="editingListing && user.modType.includes(listing.drinkType) && listing.allowMod" type="button" class="btn tertiary-btn reverse-clickable-text m-1">
-                                            <a class="reverse-clickable-text" v-bind:href="'/Producer/Producer-Edit-Listing/' + `${listing._id.$oid}`">
+                                            <router-link :to="`/listing/edit/${listing._id.$oid}`" class="reverse-clickable-text">
                                                 Edit Listing
-                                            </a>
+                                            </router-link>
                                         </button>
                                         <!-- delete listing -->
                                         <button v-if="deletingListing" type="button" class="btn btn-danger reverse-clickable-text p-1" v-on:click="deleteListings(listing)">
@@ -428,7 +428,7 @@
                                             <div class="col-7">
                                                 <div class="row pt-2">
                                                     <h4 class="default-text"> 
-                                                        <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="default-text-no-background">
+                                                        <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="default-text-no-background">
                                                             <u> <b> {{ listing["listingName"] }}  </b> </u>
                                                         </router-link>
                                                     </h4> 
@@ -458,7 +458,7 @@
                                             <!-- official description -->
                                             <div class="col-10">
                                                 <div class="row pt-2 pb-5">
-                                                    <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="default-clickable-text">
+                                                    <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="default-clickable-text">
                                                         <h5 class="fst-italic scrollable-long default-clickable-text"> {{ listing["officialDesc"] }} </h5>
                                                     </router-link>
                                                 </div>
@@ -786,10 +786,10 @@
             // load data from database
             async loadData() {
                 // Get the query string parameters (listing ID) from the URL
-                this.producer_id = this.$route.params.id;
+                this.producer_id = this.$route.params.producerID;
                     if (this.producer_id == null) {
                         // redirect to page
-                        this.$router.push('/Users/Bottle-Listings');
+                        this.$router.push('/');
                     }
                     else {
                         // check if user_id same as producer_id

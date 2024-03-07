@@ -42,7 +42,7 @@
             <button class="btn primary-btn btn-sm" @click="goBack" v-if="formMode != 'new'">
                 <span class="fs-5 fst-italic"> Return to previous page </span>
             </button>
-            <router-link :to="'/Users/Bottle-Listings'" class="mx-1">
+            <router-link :to="'/'" class="mx-1">
                 <button class="btn primary-btn btn-sm">
                     <span class="fs-5 fst-italic"> Go to Home page </span>
                 </button>
@@ -625,14 +625,14 @@
                                 if (this.formMode == "dup" && !previousData["duplicateLink"].trim()) {
                                     alert("This request is not a duplicate report!\nRedirecting to edit mode...\nNOTE: Please reload the page after redirection.");
                                     // [RE-ROUTE FLAG] this.$router.replace({path: '/request/modify/edit/' + this.$route.params.listingID + '/' + this.$route.params.requestID});
-                                    this.$router.replace({path: '/Users/request/modify/edit/' + this.$route.params.listingID + '/' + this.$route.params.requestID});
+                                    this.$router.replace({path: '/request/modify/edit/' + this.$route.params.listingID + '/' + this.$route.params.requestID});
                                 }
 
                                 // If set to edit mode, but duplicate link is present, redirect to duplicate mode
                                 if (this.formMode == "edit" && previousData["duplicateLink"].trim()) {
                                     alert("This request is not a proposed edit!\nRedirecting to duplicate mode...\nNOTE: Please reload the page after redirection.");
                                     // [RE-ROUTE FLAG] this.$router.replace({path: '/request/modify/duplicate/' + this.$route.params.listingID + '/' + this.$route.params.requestID});
-                                    this.$router.replace({path: '/Users/request/modify/duplicate/' + this.$route.params.listingID + '/' + this.$route.params.requestID});
+                                    this.$router.replace({path: '/request/modify/duplicate/' + this.$route.params.listingID + '/' + this.$route.params.requestID});
                                 }
 
                                 // Fill form with previous data
@@ -651,7 +651,7 @@
                                 if (previousData.listingID["$oid"] != this.$route.params.listingID) {
                                     alert("The linked request is not for the linked listing!\nRemoving request link...");
                                     // [RE-ROUTE FLAG] this.$router.push({path: '/listing/edit/' + this.$route.params.listingID});
-                                    this.$router.push({path: '/Producer/Producer-Edit-Listing/' + this.$route.params.listingID});
+                                    this.$router.push({path: '/listing/edit/' + this.$route.params.listingID});
                                 }
 
                                 this.modifyRequest = previousData;

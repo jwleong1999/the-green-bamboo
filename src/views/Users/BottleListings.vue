@@ -47,7 +47,7 @@
                                 <!-- body -->
                                 <div v-if="totalRequests != 0" style="height: 85%;">
                                     <div style="align-items: center; justify-content: center; height: 100%;" class="py-5">
-                                        <router-link :to="{ path: '/producers/requests' }">
+                                        <router-link :to="{ path: '/request/view' }">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> View all requests </button>
                                         </router-link>
                                     </div>
@@ -59,7 +59,7 @@
                             <div class="square primary-square rounded p-3 mb-3 text-start" style="height: 325px;">
                                 <!-- header text -->
                                 <div class="square-inline">
-                                    <router-link :to="{ path: '/userprofile' }" class="reverse-clickable-text">
+                                    <router-link :to="{ path: '/profile/user/'+userID }" class="reverse-clickable-text">
                                         <h4 class="square-inline text-start mr-auto reverse-clickable-text"> Your Drinks Shelf </h4>
                                     </router-link>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
@@ -71,7 +71,7 @@
                                     <!-- [if] drinks in drink shelf -->
                                     <div v-if="drinkShelf.length != 0" class="overflow-auto" style="max-height: 100%;">
                                         <div class="text-start" v-for="listing in drinkShelf" v-bind:key="listing._id">
-                                            <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="reverse-clickable-text">
+                                            <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="reverse-clickable-text">
                                                 <div class="d-flex align-items-center">
                                                     <img :src="'data:image/png;base64,'+ (listing.photo || defaultProfilePhoto)" style="width: 70px; height: 70px;">
                                                     <p class="ms-3 reverse-clickable-text"> 
@@ -109,11 +109,11 @@
                                     <div v-if="questionsUpdates.length > 0" class="overflow-auto" style="max-height: 100%;">
                                         <div v-for="(update, index) in questionsUpdates" :key="index">
                                             <span v-if="update.type == 'producerUpdate' || update.type == 'venueUpdate'">
-                                                    <router-link v-if="update.type == 'producerUpdate'" :to="{ path: '/Producers/Profile-Page/' + update.id }" class="reverse-text">
+                                                    <router-link v-if="update.type == 'producerUpdate'" :to="{ path: '/profile/producer/' + update.id }" class="reverse-text">
                                                         <img :src="'data:image/png;base64,'+ (update.photo || defaultProfilePhoto)" style="width: 35px; height: 35px;" class="img-border">
                                                         <b class="ps-2"> {{ update.name }} </b>
                                                     </router-link>
-                                                    <router-link v-else :to="{ path: '/Venues/Profile-Page/' + update.id }" class="reverse-text">
+                                                    <router-link v-else :to="{ path: '/profile/venue/' + update.id }" class="reverse-text">
                                                         <img :src="'data:image/png;base64,'+ (update.photo || defaultProfilePhoto)" style="width: 35px; height: 35px;" class="img-border">
                                                         <b class="ps-2"> {{ update.name }} </b>
                                                     </router-link>
@@ -156,7 +156,7 @@
                                             <br>
                                             {{producerEditRequestListings.length}} Edit Listing Requests
                                         </p>
-                                        <router-link :to="{ path: '/producers/requests' }">
+                                        <router-link :to="{ path: '/request/view' }">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> View all requests </button>
                                         </router-link>
                                     </div>
@@ -174,7 +174,7 @@
                                 <!-- body -->
                                 <div v-if="unansweredQuestions.length != 0" style="height: 85%;">
                                     <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/Producers/Profile-Page/' + userID }">
+                                        <router-link :to="{ path: '/profile/producer/' + userID }">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> Respond to Q&A </button>
                                         </router-link>
                                     </div>
@@ -191,7 +191,7 @@
                                 <!-- body -->
                                 <div style="height: 85%;">
                                     <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/Producers/Profile-Page/' + userID }">
+                                        <router-link :to="{ path: '/profile/producer/' + userID }">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> View Dashboard </button>
                                         </router-link>
                                     </div>
@@ -213,7 +213,7 @@
                                 <!-- body -->
                                 <div v-if="unansweredQuestions.length != 0" style="height: 85%;">
                                     <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/Producers/Profile-Page/' + userID }">
+                                        <router-link :to="{ path: '/profile/producer/' + userID }">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> Respond to Q&A </button>
                                         </router-link>
                                     </div>
@@ -230,7 +230,7 @@
                                 <!-- body -->
                                 <div style="height: 85%;">
                                     <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/Venues/Profile-Page/' + userID }">
+                                        <router-link :to="{ path: '/profile/venue/' + userID }">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> View Dashboard </button>
                                         </router-link>
                                     </div>
@@ -334,19 +334,19 @@
                                             <div class="col-8 ps-5">
                                                 <!-- expression name -->
                                                 <div class="row pt-1">
-                                                    <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="primary-clickable-text">
+                                                    <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="primary-clickable-text">
                                                         <h4> <b> {{ listing["listingName"] }} </b> </h4>
                                                     </router-link>
                                                 </div>
                                                 <!-- producer -->
                                                 <div class="row">
-                                                    <router-link :to="{ path: '/Producers/Profile-Page/' + listing.producerID.$oid }" class="primary-clickable-text">
+                                                    <router-link :to="{ path: '/profile/producer/' + listing.producerID.$oid }" class="primary-clickable-text">
                                                         <h5> <b> {{ getProducerName(listing) }} </b> </h5>
                                                     </router-link>
                                                 </div>
                                                 <!-- review -->
                                                 <div class="row pt-3">
-                                                    <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="default-clickable-text fst-italic scrollable">
+                                                    <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="default-clickable-text fst-italic scrollable">
                                                         <h5> {{ listing["officialDesc"] }}. </h5>
                                                     </router-link>
                                                 </div>
@@ -362,7 +362,7 @@
                                                     </div>
                                                     <div class="col-6">
                                                         <div class="d-grid gap-5">
-                                                            <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="primary-clickable-text">
+                                                            <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="primary-clickable-text">
                                                                 <a class="btn secondary-btn btn-md"> Read what the crowd thinks </a>
                                                             </router-link>
                                                         </div>
@@ -404,19 +404,19 @@
                                             <div class="col-8 ps-5">
                                                 <!-- expression name -->
                                                 <div class="row pt-1">
-                                                    <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="primary-clickable-text">
+                                                    <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="primary-clickable-text">
                                                         <h4> <b> {{ listing["listingName"] }} </b> </h4>
                                                     </router-link>
                                                 </div>
                                                 <!-- producer -->
                                                 <div class="row">
-                                                    <router-link :to="{ path: '/Producers/Profile-Page/' + listing.producerID.$oid }" class="primary-clickable-text">
+                                                    <router-link :to="{ path: '/profile/producer/' + listing.producerID.$oid }" class="primary-clickable-text">
                                                         <h5> <b> {{ getProducerName(listing) }} </b> </h5>
                                                     </router-link>
                                                 </div>
                                                 <!-- review -->
                                                 <div class="row pt-3">
-                                                    <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="default-clickable-text fst-italic scrollable">
+                                                    <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="default-clickable-text fst-italic scrollable">
                                                         <h5> {{ listing["officialDesc"] }}. </h5>
                                                     </router-link>
                                                 </div>
@@ -432,7 +432,7 @@
                                                     </div>
                                                     <div class="col-6">
                                                         <div class="d-grid gap-5">
-                                                            <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="primary-clickable-text">
+                                                            <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="primary-clickable-text">
                                                                 <a class="btn secondary-btn btn-md"> Read what the crowd thinks </a>
                                                             </router-link>
                                                         </div>
@@ -474,19 +474,19 @@
                                             <div class="col-8 ps-5">
                                                 <!-- expression name -->
                                                 <div class="row pt-1">
-                                                    <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="primary-clickable-text">
+                                                    <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="primary-clickable-text">
                                                         <h4> <b> {{ listing["listingName"] }} </b> </h4>
                                                     </router-link>
                                                 </div>
                                                 <!-- producer -->
                                                 <div class="row">
-                                                    <router-link :to="{ path: '/Producers/Profile-Page/' + listing.producerID.$oid }" class="primary-clickable-text">
+                                                    <router-link :to="{ path: '/profile/producer/' + listing.producerID.$oid }" class="primary-clickable-text">
                                                         <h5> <b> {{ getProducerName(listing) }} </b> </h5>
                                                     </router-link>
                                                 </div>
                                                 <!-- review -->
                                                 <div class="row pt-3">
-                                                    <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="default-clickable-text fst-italic scrollable">
+                                                    <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="default-clickable-text fst-italic scrollable">
                                                         <h5> {{ listing["officialDesc"] }}. </h5>
                                                     </router-link>
                                                 </div>
@@ -502,7 +502,7 @@
                                                     </div>
                                                     <div class="col-6">
                                                         <div class="d-grid gap-5">
-                                                            <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }" class="primary-clickable-text">
+                                                            <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="primary-clickable-text">
                                                                 <a class="btn secondary-btn btn-md"> Read what the crowd thinks </a>
                                                             </router-link>
                                                         </div>
@@ -638,7 +638,7 @@
                         <div class="row">
                             <!-- image -->
                             <div class="col-3 image-container">
-                                <router-link :to="{ path: '/Producers/Bottle-Listings/' + listing._id.$oid }">
+                                <router-link :to="{ path: '/listing/view/' + listing._id.$oid }">
                                     <img v-if="listing['photo']" :src="'data:image/png;base64,'+listing['photo']" style="width: 300px; height: 300px;" class="img-border">
                                     <img v-else src="../../../Images/Drinks/Placeholder.png" style="width: 300px; height: 300px;" class="img-border"> 
                                 </router-link>
@@ -1490,6 +1490,8 @@
             this.questionsUpdates.sort((a, b) => {
                 return new Date(b.date.$date) - new Date(a.date.$date);
             });
+
+           
         }, 
 
         // get time difference
