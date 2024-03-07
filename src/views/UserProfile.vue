@@ -226,7 +226,7 @@
                             <b> Recent Reviews </b> 
                         </h3>
                         <div>
-                            <div v-for="(review, index) in reviews" :key="index">
+                            <div v-for="(review, index) in reversedReviews" :key="index">
                                 <div style="display: flex" class="mb-3" v-if="review.userID?.$oid === displayUserID && review.reviewType === 'Listing'">
                                     <img :src=" 'data:image/png;base64,' + (review.photo||defaultDrinkImage)" alt="" class="rounded bottle-img me-3">
                                     <div>
@@ -533,6 +533,7 @@ export default {
             listings: [],
             producers: [],
             reviews: [],
+            reversedReviews: [],
             users: [],
             drinkCategories: [],
             drinkTypes: [],
@@ -613,6 +614,7 @@ export default {
             try {
                 const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
                 this.reviews = response.data;
+                this.reversedReviews = this.reviews.reverse();
             }
             catch (error) {
                 console.error(error);
@@ -1004,15 +1006,16 @@ export default {
                     return new Date(b.createdDate) - new Date(a.createdDate);
                 })
                 .reverse()
-                .slice(0, 5);
-            // map the listingid to the listing and replace array item with listing itself
-            this.recentActivity = this.recentActivity.map(item => {
-                if (item.listingID) {
+                .filter((item, index, self) =>
+                    index === self.findIndex((t) => (
+                    t.listingID.$oid === item.listingID.$oid
+                    ))
+                )
+                .map(item => {
                     item = this.listings.find(listing => listing._id.$oid === item.listingID.$oid);
-                }
-                return item;
-            });
-
+                    return item;
+                })
+                .slice(0, 5);
 
         }, 
         getListingPhoto(listingID) {
