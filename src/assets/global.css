@@ -354,6 +354,12 @@ body {
     margin: 20px;
 }
 
+.drink-photo-container-row {
+    width: 150px;
+    height: 150px;
+    position: relative;
+}
+
 .add-drink-photo-container-text {
     width: 150px;
     height: 100px;
