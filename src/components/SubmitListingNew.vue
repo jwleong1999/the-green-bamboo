@@ -471,7 +471,7 @@
                 else if (localStorage.getItem('88B_accType') == "user") {
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getUser/' + this.form['userID']["$oid"]);
-                        if (response.data == []) {
+                        if (Array.isArray(response.data) && response.data.length == 0) {
                             throw "User not found!";
                         }
                         this.types = response.data["modType"];
@@ -481,7 +481,7 @@
                             this.types = [];
                         }
 
-                        if (this.types != []) {
+                        if (this.types.length > 0) {
                             powerValid = true;
                             if (response.data["isAdmin"] == true) {
                                 this.types = [];
@@ -564,7 +564,7 @@
                     // Get target listing
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getListing/' + this.$route.params.listingID);
-                        if (response.data == []) {
+                        if (Array.isArray(response.data) && response.data.length == 0) {
                             throw "Listing not found!";
                         }
                         this.targetListing = response.data;
@@ -586,7 +586,7 @@
                     if (this.formMode == "new") {
                         try {
                             const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListing/' + this.$route.params.requestID);
-                            if (response.data == []) {
+                            if (Array.isArray(response.data) && response.data.length == 0) {
                                 throw "Request not found!";
                             }
                             let previousData = response.data;
@@ -612,7 +612,7 @@
                     if (this.formMode == "edit" || this.formMode == "dup") {
                         try {
                             const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdit/' + this.$route.params.requestID);
-                            if (response.data == []) {
+                            if (Array.isArray(response.data) && response.data.length == 0) {
                                 throw "Request not found!";
                             }
                             let previousData = response.data;
