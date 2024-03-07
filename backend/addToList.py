@@ -26,10 +26,9 @@ def parse_json(data):
     return json.loads(json_util.dumps(data))
 
 # -----------------------------------------------------------------------------------------
-# [PUT] Updates a listing
-# - Update entry with specified id from the "listings" collection. Follows listings dataclass requirements.
-# - Duplicate listing check: If a listing with the same name exists, reject the request
-# - Possible return codes: 200 (Updated), 410 (Duplicate Detected), 420 (Invalid ID), 440 (Not Found), 450 (Error during update)
+# [PUT] adds a listing to have tried list 
+# - Update "Drinks I Have Tried List" with specified id from the "listings" collection
+# - Possible return codes: 200 (List Updated), 440 (Failed to add to list)
 @app.route("/addToTried/", methods=['PUT'])
 def addToTried():
     
@@ -69,10 +68,10 @@ def addToTried():
     
 
 
-# # -----------------------------------------------------------------------------------------
-# # [DELETE] Deletes a listing
-# # - Delete entry with specified id from the "listings" collection
-# # - Possible return codes: 201 (Deleted), 400 (Listing doesn't exist), 500 (Error during deletion)
+# -----------------------------------------------------------------------------------------
+# [PUT] adds a listing to have tried list 
+# - Update "Drinks I Want To Try" List with specified id from the "listings" collection
+# - Possible return codes: 210 (List Updated), 450 (Failed to add to list)
 @app.route("/addToWant/", methods=['PUT'])
 def addToWant():
     
@@ -95,22 +94,22 @@ def addToWant():
         
         return jsonify(
             {
-                "code": 200,
+                "code": 210,
                 "data": listingID,
                 "message": "Listing was added into the list."
             }
-        ), 200
+        ), 210
     
     except Exception as e:
         
         return jsonify(
             {
-                "code": 440,
+                "code": 450,
                 "data": listingID,
                 "message": "Listing was not added into the list"
             }
-        ), 440
+        ), 450
 
 # -----------------------------------------------------------------------------------------
 if __name__ == "__main__":
-    app.run(debug=True, port = 5005)
+    app.run(debug=True, port = 5070)

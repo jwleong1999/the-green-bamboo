@@ -945,7 +945,7 @@
                 </div>
 
                 <!-- not sure what this line supposed to do -->
-                <!-- {{ drinkList }} -->
+                {{ drinkList }}
                 
                 <!-- where to try -->
                 <div class="row">
@@ -1063,9 +1063,10 @@
 
                 // customization for drinkLists buttons
                 // [TODO] get drink list of user, for now is hardcoded
+
                 drinkList:  {
-                                "haveTried": ["Harmony Collection Inspired by Intense Arabica"],
-                                "wantToTry": ["Catnip Gin No. 2", "Five Farms Irish Cream Liqueur"]
+                                "haveTried": [""],
+                                "wantToTry": [""]
                             },
                 haveTried: false,
                 wantToTry: false,
@@ -2067,7 +2068,7 @@
                             
                 }
                 console.log(submitData)
-                await this.$axios.put('http://127.0.0.1:5005/addToTried/', submitData)
+                await this.$axios.put('http://127.0.0.1:5070/addToTried/', submitData)
                     .then((response) => {
                         responseCode = response.data.code;
                     })
@@ -2093,7 +2094,7 @@
                             
                 }
                 console.log(submitData)
-                await this.$axios.put('http://127.0.0.1:5005/addToWant/', submitData)
+                await this.$axios.put('http://127.0.0.1:5070/addToWant/', submitData)
                     .then((response) => {
                         responseCode = response.data.code;
                     })
@@ -2102,7 +2103,7 @@
                         responseCode = error.response.data.code;
                     });
 
-                if (responseCode == 200) {
+                if (responseCode == 210) {
                     console.log("Success")
                 } else {
                     console.log("Fail");
