@@ -14,11 +14,11 @@
         <div class="text-success fst-italic fw-bold fs-3" v-if="successSubmission"> 
             <span>The account has successfully been created!</span> <!-- for user -->
             <br>
-            <button class="btn primary-btn btn-sm">
+            <!-- <button class="btn primary-btn btn-sm">
                 <router-link :to="{ path: '/login' }" class="primary-clickable-text">
                     <span class="fs-5 fst-italic" style="color: white;"> Click to login here! </span>
                 </router-link>
-            </button>
+            </button> -->
             <button class="btn primary-btn btn-sm" @click="loginUser">
                     <span class="fs-5 fst-italic" style="color: white;"> Click to get login-ed! </span>
             </button>
@@ -367,11 +367,12 @@
                 // Uncomment to allow age checker
                 else{
                     var dob = new Date(this.birthday);
-                    dob.setDate(dob.getDate() - 1);
-                    var month_diff = Date.now() - dob.getTime();
-                    var age_dt = new Date(month_diff);  
-                    var year = age_dt.getUTCFullYear();  
-                    var age = Math.abs(year - 1970);  
+                    var now = new Date();
+                    var age = now.getFullYear() - dob.getFullYear();
+                    // Check if the birthday has occurred this year
+                    if (now.getMonth() < dob.getMonth() || (now.getMonth() === dob.getMonth() && now.getDate() < dob.getDate())) {
+                        age--;
+                    }
                     let searchResult = this.countries.filter((country) => {
                         return country.originCountry==this.selectedCountry;
                     });
@@ -403,6 +404,9 @@
                     // pass in first name, last name, email, isadmin
                     "username": this.username,
                     "displayName": this.username,
+                    "firstName": this.username,
+                    "lastName": this.username,
+                    "email": this.email,
                     "choiceDrinks": [],
                     "drinkLists": {
                         "Drinks I Have tried":{
@@ -423,7 +427,8 @@
                         "producers":[],
                         "venues":[]
                     },
-                    // "birthday":this.birthday,
+                    "birthday":this.birthday,
+                    "isAdmin":false,
                 }
                 this.createAccount(submitAPI, submitData);
             },

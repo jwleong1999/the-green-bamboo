@@ -14,6 +14,8 @@ from pymongo.errors import DuplicateKeyError, OperationFailure
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
+from datetime import datetime
+
 import data
 
 app = Flask(__name__)
@@ -32,6 +34,9 @@ def parse_json(data):
 @app.route("/createAccount", methods= ['POST'])
 def createAccount():
     rawAccount = request.get_json()
+    rawAccount['joinDate'] = datetime.strptime(rawAccount['joinDate'], "%Y-%m-%dT%H:%M:%S.%fZ")# convert date to datetime object
+    rawAccount['birthday'] = datetime.strptime(rawAccount['birthday'], "%Y-%m-%d")# convert birthday to datetime object
+    # rawAccount['birthday'] = datetime.strftime(rawAccount['birthday'], "%Y-%m-%dT%H:%M:%S.%fZ")# format birthday to desired object type
     rawUsername= rawAccount['username']
     # Duplicate listing check: Reject if review with the same userID and reviewTarget exists in the database
     existingAccount = db.users.find_one({"username": rawUsername})
