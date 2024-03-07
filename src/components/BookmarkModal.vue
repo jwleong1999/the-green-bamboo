@@ -63,7 +63,7 @@
             }
         },
         mounted() {
-            if (this.user) {
+            if (this.user && Object.keys(this.user).length > 0) {
                 this.userID = this.user._id.$oid;
                 this.userBookmarks = this.user.drinkLists;
             }
@@ -72,6 +72,12 @@
             listingID: function() {
                 if (this.listingID) {
                     this.populateBookmarkModal(this.listingID);
+                }
+            }, 
+            user: function() {
+                if (this.user && Object.keys(this.user).length > 0) {
+                    this.userID = this.user._id.$oid;
+                    this.userBookmarks = this.user.drinkLists;
                 }
             }
         },
@@ -92,7 +98,6 @@
                     return;
                 }
                 this.bookmarkModalItem = this.listings.find(listing => listing._id.$oid === listingID.$oid).listingName;
-                console.log(this.bookmarkModalItem);
                 this.selectedBookmarkList = [];
                 for (const listName in this.userBookmarks) {
                     if (Object.hasOwnProperty.call(this.userBookmarks, listName)) {

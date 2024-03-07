@@ -206,57 +206,25 @@
                 <div class="tab-content container mt-2">
                     <!-- reviews tab -->
                     <div class="tab-pane fade show active" id="reviews">
-                        <h4 class="mt-3">Favourite Drinks</h4>
-                        <div class="flex-start">
-                            <div class="image-container-150" v-for="(listing, index) in favouriteListings" :key="index" >
-                                <img :src=" 'data:image/png;base64,' + (listing.photo || defaultDrinkImage)" alt="" class="rounded bottle-img me-3">
-                                <!-- svg for bookmarked -->
-                                <svg v-if="checkBookmarkStatus(listing._id.$oid) && user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
-                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(listing._id)">
-                                    <path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/>
-                                </svg>
-                                <!-- svg for not bookmarked -->
-                                <svg v-else-if="user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
-                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(listing._id)">
-                                    <path d="M0 48C0 21.5 21.5 0 48 0l0 48V441.4l130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4V48H48V0H336c26.5 0 48 21.5 48 48V488c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488V48z"/>
-                                </svg>
-                                <br/>
-                                <span style="display: inline-block; max-width: 150px;">
-                                    <a :href="'/Producers/Bottle-Listings/' + listing._id.$oid" style="text-decoration: none; color: inherit;">
-                                        <div style="max-height: 72px; display: -webkit-box; -webkit-box-orient: vertical; overflow: auto;">
-                                            {{ listing.listingName }}
-                                        </div>
-                                    </a>
-                                </span>
-                            </div>
-                        </div>
+                        <ListingRowDisplay 
+                            :listingArr="favouriteListings" 
+                            displayName="Favourite Listings" 
+                            :user="user" 
+                            :listing="listing" 
+                            columnWidth="165px"
+                            @icon-clicked="handleIconClick"/>
 
-                        <h4 class="mt-4">Recent Activity</h4>
-                        <div class="flex-start">
-                            <div class="image-container-150" v-for="(activity, index) in recentActivity" :key="index" >
-                                <img :src=" 'data:image/png;base64,' + ( getListingPhoto(activity.listingID ) || defaultDrinkImage)" alt="" class="rounded bottle-img me-3">
-                                <!-- svg for bookmarked -->
-                                <svg v-if="checkBookmarkStatus(activity.listingID.$oid) && user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
-                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(activity.listingID)">
-                                    <path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"/>
-                                </svg>
-                                <!-- svg for not bookmarked -->
-                                <svg v-else-if="user" xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512" class="icon"
-                                    data-bs-toggle="modal" data-bs-target="#bookmarkModal" @click="populateBookmarkModal(activity.listingID)">
-                                    <path d="M0 48C0 21.5 21.5 0 48 0l0 48V441.4l130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4V48H48V0H336c26.5 0 48 21.5 48 48V488c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488V48z"/>
-                                </svg>
-                                <br/>
-                                <span style="display: inline-block; max-width: 150px;">
-                                    <a :href="'/Producers/Bottle-Listings/' + activity.listingID.$oid" style="text-decoration: none; color: inherit;">
-                                        <div style="max-height: 72px; display: -webkit-box; -webkit-box-orient: vertical; overflow: auto;">
-                                            {{ getListingName(activity.listingID) }}
-                                        </div>
-                                    </a>
-                                </span>
-                            </div>
-                        </div>
+                        <ListingRowDisplay 
+                            :listingArr="recentActivity" 
+                            displayName="Recent Activity" 
+                            :user="user" 
+                            :listing="listing" 
+                            columnWidth="165px"
+                            @icon-clicked="handleIconClick"/>
 
-                        <h4 class="mt-4">Recent Reviews</h4>
+                        <h3 class="text-body-secondary text-start pt-4"> 
+                            <b> Recent Reviews </b> 
+                        </h3>
                         <div>
                             <div v-for="(review, index) in reviews" :key="index">
                                 <div style="display: flex" class="mb-3" v-if="review.userID?.$oid === displayUserID && review.reviewType === 'Listing'">
@@ -511,49 +479,12 @@
                     </div>
                 </div>
             </div>
-            <!-- modal start -->
-            <div v-if="user" class="modal fade" id="bookmarkModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Add {{bookmarkModalItem}} to List</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-check" v-for="(listItems, listName) in user.drinkLists" :key="listName">
-                            <input class="form-check-input" type="checkbox" :value="listName" :id="listName" 
-                                v-model="selectedBookmarkList">
-                            <label class="form-check-label" :for="listName">
-                                {{listName}}
-                            </label>
-                        </div>
-
-                        <div class="form-check mt-3">
-                            <input class="form-check-input" type="checkbox" value="saveToNewList" id="saveToNewList" v-model="saveToNewList">
-                            <label class="form-check-label" for="saveToNewList">
-                                Create New List
-                            </label>
-                            <div v-if="saveToNewList">
-                                <div class="mt-2">New List Name</div>
-                                <input type="text" class="form-control" v-model="othersListName" placeholder="New List Name">
-                                <div v-if="othersListNameError" class="text-danger text-sm">
-                                    *{{ othersListNameError }}
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" @click="bookmarkItem">Save changes</button>
-                    </div>
-                    </div>
-                </div>
-            </div>
-            <!-- modal end -->
         </div>
-
-
+        <BookmarkModal 
+            v-if="user" 
+            :user="user" 
+            :listings="listings" 
+            :listingID="bookmarkListingID" />
         
     </div>
     
@@ -565,11 +496,17 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue';
+import ListingRowDisplay from '@/components/ListingRowDisplay.vue';
+import BookmarkModal from '@/components/BookmarkModal.vue';
+
+
 
 // toggling between lists and list details
 export default {
     components: {
-        NavBar
+        NavBar, 
+        ListingRowDisplay, 
+        BookmarkModal
     },
     data() {
         return {
@@ -613,19 +550,11 @@ export default {
             favouriteListings: {},
             recentActivity: {},
 
-            // user bookmark checks
-            bookmarkStatus: {},
-            bookmarkModalItem: "",
-            selectedBookmarkList: [],
-
             // create list
             currentList: "",
             newListName: "",
             newListDesc: "",
             newListNameError: "",
-            saveToNewList: "",
-            othersListName: "",
-            othersListNameError: "",
 
             // edit list
             editListName: "",
@@ -636,6 +565,9 @@ export default {
             drinksToAdd: [],
             drinkSearch: "",
             drinkSearchResults: [],
+
+            // for bookmark component
+            bookmarkListingID: {},
 
         };
     },
@@ -832,86 +764,11 @@ export default {
             return this.listings.find(listing => listing._id.$oid === listingID);
         },
 
-        // ------------------- User Update Bookmarks -------------------
-        // bookmark item through bookmark icon
-        async bookmarkItem() {
-
-            let addListingId = this.getListingID(this.bookmarkModalItem);
-
-            for (const listName in this.userBookmarks) {
-                if (Object.hasOwnProperty.call(this.userBookmarks, listName)) {
-                    const bookmarkItems = this.userBookmarks[listName].listItems;
-                    let itemExist = bookmarkItems.some(item => item[1].$oid === addListingId.$oid);
-                    if (this.selectedBookmarkList.includes(listName)) {
-                        if (!itemExist) {
-                            bookmarkItems.push([new Date(), addListingId]);
-                        }
-                    } else {
-                        if (itemExist) {
-                            const index = bookmarkItems.findIndex(item => item[1].$oid === addListingId.$oid);
-                            bookmarkItems.splice(index, 1);
-                        }
-                    }
-                }
-            }
-
-            if (this.saveToNewList) {
-                if (this.othersListName === "") {
-                    this.othersListNameError = "Please enter a list name";
-                    return;
-                } else if (this.userBookmarks[this.othersListName]) {
-                    this.othersListNameError = "List name already exists";
-                    return;
-                } else {
-                    this.othersListNameError = "";
-                    this.userBookmarks[this.othersListName] = {
-                        listDesc: "",
-                        listItems: [[new Date(), addListingId]],
-                    };
-                }
-            }
-
-            try {
-                const response = await this.$axios.post('http://127.0.0.1:5100/updateBookmark', 
-                    {
-                        userID: this.userID,
-                        bookmark: this.userBookmarks,
-                    }, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                console.log(response.data);
-            } catch (error) {
-                console.error(error);
-            }
-            
-            window.location.reload();
-
-        },
         // return oid from name of drink listing
         getListingID(listingName) {
             const listing = this.listings.find(listing => listing.listingName === listingName);
             console.log(listing);
             return listing._id;
-        },
-        // checks which lists the item is in
-        populateBookmarkModal(listingID) {
-            // param: objectId
-            this.bookmarkModalItem = this.getListingName(listingID);
-            this.selectedBookmarkList = [];
-            for (const listName in this.userBookmarks) {
-                if (Object.hasOwnProperty.call(this.userBookmarks, listName)) {
-                    const bookmarkItems = this.userBookmarks[listName].listItems;
-                    if (bookmarkItems) {
-                        if (bookmarkItems.some(item => item[1].$oid === listingID.$oid)) {
-                            if (!this.selectedBookmarkList.includes(listName)) {
-                                this.selectedBookmarkList.push(listName);
-                            }
-                        }
-                    } 
-                }
-            }
         },
         // return search items for bookmarking
         searchResult() {
@@ -1142,14 +999,20 @@ export default {
             // combine reviews and bookmarks
             let userActivity = userReviews.concat(allUserBookmarksDict);
 
-            console.log(userActivity);
-
             this.recentActivity = userActivity
                 .sort((a, b) => {
                     return new Date(b.createdDate) - new Date(a.createdDate);
                 })
                 .reverse()
                 .slice(0, 5);
+            // map the listingid to the listing and replace array item with listing itself
+            this.recentActivity = this.recentActivity.map(item => {
+                if (item.listingID) {
+                    item = this.listings.find(listing => listing._id.$oid === item.listingID.$oid);
+                }
+                return item;
+            });
+
 
         }, 
         getListingPhoto(listingID) {
@@ -1241,6 +1104,10 @@ export default {
                 }
             }
         }, 
+        // for bookmark component
+        handleIconClick(data) {
+            this.bookmarkListingID = data
+        }
 
         
     },
