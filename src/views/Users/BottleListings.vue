@@ -71,7 +71,7 @@
                                     <!-- [if] drinks in drink shelf -->
                                     <div v-if="drinkShelf.length != 0" class="overflow-auto" style="max-height: 100%;">
                                         <div class="text-start" v-for="listing in drinkShelf" v-bind:key="listing._id">
-                                            <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="reverse-clickable-text">
+                                            <router-link :to="{ path: '/listing/view/' + listing.listingName+'/'+listing._id.$oid}" class="reverse-clickable-text">
                                                 <div class="d-flex align-items-center">
                                                     <img :src="'data:image/png;base64,'+ (listing.photo || defaultProfilePhoto)" style="width: 70px; height: 70px;">
                                                     <p class="ms-3 reverse-clickable-text"> 
@@ -334,7 +334,7 @@
                                             <div class="col-8 ps-5">
                                                 <!-- expression name -->
                                                 <div class="row pt-1">
-                                                    <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="primary-clickable-text">
+                                                    <router-link :to="{ path: '/listing/view/' + listing.listingName+'/'+listing._id.$oid }" class="primary-clickable-text">
                                                         <h4> <b> {{ listing["listingName"] }} </b> </h4>
                                                     </router-link>
                                                 </div>
@@ -346,7 +346,7 @@
                                                 </div>
                                                 <!-- review -->
                                                 <div class="row pt-3">
-                                                    <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="default-clickable-text fst-italic scrollable">
+                                                    <router-link :to="{ path: '/listing/view/' + listing.listingName+'/'+listing._id.$oid }" class="default-clickable-text fst-italic scrollable">
                                                         <h5> {{ listing["officialDesc"] }}. </h5>
                                                     </router-link>
                                                 </div>
@@ -362,7 +362,7 @@
                                                     </div>
                                                     <div class="col-6">
                                                         <div class="d-grid gap-5">
-                                                            <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="primary-clickable-text">
+                                                            <router-link :to="{ path: '/listing/view/' + listing.listingName+'/'+listing._id.$oid }" class="primary-clickable-text">
                                                                 <a class="btn secondary-btn btn-md"> Read what the crowd thinks </a>
                                                             </router-link>
                                                         </div>
@@ -404,7 +404,7 @@
                                             <div class="col-8 ps-5">
                                                 <!-- expression name -->
                                                 <div class="row pt-1">
-                                                    <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="primary-clickable-text">
+                                                    <router-link :to="{ path: '/listing/view/' + listing.listingName+'/'+listing._id.$oid }" class="primary-clickable-text">
                                                         <h4> <b> {{ listing["listingName"] }} </b> </h4>
                                                     </router-link>
                                                 </div>
@@ -416,7 +416,7 @@
                                                 </div>
                                                 <!-- review -->
                                                 <div class="row pt-3">
-                                                    <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="default-clickable-text fst-italic scrollable">
+                                                    <router-link :to="{ path: '/listing/view/' + listing.listingName+'/'+listing._id.$oid }" class="default-clickable-text fst-italic scrollable">
                                                         <h5> {{ listing["officialDesc"] }}. </h5>
                                                     </router-link>
                                                 </div>
@@ -432,7 +432,7 @@
                                                     </div>
                                                     <div class="col-6">
                                                         <div class="d-grid gap-5">
-                                                            <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="primary-clickable-text">
+                                                            <router-link :to="{ path: '/listing/view/' + listing.listingName+'/'+listing._id.$oid }" class="primary-clickable-text">
                                                                 <a class="btn secondary-btn btn-md"> Read what the crowd thinks </a>
                                                             </router-link>
                                                         </div>
@@ -474,7 +474,7 @@
                                             <div class="col-8 ps-5">
                                                 <!-- expression name -->
                                                 <div class="row pt-1">
-                                                    <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="primary-clickable-text">
+                                                    <router-link :to="{ path: '/listing/view/' + listing.listingName+'/'+listing._id.$oid }" class="primary-clickable-text">
                                                         <h4> <b> {{ listing["listingName"] }} </b> </h4>
                                                     </router-link>
                                                 </div>
@@ -486,7 +486,7 @@
                                                 </div>
                                                 <!-- review -->
                                                 <div class="row pt-3">
-                                                    <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="default-clickable-text fst-italic scrollable">
+                                                    <router-link :to="{ path: '/listing/view/' + listing.listingName+'/'+listing._id.$oid }" class="default-clickable-text fst-italic scrollable">
                                                         <h5> {{ listing["officialDesc"] }}. </h5>
                                                     </router-link>
                                                 </div>
@@ -502,7 +502,7 @@
                                                     </div>
                                                     <div class="col-6">
                                                         <div class="d-grid gap-5">
-                                                            <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="primary-clickable-text">
+                                                            <router-link :to="{ path: '/listing/view/' + listing.listingName+'/'+listing._id.$oid }" class="primary-clickable-text">
                                                                 <a class="btn secondary-btn btn-md"> Read what the crowd thinks </a>
                                                             </router-link>
                                                         </div>
@@ -638,7 +638,7 @@
                         <div class="row">
                             <!-- image -->
                             <div class="col-3 image-container">
-                                <router-link :to="{ path: '/listing/view/' + listing._id.$oid }">
+                                <router-link :to="{ path: '/listing/view/' + listing.listingName+'/'+listing._id.$oid }">
                                     <img v-if="listing['photo']" :src="'data:image/png;base64,'+listing['photo']" style="width: 300px; height: 300px;" class="img-border">
                                     <img v-else src="../../../Images/Drinks/Placeholder.png" style="width: 300px; height: 300px;" class="img-border"> 
                                 </router-link>

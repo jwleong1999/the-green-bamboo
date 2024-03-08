@@ -109,7 +109,7 @@
                     <div class="card-footer text-body-secondary">
                         <!-- Link to Bottle Listing Page -->
                         <!-- [RE-ROUTE FLAG] '/listing/view/' -->
-                        <router-link :to="'/Producers/Bottle-Listings/' + this.$route.params.listingID" class="text-decoration-none">
+                        <router-link :to="'/listing/view/' + this.$route.params.listingName +this.$route.params.listingID" class="text-decoration-none">
                             <span>View Listing Details</span>
                         </router-link>
                     </div>
