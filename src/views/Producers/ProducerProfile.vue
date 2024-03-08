@@ -345,7 +345,7 @@
                         <!-- search -->
                         <div class="col-9">
                             <!-- [if] user type is producer -->
-                            <div v-if="correctProducer" class="row">
+                            <div v-if="correctProducer || isAdmin" class="row">
                                 <div class="col-3 d-grid no padding">
                                     <button type="button" class="btn primary-btn-outline-thick rounded-0" v-on:click="editCatalogue()">
                                         <a class="default-clickable-text"> Edit catalogue </a> 
@@ -364,15 +364,15 @@
                             </div>
                             <!-- [else] user type is NOT producer -->
                             <div v-else class="row">
-                                <div v-if="canMod || isAdmin" class="col-3 d-grid no padding">
+                                <div v-if="canMod && !isAdmin" class="col-3 d-grid no padding">
                                     <button type="button" class="btn primary-btn-outline-thick rounded-0" v-on:click="editCatalogue()">
                                         <a class="default-clickable-text"> Edit catalogue </a> 
                                     </button>
                                 </div>
-                                <div v-if="canMod || isAdmin" class="col-9 d-grid no padding">
+                                <div v-if="canMod && !isAdmin" class="col-9 d-grid no padding">
                                     <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Search for expressions" style="height: 50px;" v-model="searchExpressions" v-on:keyup.enter="searchForExpressions()">
                                 </div>
-                                <div v-else class="col-12 d-grid no padding">
+                                <div v-else-if="!isAdmin" class="col-12 d-grid no padding">
                                     <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Search for expressions" style="height: 50px;" v-model="searchExpressions" v-on:keyup.enter="searchForExpressions()">
                                 </div>
                             </div>
