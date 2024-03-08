@@ -5,17 +5,16 @@ const routes = [
   {
     path: '/',
     name: 'homepage',
+
+    // OLD LINK FOR REFERENECE
     // path: '/Users/Bottle-Listings',
     // name: 'usersbottlelistings',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    // component: () => import('../views/Users/BottleListings.vue')
+
+    // route level code-splitting: this generates a separate chunk (about.[hash].js) for this route which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/Users/BottleListings.vue')
   },
   {
     path: '/login',
-    // name: 'login',
     name: 'login',
     component: () => import('../views/LoginPage.vue')
   },
@@ -35,7 +34,7 @@ const routes = [
     component: () => import('../views/SearchView.vue')
   },
   // -------------------------------------------------------------------------------------
-  
+
   // ----------------- PROFILE PAGES -----------------
   {
     path: '/profile/user/:userID?',
@@ -97,6 +96,7 @@ const routes = [
     // OLD LINK FOR REFERENECE
     // path: '/Producer/Producer-Edit-Listing/:listingID/:requestID?',
     // name: 'producerupdatelistingsdetails',
+
     component: () => import('../views/Producers/EditListing.vue')
   },
   // -------------------------------------------------------------------------------------
@@ -109,6 +109,7 @@ const routes = [
     // OLD LINK FOR REFERENECE
     // path: '/producers/requests',
     // name: 'producersrequests',
+
     component: () => import('../views/Producers/ViewRequests.vue')
   },
   {
@@ -118,6 +119,7 @@ const routes = [
     // OLD LINK FOR REFERENECE
     // path: '/Users/request/new/:requestID?',
     // name: 'usersrequestlistingnew',
+
     component: () => import('../views/Users/RequestListingNew.vue')
   },
   {
@@ -125,9 +127,9 @@ const routes = [
     name: 'requestmodify',
 
     // OLD LINK FOR REFERENECE
-
     // path: '/Users/request/modify/:mode/:listingID/:requestID?',
     // name: 'usersrequestlistingmodify',
+
     component: () => import('../views/Users/RequestListingModify.vue')
   },
 
@@ -172,10 +174,8 @@ const routes = [
   },
   {
     // TO BE DELETED
-    // path: '/test/home',
-    // name: 'testhome',
-    path: '/',
-    name: 'home',
+    path: '/test/home',
+    name: 'testhome',
     component: () => import('../views/zToBeDeleted/HomeView.vue')
   },
   {
