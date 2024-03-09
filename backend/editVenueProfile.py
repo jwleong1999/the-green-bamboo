@@ -407,5 +407,38 @@ def addListingToMenu():
         ), 500
 # -----------------------------------------------------------------------------------------
 
+
+#  -----------------------------------------------------------------------------------------
+# [POST] Change Section Name 
+# - Change Section Name
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/editSectionName', methods=['PUT'])
+def editSectionName():
+    data = request.get_json()
+    print(data)
+    venueID = data['venueID']
+    sectionOrder = data['order']
+    sectionName = data['sectionName']
+
+    try: 
+        addListing = db.venues.update_one(
+            {'_id': ObjectId(venueID), 'menu.order': 0},
+            {'$set': {'menu.$.sectionName': sectionName}}
+        )
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Section Name changed successfully!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "Section Name was not changed"}
+        ), 500
+# -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(debug=True, port=5300)
