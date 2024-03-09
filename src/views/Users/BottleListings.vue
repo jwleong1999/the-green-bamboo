@@ -10,7 +10,8 @@
                 <!-- tagline -->
                 <div class="col-8">
                     <h1 class="text-start" v-if="userID == ''"> What can we get you today? </h1>
-                    <h1 class="text-start" v-else> Hello, {{ displayName }}! </h1>
+                    <h1 class="text-start" v-else-if="userType == 'user'"> Hello, {{ displayName }}! </h1>
+                    <h1 class="text-start" v-else> Hello, {{ username }}! </h1>
                 </div>
                 <!-- button -->
                 <div v-if="!userID" class="col-4">
