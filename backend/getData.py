@@ -299,7 +299,7 @@ def getColours():
     return allColours
 
 # -----------------------------------------------------------------------------------------
-# [GET] colours
+# [GET] specialColours
 @app.route("/getSpecialColours")
 def getSpecialColours():
     #this step finds all the items in the collection, specifying Flavour Tags
@@ -315,10 +315,10 @@ def getSpecialColours():
     return allSpecialColours
 
 # -----------------------------------------------------------------------------------------
-# [GET] Languages
+# [GET] languages
 @app.route("/getLanguages")
 def getLanguages():
-    #this step finds all the items in the collection, specifying Languages
+    #this step finds all the items in the collection, specifying languages
     data = db.languages.find({})
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
@@ -329,6 +329,22 @@ def getLanguages():
         # print(doc)
         languages.append(doc)
     return languages
+
+# -----------------------------------------------------------------------------------------
+# [GET] servingTypes
+@app.route("/getServingTypes")
+def getServingTypes():
+    #this step finds all the items in the collection, specifying servingTypes
+    data = db.servingTypes.find({})
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+    servingTypes = []
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        servingTypes.append(doc)
+    return servingTypes
 
 # -----------------------------------------------------------------------------------------
 if __name__ == "__main__":

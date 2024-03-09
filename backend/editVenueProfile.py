@@ -370,13 +370,25 @@ def addListingToMenu():
     data = request.get_json()
     print(data)
     venueID = data['venueID']
+    menuOrder = data['menuOrder']
     listingID = data['listingID']
+    itemPrice = data['itemPrice']
+    servingType = data['servingType']
     sectionName = data['sectionName']
 
     try: 
         addListing = db.venues.update_one(
             {'_id': ObjectId(venueID), 'menu.sectionName': sectionName},
-            {'$push': {'menu.$.listingsID': ObjectId(listingID)}}
+            {'$push': {'menu.$.listingsID': 
+                        {
+                            'itemOrder': menuOrder,
+                            'itemID': ObjectId(listingID),
+                            'itemPrice': itemPrice,
+                            'servingType': ObjectId(servingType),
+                            'itemAvailability': True,
+                        }
+                    }
+                }
         )
         return jsonify(
             {   
