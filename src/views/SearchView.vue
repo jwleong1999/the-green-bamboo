@@ -123,7 +123,7 @@
 
                         <!-- Image -->
                         <div class="col-3 image-container-256">
-                            <router-link :to="{ path: '/Producers/Bottle-Listings/' + resultListing._id['$oid'] }">
+                            <router-link :to="{ path: '/listing/view/' + resultListing._id['$oid'] }">
                                 <img v-if="resultListing['photo']" :src="'data:image/png;base64,' + resultListing['photo']" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px">
                                 <img v-else src="../../Images/Drinks/Placeholder.png" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px"> 
                             </router-link>
@@ -143,7 +143,7 @@
 
                             <div class="col-8">
                                 <!-- Listing Name + Router Link -->
-                                <router-link class="text-dark text-decoration-none" :to="{ path: '/Producers/Bottle-Listings/' + resultListing._id['$oid'] }">
+                                <router-link class="text-dark text-decoration-none" :to="{ path: '/listing/view/' + resultListing._id['$oid'] }">
                                     <h4 class="fw-bold">{{ resultListing['listingName'] }}</h4>
                                 </router-link>
                                 <!-- Producer Name + Router Link -->

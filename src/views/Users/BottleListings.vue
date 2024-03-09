@@ -48,7 +48,7 @@
                                 <!-- body -->
                                 <div v-if="totalRequests != 0" style="height: 85%;">
                                     <div style="align-items: center; justify-content: center; height: 100%;" class="py-5">
-                                        <router-link :to="{ path: '/request/view' }">
+                                        <router-link :to="{ path: '/request/view' }" class="my-5">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> View all requests </button>
                                         </router-link>
                                     </div>
@@ -88,7 +88,7 @@
                                         <h6 class="fst-italic"> No drinks added yet. </h6>
                                     </div>
                                     <div v-else-if="!userID" style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/login' }">
+                                        <router-link :to="{ path: '/login' }" class="my-5">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> Log in to add a drink to shelf </button>
                                         </router-link>
                                     </div>
@@ -130,7 +130,7 @@
                                         <h6 class="fst-italic"> No brands added yet. </h6>
                                     </div>
                                     <div v-else style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/login' }">
+                                        <router-link :to="{ path: '/login' }" class="my-5">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> Log in to follow your favourite brand</button>
                                         </router-link>
                                     </div>
@@ -157,7 +157,7 @@
                                             <br>
                                             {{producerEditRequestListings.length}} Edit Listing Requests
                                         </p>
-                                        <router-link :to="{ path: '/request/view' }">
+                                        <router-link :to="{ path: '/request/view' }" class="my-5">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> View all requests </button>
                                         </router-link>
                                     </div>
@@ -166,7 +166,7 @@
                         </div>
                         <!-- fan questions -->
                         <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
+                            <div class="square primary-square rounded p-3 mb-3">
                                 <!-- header text -->
                                 <div class="square-inline">
                                     <h4 v-if="unansweredQuestions.length != 0" class="square-inline text-start mr-auto"> {{ unansweredQuestions.length }} Pending Fan Questions For You </h4>
@@ -175,7 +175,7 @@
                                 <!-- body -->
                                 <div v-if="unansweredQuestions.length != 0" style="height: 85%;">
                                     <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/profile/producer/' + userID }">
+                                        <router-link :to="{ path: '/profile/producer/' + userID }" class="my-5">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> Respond to Q&A </button>
                                         </router-link>
                                     </div>
@@ -184,7 +184,7 @@
                         </div>
                         <!-- activity -->
                         <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
+                            <div class="square primary-square rounded p-3 mb-3">
                                 <!-- header text -->
                                 <div class="square-inline">
                                     <h4 class="square-inline text-start mr-auto"> Activity on Your Listings </h4>
@@ -192,7 +192,7 @@
                                 <!-- body -->
                                 <div style="height: 85%;">
                                     <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/profile/producer/' + userID }">
+                                        <router-link :to="{ path: '/profile/producer/' + userID }" class="my-5">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> View Dashboard </button>
                                         </router-link>
                                     </div>
@@ -205,7 +205,7 @@
                     <div v-else-if="userType == 'venue'" class="row">
                         <!-- fan questions -->
                         <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
+                            <div class="square primary-square rounded p-3 mb-3">
                                 <!-- header text -->
                                 <div class="square-inline">
                                     <h4 v-if="unansweredQuestions.length != 0" class="square-inline text-start mr-auto"> {{ unansweredQuestions.length }} Pending Fan Questions For You </h4>
@@ -214,7 +214,7 @@
                                 <!-- body -->
                                 <div v-if="unansweredQuestions.length != 0" style="height: 85%;">
                                     <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/profile/producer/' + userID }">
+                                        <router-link :to="{ path: '/profile/producer/' + userID }" class="my-5">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> Respond to Q&A </button>
                                         </router-link>
                                     </div>
@@ -223,7 +223,7 @@
                         </div>
                         <!-- check ins at your venue -->
                         <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3" style="height: 325px">
+                            <div class="square primary-square rounded p-3 mb-3">
                                 <!-- header text -->
                                 <div class="square-inline">
                                     <h4 class="square-inline text-start mr-auto"> Activity on Your Listings </h4>

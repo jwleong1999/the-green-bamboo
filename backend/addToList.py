@@ -16,6 +16,7 @@ from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
 import data
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -33,7 +34,7 @@ def parse_json(data):
 def addToTried():
     
     addedListing = request.get_json()
-    date = addedListing["date"]
+    date = datetime.strptime(addedListing["date"], "%Y-%m-%dT%H:%M:%S.%fZ")
     listingID = addedListing["listingID"]
     userID = ObjectId(addedListing["userID"])
 
@@ -76,8 +77,7 @@ def addToTried():
 def addToWant():
     
     addedListing = request.get_json()
-    
-    date = addedListing["date"]
+    date = datetime.strptime(addedListing["date"], "%Y-%m-%dT%H:%M:%S.%fZ")
     listingID = addedListing["listingID"]
     userID = ObjectId(addedListing["userID"])
 
