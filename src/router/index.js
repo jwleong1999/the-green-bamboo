@@ -70,7 +70,7 @@ const routes = [
 
   // ----------------- LISTING PAGES -----------------
   {
-    path: '/listing/view/:listingName/:listingID',
+    path: '/listing/view/:listingID',
     name: 'listingview',
 
     // OLD LINK FOR REFERENECE

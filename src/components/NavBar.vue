@@ -43,8 +43,8 @@
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><router-link :to="'/'" class="dropdown-item">Home</router-link></li>
                         <li><router-link :to="profileURL" class="dropdown-item">My Profile</router-link></li>
-                        <li v-if="accType == 'producer'"><router-link :to="'/Producer/Producer-Create-Listing'" class="dropdown-item">Create New Listing</router-link></li>
-                        <li v-if="accType == 'user'"><router-link :to="'/Users/request/new'" class="dropdown-item">Request New Listing</router-link></li>
+                        <li v-if="accType == 'producer'"><router-link :to="'/listing/create'" class="dropdown-item">Create New Listing</router-link></li>
+                        <li v-if="accType == 'user'"><router-link :to="'/request/new'" class="dropdown-item">Request New Listing</router-link></li>
                         <li v-if="accType == 'user' || accType == 'producer'"><router-link :to="'/request/view'" class="dropdown-item">View Requests</router-link></li>
                         <li><hr class="dropdown-divider"></li>
                         <li v-if="profileURL == '/login'"><router-link :to="'/login'" class="dropdown-item">Login</router-link></li>

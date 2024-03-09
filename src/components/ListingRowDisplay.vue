@@ -22,7 +22,7 @@
                         @icon-clicked="handleIconClick" />
 
                 </div>
-                <router-link :to="{ path: '/listing/view/' + listing.listingName+'/'+listing._id.$oid }" class="default-clickable-text scrollable mt-3 mx-2" style="text-align: center">
+                <router-link :to="{ path: '/listing/view/' +listing._id.$oid }" class="default-clickable-text scrollable mt-3 mx-2" style="text-align: center">
                     {{ listing.listingName }}
                 </router-link>
             </div>

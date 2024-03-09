@@ -399,7 +399,7 @@
                                 <div class="row">
                                     <!-- image -->
                                     <div class="col-2 image-container text-center mx-auto">
-                                        <router-link :to="{ path: '/listing/view/' + listing.listingName+'/'+listing._id.$oid}" class="default-text-no-background">
+                                        <router-link :to="{ path: '/listing/view/' +listing._id.$oid}" class="default-text-no-background">
                                             <img :src=" 'data:image/jpeg;base64,' + (listing['photo'] || defaultProfilePhoto)" style="width: 150px; height: 150px;">
                                         </router-link>
                                         <!-- edit listing -->
@@ -428,7 +428,7 @@
                                             <div class="col-7">
                                                 <div class="row pt-2">
                                                     <h4 class="default-text"> 
-                                                        <router-link :to="{ path: '/listing/view/' + listing.listingName+'/'+listing._id.$oid }" class="default-text-no-background">
+                                                        <router-link :to="{ path: '/listing/view/' +listing._id.$oid }" class="default-text-no-background">
                                                             <u> <b> {{ listing["listingName"] }}  </b> </u>
                                                         </router-link>
                                                     </h4> 
@@ -458,7 +458,7 @@
                                             <!-- official description -->
                                             <div class="col-10">
                                                 <div class="row pt-2 pb-5">
-                                                    <router-link :to="{ path: '/listing/view/' + listing.listingName+'/'+listing._id.$oid }" class="default-clickable-text">
+                                                    <router-link :to="{ path: '/listing/view/' +listing._id.$oid }" class="default-clickable-text">
                                                         <h5 class="fst-italic scrollable-long default-clickable-text"> {{ listing["officialDesc"] }} </h5>
                                                     </router-link>
                                                 </div>
