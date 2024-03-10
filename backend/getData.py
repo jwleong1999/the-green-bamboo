@@ -68,6 +68,8 @@ def getListings():
 @app.route("/getListing/<id>")
 def getListing(id):
     data = db.listings.find_one({"_id": ObjectId(id)})
+    if data is None:
+        return []
     return parse_json(data)
 
 # -----------------------------------------------------------------------------------------
@@ -90,6 +92,8 @@ def getProducers():
 @app.route("/getProducer/<id>")
 def getProducer(id):
     data = db.producers.find_one({"_id": ObjectId(id)})
+    if data is None:
+        return []
     return parse_json(data)
 
 # -----------------------------------------------------------------------------------------
@@ -100,6 +104,20 @@ def getReviews():
     data = db.reviews.find({})
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
+    allReviews = []
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allReviews.append(doc)
+    return allReviews
+
+# [GET] Specific Reviews by reviewTarget
+@app.route("/getReviewByTarget/<id>")
+def getReviewByTarget(id):
+    data = db.reviews.find({"reviewTarget": ObjectId(id)})
+    if data is None:
+        return []
     allReviews = []
     #parse bson as json
     dataEncode = parse_json(data)
@@ -128,12 +146,16 @@ def getUsers():
 @app.route("/getUser/<id>")
 def getUser(id):
     data = db.users.find_one({"_id": ObjectId(id)})
+    if data is None:
+        return []
     return parse_json(data)
 
 # [GET] Specific User by username
 @app.route("/getUserByUsername/<username>")
 def getUserByUsername(username):
     data = db.users.find_one({"username": username})
+    if data is None:
+        return []
     return parse_json(data)
 
 # -----------------------------------------------------------------------------------------
@@ -156,6 +178,8 @@ def getVenues():
 @app.route("/getVenue/<id>")
 def getVenue(id):
     data = db.venues.find_one({"_id": ObjectId(id)})
+    if data is None:
+        return []
     return parse_json(data)
 
 # -----------------------------------------------------------------------------------------
@@ -210,6 +234,8 @@ def getRequestListings():
 @app.route("/getRequestListing/<id>")
 def getRequestListing(id):
     data = db.requestListings.find_one({"_id": ObjectId(id)})
+    if data is None:
+        return []
     return parse_json(data)
 
 # -----------------------------------------------------------------------------------------
@@ -232,6 +258,8 @@ def getRequestEdits():
 @app.route("/getRequestEdit/<id>")
 def getRequestEdit(id):
     data = db.requestEdits.find_one({"_id": ObjectId(id)})
+    if data is None:
+        return []
     return parse_json(data)
 
 # -----------------------------------------------------------------------------------------

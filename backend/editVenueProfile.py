@@ -1,5 +1,6 @@
 # Port: 5300
 # Routes: /editDetails (POST), /addUpdates (POST), /sendQuestions (POST), /sendAnswers (POST), /likeUpdates (POST), /unlikeUpdates (POST)
+#         /editOpeningHours (POST), /editPublicHolidays (POST), /editReservationDetails (POST), /editMenu (POST)
 # -----------------------------------------------------------------------------------------
 
 import bson
@@ -438,6 +439,39 @@ def editSectionName():
                 "code": 500,
                 "data": data,
                 "message": "Section Name was not changed"}
+        ), 500
+# -----------------------------------------------------------------------------------------
+    
+# -----------------------------------------------------------------------------------------
+# [POST] Edit menu
+# - Edit menu
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/editMenu', methods=['POST'])
+def editMenu():
+    data = request.get_json()
+    print(data)
+    venueID = data['venueID']
+    updatedMenu = data['updatedMenu']
+
+    try: 
+        editMenu = db.venues.update_one(
+            {'_id': ObjectId(venueID)},
+            {'$set': {'menu': updatedMenu}}
+        )
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Menu edited successfully!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "An error occurred while editing the menu!"
+            }
         ), 500
 # -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
