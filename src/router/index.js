@@ -66,6 +66,12 @@ const routes = [
 
     component: () => import('../views/Venues/VenueProfile.vue')
   },
+  {
+    // TEMPORARY
+    path: '/profile/venueNew/:venueID?',
+    name: 'profilevenueNew',
+    component: () => import('../views/Venues/VenueProfileNew.vue')
+  },
   // -------------------------------------------------------------------------------------
 
   // ----------------- LISTING PAGES -----------------
