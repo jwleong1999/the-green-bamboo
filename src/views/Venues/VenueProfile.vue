@@ -199,7 +199,7 @@
                         
 
                         <!-- [TEMPORARY COMPONENT]o Test Section Name Change  -->
-                        <form>
+                        <!-- <form>
                             
                             <div class="mb-3">
                                 <label for="exampleInputPassword1" class="form-label">New Section Name</label>
@@ -207,7 +207,7 @@
                             </div>
                             
                             <button class="btn btn-primary" type="button" @click="changeSectionName()">Submit</button>
-                        </form>
+                        </form> -->
                         
                     </div>
                     <!-- follow this distillery -->
@@ -846,7 +846,7 @@
                                 </div>
 
                                 <!-- Temporary Placement of section name for reference. Will be deleted later -->
-                                {{ sectionName }}
+                                <!-- {{ sectionName }} -->
 
                                 <!-- buttons -->
                                 <div class="pb-3" v-if="correctVenue">
