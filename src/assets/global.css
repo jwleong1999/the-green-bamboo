@@ -520,3 +520,8 @@ body {
 .card {
     background-color: #D9D9D9;
 }
+
+.dropdown-toggle {
+    height: 47.25px;
+    font-size: medium;
+}

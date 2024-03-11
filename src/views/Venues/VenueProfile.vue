@@ -567,20 +567,22 @@
                             </span>
                         </div>
                         <!-- search -->
-                        <div class="col-9">
+                        <div class="col-8">
                             <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Search for expressions" style="height: 50px;" v-model="searchExpressions" v-on:keyup.enter="searchForExpressions()">
                         </div>
                 
                         <!-- sort by -->
-                        <div class="col-2">
+                        <div class="col-3">
                             <div class="d-grid gap-2 dropdown">
-                                <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Sort By
+                                <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                                    Sort: {{ sortSelection.category != '' ? sortSelection.category : 'by Category' }}
                                 </button>
-                                <ul class="dropdown-menu"> <!-- TODO: sort button to be implemented -->
-                                    <li><a class="dropdown-item" href="#">Action</a></li>
-                                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                                <ul class="dropdown-menu">
+                                    <li><span class="dropdown-item" @click="sortByCategory('')"> Clear Sort </span></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li v-for="category in sortCategoryList" :key="category">
+                                        <span class="dropdown-item" @click="sortByCategory(category)"> {{ category }} </span>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -1122,10 +1124,21 @@
                 // [IMPORTANT] Section order (to be used as an "ID" to recognise which section name is to be changed)
                 // Temporarily hardcoded to 0, to be changed later and made dynamic
                 editableSectionOrder:0,
-                            
-        };
-
-
+                
+                // for sort function
+                sortSelection: {
+                    category: ''
+                },
+                sortCategoryList: [
+                                    'Alphabetical (A - Z)',
+                                    'Alphabetical (Z - A)',
+                                    'Date (Newest - Oldest)',
+                                    'Date (Oldest - Newest)',
+                                    'Ratings (Highest - Lowest)',
+                                    'Ratings (Lowest - Highest)',
+                                ],
+                sortedListings: [],
+            };
         },
         async mounted() {
             // this.userType = localStorage.getItem('88B_accType');
@@ -2247,6 +2260,81 @@
                 }
                 window.location.reload();
                 
+            },
+
+            sortResults() {
+                let category = this.sortSelection.category;
+                // #1: Alphabetical (A - Z)
+                if (category == 'Alphabetical (A - Z)') {
+                    this.filteredListings.sort((a, b) => {
+                        return a.listingName.localeCompare(b.listingName);
+                    });
+                }
+
+                // #2: Alphabetical (Z - A)
+                else if (category == 'Alphabetical (Z - A)') {
+                    this.filteredListings.sort((a, b) => {
+                        return b.listingName.localeCompare(a.listingName);
+                    });
+                }
+
+                // #3: Date (Newest - Oldest)
+                else if (category == 'Date (Newest - Oldest)') {
+                    this.filteredListings.sort((a, b) => {
+                        return new Date(b.addedDate.$date) - new Date(a.addedDate.$date);
+                    });
+                }
+
+                // [DEFAULT] #4: Date (Oldest - Newest)
+                else if (category == '' || category == 'Date (Oldest - Newest)') {
+                    this.filteredListings.sort((a, b) => {
+                        return new Date(a.addedDate.$date) - new Date(b.addedDate.$date);
+                    });
+                }
+
+                // #5: Ratings (Highest - Lowest)
+                else if (category == 'Ratings (Highest - Lowest)') {
+                    this.filteredListings.sort((a, b) => {
+                        return this.getRatingsSearch(b) - this.getRatingsSearch(a);
+                    });
+                }
+
+                // #6: Ratings (Lowest - Highest)
+                else if (category == 'Ratings (Lowest - Highest)') {
+                    this.filteredListings.sort((a, b) => {
+                        return this.getRatingsSearch(a) - this.getRatingsSearch(b);
+                    });
+                }
+            },
+
+            // Sort Support Function (Category)
+            sortByCategory(category) {
+                // Check if the selected filter is the same as the current filter
+                if (this.sortSelection.category == category) {
+                    return;
+                }
+                else {
+                    this.sortSelection.category = category
+                    this.sortResults();
+                }
+            },
+
+            // get ratings (search function) --> main difference is if there are no ratings, return 0 instead of "-" so that it can be sorted
+            getRatingsSearch(listing) {
+                const ratings = this.reviews.filter((rating) => {
+                    return rating["reviewTarget"]["$oid"] == listing["_id"]["$oid"];
+                });
+                // if there are no ratings
+                if (ratings.length == 0) {
+                    return 0;
+                }
+                // else there are ratings
+                const averageRating = ratings.reduce((total, rating) => {
+                    return total + rating["rating"];
+                }, 0) / ratings.length;
+                // round to 1 decimal place
+                const roundedRating = Math.round(averageRating * 10) / 10;
+                return roundedRating;
             },
 
         }
