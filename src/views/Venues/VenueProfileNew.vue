@@ -1322,7 +1322,7 @@
         computed: {
             dragOptions() {
                 return {
-                    animation: 150,
+                    animation: 350,
                     group: "menuSections",
                     disabled: false,
                     ghostClass: "ghost"
