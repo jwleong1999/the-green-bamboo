@@ -314,14 +314,6 @@ body {
     display: inline-block;
 }
 
-.image-container-150 .icon {
-    position: absolute;
-    top: 0;
-    right: 0;
-    margin-top: 10px;
-    margin-right: 25px;
-}
-
 .image-container-150 .overlay-icon {
     position: absolute;
     top: 0;

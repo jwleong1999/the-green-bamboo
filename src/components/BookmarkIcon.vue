@@ -17,7 +17,6 @@
         props: {
             user: Object,
             listing: Object,
-            listings: Array,
             overlay: Boolean,
             size: String,
         },
