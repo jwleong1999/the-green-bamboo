@@ -38,7 +38,7 @@
                     <!-- [user] your drinks shelf & brands you follow -->
                     <div v-if="userType == 'user' || userType == ''" class="row">
                         <!-- [moderator] listing requests -->
-                        <div v-if="isModerator" class="col-12">
+                        <div v-if="isAdmin || isModerator" class="col-12">
                             <div class="square primary-square rounded p-3 mb-3">
                                 <!-- header text -->
                                 <div class="square-inline text-start">
@@ -231,7 +231,7 @@
                                 <!-- body -->
                                 <div style="height: 85%;">
                                     <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/profile/venue/' + userID }">
+                                        <router-link :to="{ path: '/profile/venue/' + userID }" class="my-5">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> View Dashboard </button>
                                         </router-link>
                                     </div>
@@ -703,6 +703,7 @@
                 userType: "",
                 username: "",
                 displayName: "",
+                isAdmin: "",
                 isModerator: "",
                 drinkShelf: [],
 
@@ -901,8 +902,13 @@
                 if (user) {
                     this.username = user.username
                     this.displayName = user.displayName
-                    // check if user is a moderator
+                    // check if user is an admin
                     if (user.isAdmin) {
+                        this.isAdmin = true
+                        this.totalRequests = this.requestListings.length
+                    }
+                    // if user is not admin, check if user is a moderator
+                    else if (user.isModerator) {
                         this.isModerator = true
                         // check number of moderator requests
                         if (user.modType.length > 0) {
