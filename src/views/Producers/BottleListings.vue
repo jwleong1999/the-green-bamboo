@@ -284,7 +284,7 @@
                                 <!-- change modal header colour -->
                                 <div class="modal-header" style="background-color: #535C72">
                                     <!-- V-if to edit or add review -->
-                                    <h5 v-if="!ImageBitmapRenderingContext" class="modal-title" id="reviewModalLabel" style="color: white;">Add Your Review</h5>
+                                    <h5 v-if="!inEdit" class="modal-title" id="reviewModalLabel" style="color: white;">Add Your Review</h5>
                                     <h5 v-else class="modal-title" id="reviewModalLabel" style="color: white;">Edit Your Review</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
@@ -1380,22 +1380,20 @@
 
             // view which venues have specified listing, sort by alphabetical order of venue name
             whereToTry() {
-                
+
                 for (let venue of this.venuesWithMenu) {
-                    let venueAllMenu = venue.menu
-                    for (let menu of venueAllMenu) {
-                        let menuSection = menu.sectionMenu
-                        for (let menuItem of menuSection) {
-                            console.log(menuItem)
-                            let menuItemID = menuItem.itemID.$oid
-                            // check if menuItemID matches specified listing
-                            if (menuItemID == this.specified_listing["_id"]["$oid"]) {
-                                // check if not in venueListings then push into array
-                                if (!this.venueListings.includes(venue)) {
-                                    this.venueListings.push(venue)
-                                }
-                            }
-                        }
+                    let allMenuItems = venue["menu"]
+                    let allSectionMenus = allMenuItems.reduce((acc, menuItem) => {
+                        return acc.concat(menuItem.sectionMenu);
+                    }, []);
+
+                    let allListingsIDs = allSectionMenus.reduce((acc, menuItem) => {
+                        return acc.concat(menuItem.itemID); 
+                    }, []);
+
+                    let uniqueListingsIDs = [...new Set(allListingsIDs.map(item => item["$oid"]))];
+                    if (uniqueListingsIDs.includes(this.specified_listing["_id"]["$oid"])) {
+                        this.venueListings.push(venue);
                     }
                 }
 
