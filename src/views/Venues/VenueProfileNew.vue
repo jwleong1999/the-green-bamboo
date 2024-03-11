@@ -1385,10 +1385,15 @@
                         
                         // TEMPORARY DATA CONVERSION: order = sectionOrder, listingsID = sectionMenu
                         for (let section of this.detailedMenu) {
-                            section.sectionOrder = section.order;
-                            section.sectionMenu = section.listingsID;
-                            delete section.order;
-                            delete section.listingsID;
+                            if (section.order != undefined) {
+                                section.sectionOrder = section.order;
+                                delete section.order;
+                            }
+
+                            if (section.listingsID != undefined) {
+                                section.sectionMenu = section.listingsID;
+                                delete section.listingsID;
+                            }
                         }
 
                         // Sort menu
