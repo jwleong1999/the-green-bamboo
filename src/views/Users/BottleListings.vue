@@ -753,6 +753,7 @@
                 // for bookmark
                 user: null,
                 userBookmarks: [],
+                
                 // for bookmark component
                 bookmarkListingID: {},
 

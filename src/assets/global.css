@@ -299,17 +299,17 @@ body {
     margin-right: 10px;
 }
 
-/* .image-container-256 {
+.image-container-256 {
     width: 256px;
     height: 256px;
     position: relative;
 }
 
-.overlay-icon-256 {
+.image-container-256 .overlay-icon {
     position: absolute;
     top: 22px;
     right: 30px;
-} */
+}
 
 .image-container-150 {
     position: relative;
