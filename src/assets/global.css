@@ -291,13 +291,15 @@ body {
     position: relative;
 }
 
-.overlay-icon {
+.image-container .overlay-icon {
     position: absolute;
-    top: 22px;
-    right: 10px;
+    top: 0;
+    right: 0;
+    margin-top: 22px;
+    margin-right: 10px;
 }
 
-.image-container-256 {
+/* .image-container-256 {
     width: 256px;
     height: 256px;
     position: relative;
@@ -307,7 +309,7 @@ body {
     position: absolute;
     top: 22px;
     right: 30px;
-}
+} */
 
 .image-container-150 {
     position: relative;
