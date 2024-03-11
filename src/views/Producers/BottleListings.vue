@@ -204,7 +204,7 @@
 
                     <!-- add your review -->
                     <!-- Display Add review or Review already added accordingly to whether user already left review -->
-                    <div v-if="userID !== 'defaultUser'" class="col-5">
+                    <div v-if="userType == 'user' && userID !== 'defaultUser'" class="col-5">
                         <div v-if="!inEdit" class="d-grid gap-2">
                             <button class="btn primary-btn-less-round btn-lg" data-bs-toggle="modal" data-bs-target="#reviewModal"> 
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
@@ -220,7 +220,7 @@
                         </div>
 
                     </div>
-                    <div v-else class="col-5">
+                    <div v-else-if="userType == 'user'" class="col-5">
                         <div class="d-grid gap-2">
                             <router-link :to="{ path: '/login' }" class="reverse-clickable-text">
                                 <button class="btn primary-btn-less-round btn-lg"> 
@@ -284,7 +284,7 @@
                                 <!-- change modal header colour -->
                                 <div class="modal-header" style="background-color: #535C72">
                                     <!-- V-if to edit or add review -->
-                                    <h5 v-if="!inEdit" class="modal-title" id="reviewModalLabel" style="color: white;">Add Your Review</h5>
+                                    <h5 v-if="!ImageBitmapRenderingContext" class="modal-title" id="reviewModalLabel" style="color: white;">Add Your Review</h5>
                                     <h5 v-else class="modal-title" id="reviewModalLabel" style="color: white;">Edit Your Review</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
@@ -585,7 +585,7 @@
                     <div class="col">
                         <div class="justify-content-start row">
                             <!-- [if] user has not added a review yet, add new photo -->
-                            <div v-if="userID !== 'defaultUser' && !inEdit" class="row">
+                            <div v-if="userType == 'user' && userID !== 'defaultUser' && !inEdit" class="row">
                                 <!-- (1) add button -->
                                 <div class="col-2">
                                     <div data-bs-toggle="modal" data-bs-target="#reviewModal">
@@ -1380,10 +1380,25 @@
 
             // view which venues have specified listing, sort by alphabetical order of venue name
             whereToTry() {
-                this.venueListings = this.venuesWithMenu
-                    .filter(venue => venue["menu"].some(item => {
-                        return item["listingsID"].some(listingID => listingID["$oid"] === this.specified_listing._id["$oid"]);
-                    }));
+                
+                for (let venue of this.venuesWithMenu) {
+                    let venueAllMenu = venue.menu
+                    for (let menu of venueAllMenu) {
+                        let menuSection = menu.sectionMenu
+                        for (let menuItem of menuSection) {
+                            console.log(menuItem)
+                            let menuItemID = menuItem.itemID.$oid
+                            // check if menuItemID matches specified listing
+                            if (menuItemID == this.specified_listing["_id"]["$oid"]) {
+                                // check if not in venueListings then push into array
+                                if (!this.venueListings.includes(venue)) {
+                                    this.venueListings.push(venue)
+                                }
+                            }
+                        }
+                    }
+                }
+
             },
 
             // get producerName for a listing based on producerID
