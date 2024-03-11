@@ -44,10 +44,10 @@
                                 </div>
                                 <!-- claim this distillery / add listing & edit profile -->
                                 <div class="col-4">
-                                    <!-- [if] user type is producer -->
-                                    <span v-if="correctProducer" class="row"> 
+                                    <!-- [if] user type is producer / admin -->
+                                    <span v-if="correctProducer || isAdmin" class="row"> 
                                         <!-- add listing-->
-                                        <div class="col-6 d-grid no-padding">
+                                        <div v-if="correctProducer" class="col d-grid no-padding">
                                             <!-- if not editing -->
                                             <button v-if="editing == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
                                                 <router-link :to="`/listing/create/${producer_id}`" class="reverse-clickable-text">
@@ -56,7 +56,7 @@
                                             </button>
                                         </div>
                                         <!-- edit profile -->
-                                        <div class="col-6 d-grid no-padding">
+                                        <div class="col d-grid no-padding">
                                             <!-- [if] not editing -->
                                             <button v-if="editing == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" v-on:click="editProfile()">
                                                 Edit profile
@@ -124,8 +124,8 @@
                     </div>
 
                     <!-- follow this distillery -->
-                    <div class="col-5">
-                        <div v-if="userType == 'user' && !following" class="d-grid gap-2">
+                    <div class="col-5" v-if="userType == 'user'" >
+                        <div v-if="!following" class="d-grid gap-2">
                             <button class="btn primary-btn-less-round btn-lg" @click="editFollow('follow')"> 
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
                                     <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
@@ -133,7 +133,7 @@
                                 Follow this distillery
                             </button>
                         </div>
-                        <div v-else-if="userType == 'user'" class="d-grid gap-2">
+                        <div v-else class="d-grid gap-2">
                             <button class="btn primary-btn-outline-less-round btn-lg" @click="editFollow('unfollow')"> 
                                 Following
                             </button>
@@ -235,7 +235,7 @@
                     </div>
 
                     <!-- show remaining updates when "view more" is clicked -->
-                    <div v-if="showRemainingUpdates">
+                    <div v-if="showRemainingUpdates" class="pt-3">
 
                         <!-- check if there are any updates -->
 
@@ -711,7 +711,7 @@
                 canMod: false,
 
                 // flag for admin
-                isAdmin:false,
+                isAdmin: false,
 
                 // q&a
                 question: '',
@@ -777,7 +777,6 @@
             var userType = localStorage.getItem('88B_accType');
             if(userType != null){
                 this.userType = userType;
-                console.log(this.userType)
             }
 
             await this.loadData();
@@ -793,7 +792,7 @@
                     }
                     else {
                         // check if user_id same as producer_id
-                        if(this.user_id == this.producer_id && this.userType == "producer"){
+                        if (this.user_id == this.producer_id && this.userType == "producer") {
                             this.correctProducer = true;
                         }
                     }
@@ -856,9 +855,8 @@
                         if (this.userType == "user") {
                             this.user = this.users.find(user => user["_id"]["$oid"] == this.user_id);
                             this.following = JSON.stringify(this.user.followLists.producers).includes(JSON.stringify({$oid: this.producer_id}));
-                            this.isAdmin=this.user.isAdmin
+                            this.isAdmin = this.user.isAdmin // check if user is admin
                         }
-                        console.log(this.user)
                     } 
                     catch (error) {
                         console.error(error);

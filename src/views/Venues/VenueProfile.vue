@@ -322,7 +322,7 @@
                     </div>
 
                     <!-- show remaining updates when "view more" is clicked -->
-                    <div v-if="showRemainingUpdates">
+                    <div v-if="showRemainingUpdates" class="pt-3">
 
                         <!-- check if there are any updates -->
 
