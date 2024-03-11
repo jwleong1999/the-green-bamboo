@@ -159,7 +159,7 @@
                                                                                                                             borderWidth:'3px' }">
                             <span>
                                 <h6> <b> Monthly plan </b> </h6>
-                                <p class="m-0"> $50.00/Month </p> 
+                                <p class="m-0"> $50 / Month </p> 
                                 <small class="fst-italic p-0"> Billed monthly </small>
                             </span>
                         </button>
@@ -175,7 +175,7 @@
                                 <div class="rounded col-5 text-center" style="background-color: green; color: white;">Save 16%</div>
                             </div>
                             <span>
-                                <p class="m-0"> $42/Month </p> 
+                                <p class="m-0"> $42 / Month </p> 
                                 <small class="fst-italic p-0"> $504 Billed annually </small>
                             </span>
                         

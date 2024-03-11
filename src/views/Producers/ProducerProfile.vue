@@ -1542,6 +1542,7 @@
                     businessType: "producer",
                     businessName: this.specified_producer.producerName,
                     // desc: this.specified_producer.producerDesc,
+                    businessLink: this.$route.fullPath,
                     originCountry: this.specified_producer.originCountry,
                 }
                 this.$router.push({
