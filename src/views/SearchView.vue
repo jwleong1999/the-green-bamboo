@@ -43,10 +43,10 @@
                 </div>
 
                 <!-- Spacer Column -->
-                <div class="d-md-grid d-none col-lg-4 col-md-2"></div>
+                <div class="d-md-grid d-none col-lg-3"></div>
 
                 <!-- Filter Options: On smaller screens, this is "moved below" Search Term -->
-                <div class="d-sm-grid d-none col-lg-3 col-md-4 col-sm-5 dropdown">
+                <div class="d-sm-grid d-none col-lg-2 col-md-3 dropdown">
                     <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
                         Filter: {{ searchFilter.drinkType != '' ? searchFilter.drinkType : 'by Drink Type' }}
                     </button>
@@ -55,6 +55,20 @@
                         <li><hr class="dropdown-divider"></li>
                         <li v-for="drinkType in drinkTypeList" :key="drinkType._id">
                             <span class="dropdown-item" @click="filterByDrinkType(drinkType['drinkType'])">{{ drinkType['drinkType'] }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Sort Options -->
+                <div class="d-sm-grid d-none col-lg-2 col-md-3 dropdown">
+                    <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                        Sort: {{ sortSelection.category != '' ? sortSelection.category : 'by Category' }}
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><span class="dropdown-item" @click="sortByCategory('')"> Clear Sort </span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li v-for="category in sortCategoryList" :key="category">
+                            <span class="dropdown-item" @click="sortByCategory(category)"> {{ category }} </span>
                         </li>
                     </ul>
                 </div>
@@ -209,6 +223,23 @@
                 resultListings: [],
                 listings: [],
 
+                // reviews
+                reviews: [],
+
+                // for sort function
+                sortSelection: {
+                    category: ''
+                },
+                sortCategoryList: [
+                                    'Alphabetical (A - Z)',
+                                    'Alphabetical (Z - A)',
+                                    'Date (Newest - Oldest)',
+                                    'Date (Oldest - Newest)',
+                                    'Ratings (Highest - Lowest)',
+                                    'Ratings (Lowest - Highest)',
+                                ],
+                sortedListings: [],
+
                 userID: "",
                 userType: "",
 
@@ -309,6 +340,16 @@
                     this.loadError = true;
                 }
 
+                // Reviews
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
+                    this.reviews = response.data;
+                }
+                catch (error) {
+                    console.error(error);
+                    this.loadError = true;
+                }
+
                 this.dataLoaded = true;
             },
 
@@ -326,7 +367,6 @@
 
             // Filter Support Function (Drink Type)
             filterByDrinkType(drinkType) {
-
                 // Check if the selected filter is the same as the current filter
                 if (this.searchFilter.drinkType == drinkType) {
                     return;
@@ -335,6 +375,81 @@
                     this.searchFilter.drinkType = drinkType;
                     this.filterResults();
                 }
+            },
+
+            sortResults() {
+                let category = this.sortSelection.category;
+                // #1: Alphabetical (A - Z)
+                if (category == 'Alphabetical (A - Z)') {
+                    this.resultListings.sort((a, b) => {
+                        return a.listingName.localeCompare(b.listingName);
+                    });
+                }
+
+                // #2: Alphabetical (Z - A)
+                else if (category == 'Alphabetical (Z - A)') {
+                    this.resultListings.sort((a, b) => {
+                        return b.listingName.localeCompare(a.listingName);
+                    });
+                }
+
+                // #3: Date (Newest - Oldest)
+                else if (category == 'Date (Newest - Oldest)') {
+                    this.resultListings.sort((a, b) => {
+                        return new Date(b.addedDate.$date) - new Date(a.addedDate.$date);
+                    });
+                }
+
+                // [DEFAULT] #4: Date (Oldest - Newest)
+                else if (category == '' || category == 'Date (Oldest - Newest)') {
+                    this.resultListings.sort((a, b) => {
+                        return new Date(a.addedDate.$date) - new Date(b.addedDate.$date);
+                    });
+                }
+
+                // #5: Ratings (Highest - Lowest)
+                else if (category == 'Ratings (Highest - Lowest)') {
+                    this.resultListings.sort((a, b) => {
+                        return this.getRatings(b) - this.getRatings(a);
+                    });
+                }
+
+                // #6: Ratings (Lowest - Highest)
+                else if (category == 'Ratings (Lowest - Highest)') {
+                    this.resultListings.sort((a, b) => {
+                        return this.getRatings(a) - this.getRatings(b);
+                    });
+                }
+            },
+
+            // Sort Support Function (Category)
+            sortByCategory(category) {
+                // Check if the selected filter is the same as the current filter
+                if (this.sortSelection.category == category) {
+                    return;
+                }
+                else {
+                    this.sortSelection.category = category
+                    this.sortResults();
+                }
+            },
+
+            // get ratings for a listing
+            getRatings(listing) {
+                const ratings = this.reviews.filter((rating) => {
+                    return rating["reviewTarget"]["$oid"] == listing["_id"]["$oid"];
+                });
+                // if there are no ratings
+                if (ratings.length == 0) {
+                    return 0;
+                }
+                // else there are ratings
+                const averageRating = ratings.reduce((total, rating) => {
+                    return total + rating["rating"];
+                }, 0) / ratings.length;
+                // round to 1 decimal place
+                const roundedRating = Math.round(averageRating * 10) / 10;
+                return roundedRating;
             },
 
             // for bookmark component

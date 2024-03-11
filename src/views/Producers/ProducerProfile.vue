@@ -667,6 +667,7 @@
                 user_id: "", // 65b327d5687b64f8302d56ee | 65b327d5687b64f8302d56ef
                 userType: "",
                 correctProducer: false,
+                claimStatus: false,
                 user: null,
 
                 // all drinks that producer has
@@ -811,6 +812,7 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
                         this.producers = response.data;
                         this.specified_producer = this.producers.find(producer => producer["_id"]["$oid"] == this.producer_id); // find specified producer
+                        this.claimStatus = this.specified_producer.claimStatus // get claim status of producer
                         this.getLatestUpdates()
                         this.checkProducerAnswered()
                         this.formatDeepDiveLink()
