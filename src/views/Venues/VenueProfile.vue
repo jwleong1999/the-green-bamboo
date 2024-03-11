@@ -1299,9 +1299,23 @@
             // get all drinks that a venue has
             async getAllDrinks() {
                 let allMenuItems = this.specified_venue["menu"];
+
+                // TO BE DELETED ONCE DB IS UPDATED
+                for (let section of allMenuItems) {
+                    if (section.sectionOrder != undefined) {
+                        section.order = section.sectionOrder;
+                        delete section.sectionOrder;
+                    }
+                    if (section.sectionMenu != undefined) {
+                        section.listingsID = section.sectionMenu;
+                        delete section.sectionMenu;
+                    }
+                }
+
                 let allListingsIDs = allMenuItems.reduce((acc, menuItem) => {
-                    return acc.concat(menuItem.listingsID);
+                    return acc.concat(menuItem.listingsID); // after changing db change menuItem.listingsID to menuItem.sectionMenu
                 }, []);
+
                 let uniqueListingsIDs = [...new Set(allListingsIDs.map(item => item["$oid"]))];
                 let allVenueDrinks = this.listings.filter(listing => {
                     let listing_id = listing._id["$oid"];
