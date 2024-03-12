@@ -629,6 +629,7 @@
                                     <router-link :to="`/profile/user/${review.userID.$oid}`" style="color: inherit">
                                         <b>
                                             @{{ getUsernameFromReview(review) }}
+                                            
                                         </b>
                                     </router-link>
                                     &nbsp;rated {{ review['rating'] }}

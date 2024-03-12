@@ -582,7 +582,7 @@ export default {
 
         // get displayUserID from URL
         try {
-            this.displayUserID = this.$route.params.id;
+            this.displayUserID = this.$route.params.userID;
             if (this.displayUserID === this.userID) {
                 this.$router.push('/profile/user/${this.userID}');
             }
