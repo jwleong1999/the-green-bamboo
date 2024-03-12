@@ -590,7 +590,7 @@
 
                         <!-- Reset Search -->
                         <div v-if="!editMenuMode" class="col-1 p-0">
-                            <button type="button" class="btn tertiary-btn" @click="searchMenuResults = detailedMenu; searchMenuTerm = ''">
+                            <button type="button" class="btn tertiary-btn" @click="searchMenuTerm = ''; searchMenu()">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
                                     <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
@@ -626,13 +626,15 @@
                         <!-- Sort Menu -->
                         <div class="col-2 me-0">
                             <div class="d-grid gap-2 dropdown">
-                                <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Sort By
+                                <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                                    Sort{{ sortMenuTerm ? ': ' + sortMenuTerm : ' By...' }}
                                 </button>
-                                <ul class="dropdown-menu"> <!-- TODO: sort button to be implemented -->
-                                    <li><a class="dropdown-item" href="#">Name</a></li>
-                                    <li><a class="dropdown-item" href="#">Price</a></li>
-                                    <li><a class="dropdown-item" href="#">Rating</a></li>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" @click="sortMenu('')">(Default Order)</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li v-for="sortOption in sortMenuOptions" v-bind:key="sortOption">
+                                        <a class="dropdown-item" href="#" @click="sortMenu(sortOption)">{{ sortOption }}</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -1163,7 +1165,7 @@
 
             <!-- ------- END Venue Information / START Venue Sidebar ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
-            <!-- TODO Line 724 -->
+            <!-- TODO Line 726 -->
 
             <!-- Venue Sidebar -->
             <div class="col-3">
@@ -1268,9 +1270,18 @@
                 editVenueDesc: '',
                 editCountry: '',
 
-                // Search Menu
+                // Search + Sort Menu
                 searchMenuResults: [],
                 searchMenuTerm: '',
+                sortMenuTerm: '',
+                sortMenuOptions: [
+                    'Alphabetical (A-Z)',
+                    'Alphabetical (Z-A)',
+                    'Rating (Low to High)',
+                    'Rating (High to Low)',
+                    'Price (Low to High)',
+                    'Price (High to Low)',
+                ],
 
                 // Report Menu Inaccuracy
                 reportFormView: true,
@@ -1704,6 +1715,68 @@
                             this.searchMenuResults.push(menuSectionFiltered);
                         }
 
+                    }
+                }
+
+                // Sort searchMenuResults
+                this.sortMenu(this.sortMenuTerm);
+
+            },
+
+            // Sort Menu
+            sortMenu(sortTerm) {
+
+                // Set sortMenuTerm
+                this.sortMenuTerm = sortTerm;
+
+                // Sort searchMenuResults
+                if (this.searchMenuResults.length > 0) {
+                    switch (sortTerm) {
+                        case 'Alphabetical (A-Z)':
+                            this.searchMenuResults = this.searchMenuResults.map(s => {
+                                s.sectionMenu = s.sectionMenu.sort((a, b) => (a.itemDetails.itemName > b.itemDetails.itemName) ? 1 : -1);
+                                return s;
+                            });
+                            break;
+                        case 'Alphabetical (Z-A)':
+                            this.searchMenuResults = this.searchMenuResults.map(s => {
+                                s.sectionMenu = s.sectionMenu.sort((a, b) => (a.itemDetails.itemName < b.itemDetails.itemName) ? 1 : -1);
+                                return s;
+                            });
+                            break;
+                        case 'Rating (Low to High)':
+                            this.searchMenuResults = this.searchMenuResults.map(s => {
+                                s.sectionMenu = s.sectionMenu.sort((a, b) => (a.itemDetails.itemRating > b.itemDetails.itemRating) ? 1 : -1);
+                                return s;
+                            });
+                            break;
+                        case 'Rating (High to Low)':
+                            this.searchMenuResults = this.searchMenuResults.map(s => {
+                                s.sectionMenu = s.sectionMenu.sort((a, b) => (a.itemDetails.itemRating < b.itemDetails.itemRating) ? 1 : -1);
+                                return s;
+                            });
+                            break;
+                        case 'Price (Low to High)':
+                            this.searchMenuResults = this.searchMenuResults.map(s => {
+                                s.sectionMenu = s.sectionMenu.sort((a, b) => (a.itemPrice < b.itemPrice) ? 1 : -1);
+                                s.sectionMenu = s.sectionMenu.sort((a, b) => (a.itemDetails.itemServingTypeName > b.itemDetails.itemServingTypeName) ? 1 : -1);
+                                return s;
+                            });
+                            break;
+                        case 'Price (High to Low)':
+                            this.searchMenuResults = this.searchMenuResults.map(s => {
+                                s.sectionMenu = s.sectionMenu.sort((a, b) => (a.itemPrice > b.itemPrice) ? 1 : -1);
+                                s.sectionMenu = s.sectionMenu.sort((a, b) => (a.itemDetails.itemServingTypeName > b.itemDetails.itemServingTypeName) ? 1 : -1);
+                                return s;
+                            });
+                            break;
+                        // All other cases
+                        default:
+                            this.searchMenuResults = this.searchMenuResults.map(s => {
+                                s.sectionMenu = s.sectionMenu.sort((a, b) => (a.itemOrder > b.itemOrder) ? 1 : -1);
+                                return s;
+                            });
+                            break;
                     }
                 }
 
