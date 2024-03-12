@@ -496,8 +496,10 @@
             <div class="col-3">
                 <div class="row">
                     <!-- view analytics -->
-                    <div v-if="correctProducer" class="col-12 d-grid gap-2 pb-3">
-                        <button class="btn secondary-btn-not-rounded rounded-0" type="button"> View My Analytics </button>
+                    <div v-if="correctProducer">
+                        <router-link :to="{ path: '/Producers/ProducersDashboard/' + producer_id}" class="col-12 d-grid gap-2 pb-3 default-clickable-text">
+                            <button class="btn secondary-btn-not-rounded rounded-0" type="button"> View My Analytics </button>
+                        </router-link> 
                     </div>
                     <!-- q&a -->
                     <div class="col-12">

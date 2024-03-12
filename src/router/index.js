@@ -145,12 +145,22 @@ const routes = [
   {
     path: '/Producers/ProducersQA/:id',
     name: 'producersqanda',
-    component: () => import('../views/Producers/ProducersQA.vue')
+    component: () => import('../views/Producers/ProducerQA.vue')
   },
   {
     path: '/Venues/VenuesQA/:id',
     name: 'venuessqanda',
-    component: () => import('../views/Venues/VenuesQA.vue')
+    component: () => import('../views/Venues/VenueQA.vue')
+  },
+
+
+  // -------------------------------------------------------------------------------------
+
+  // ----------------- DASHBOARD PAGES -----------------
+  {
+    path: '/Producers/ProducersDashboard/:id',
+    name: 'producersdashboard',
+    component: () => import('../views/Producers/ProducerDashboard.vue')
   },
 
   // -------------------------------------------------------------------------------------
