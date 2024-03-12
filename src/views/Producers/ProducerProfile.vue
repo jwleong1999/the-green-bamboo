@@ -146,156 +146,176 @@
                 <!-- main page (hide all listings) -->
                 <div v-if="showListings == false">
 
-                    <!-- latest updates -->
-                    <div class="row pb-3">
-                        <!-- header -->
-                        <div class="col-10">
-                            <h3 class="text-body-secondary text-start"> 
-                                <b> 
-                                    Latest Updates From
-                                    {{ specified_producer["producerName"] }} 
-                                </b> 
-                            </h3>
-                            <h5 class="text-decoration-underline text-start">
-                                Posted on:
-                                {{ latestUpdate.date }}
-                            </h5>
-                        </div>
-                    </div>
-                    <!-- information -->
-                    <div class="row">
-                        <!-- profile photo & post timestamp & # of likes -->
-                        <div class="col-2">
-                            <img :src=" 'data:image/jpeg;base64,' + (latestUpdate['photo'] || defaultProfilePhoto)" alt="" style="width: 150px; height: 150px;"> 
-                            <!-- # of likes -->
-                            <div class="row pt-3"> 
-                                <div class="col-6 text-end">
-                                    <!-- [if] liked -->
-                                    <div v-if="likeStatus" style="display: inline-block;"  v-on:click="unlikeUpdates">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
-                                        </svg>
-                                    </div>
-                                    <!-- [else] not liked -->
-                                    <div v-else style="display: inline-block;" v-on:click="likeUpdates">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                                            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.090.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div class="col-6 text-start">
-                                    <h4> {{ updateLikesCount }} </h4>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- description & image-->
-                        <div class="col-10">
-                            <div class="row">
-                                <!-- description -->
-                                <div class="col">
-                                    <p class="text-start p-text-lg"> 
-                                        {{latestUpdate['text']}}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- [if] account is claimed -->
+                    <div v-if="claimStatus">
 
-                    <!-- reply / send to producer -->
-                    <div class="row pt-3">
-                        <!-- [if] user type is producer -->
-                        <div v-if="correctProducer">
-                            <div class="row">
-                                <div class="input-group centered">
-                                    <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Say hi to your patrons!" style="height: 50px;" v-model="updateText"> 
-                                    <div class="ps-2">
-                                        <label for="file">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-camera" viewBox="0 0 16 16">
-                                                <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4z"/>
-                                                <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5m0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>
-                                            </svg>
-                                        </label>
-                                        <input id="file" type="file" v-on:change="loadUpdateFile" style="display: none;" ref="fileInput">
-                                    </div>
-                                    <div v-on:click="addUpdates" class="send-icon ps-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                                            <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row pt-1 ps-3" v-if="updateFileName != ''">
-                                The selected file is: {{ updateFileName }}
-                            </div>
-                        </div>
-                    </div>
-                    <!-- view more -->
-                    <div class="row">
-                        <button v-if="showRemainingUpdates == false" class="btn tertiary-text text-decoration-underline pt-2 no-margin" @click="checkToShowRemainingUpdates()"> View more </button>
-                    </div>
-
-                    <!-- show remaining updates when "view more" is clicked -->
-                    <div v-if="showRemainingUpdates" class="pt-3">
-
-                        <!-- check if there are any updates -->
-
-                        <!-- [if] more updates -->
-                        <div v-if="remainingUpdates.length > 0">
-                            <div v-for="update in remainingUpdates" v-bind:key="update._id">
-                                <h5 class="text-decoration-underline text-start pb-3">
+                        <!-- latest updates -->
+                        <div class="row pb-3">
+                            <!-- header -->
+                            <div class="col-10">
+                                <h3 class="text-body-secondary text-start"> 
+                                    <b> 
+                                        Latest Updates From
+                                        {{ specified_producer["producerName"] }} 
+                                    </b> 
+                                </h3>
+                                <h5 class="text-decoration-underline text-start">
                                     Posted on:
-                                    {{ this.formatDate(update.date.$date) }}
+                                    {{ latestUpdate.date }}
                                 </h5>
-                                <!-- other info -->
-                                <div class="row pb-2">
-                                    <!-- photo & # of likes -->
-                                    <div class="col-2">
-                                        <img :src=" 'data:image/jpeg;base64,' + (update['photo'] || defaultProfilePhoto)" alt="" style="width: 150px; height: 150px;"> 
-                                        <!-- # of likes -->
-                                        <div class="row pt-3"> 
-                                            <div class="col-6 text-end">
-                                                <!-- [else] not liked -->
-                                                <div style="display: inline-block;">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.090.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                                    </svg>
+                            </div>
+                        </div>
+                        <!-- information -->
+                        <div class="row">
+                            <!-- profile photo & post timestamp & # of likes -->
+                            <div class="col-2">
+                                <img :src=" 'data:image/jpeg;base64,' + (latestUpdate['photo'] || defaultProfilePhoto)" alt="" style="width: 150px; height: 150px;"> 
+                                <!-- # of likes -->
+                                <div class="row pt-3"> 
+                                    <div class="col-6 text-end">
+                                        <!-- [if] liked -->
+                                        <div v-if="likeStatus" style="display: inline-block;"  v-on:click="unlikeUpdates">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                            </svg>
+                                        </div>
+                                        <!-- [else] not liked -->
+                                        <div v-else style="display: inline-block;" v-on:click="likeUpdates">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.090.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 text-start">
+                                        <h4> {{ updateLikesCount }} </h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- description & image-->
+                            <div class="col-10">
+                                <div class="row">
+                                    <!-- description -->
+                                    <div class="col">
+                                        <p class="text-start p-text-lg"> 
+                                            {{latestUpdate['text']}}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- reply / send to producer -->
+                        <div class="row pt-3">
+                            <!-- [if] user type is producer -->
+                            <div v-if="correctProducer">
+                                <div class="row">
+                                    <div class="input-group centered">
+                                        <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Say hi to your patrons!" style="height: 50px;" v-model="updateText"> 
+                                        <div class="ps-2">
+                                            <label for="file">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-camera" viewBox="0 0 16 16">
+                                                    <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4z"/>
+                                                    <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5m0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>
+                                                </svg>
+                                            </label>
+                                            <input id="file" type="file" v-on:change="loadUpdateFile" style="display: none;" ref="fileInput">
+                                        </div>
+                                        <div v-on:click="addUpdates" class="send-icon ps-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                                                <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row pt-1 ps-3" v-if="updateFileName != ''">
+                                    The selected file is: {{ updateFileName }}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- view more -->
+                        <div class="row">
+                            <button v-if="showRemainingUpdates == false" class="btn tertiary-text text-decoration-underline pt-2 no-margin" @click="checkToShowRemainingUpdates()"> View more </button>
+                        </div>
+
+                        <!-- show remaining updates when "view more" is clicked -->
+                        <div v-if="showRemainingUpdates" class="pt-3">
+
+                            <!-- check if there are any updates -->
+
+                            <!-- [if] more updates -->
+                            <div v-if="remainingUpdates.length > 0">
+                                <div v-for="update in remainingUpdates" v-bind:key="update._id">
+                                    <h5 class="text-decoration-underline text-start pb-3">
+                                        Posted on:
+                                        {{ this.formatDate(update.date.$date) }}
+                                    </h5>
+                                    <!-- other info -->
+                                    <div class="row pb-2">
+                                        <!-- photo & # of likes -->
+                                        <div class="col-2">
+                                            <img :src=" 'data:image/jpeg;base64,' + (update['photo'] || defaultProfilePhoto)" alt="" style="width: 150px; height: 150px;"> 
+                                            <!-- # of likes -->
+                                            <div class="row pt-3"> 
+                                                <div class="col-6 text-end">
+                                                    <!-- [else] not liked -->
+                                                    <div style="display: inline-block;">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                                            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.090.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6 text-start">
+                                                    <h4> {{ update['likes'].length }} </h4>
                                                 </div>
                                             </div>
-                                            <div class="col-6 text-start">
-                                                <h4> {{ update['likes'].length }} </h4>
-                                            </div>
                                         </div>
-                                    </div>
-                                    <!-- description & image-->
-                                    <div class="col-10">
-                                        <div class="row">
-                                            <!-- description -->
-                                            <div class="col">
-                                                <p class="text-start p-text-lg"> 
-                                                    {{update['text']}}
-                                                </p>
+                                        <!-- description & image-->
+                                        <div class="col-10">
+                                            <div class="row">
+                                                <!-- description -->
+                                                <div class="col">
+                                                    <p class="text-start p-text-lg"> 
+                                                        {{update['text']}}
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- [else] no more updates -->
-                        <div v-else>
-                            <h5 class="text-body-secondary text-start"> 
-                                <b> 
+                            <!-- [else] no more updates -->
+                            <div v-else>
+                                <h5 class="text-body-secondary text-start"> 
+                                    <b> 
                                     No more updates from
-                                    {{ specified_producer["producerName"] }} 
-                                </b> 
-                            </h5>
-                        </div>
+                                        {{ specified_producer["producerName"] }} 
+                                    </b> 
+                                </h5>
+                            </div>
 
-                        <!-- view less -->
-                        <div class="row">
-                            <button v-if="showRemainingUpdates" class="btn tertiary-text text-decoration-underline pt-2 no-margin" @click="checkToShowRemainingUpdates()"> View less </button>
-                        </div>
+                            <!-- view less -->
+                            <div class="row">
+                                <button v-if="showRemainingUpdates" class="btn tertiary-text text-decoration-underline pt-2 no-margin" @click="checkToShowRemainingUpdates()"> View less </button>
+                            </div>
 
+                        </div>
+                    </div>
+
+                    <!-- [else] account is not claimed -->
+                    <div v-else>
+                        <div class="row text-center py-2" style="background-color:#DDC8A9;">
+                            <p class="fw-bold fs-3 pt-3" style="font-style: italic; font-family: Radley, serif;">
+                                Do you own this distillery?
+                            </p>
+                            <p> Sign up for a producer account to share your latest updates with your fans! </p>
+                            <!-- spacer -->
+                            <div class="col-4"></div>
+                            <!-- button -->
+                            <button type="submit" class="col-4 btn secondary-btn-border-thick mb-3" @click="claimProducerAccount"> Claim This Distillery </button>
+                            <!-- spacer -->
+                            <div class="col-4"></div>
+                        </div>
                     </div>
 
                     <hr>
@@ -324,6 +344,7 @@
                         :listing="listing" 
                         @icon-clicked="handleIconClick"/>
 
+    
                 </div> <!-- end of main page (hide all listings) -->
 
                 <!-- show all listings-->
@@ -509,70 +530,84 @@
                                 <!-- [if] user type producer -->
                                 <div v-if="correctProducer" class="mr-auto"> 
                                     <h4> Q&A for You! </h4> 
-                                    <router-link :to="{ path: '/Producers/ProducersQA/' + producer_id}" class="default-text-no-background">
-                                        <p class="reverse-text no-margin text-decoration-underline text-start pb-2"> View All </p>
-                                    </router-link> 
+                                    <div v-if="claimStatus">
+                                        <router-link :to="{ path: '/Producers/ProducersQA/' + producer_id}" class="default-text-no-background">
+                                            <p class="reverse-text no-margin text-decoration-underline text-start pb-2"> View All </p>
+                                        </router-link> 
+                                    </div>
                                 </div>
                                 <!-- [else] user type is NOT producer -->
                                 <h4 v-else class="mr-auto"> Q&As for {{ specified_producer["producerName"] }} </h4>
                             </div>
-                            <!-- show buttons for answered & unanswered questions -->
-                            <div v-if="correctProducer" class="row text-center px-2">
-                                <div class="col-6 d-grid gap-0 no-padding">
-                                    <button type="button" class="btn tertiary-btn-qa rounded-0 reverse-clickable-text">
-                                        <a class="reverse-clickable-text" v-on:click="showAnswered()">
-                                            Answered
-                                        </a>
-                                    </button>
-                                </div>
-                                <div class="col-6 d-grid gap-0 no-padding">
-                                    <button type="button" class="btn tertiary-btn-qa rounded-0 reverse-clickable-text">
-                                        <a class="reverse-clickable-text" v-on:click="showUnanswered()">
-                                            Unanswered
-                                        </a>
-                                    </button>
-                                </div>
-                            </div>
-                            <!-- body -->
-                            <div class="text-start pt-2">
-                                <!-- responses to q&a -->
-                                <div id="carouselExample" class="carousel slide">
-                                    <div class="carousel-inner px-4">
-                                        <!-- [if] user type is producer -->
-                                        <div v-if="correctProducer">
-                                            <!-- show answered questions -->
-                                            <div v-if="answerStatus">
-                                                <div class="carousel-item" v-for="(qa, index) in answeredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
-                                                    <p> <b> Q: {{ qa["question"] }} </b> </p>
-                                                    <p> A: {{ qa["answer"] }} </p>
-                                                </div>
-                                            </div>
 
-                                            <!-- show unanswered questions -->
-                                            <div v-else>
-                                                    <div class="carousel-item" v-for="(qa, index) in unansweredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
-                                                    <p> <b> Q: {{ qa["question"] }} </b> </p>
-                                                    <div class="input-group centered">
-                                                        <div class="input-group centered pt-2">
-                                                            <textarea class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Respond to your fans latest questions." v-model="answer"></textarea>
-                                                            <div v-on:click="sendAnswer(qa)" class="send-icon ps-1">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                                                                    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                                                                </svg>
+                            <!-- [if] account is claimed -->
+                            <div v-if="claimStatus">
+                                <!-- show buttons for answered & unanswered questions -->
+                                <div v-if="correctProducer" class="row text-center px-2">
+                                    <div class="col-6 d-grid gap-0 no-padding">
+                                        <button type="button" class="btn tertiary-btn-qa rounded-0 reverse-clickable-text">
+                                            <a class="reverse-clickable-text" v-on:click="showAnswered()">
+                                                Answered
+                                            </a>
+                                        </button>
+                                    </div>
+                                    <div class="col-6 d-grid gap-0 no-padding">
+                                        <button type="button" class="btn tertiary-btn-qa rounded-0 reverse-clickable-text">
+                                            <a class="reverse-clickable-text" v-on:click="showUnanswered()">
+                                                Unanswered
+                                            </a>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- body -->
+                                <div class="text-start pt-2">
+                                    <!-- responses to q&a -->
+                                    <div id="carouselExample" class="carousel slide">
+                                        <div class="carousel-inner px-4">
+                                            <!-- [if] user type is producer -->
+                                            <div v-if="correctProducer">
+                                                <!-- show answered questions -->
+                                                <div v-if="answerStatus">
+                                                    <div class="carousel-item" v-for="(qa, index) in answeredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
+                                                        <p> <b> Q: {{ qa["question"] }} </b> </p>
+                                                        <p> A: {{ qa["answer"] }} </p>
+                                                    </div>
+                                                </div>
+
+                                                <!-- show unanswered questions -->
+                                                <div v-else>
+                                                        <div class="carousel-item" v-for="(qa, index) in unansweredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
+                                                        <p> <b> Q: {{ qa["question"] }} </b> </p>
+                                                        <div class="input-group centered">
+                                                            <div class="input-group centered pt-2">
+                                                                <textarea class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Respond to your fans latest questions." v-model="answer"></textarea>
+                                                                <div v-on:click="sendAnswer(qa)" class="send-icon ps-1">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                                                                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                                                    </svg>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <!-- [else] user type is NOT producer -->
-                                        <div v-else>
-                                            <div class="carousel-item" v-for="(qa, index) in answeredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
-                                                <div>
-                                                    <p> <b> Q: {{ qa["question"] }} </b> </p>
-                                                    <p> A: {{ qa["answer"] }} </p>
+                                            <!-- [else] user type is NOT producer -->
+                                            <div v-else>
+                                                <div class="carousel-item" v-for="(qa, index) in answeredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
+                                                    <div>
+                                                        <p> <b> Q: {{ qa["question"] }} </b> </p>
+                                                        <p> A: {{ qa["answer"] }} </p>
+                                                    </div>
+                                                    <div class="input-group centered pt-2">
+                                                        <textarea class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Ask your question!" v-model="question"></textarea>
+                                                        <div v-on:click="sendQuestion" class="send-icon ps-1">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                                                                <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                                            </svg>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div class="input-group centered pt-2">
+                                                <div v-if="answeredQuestions.length === 0" class="input-group centered pt-2">
                                                     <textarea class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Ask your question!" v-model="question"></textarea>
                                                     <div v-on:click="sendQuestion" class="send-icon ps-1">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
@@ -581,27 +616,36 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div v-if="answeredQuestions.length === 0" class="input-group centered pt-2">
-                                                <textarea class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Ask your question!" v-model="question"></textarea>
-                                                <div v-on:click="sendQuestion" class="send-icon ps-1">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                                                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                                                    </svg>
-                                                </div>
-                                            </div>
                                         </div>
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
                                     </div>
-                                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Previous</span>
-                                    </button>
-                                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Next</span>
-                                    </button>
+                                </div>
+                                <div class="py-1"></div>
+                            </div>
+
+                            <!-- [else] account is not claimed -->
+                            <div v-else>
+                                <div class="row text-center mx-1 py-2 default-text-no-background" style="background-color:#DDC8A9;">
+                                    <p class="fw-bold fs-3 pt-3" style="font-style: italic; font-family: Radley, serif;">
+                                        Do you own this distillery?
+                                    </p>
+                                    <p> Sign up for a producer account to answer latest questions from your fans! </p>
+                                    <!-- spacer -->
+                                    <div class="col-2"></div>
+                                    <!-- button -->
+                                    <button type="submit" class="col-8 btn secondary-btn-border-thick mb-3" @click="claimProducerAccount"> Claim This Distillery </button>
+                                    <!-- spacer -->
+                                    <div class="col-2"></div>
                                 </div>
                             </div>
-                            <div class="py-1"></div>
+
                         </div>
                     </div>
                     <!-- 88 bamboo's deepdive -->

@@ -146,6 +146,20 @@ body {
     border: 2px solid #747D92;
 }
 
+.primary-btn-border-thick {
+    color: whitesmoke;
+    background-color: #747D92;
+    border-radius: 30px;
+    border: 2px solid whitesmoke;
+}
+
+.primary-btn-border-thick:hover  {
+    color: whitesmoke;
+    background-color: #535C72;
+    border-radius: 30px;
+    border: 2px solid whitesmoke;
+}
+
 .secondary-btn {
     color: whitesmoke;
     background-color: #DD9E54;
