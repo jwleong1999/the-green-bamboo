@@ -1355,7 +1355,7 @@
 
                 // Check if logged in, then check if moderator is allowed to edit listing
                 if(this.userID!='defaultUser' && this.userType=='user'){
-                    if(this.user.modType.includes(this.specified_listing.drinkType) && this.specified_listing.allowMod){
+                    if((this.user.modType.includes(this.specified_listing.drinkType) && this.specified_listing.allowMod)|| this.user.isAdmin){
                         this.correctModerator = true
                     }else{
                         this.correctModerator = false

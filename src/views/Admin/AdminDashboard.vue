@@ -64,11 +64,26 @@
                         <div v-if="successUpdateObservation" class="modal-body text-center text-success fst-italic fw-bold fs-3">
                             <span>Observation tags have successfully been updated!</span>
                         </div>
+
+                        <div v-if="successCreateObservation" class="modal-body text-center text-success fst-italic fw-bold fs-3">
+                            <span>Observation tags have successfully been created!</span>
+                        </div>
+
                         <div v-if="updatingObservation" class="modal-body text-center text-primary fst-italic fw-bold fs-3">
                             <span>Observation tags are being updated!</span>
                         </div>
+
+                        <div v-if="submittingObservation" class="modal-body text-center text-primary fst-italic fw-bold fs-3">
+                            <span>Observation tags are being added!</span>
+                        </div>
+
                         <div v-if="errorUpdateObservation" class="modal-body text-center text-danger fst-italic fw-bold fs-3">
                             <span v-if="invalidTag"> The observation tag you are trying to update does not exist</span>
+                            <span v-if="errorMessage">An error occurred updating the observation tags. Please try again.</span>
+                        </div>
+
+                        <div v-if="errorCreateObservation" class="modal-body text-center text-danger fst-italic fw-bold fs-3">
+                            <span v-if="duplicateTag"> The observation tag you are trying to create already exists!</span>
                             <span v-if="errorMessage">An error occurred updating the observation tags. Please try again.</span>
                         </div>
                         
@@ -85,7 +100,8 @@
                         </div>
                         <!-- Modal body for adding observation -->
                         <div v-if="addingObservation" class="modal-body">
-                            <p>This is your user story for adding observation *Easy*</p>
+                            <input v-model="newObservation" type="text" class="form-control">
+                            <p v-if="newObservation ==''" class='text-danger text-start mb-2 fw-bold'>Observation Tag cannot be empty</p>
                         </div>
                         <!-- Modal body for editing observation -->
                         <div v-if="editingObservation" class="modal-body">
@@ -102,7 +118,7 @@
                             <button v-if="selectingObservation" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button v-if="!selectingObservation" @click="resetObservation" type="button" class="btn btn-secondary">Return</button>
                             <button v-if="editingObservation" @click="updateObservation" type="button" class="btn btn-primary">Save Updates</button>
-                            <button v-if="addingObservation" type="button" class="btn btn-secondary">Add Tag</button>
+                            <button v-if="addingObservation" @click="createNewObservation" type="button" class="btn btn-primary">Add Tag</button>
                             <button v-if="successUpdateObservation || errorUpdateObservation" @click="resetErrors" type="button" data-bs-dismiss="modal" class="btn btn-secondary">Close</button>
                         </div>
                     </div>
@@ -136,6 +152,12 @@
                     user:null,
                     users: [],
 
+                    // creation of new observation tag
+                    newObservation:'',
+
+                    // Error messages
+                    errorMessages:'',
+
                     // flags
                     dataLoaded: false,
                     loadError: false,
@@ -144,10 +166,14 @@
                     selectingObservation:true,
                     nothingChanged:false,
                     successUpdateObservation:false,
-                    errorUpdateObservation:false,
                     invalidTag:false,
                     errorMessage:false,
+                    errorUpdateObservation:false,
                     updatingObservation:false,
+                    duplicateTag:false,
+                    successCreateObservation:false,
+                    submittingObservation:false,
+                    errorCreateObservation:false,
 
                     // Logged in user details
                     userID: null,
@@ -215,6 +241,7 @@
                     this.editingObservation=false
                     this.addingObservation=false
                     this.selectingObservation=true
+                    this.updatingObservation = false
                     this.resetErrors()
                 },
 
@@ -253,12 +280,13 @@
                     .catch((error)=>{
                         console.error(error);
                         responseCode = error.response.data.code
+                        this.errorMessages+=error.response.data.message
                     });
                     this.updatingObservation = false
                     if(responseCode==201){
                         this.successUpdateObservation=true; // Display success message
                     }else{
-                        this.errorUpdateObservation=true; // Display error message
+                        this.errorUpdateObservation = true
                         if(responseCode==400){
                             this.invalidTag = true // Display duplicate entry message
                         }else{
@@ -273,7 +301,47 @@
                     this.errorUpdateObservation = false
                     this.invalidTag = false
                     this.errorMessage = false
+                    this.successCreateObservation = false
+                    this.errorCreateObservation = false
+                    this.duplicateTagTag = false
+                    this.errorMessage = false
                     this.selectingObservation = true
+                },
+
+                createNewObservation(){
+                    if(this.newObservation==""){
+                        alert('Please fill in the observation tag')
+                        return null
+                    }
+                    this.submittingObservation=true
+                    this.addingObservation=false
+                    let submitAPI = "http://127.0.0.1:5052/createObservationTag"
+                    let submitData = {"observationTag":this.newObservation}
+                    this.createTag(submitAPI, submitData)
+                },
+
+                async createTag(submitAPI, submitData){
+                    let responseCode = ''
+                    const response = await this.$axios.post(submitAPI, submitData)
+                    .then((response)=>{
+                        responseCode = response.data.code
+                    })
+                    .catch((error)=>{
+                        console.error(error);
+                        responseCode = error.response.data.code
+                    });
+                    this.submittingObservation = false
+                    if(responseCode==201){
+                        this.successCreateObservation=true; // Display success message
+                    }else{
+                        this.errorCreateObservation = true
+                        if(responseCode==400){
+                            this.duplicateTag = true // Display duplicate entry message
+                        }else{
+                            this.errorMessage = true // Display generic error message
+                        }
+                    }
+                    return response
                 }
             }
         }
