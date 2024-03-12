@@ -525,3 +525,11 @@ body {
     height: 47.25px;
     font-size: medium;
 }
+
+.rounded-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    color: whitesmoke;
+    background-color: #DD9E54;
+}

@@ -75,7 +75,12 @@
                                     <u> {{ getListingFromID(review.reviewTarget.$oid).listingName }} </u>
                                 </router-link>
                                 <p>
-                                    <i> {{ review.rating }} stars </i>
+                                    <i> 
+                                        {{ review.rating }} 
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
+                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                        </svg>
+                                    </i>
                                 </p>
                             </div>
                         </div>
@@ -99,6 +104,11 @@
                                     <img :src="'data:image/png;base64,'+ (listing.photo || defaultProfilePhoto)" style="width: 70px; height: 70px;">
                                     <p class="ms-3 default-clickable-text"> 
                                         <b> {{ listing.listingName }} </b> 
+                                        <br>
+                                        {{ this.sortedAverageRatings[listing.listingName] || "-" }} 
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
+                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                        </svg>
                                     </p>
                                 </div>
                             </router-link>
@@ -114,6 +124,8 @@
                                     <img :src="'data:image/png;base64,'+ (listing.photo || defaultProfilePhoto)" style="width: 70px; height: 70px;">
                                     <p class="ms-3 default-clickable-text"> 
                                         <b> {{ listing.listingName }} </b> 
+                                        <br>
+                                        {{ this.sortedDrinksCounts[listing.listingName] || "-" }} reviews
                                     </p>
                                 </div>
                             </router-link>
@@ -134,10 +146,17 @@
                     <!-- col 2: your most reviewed categories -->
                     <div class="col text-start pt-5">
                         <h3> Your Most Reviewed Categories </h3>
-                        <div class="text-start pb-2" v-for="category in mostDiscussedCategories" v-bind:key="category">
-                            <p class="ms-3 default-clickable-text"> 
-                                <b> {{ category[0] }} </b> 
-                            </p>
+                        <div class="text-start pb-2" v-for="(category, index) in mostDiscussedCategories" v-bind:key="category">
+                            <div class="row ms-3 default-clickable-text"> 
+                                <div class="col-2 d-flex align-items-center justify-content-center rounded-circle me-3">
+                                    <h5 class="my-auto"> {{ index + 1 }} </h5>
+                                </div>
+                                <div class="col-10">
+                                    <b> {{ category[0] }} </b> 
+                                    <br>
+                                    {{ category[1] || "-" }} reviews
+                                </div>
+                            </div>
                         </div>
                     </div>
 
