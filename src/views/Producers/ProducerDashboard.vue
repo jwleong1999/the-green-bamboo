@@ -66,8 +66,8 @@
                         <!-- body -->
                         <div>
                             <!-- v-for loop here-->
-                            <div v-for="review in allReviews" v-bind:key="review._id">
-                                <router-link :to="{ path: '/profile/user/' + getUserFromID(review.userID.$oid) }" class="reverse-clickable-text">
+                            <div v-for="review in allReviews" v-bind:key="review._id" class="py-2">
+                                <router-link :to="{ path: '/profile/user/' + review.userID.$oid }" class="reverse-clickable-text">
                                     <b> @{{ getUsernameFromID(review.userID.$oid) }}</b>
                                 </router-link> 
                                 rated 
@@ -95,7 +95,7 @@
                 <div class="row">
 
                     <!-- col 1: your best rated expressions -->
-                    <div class="col text-start pt-2">
+                    <div class="col text-start pt-2 mx-3">
                         <h3> Your Best Rated Expressions </h3>
                         <div class="text-start pb-2" v-for="listing in mostPopular" v-bind:key="listing._id">
                             <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="reverse-clickable-text">
@@ -115,7 +115,7 @@
                     </div>
 
                     <!-- col 2: your most reviewed expressions -->
-                    <div class="col text-start pt-2">
+                    <div class="col text-start pt-2 mx-3">
                         <h3> Your Most Reviewed Expressions </h3>
                         <div class="text-start pb-2" v-for="listing in mostDiscussed" v-bind:key="listing._id">
                             <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="reverse-clickable-text">
@@ -137,13 +137,13 @@
                 <div class="row">
 
                     <!-- col 1: spread of ratings -->
-                    <div class="col text-start pt-5">
+                    <div class="col text-start pt-5 mx-3">
                         <h3> Spread of Ratings </h3>
                         <Bar :data="chartData" :options="chartOptions" />
                     </div>
 
                     <!-- col 2: your most reviewed categories -->
-                    <div class="col text-start pt-5">
+                    <div class="col text-start pt-5 mx-3">
                         <h3> Your Most Reviewed Categories </h3>
                         <div class="text-start pb-2" v-for="(category, index) in mostDiscussedCategories" v-bind:key="category">
                             <div class="row ms-3 default-clickable-text"> 
