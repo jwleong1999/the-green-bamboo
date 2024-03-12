@@ -500,6 +500,7 @@
                 this.missingBirthday=false
                 this.missingAgeCheck=false
                 this.missingCountry=false
+                this.underAge=false
             },
 
             async checkUsername(username){

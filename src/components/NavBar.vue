@@ -46,6 +46,7 @@
                         <li v-if="accType == 'producer'"><router-link :to="'/listing/create'" class="dropdown-item">Create New Listing</router-link></li>
                         <li v-if="accType == 'user'"><router-link :to="'/request/new'" class="dropdown-item">Request New Listing</router-link></li>
                         <li v-if="accType == 'user' || accType == 'producer'"><router-link :to="'/request/view'" class="dropdown-item">View Requests</router-link></li>
+                        <li v-if="isAdmin"><router-link :to="'/admin/dashboard'" class="dropdown-item">Admin Dashboard</router-link></li>
                         <li><hr class="dropdown-divider"></li>
                         <li v-if="profileURL == '/login'"><router-link :to="'/login'" class="dropdown-item">Login</router-link></li>
                         <li v-if="profileURL == '/login'"><router-link :to="'/signup'" class="dropdown-item">Sign Up</router-link></li>
@@ -67,6 +68,7 @@
                 accType: '',
                 photo: '',
                 profileURL: '/login',
+                isAdmin:false,
             }
         },
         mounted() {
@@ -106,6 +108,11 @@
                     try {
                         const response = await this.$axios.get(url);
                         this.photo = response.data["photo"];
+                        if(this.accType=='user' && response.data.isAdmin){
+                            this.isAdmin = true
+                        }else{
+                            this.isAdmin = false
+                        }
                     } 
                     catch (error) {
                         console.error(error);
