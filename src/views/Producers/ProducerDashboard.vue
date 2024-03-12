@@ -74,14 +74,13 @@
                                 <router-link :to="{ path: '/listing/view/' + getListingFromID(review.reviewTarget.$oid)._id.$oid }" class="reverse-clickable-text">
                                     <u> {{ getListingFromID(review.reviewTarget.$oid).listingName }} </u>
                                 </router-link>
-                                <p>
-                                    <i> 
-                                        {{ review.rating }} 
+                                <span class="ps-2">
+                                    <i> {{ review.rating }} 
                                         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
                                             <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                         </svg>
                                     </i>
-                                </p>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -140,7 +139,7 @@
                     <!-- col 1: spread of ratings -->
                     <div class="col text-start pt-5">
                         <h3> Spread of Ratings </h3>
-                        
+                        <Bar :data="chartData" :options="chartOptions" />
                     </div>
 
                     <!-- col 2: your most reviewed categories -->
@@ -176,11 +175,36 @@
 <script>
 
     import NavBar from '@/components/NavBar.vue';
+    import { Bar } from 'vue-chartjs'
+    import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 
+    ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
     export default {
         components: {
-            NavBar
+            NavBar,
+            Bar
+        },
+        computed: {
+            chartData() { 
+                const uniqueValues = [...new Set(Object.values(this.roundedSortedRatings))].sort((a, b) => a - b);
+                const dataCounts = uniqueValues.map(value => Object.values(this.roundedSortedRatings).filter(v => v === value).length);
+                return {
+                    labels: uniqueValues,
+                    datasets: [
+                        {
+                            label: 'Number of Ratings',
+                            backgroundColor: '#747D92',
+                            data: dataCounts
+                        }
+                    ]
+                }
+            },
+            chartOptions: {
+                responsive: true,
+                type: Object,
+                default: () => {}
+            }
         },
         data() {
             return {
@@ -215,6 +239,7 @@
                 allReviews: [],
                 drinkRatings: {},
                 sortedAverageRatings: {},
+                roundedSortedRatings: {},
                 mostPopular: [],
             };
         },
@@ -284,6 +309,7 @@
                         this.getAllReviews()
                         this.getRatingsByType()
                         this.getAverageRatings()
+                        this.roundSortedAverageRatings()
                         this.getMostPopular()
                     }
                     catch (error) {
@@ -531,6 +557,14 @@
                 // get the first 5 items from the drink category counts
                 this.mostDiscussedCategories = firstFiveItems;
             },
+
+            roundSortedAverageRatings() {
+                const roundedAverageRatings = {};
+                for (const [drink, rating] of Object.entries(this.sortedAverageRatings)) {
+                    roundedAverageRatings[drink] = Math.round(rating);
+                }
+                this.roundedSortedRatings = roundedAverageRatings;
+            }
 
         }
     };
