@@ -29,7 +29,7 @@
             <!-- Form Title -->
             <div class="col-12">
                 <div class="d-grid gap-2">
-                    <p class="fw-bold fs-1 m-0">Admin Home</p>
+                    <p class="fw-bold fs-1 m-0">Admin Dashboard</p>
                 </div>
             </div>
 
@@ -61,13 +61,13 @@
                         </div>
 
                         <!-- Modal for success and error message -->
-                        <div v-if="successUpdateObservation" class="modal-body text-success fst-italic fw-bold fs-3">
+                        <div v-if="successUpdateObservation" class="modal-body text-center text-success fst-italic fw-bold fs-3">
                             <span>Observation tags have successfully been updated!</span>
                         </div>
-                        <div v-if="updatingObservation" class="modal-body text-primary fst-italic fw-bold fs-3">
+                        <div v-if="updatingObservation" class="modal-body text-center text-primary fst-italic fw-bold fs-3">
                             <span>Observation tags are being updated!</span>
                         </div>
-                        <div v-if="errorUpdateObservation" class="modal-body text-danger fst-italic fw-bold fs-3">
+                        <div v-if="errorUpdateObservation" class="modal-body text-center text-danger fst-italic fw-bold fs-3">
                             <span v-if="invalidTag"> The observation tag you are trying to update does not exist</span>
                             <span v-if="errorMessage">An error occurred updating the observation tags. Please try again.</span>
                         </div>
@@ -122,7 +122,7 @@
     import NavBar from '@/components/NavBar.vue';
 
         export default {
-            name: 'adminHome',
+            name: 'adminDashboard',
             components: {
                 NavBar
             },
@@ -220,11 +220,6 @@
 
                 updateObservation(){
                     this.nothingChanged=false
-                    this.editingObservation=false;
-                    this.updatingObservation = true;
-                    if(this.observationTags.find((tag)=> tag.observationTag == '')){
-                        this.emptyObservation = true
-                    }
                     let submitData = []
                     // Check if theres a change in observationTag, if there is, submit the data
                     for( let i=0;i<this.editedObservationTags.length;i++){
@@ -239,6 +234,11 @@
                         this.editedObservationTags[0].observationTag= randoVariable
                         this.nothingChanged = true
                         return null
+                    }
+                    this.editingObservation=false;
+                    this.updatingObservation = true;
+                    if(this.observationTags.find((tag)=> tag.observationTag == '')){
+                        this.emptyObservation = true
                     }
                     let submitAPI = "http://127.0.0.1:5051/updateObservationTag"
                     this.updateTags(submitAPI,submitData)
