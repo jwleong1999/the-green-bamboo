@@ -685,10 +685,10 @@ export default {
         // get display user details
         getDrinkCount() {
             if (this.ownProfile) {
-                return this.reviews.filter(review => review.userID.$oid === this.userID).length;
+                return this.reviews.filter(review => review.userID.$oid === this.userID && review.reviewType === 'Listing').length;
             }
             else {
-                return this.reviews.filter(review => review.userID.$oid === this.displayUserID).length;
+                return this.reviews.filter(review => review.userID.$oid === this.displayUserID && review.reviewType === 'Listing').length;
             }
         },
         getDrinkOfChoice() {
