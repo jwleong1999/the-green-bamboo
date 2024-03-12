@@ -157,8 +157,8 @@ const routes = [
 
   // ----------------- ADMIN PAGES -----------------
   {
-    path: '/adminDashboard',
-    name: 'adminDashboard',
+    path: '/admin/dashboard',
+    name: 'admindashboard',
     component: () => import('../views/Admin/AdminDashboard.vue')
   },
 
