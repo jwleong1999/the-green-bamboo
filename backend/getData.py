@@ -267,7 +267,7 @@ def getRequestEdit(id):
 @app.route("/getModRequests")
 def getModRequests():
     #this step finds all the items in the collection, specifying Mod Requests
-    data = db.ModRequests.find({})
+    data = db.modRequests.find({})
     #have to use data.clone so that cursor is not used up
     print(len(list(data.clone())))
     allModRequests = []

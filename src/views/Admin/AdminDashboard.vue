@@ -34,101 +34,138 @@
             </div>
 
             <hr>
+            <!-- tag controls -->
             <div class="row text-center">
                 <div class="col-12">
                     <h3><b>Tag Controls</b></h3>
                 </div>
             </div>
-            <p class="gap-1">
-                <!-- Open a modal prompting to edit or add tags -->
-                <button class="btn tertiary-btn reverse-clickable-text m-1" type="button" data-bs-toggle="modal" data-bs-target="#observationModal">
-                    Observation Tags
-                </button>
-                <button class="btn tertiary-btn reverse-clickable-text m-1" type="button">
-                    Flavour Tags
-                </button>
-            
-            </p>
-            <!-- modal for lock listing to moderators -->
-            <div class="modal fade" id="observationModal" tabindex="-1" aria-labelledby="observationModalLabel" aria-hidden="true" data-bs-backdrop="static">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header" style="background-color: #535C72">
-                            <h1 v-if="selectingObservation" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Observation Tag Control</h1>
-                            <h1 v-if="addingObservation" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Add Observation Tag</h1>
-                            <h1 v-if="editingObservation" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Edit Observation Tag</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-
-                        <!-- Modal for success and error message -->
-                        <div v-if="successUpdateObservation" class="modal-body text-center text-success fst-italic fw-bold fs-3">
-                            <span>Observation tags have successfully been updated!</span>
-                        </div>
-
-                        <div v-if="successCreateObservation" class="modal-body text-center text-success fst-italic fw-bold fs-3">
-                            <span>Observation tags have successfully been created!</span>
-                        </div>
-
-                        <div v-if="updatingObservation" class="modal-body text-center text-primary fst-italic fw-bold fs-3">
-                            <span>Observation tags are being updated!</span>
-                        </div>
-
-                        <div v-if="submittingObservation" class="modal-body text-center text-primary fst-italic fw-bold fs-3">
-                            <span>Observation tags are being added!</span>
-                        </div>
-
-                        <div v-if="errorUpdateObservation" class="modal-body text-center text-danger fst-italic fw-bold fs-3">
-                            <span v-if="invalidTag"> The observation tag you are trying to update does not exist</span>
-                            <span v-if="errorMessage">An error occurred updating the observation tags. Please try again.</span>
-                        </div>
-
-                        <div v-if="errorCreateObservation" class="modal-body text-center text-danger fst-italic fw-bold fs-3">
-                            <span v-if="duplicateTag"> The observation tag you are trying to create already exists!</span>
-                            <span v-if="errorMessage">An error occurred updating the observation tags. Please try again.</span>
-                        </div>
-                        
-
-                        <!-- Modal body for selecting mode for observation operations -->
-                        <div v-if="selectingObservation" class="modal-body">
-                            <button class="btn btn-warning reverse-clickable-text text-dark" @click="addObservation" type="button">
-                                Add Observation Tags
-                            </button> 
-
-                            <button class="btn btn-primary mx-1 reverse-clickable-text" @click="editObservation" type="button">
-                                Edit Observation Tags
-                            </button>
-                        </div>
-                        <!-- Modal body for adding observation -->
-                        <div v-if="addingObservation" class="modal-body">
-                            <input v-model="newObservation" type="text" class="form-control">
-                            <p v-if="newObservation ==''" class='text-danger text-start mb-2 fw-bold'>Observation Tag cannot be empty</p>
-                        </div>
-                        <!-- Modal body for editing observation -->
-                        <div v-if="editingObservation" class="modal-body">
-                            <div class="row">
-                                <div v-for="tag in editedObservationTags" class="mb-2 col-md-6"  v-bind:key="tag._id">
-                                    <input v-model="tag.observationTag" type="text" class="form-control">
-                                    <p v-if="tag.observationTag==''" class='text-danger text-start mb-2 fw-bold'>Observation Tag cannot be empty</p>
-                                </div>
+            <div>
+                <p class="gap-1">
+                    <!-- Open a modal prompting to edit or add tags -->
+                    <button class="btn tertiary-btn reverse-clickable-text m-1" type="button" data-bs-toggle="modal" data-bs-target="#observationModal">
+                        Observation Tags
+                    </button>
+                    <button class="btn tertiary-btn reverse-clickable-text m-1" type="button">
+                        Flavour Tags
+                    </button>
+                
+                </p>
+                <!-- modal for lock listing to moderators -->
+                <div class="modal fade" id="observationModal" tabindex="-1" aria-labelledby="observationModalLabel" aria-hidden="true" data-bs-backdrop="static">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color: #535C72">
+                                <h1 v-if="selectingObservation" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Observation Tag Control</h1>
+                                <h1 v-if="addingObservation" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Add Observation Tag</h1>
+                                <h1 v-if="editingObservation" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Edit Observation Tag</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <p class='text-danger text-center mb-2 fw-bold' v-if="nothingChanged">There is no changed observation tag</p>
-                        </div>
 
-                        <div class="modal-footer">
-                            <button v-if="selectingObservation" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button v-if="!selectingObservation" @click="resetObservation" type="button" class="btn btn-secondary">Return</button>
-                            <button v-if="editingObservation" @click="updateObservation" type="button" class="btn btn-primary">Save Updates</button>
-                            <button v-if="addingObservation" @click="createNewObservation" type="button" class="btn btn-primary">Add Tag</button>
-                            <button v-if="successUpdateObservation || errorUpdateObservation" @click="resetErrors" type="button" data-bs-dismiss="modal" class="btn btn-secondary">Close</button>
+                            <!-- Modal for success and error message -->
+                            <div v-if="successUpdateObservation" class="modal-body text-center text-success fst-italic fw-bold fs-3">
+                                <span>Observation tags have successfully been updated!</span>
+                            </div>
+
+                            <div v-if="successCreateObservation" class="modal-body text-center text-success fst-italic fw-bold fs-3">
+                                <span>Observation tags have successfully been created!</span>
+                            </div>
+
+                            <div v-if="updatingObservation" class="modal-body text-center text-primary fst-italic fw-bold fs-3">
+                                <span>Observation tags are being updated!</span>
+                            </div>
+
+                            <div v-if="submittingObservation" class="modal-body text-center text-primary fst-italic fw-bold fs-3">
+                                <span>Observation tags are being added!</span>
+                            </div>
+
+                            <div v-if="errorUpdateObservation" class="modal-body text-center text-danger fst-italic fw-bold fs-3">
+                                <span v-if="invalidTag"> The observation tag you are trying to update does not exist</span>
+                                <span v-if="errorMessage">An error occurred updating the observation tags. Please try again.</span>
+                            </div>
+
+                            <div v-if="errorCreateObservation" class="modal-body text-center text-danger fst-italic fw-bold fs-3">
+                                <span v-if="duplicateTag"> The observation tag you are trying to create already exists!</span>
+                                <span v-if="errorMessage">An error occurred updating the observation tags. Please try again.</span>
+                            </div>
+                            
+
+                            <!-- Modal body for selecting mode for observation operations -->
+                            <div v-if="selectingObservation" class="modal-body">
+                                <button class="btn btn-warning reverse-clickable-text text-dark" @click="addObservation" type="button">
+                                    Add Observation Tags
+                                </button> 
+
+                                <button class="btn btn-primary mx-1 reverse-clickable-text" @click="editObservation" type="button">
+                                    Edit Observation Tags
+                                </button>
+                            </div>
+                            <!-- Modal body for adding observation -->
+                            <div v-if="addingObservation" class="modal-body">
+                                <input v-model="newObservation" type="text" class="form-control">
+                                <p v-if="newObservation ==''" class='text-danger text-start mb-2 fw-bold'>Observation Tag cannot be empty</p>
+                            </div>
+                            <!-- Modal body for editing observation -->
+                            <div v-if="editingObservation" class="modal-body">
+                                <div class="row">
+                                    <div v-for="tag in editedObservationTags" class="mb-2 col-md-6"  v-bind:key="tag._id">
+                                        <input v-model="tag.observationTag" type="text" class="form-control">
+                                        <p v-if="tag.observationTag==''" class='text-danger text-start mb-2 fw-bold'>Observation Tag cannot be empty</p>
+                                    </div>
+                                </div>
+                                <p class='text-danger text-center mb-2 fw-bold' v-if="nothingChanged">There is no changed observation tag</p>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button v-if="selectingObservation" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button v-if="!selectingObservation" @click="resetObservation" type="button" class="btn btn-secondary">Return</button>
+                                <button v-if="editingObservation" @click="updateObservation" type="button" class="btn btn-primary">Save Updates</button>
+                                <button v-if="addingObservation" @click="createNewObservation" type="button" class="btn btn-primary">Add Tag</button>
+                                <button v-if="successUpdateObservation || errorUpdateObservation" @click="resetErrors" type="button" data-bs-dismiss="modal" class="btn btn-secondary">Close</button>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- end of modal-->
             </div>
-            <!-- end of modal-->
-
-
+            <!-- tag control end -->
             <hr>
-
+            <!-- mod request -->
+            <div class="row text-center">
+                <div class="col-12">
+                    <h3><b>Moderator Request</b></h3>
+                </div>
+            </div>
+            <div>
+                <div v-if="pendingModRequests.length > 0" class="row" style="height: 300px; overflow: auto">
+                    <div v-for="request in pendingModRequests" class="col-3 pb-4" v-bind:key="request._id">
+                        <div class="card h-100" style="background-color: white">
+                            <div class="card-body">
+                            <ul class="list-group list-group-flush text-start">
+                                <li class="list-group-item"><span class="fw-bold">Requested By: </span > <br/>
+                                    @<router-link :to="{ path: '/profile/user/' + request.userID.$oid }" style="color: inherit;">
+                                        {{ getUserbyID(request.userID).username }}
+                                    </router-link> 
+                                </li>
+                                <li class="list-group-item"><span class="fw-bold">Drink Type: </span> <br/> {{ request.drinkType }} </li>
+                                <li class="list-group-item"><span class="fw-bold">Description: </span> <br/> {{ request.modDesc }} </li>
+                            </ul>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn btn-success btn-sm mx-2 my-1" type="button" style="width: 75px;" @click="reviewModRequest(request, 'approve')">Approve</button>
+                                <button class="btn btn-danger btn-sm mx-2 my-1" type="button" style="width: 75px;" @click="reviewModRequest(request, 'reject')">Reject</button>
+                            </div>
+                        </div>
+                    </div>
+                            
+                    
+                </div>
+                <div v-else>
+                    No New Moderator Request
+                </div>
+            </div>
+            <!-- mod request end -->
+            <hr>
             
         </div>
     </div>
@@ -147,9 +184,11 @@
                     // data from database
                     observationTags: [],
                     editedObservationTags: [],
+                    modRequests: [],
+                    pendingModRequests: [],
                     
                     //User 
-                    user:null,
+                    user: null,
                     users: [],
 
                     // creation of new observation tag
@@ -196,6 +235,7 @@
                 async loadData(){
 
                     // Check if admin, if not reroute to home page
+                    // users
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
                         this.users = response.data;
@@ -212,10 +252,21 @@
                         console.error(error);
                         this.loadError = true;
                     }
+                    // observation tags
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getObservationTags');
                         this.observationTags = response.data;
                         this.editedObservationTags = JSON.parse(JSON.stringify(response.data));
+                    } 
+                    catch (error) {
+                        console.error(error);
+                        this.loadError = true;
+                    }
+                    // mod requests
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
+                        this.modRequests = response.data;
+                        this.pendingModRequests = this.modRequests.filter(request => request.reviewStatus);
                     } 
                     catch (error) {
                         console.error(error);
@@ -342,6 +393,15 @@
                         }
                     }
                     return response
+                }, 
+                getUserbyID(userID) {
+                    return this.users.find(user => user["_id"]["$oid"] == userID["$oid"]);
+                }, 
+                reviewModRequest(request, action) {
+                    // request: request object
+                    // action: "approve" or "reject"
+                    console.log(request, action);
+
                 }
             }
         }
