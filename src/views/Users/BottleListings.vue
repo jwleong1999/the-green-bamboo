@@ -42,13 +42,17 @@
                             <div class="square primary-square rounded p-3 mb-3">
                                 <!-- header text -->
                                 <div class="square-inline text-start">
-                                    <h4 v-if="totalRequests != 0" class="square-inline text-start mr-auto"> {{ totalRequests }} Pending Listing Requests </h4>
+                                    <span v-if="totalRequests != 0" class="square-inline text-start mr-auto">
+                                        <h4>
+                                            <span class="title-card-text"> {{ totalRequests }} </span> Pending Listing Requests 
+                                        </h4>
+                                    </span>
                                     <h4 v-else class="square-inline text-start mr-auto">  No New Pending Listing Requests! </h4>
                                 </div>
                                 <!-- body -->
-                                <div v-if="totalRequests != 0" style="height: 85%;">
-                                    <div style="align-items: center; justify-content: center; height: 100%;" class="py-5">
-                                        <router-link :to="{ path: '/request/view' }" class="my-5">
+                                <div v-if="totalRequests != 0">
+                                    <div style="align-items: center; justify-content: center;">
+                                        <router-link :to="{ path: '/request/view' }">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> View all requests </button>
                                         </router-link>
                                     </div>
@@ -63,9 +67,6 @@
                                     <router-link :to="{ path: '/profile/user/'+userID }" class="reverse-clickable-text">
                                         <h4 class="square-inline text-start mr-auto reverse-clickable-text"> Your Drinks Shelf </h4>
                                     </router-link>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                                    </svg>
                                 </div>
                                 <!-- body -->
                                 <div style="height: 85%;">
@@ -88,7 +89,7 @@
                                         <h6 class="fst-italic"> No drinks added yet. </h6>
                                     </div>
                                     <div v-else-if="!userID" style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/login' }" class="my-5">
+                                        <router-link :to="{ path: '/login' }">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> Log in to add a drink to shelf </button>
                                         </router-link>
                                     </div>
@@ -101,9 +102,6 @@
                                 <!-- header text -->
                                 <div class="square-inline">
                                     <h4 class="square-inline text-start mr-auto"> Brands You Follow </h4>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                                    </svg>
                                 </div>
                                 <!-- body -->
                                 <div style="height: 85%;">
@@ -130,7 +128,7 @@
                                         <h6 class="fst-italic"> No brands added yet. </h6>
                                     </div>
                                     <div v-else style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/login' }" class="my-5">
+                                        <router-link :to="{ path: '/login' }">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> Log in to follow your favourite brand</button>
                                         </router-link>
                                     </div>
@@ -146,18 +144,22 @@
                             <div class="square primary-square rounded p-3 mb-3">
                                 <!-- header text -->
                                 <div class="square-inline text-start">
-                                    <h4 v-if="totalRequests != 0" class="square-inline text-start mr-auto"> {{ totalRequests }} Pending Listing Requests </h4>
+                                    <span v-if="totalRequests != 0" class="square-inline text-start mr-auto">
+                                        <h4>
+                                            <span class="title-card-text"> {{ totalRequests }} </span> Pending Listing Requests 
+                                        </h4>
+                                    </span>
                                     <h4 v-else class="square-inline text-start mr-auto">  No New Pending Listing Requests! </h4>
                                 </div>
                                 <!-- body -->
-                                <div v-if="totalRequests != 0" style="height: 85%;">
-                                    <div style="align-items: center; justify-content: center; height: 100%;" class="py-5">
+                                <div v-if="totalRequests != 0">
+                                    <div style="align-items: center; justify-content: center;">
                                         <p>
-                                            {{producerRequestListings.length}} New Listing Requests
+                                            <span class="title-card-text"> {{producerRequestListings.length}} </span> New Listing Requests
                                             <br>
-                                            {{producerEditRequestListings.length}} Edit Listing Requests
+                                            <span class="title-card-text"> {{producerEditRequestListings.length}} </span> Edit Listing Requests
                                         </p>
-                                        <router-link :to="{ path: '/request/view' }" class="my-5">
+                                        <router-link :to="{ path: '/request/view' }">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> View all requests </button>
                                         </router-link>
                                     </div>
@@ -169,13 +171,17 @@
                             <div class="square primary-square rounded p-3 mb-3">
                                 <!-- header text -->
                                 <div class="square-inline">
-                                    <h4 v-if="unansweredQuestions.length != 0" class="square-inline text-start mr-auto"> {{ unansweredQuestions.length }} Pending Fan Questions For You </h4>
+                                    <span v-if="unansweredQuestions.length != 0" class="square-inline text-start mr-auto">
+                                        <h4>
+                                            <span class="title-card-text"> {{ unansweredQuestions.length }} </span>  Pending Fan Questions For You
+                                        </h4>
+                                    </span>
                                     <h4 v-else class="square-inline text-start mr-auto">  No New Fan Questions! </h4>
                                 </div>
                                 <!-- body -->
-                                <div v-if="unansweredQuestions.length != 0" style="height: 85%;">
-                                    <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/profile/producer/' + userID }" class="my-5">
+                                <div v-if="unansweredQuestions.length != 0">
+                                    <div style="display: flex; align-items: center; justify-content: center;">
+                                        <router-link :to="{ path: '/Producers/ProducersQA/' + userID }">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> Respond to Q&A </button>
                                         </router-link>
                                     </div>
@@ -190,9 +196,9 @@
                                     <h4 class="square-inline text-start mr-auto"> Activity on Your Listings </h4>
                                 </div>
                                 <!-- body -->
-                                <div style="height: 85%;">
-                                    <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/profile/producer/' + userID }" class="my-5">
+                                <div>
+                                    <div style="display: flex; align-items: center; justify-content: center;">
+                                        <router-link :to="{ path: '/profile/producer/' + userID }">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> View Dashboard </button>
                                         </router-link>
                                     </div>
@@ -208,13 +214,17 @@
                             <div class="square primary-square rounded p-3 mb-3">
                                 <!-- header text -->
                                 <div class="square-inline">
-                                    <h4 v-if="unansweredQuestions.length != 0" class="square-inline text-start mr-auto"> {{ unansweredQuestions.length }} Pending Fan Questions For You </h4>
+                                    <span v-if="unansweredQuestions.length != 0" class="square-inline text-start mr-auto">
+                                        <h4>
+                                            <span class="title-card-text"> {{ unansweredQuestions.length }} </span>  Pending Fan Questions For You
+                                        </h4>
+                                    </span>
                                     <h4 v-else class="square-inline text-start mr-auto">  No New Fan Questions! </h4>
                                 </div>
                                 <!-- body -->
-                                <div v-if="unansweredQuestions.length != 0" style="height: 85%;">
-                                    <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/profile/producer/' + userID }" class="my-5">
+                                <div v-if="unansweredQuestions.length != 0">
+                                    <div style="display: flex; align-items: center; justify-content: center;">
+                                        <router-link :to="{ path: '/Venues/VenuesQA/' + userID }">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> Respond to Q&A </button>
                                         </router-link>
                                     </div>
@@ -229,9 +239,9 @@
                                     <h4 class="square-inline text-start mr-auto"> Activity on Your Listings </h4>
                                 </div>
                                 <!-- body -->
-                                <div style="height: 85%;">
-                                    <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/profile/venue/' + userID }" class="my-5">
+                                <div>
+                                    <div style="display: flex; align-items: center; justify-content: center;">
+                                        <router-link :to="{ path: '/profile/venue/' + userID }">
                                             <button class="btn secondary-btn-border btn-sm py-2 px-3"> View Dashboard </button>
                                         </router-link>
                                     </div>
