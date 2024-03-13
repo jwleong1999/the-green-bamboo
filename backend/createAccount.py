@@ -122,6 +122,8 @@ def createAccountRequest():
                 "message": "An error occurred creating the account request."
             }
         ), 500
+# -----------------------------------------------------------------------------------------
+# [POST] Updates a Business Account Request
 @app.route("/updateAccountRequest", methods= ['POST'])
 def updateAccountRequest():
     data = request.get_json()
@@ -153,6 +155,35 @@ def updateAccountRequest():
                     }
                 },
                 "message": "An error occurred updating the mod request."
+            }
+        ), 500
+# -----------------------------------------------------------------------------------------
+# [POST] Creates an Account
+# - Insert entry into the "producers" collection. 
+@app.route("/createProducerAccount", methods= ['POST'])
+def createProducerAccount():
+    data = request.get_json()
+    print(data)
+    newBusinessData = data["newBusinessData"]
+    try:
+        insertResult = db.producers.insert_one(newBusinessData)
+        newBusinessData['_id'] = str(newBusinessData['_id'])
+
+        return jsonify( 
+            {   
+                "code": 201,
+                "data": newBusinessData
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "userame": newBusinessData
+                },
+                "message": "An error occurred creating the account."
             }
         ), 500
 
