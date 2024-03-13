@@ -169,31 +169,31 @@ def updateFollowList():
         ), 500
     
 # -----------------------------------------------------------------------------------------
-# [POST] Submit mod request
-# - Submit mod request with new details
+# [POST] Update mod type
+# - Update user mod type with new details
 # - Possible return codes: 201 (Updated), 500 (Error during update)
-@app.route('/submitModRequest', methods=['POST'])
-def submitModRequest():
+@app.route('/updateModType', methods=['POST'])
+def updateModType():
     data = request.get_json()
     print(data)
     userID = data['userID']
-    drinkType = data['drinkType']
-    modDesc = data['modDesc']
+    newModType = data['newModType']
+
+    user_document = db.users.find_one({"_id": ObjectId(userID)})
+    modType = user_document['modType']
+
+    modType.append(newModType)
 
     try: 
-        submitReq = db.modRequests.insert_one({
-            'userID': ObjectId(userID),
-            'drinkType': drinkType,
-            'modDesc': modDesc
-        })
+        updateModType = db.users.update_one({'_id': ObjectId(userID)}, {'$set': {'modType': modType}})
+
 
         return jsonify(
             {   
                 "code": 201,
                 "data": {
                     "userID": userID,
-                    "drinkType": drinkType,
-                    "modDesc": modDesc
+                    "newModType": newModType
                 }
             }
         ), 201
@@ -205,11 +205,10 @@ def submitModRequest():
                 "data": {
                     "data": {
                         "userID": userID,
-                        "drinkType": drinkType,
-                        "modDesc": modDesc
+                        "newModType": newModType
                     }
                 },
-                "message": "An error occurred updating the mod request."
+                "message": "An error occurred updating mod type."
             }
         ), 500
 
