@@ -48,7 +48,7 @@
                                     <span class="row"> 
                                         <div class="col4"></div>
                                         <div class="col-10 d-grid no-padding text-end">
-                                            <p class="text-body-secondary no-margin text-decoration-underline fst-italic" @click="claimVenueAccount"> Claim This Venue </p>
+                                            <p class="text-body-secondary no-margin text-decoration-underline fst-italic" @click="claimVenueAccount"> Claim This Business </p>
                                             <!-- Opens report inaccuracy modal -->
                                             <p class="text-body-secondary no-margin text-decoration-underline fst-italic" data-bs-toggle="modal" data-bs-target="#inaccurateModal"> Report Inaccuracy of Menu</p>
                                         </div>
