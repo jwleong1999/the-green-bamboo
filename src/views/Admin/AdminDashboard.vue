@@ -397,10 +397,49 @@
                 getUserbyID(userID) {
                     return this.users.find(user => user["_id"]["$oid"] == userID["$oid"]);
                 }, 
-                reviewModRequest(request, action) {
-                    // request: request object
-                    // action: "approve" or "reject"
-                    console.log(request, action);
+                async reviewModRequest(request, action) {
+                    const requestID = request._id.$oid;
+                    // update users db
+                    if (action == "approve") {
+                        const userID = request.userID.$oid;
+                        const newModType = request.drinkType;
+
+                        try {
+                            const response = await this.$axios.post('http://127.0.0.1:5100/updateModType', 
+                                {
+                                    userID: userID,
+                                    newModType: newModType,
+                                }, {
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+                            console.log(response.data);
+                        } catch (error) {
+                            console.error(error);
+                        }    
+                    }
+                    
+                    // update mod request db
+                    try {
+                        const response = await this.$axios.post('http://127.0.0.1:5101/updateModRequest', 
+                            {
+                                requestID: requestID,
+                                reviewStatus: false,
+                            }, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        console.log(response.data);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                    
+                    // update frontend
+                    const index = this.modRequests.findIndex(request => request._id.$oid == requestID);
+                    this.modRequests[index].reviewStatus = false;
+                    this.pendingModRequests = this.modRequests.filter(request => request.reviewStatus);
 
                 }
             }

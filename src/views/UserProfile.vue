@@ -121,7 +121,7 @@
                                 <br/>
                                 <h5>What Drinks Category Are You Applying to Moderate?</h5>
                                 <select class="form-select" aria-label="Default select example" v-model="modCat">
-                                    <option v-for="(type, index) in drinkType" :key="index" :value="type">{{type}}</option>
+                                    <option v-for="(type, index) in filteredDrinkType" :key="index" :value="type">{{type}}</option>
                                 </select>
                                 <h5>What's your experience with the chosen category and why do you want to be a moderator?</h5>
                                 <div class="mb-3">
@@ -539,6 +539,8 @@ export default {
             drinkTypes: [],
             drinkType: [],
 
+            filteredDrinkType: [],
+
             // data for tab
             showCurrentContent: true, 
 
@@ -566,6 +568,10 @@ export default {
             drinksToAdd: [],
             drinkSearch: "",
             drinkSearchResults: [],
+
+            // mod request
+            modType: "",
+            modDesc: "",
 
             // for bookmark component
             bookmarkListingID: {},
@@ -643,7 +649,6 @@ export default {
                     const year = dateParts[0];
                     const month = new Date(dateString).toLocaleString('default', { month: 'long' });
                     this.joinDate = `${month} ${year}`;
-
                     this.selectedDrinks = this.user.choiceDrinks;
                     this.userBookmarks = this.user.drinkLists;
                     this.following = JSON.stringify(this.user.followLists.users).includes(JSON.stringify({$oid: this.displayUserID}));
@@ -665,12 +670,29 @@ export default {
             catch (error) {
                 console.error(error);
             }
+            // mod requests
+            try {
+                const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
+                this.modRequests = response.data;
+                this.modRequestsType = this.modRequests
+                    .filter(request => request.userID.$oid === this.userID && request.reviewStatus === true)
+                    .map(request => request.drinkType);
+            } 
+            catch (error) {
+                console.error(error);
+            }
             // drinkCategories
             try {
                 const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
                 this.drinkTypes = response.data;
                 // retrieve the drink type and put them into an array
                 this.drinkType = this.drinkTypes.map(category => category.drinkType);
+                if (this.user && this.drinkTypes) {
+                    this.filteredDrinkType =  this.drinkType.filter(type => !this.user.modType.includes(type));
+                    if (this.modRequestsType.length > 0) {
+                        this.filteredDrinkType = this.filteredDrinkType.filter(type => !this.modRequestsType.includes(type));
+                    }
+                }
             } 
             catch (error) {
                 console.error(error);
@@ -932,7 +954,7 @@ export default {
         // submit moderator application
         async submitModeratorApplication() {
             try {
-                const response = await this.$axios.post('http://127.0.0.1:5100/submitModRequest', 
+                const response = await this.$axios.post('http://127.0.0.1:5101/submitModRequest', 
                     {
                         userID: this.userID,
                         drinkType: this.modCat,
@@ -946,6 +968,14 @@ export default {
             } catch (error) {
                 console.error(error);
             }
+            const index = this.filteredDrinkType.indexOf(this.modCat);
+            if (index !== -1) {
+                this.filteredDrinkType.splice(index, 1);
+            }
+            console.log(index);
+            console.log(this.filteredDrinkType);
+            this.modCat = "";
+            this.modDesc = "";
         },
         
         // ------------------- User Drink Activity -------------------
