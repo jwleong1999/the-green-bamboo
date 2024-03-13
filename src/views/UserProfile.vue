@@ -295,7 +295,7 @@
                             <div v-for="(bookmarkList, name, index) in displayUserBookmarks" :key="name" style="display: flex" class="mb-5">
                                 <img :src=" 'data:image/png;base64,' + (photo || defaultDrinkImage)" alt="" class="bottle-img me-3">
                                 <div style="height: 150px; display: flex; flex-direction: column;" >
-                                    <h3 class="mt-1">{{ name }} </h3>
+                                    <h3 class="mt-1" @click="toggleView(name)" style="cursor: pointer"> {{ name }} </h3>
                                     <p v-if="bookmarkList.listItems.length > 1"> {{ bookmarkList.listItems.length }} items in list </p>
                                     <p v-else> {{ bookmarkList.listItems.length }} item in list </p>
                                     <p> {{ bookmarkList.listDesc }} </p>
@@ -371,7 +371,7 @@
 
                         <!-- list details -->
                         <div v-else>
-                            <div class="row">
+                            <div class="row mb-4">
                                 <div class="col-12 col-md-6">
                                     <h3>{{currentList}}</h3>
                                 </div>
