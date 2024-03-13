@@ -505,14 +505,20 @@
                                     <div class="row">
                                         <div class="form-group mb-3 text-start">
                                             <p class="text-start mb-1 fw-bold">Flavour Tags</p> 
-                                            <div v-if="selectedFlavourTags.length > 0" class="form-label"> 
-                                                Selected: 
-                                                <ul v-for="flavourTag in selectedFlavourTags" v-bind:key="flavourTag" class="mb-0 pb-0">
-                                                    <li class="pb-1"> 
-                                                        <button :style="{ backgroundColor: '#' + flavourTag.split('#')[1] }" class="btn"> {{ flavourTag.split("#")[0] }} </button> 
-                                                    </li>
-                                                </ul>
+                                            <div v-if="selectedFlavourTags.length > 0" class="form-label pb-2"> 
+                                                Selected flavour tags: 
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="d-flex flex-wrap gap-2">
+                                                            <div v-for="flavourTag in selectedFlavourTags" v-bind:key="flavourTag" class="mb-0 pb-0">
+                                                                <button :style="{ backgroundColor: '#' + flavourTag.split('#')[1] }" class="btn"> {{ flavourTag.split("#")[0] }} </button> 
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
+                                            Select flavour tags:
+                                            <br>
                                             <button class="btn mb-2 me-2" @click="toggleBox(family)" v-for="family in flavourTags" v-bind:key="family['_id']" :style="{ color:'white', backgroundColor: family['hexcode'], borderColor:family['hexcode'], borderWidth:'1px' }">{{ family['familyTag'] }}</button>
                                             <!-- This is the container/dropdown box for the subtags -->
                                             <div v-for="family in flavourTags" :key="family['_id']">
@@ -531,13 +537,21 @@
                                     <!-- row 11: observation tags -->
                                     <div class="row">
                                         <div class="form-group mb-3 text-start">
-                                            <p class="text-start mb-1 fw-bold">Observation Tags</p>
-                                            <div v-if="selectedObservations.length > 0" class="form-label"> 
-                                                Selected: 
-                                                <ul v-for="observationTag in selectedObservations" v-bind:key="observationTag" class="mb-0 pb-0">
-                                                    <li>  {{ observationTag.split("#")[0] }} </li>
-                                                </ul>
+                                            <p class="text-start mb-1 fw-bold">Action Tags</p>
+                                            <div v-if="selectedObservations.length > 0" class="form-label pb-2"> 
+                                                Selected action tags: 
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="d-flex flex-wrap gap-2">
+                                                            <div v-for="observationTag in selectedObservations" v-bind:key="observationTag" class="mb-0 pb-0">
+                                                                <button style="background-color: lightgrey;" class="btn"> {{ observationTag.split("#")[0] }} </button> 
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
+                                            Select action tags: 
+                                            <br>
                                             <!-- Buttons for the first 8 observations -->
                                             <button v-for="observation in observationTags.slice(0, 8)" @click="toggleObservationSelection(observation)" v-bind:key="observation" class="btn mb-2 me-2" data-bs-toggle="button" :style="{ color: selectedObservations.includes(observation) ? 'white' : 'black',
                                                                                                                                                                                                                                         backgroundColor: selectedObservations.includes(observation) ? '#747D92' : 'lightgrey', 

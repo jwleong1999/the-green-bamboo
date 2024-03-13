@@ -406,6 +406,11 @@ body {
     color: #DD9E54;
 }
 
+.title-card-text {
+    font-weight: bold;
+    color: #DD9E54;
+}
+
 .scrollable {
     height: 120px;
     max-height: 120px;
