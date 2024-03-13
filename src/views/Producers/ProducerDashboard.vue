@@ -91,6 +91,22 @@
             <!-- right pane -->
             <div class="col-9 ps-5">
 
+                <!-- row 1: review of your expressions & profile visits -->
+                <div class="row">
+
+                    <!-- col 1: review of your expressions -->
+                    <div class="col text-start pt-5 mx-3">
+                        <h3> Review of Your Expressions </h3>
+                        <Line :data="lineChartData" :options="chartOptions"></Line>
+                    </div>
+
+                    <!-- col 2: profile visits -->
+                    <div class="col text-start pt-5 mx-3">
+                        <h3> Profile Visits </h3>
+                    </div>
+\
+                </div>
+
                 <!-- row 2: your best rated expressions & your most reviewed expressions -->
                 <div class="row">
 
@@ -176,14 +192,18 @@
 
     import NavBar from '@/components/NavBar.vue';
     import { Bar } from 'vue-chartjs'
+    import { Line } from 'vue-chartjs'
     import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+    import { LineElement, PointElement } from 'chart.js'
 
     ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+    ChartJS.register(LineElement, PointElement)
 
     export default {
         components: {
             NavBar,
-            Bar
+            Bar,
+            Line
         },
         computed: {
             chartData() { 
@@ -196,6 +216,20 @@
                             label: 'Number of Ratings',
                             backgroundColor: '#747D92',
                             data: dataCounts
+                        }
+                    ]
+                }
+            },
+            lineChartData() {
+                const dates = [...new Set(this.allReviews.map(review => this.formatDateMonthYear(review.createdDate.$date)))];
+                const counts = dates.map(date => this.allReviews.filter(review => this.formatDateMonthYear(review.createdDate.$date) === date).length);
+                return {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: 'Number of Reviews',
+                            backgroundColor: '#747D92',
+                            data: counts
                         }
                     ]
                 }
@@ -564,6 +598,15 @@
                     roundedAverageRatings[drink] = Math.round(rating);
                 }
                 this.roundedSortedRatings = roundedAverageRatings;
+            },
+
+            formatDateMonthYear(dateTimeString) {
+                let datePart = dateTimeString.split("T")[0];
+                // splitting the date into year, month, and day
+                let [year, month] = datePart.split("-");
+                // formatting the date
+                let formattedDate = `${month}/${year}`;
+                return formattedDate
             }
 
         }
