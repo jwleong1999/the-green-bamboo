@@ -97,12 +97,13 @@
                     <!-- col 1: review of your expressions -->
                     <div class="col text-start pt-5 mx-3">
                         <h3> Review of Your Expressions </h3>
-                        <Line :data="lineChartData" :options="chartOptions"></Line>
+                        <Line :data="reviewsData" :options="chartOptions"></Line>
                     </div>
 
                     <!-- col 2: profile visits -->
                     <div class="col text-start pt-5 mx-3">
                         <h3> Profile Visits </h3>
+                        <Line :data="profileData" :options="chartOptions"></Line>
                     </div>
 \
                 </div>
@@ -155,7 +156,7 @@
                     <!-- col 1: spread of ratings -->
                     <div class="col text-start pt-5 mx-3">
                         <h3> Spread of Ratings </h3>
-                        <Bar :data="chartData" :options="chartOptions" />
+                        <Bar :data="ratingsData" :options="chartOptions" />
                     </div>
 
                     <!-- col 2: your most reviewed categories -->
@@ -206,22 +207,17 @@
             Line
         },
         computed: {
-            chartData() { 
-                const uniqueValues = [...new Set(Object.values(this.roundedSortedRatings))].sort((a, b) => a - b);
-                const dataCounts = uniqueValues.map(value => Object.values(this.roundedSortedRatings).filter(v => v === value).length);
-                return {
-                    labels: uniqueValues,
-                    datasets: [
-                        {
-                            label: 'Number of Ratings',
-                            backgroundColor: '#747D92',
-                            data: dataCounts
-                        }
-                    ]
-                }
-            },
-            lineChartData() {
+            reviewsData() {
                 const dates = [...new Set(this.allReviews.map(review => this.formatDateMonthYear(review.createdDate.$date)))];
+                dates.sort((a, b) => {
+                    const [monthA, yearA] = a.split('/');
+                    const [monthB, yearB] = b.split('/');
+                    if (yearA !== yearB) {
+                        return yearA - yearB;
+                    } else {
+                        return monthA - monthB;
+                    }
+                });
                 const counts = dates.map(date => this.allReviews.filter(review => this.formatDateMonthYear(review.createdDate.$date) === date).length);
                 return {
                     labels: dates,
@@ -234,11 +230,43 @@
                     ]
                 }
             },
-            chartOptions: {
-                responsive: true,
-                type: Object,
-                default: () => {}
-            }
+            profileData() {
+                const dates = [...new Set(this.producerViews.map(view => this.formatDateMonthYear(view.date.$date)))];
+                dates.sort((a, b) => {
+                    const [monthA, yearA] = a.split('/');
+                    const [monthB, yearB] = b.split('/');
+                    if (yearA !== yearB) {
+                        return yearA - yearB;
+                    } else {
+                        return monthA - monthB;
+                    }
+                });
+                const counts = dates.map(date => this.producerViews.filter(view => this.formatDateMonthYear(view.date.$date) === date).reduce((total, view) => total + view.count, 0));
+                return {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: 'Number of Views',
+                            backgroundColor: '#747D92',
+                            data: counts
+                        }
+                    ]
+                }
+            },
+            ratingsData() { 
+                const ratings = [...new Set(Object.values(this.roundedSortedRatings))].sort((a, b) => a - b);
+                const counts = ratings.map(value => Object.values(this.roundedSortedRatings).filter(v => v === value).length);
+                return {
+                    labels: ratings,
+                    datasets: [
+                        {
+                            label: 'Number of Ratings',
+                            backgroundColor: '#747D92',
+                            data: counts
+                        }
+                    ]
+                }
+            },
         },
         data() {
             return {
@@ -247,6 +275,7 @@
                 listings: [],
                 reviews: [],
                 users: [],
+                producersProfileViews: [],
 
                 user_id: "",
                 userType: "",
@@ -275,6 +304,25 @@
                 sortedAverageRatings: {},
                 roundedSortedRatings: {},
                 mostPopular: [],
+
+                // all profile visits for producer
+                producerViews: [],
+
+                // chart options
+                chartOptions: {
+                    responsive: true,
+                    type: Object,
+                    default: () => {},
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            precision: 0,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                },
             };
         },
         async mounted() {
@@ -355,6 +403,18 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
                         this.users = response.data;
                     } 
+                    catch (error) {
+                        console.error(error);
+                    }
+                 // producersProfileViews
+                // _id, producerID, views
+                try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getProducersProfileViews');
+                        this.producersProfileViews = response.data;
+                        let producerProfileViewInfo = this.producersProfileViews.find(view => view.producerID["$oid"] == this.producer_id);
+                        let producerViews = producerProfileViewInfo.views;
+                        this.producerViews = producerViews
+                    }
                     catch (error) {
                         console.error(error);
                     }
@@ -598,6 +658,7 @@
                     roundedAverageRatings[drink] = Math.round(rating);
                 }
                 this.roundedSortedRatings = roundedAverageRatings;
+                console.log(this.roundedSortedRatings)
             },
 
             formatDateMonthYear(dateTimeString) {

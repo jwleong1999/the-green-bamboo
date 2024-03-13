@@ -266,5 +266,73 @@ def unlikeUpdates():
         ), 500
 
 # -----------------------------------------------------------------------------------------
+# [POST] Add profile view count
+# - Add profile view count
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/addProfileCount', methods=['POST'])
+def addProfileCount():
+    data = request.get_json()
+    print(data)
+    producerID = data['producerID']
+    viewsID = data['viewsID']
+
+    try: 
+        addProfileCount = db.producersProfileViews.update_one(
+            {'_id': ObjectId(producerID), 'views._id': ObjectId(viewsID)},
+            {'$inc': {'views.$.count': 1}}
+        )
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Profile view count updated successfully!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "message": "An error occurred updating the profile view count."
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------
+# [POST] Add new profile view count
+# - Add new profile view count
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/addNewProfileCount', methods=['POST'])
+def addNewProfileCount():
+    data = request.get_json()
+    print(data)
+    producerID = data['producerID']
+    date = datetime.strptime(data['date'], "%Y-%m-%dT%H:%M:%S.%fZ")
+
+    try: 
+        addNewProfileCount = db.producersProfileViews.update_one(
+            {'_id': ObjectId(producerID)},
+            {'$push': {'views': 
+                        {
+                            '_id': ObjectId(),
+                            'date': date,
+                            'count': 1
+                        }
+                    }
+            }
+        )
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "New profile view count updated successfully!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "message": "An error occurred updating the new profile view count."
+            }
+        ), 500
+# -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(debug=True, port=5200)

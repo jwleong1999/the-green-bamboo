@@ -375,5 +375,21 @@ def getServingTypes():
     return servingTypes
 
 # -----------------------------------------------------------------------------------------
+# [GET] producersProfileViews
+@app.route("/getProducersProfileViews")
+def getProducersProfileViews():
+    #this step finds all the items in the collection, specifying producersProfileViews
+    data = db.producersProfileViews.find({})
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+    producersProfileViews = []
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        producersProfileViews.append(doc)
+    return producersProfileViews
+
+# -----------------------------------------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, port = 5000)
