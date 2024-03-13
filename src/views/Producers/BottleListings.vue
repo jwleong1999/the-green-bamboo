@@ -157,11 +157,11 @@
                     </div>
                     <!-- have tried button -->
                     <div class="col-2 pe-0">
-                        <div v-html="checkDrinkLists(specified_listing).buttons.haveTried" class="d-grid" @click="addToTriedList"> </div>
+                        <div v-if="user" v-html="checkDrinkLists(specified_listing).buttons.haveTried" class="d-grid" @click="addToTriedList"> </div>
                     </div>
                     <!-- want to try button -->
                     <div class="col-2 ps-0">
-                        <div v-html="checkDrinkLists(specified_listing).buttons.wantToTry" class="d-grid" @click="addToWantList"> </div>
+                        <div v-if="user" v-html="checkDrinkLists(specified_listing).buttons.wantToTry" class="d-grid" @click="addToWantList"> </div>
                     </div>
                     <!-- bookmark button -->
                     <div class="col-1 text-end">
@@ -1278,21 +1278,23 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
                         this.users = response.data;
                         this.user = this.users.find(user => user._id.$oid == this.userID)
-                        this.userBookmarks = this.user.drinkLists
-                        let triedDrinks=[]
-                        let wantToTryDrinks=[]
-                        for (let drink of this.user.drinkLists["Drinks I Have Tried"]["listItems"]) {
-                            let triedDrink = this.listings.find(listing => listing._id.$oid === drink[1].$oid).listingName;
-                            // let triedDrinkName = triedDrink ? triedDrink.listingName : null;
-                            triedDrinks.push(triedDrink)
-                        }
-                        for (let drink of this.user.drinkLists["Drinks I Want To Try"]["listItems"]) {
-                            let wantDrinkName = this.listings.find(listing => listing._id.$oid === drink[1].$oid).listingName;   
-                            wantToTryDrinks.push(wantDrinkName)
-                        }
-                        this.drinkList = {
-                            haveTried: triedDrinks,
-                            wantToTry: wantToTryDrinks
+                        if (this.user) {
+                            this.userBookmarks = this.user.drinkLists
+                            let triedDrinks=[]
+                            let wantToTryDrinks=[]
+                            for (let drink of this.user.drinkLists["Drinks I Have Tried"]["listItems"]) {
+                                let triedDrink = this.listings.find(listing => listing._id.$oid === drink[1].$oid).listingName;
+                                // let triedDrinkName = triedDrink ? triedDrink.listingName : null;
+                                triedDrinks.push(triedDrink)
+                            }
+                            for (let drink of this.user.drinkLists["Drinks I Want To Try"]["listItems"]) {
+                                let wantDrinkName = this.listings.find(listing => listing._id.$oid === drink[1].$oid).listingName;   
+                                wantToTryDrinks.push(wantDrinkName)
+                            }
+                            this.drinkList = {
+                                haveTried: triedDrinks,
+                                wantToTry: wantToTryDrinks
+                            }
                         }
                         
                         

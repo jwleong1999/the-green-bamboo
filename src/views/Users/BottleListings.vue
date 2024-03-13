@@ -831,13 +831,15 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
                         this.users = response.data;
                         this.user = this.users.find(user => user._id.$oid == this.userID)
-                        this.userBookmarks = this.user.drinkLists;
-                        this.getFollowedProducers()
-                        this.getFollowedVenues()
-                        this.getListingsByProducer()
-                        this.getListingsByVenue()
-                        this.getRecentlyAdded()
-                        this.getQuestionsUpdates();
+                        if (this.user) {
+                            this.userBookmarks = this.user.drinkLists;
+                            this.getFollowedProducers()
+                            this.getFollowedVenues()
+                            this.getListingsByProducer()
+                            this.getListingsByVenue()
+                            this.getRecentlyAdded()
+                            this.getQuestionsUpdates();
+                        }
                     } 
                     catch (error) {
                         console.error(error);

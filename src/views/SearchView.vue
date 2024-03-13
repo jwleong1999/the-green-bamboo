@@ -294,9 +294,9 @@
                     const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
                     this.users = response.data;
                     this.user = this.users.find(user => user._id.$oid == this.userID)
-                    console.log(this.user);
-                    this.userBookmarks = this.user.drinkLists;
-                    console.log(this.userBookmarks);
+                    if (this.user) {
+                        this.userBookmarks = this.user.drinkLists;
+                    }
                 } 
                 catch (error) {
                     console.error(error);
