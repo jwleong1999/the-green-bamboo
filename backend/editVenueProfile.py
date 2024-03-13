@@ -473,6 +473,47 @@ def editMenu():
                 "message": "An error occurred while editing the menu!"
             }
         ), 500
+    
+# -----------------------------------------------------------------------------------------
+# [POST] Edit venue profile
+# - Update producer profile with new details
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/updateVenueStatus', methods=['POST'])
+def updateVenueStatus():
+    # fetch sent data
+    data = request.get_json()
+    print(data)
+
+    # extract components of the data
+    venueID = data['businessID']
+    venueName = data['newBusinessData']["businessName"]
+    venueDesc = data['newBusinessData']["businessDesc"]
+    originLocation = data['newBusinessData']["country"]
+    claimStatus = data['newBusinessData']["claimStatus"]
+
+    try: 
+        update = db.venues.update_one({'_id': ObjectId(venueID)}, 
+                                         {'$set': {
+                                             'venueName': venueName,
+                                             'venueDesc': venueDesc,
+                                             'originLocation': originLocation,
+                                             'claimStatus': claimStatus
+                                            }})
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Updated claim status successfully!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "An error occurred updating claim status!"
+            }
+        ), 500
 # -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(debug=True, port=5300)

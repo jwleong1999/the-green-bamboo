@@ -130,6 +130,103 @@
             </div>
             <!-- tag control end -->
             <hr>
+            <!-- add business -->
+            <div class="row text-center">
+                <div class="col-12">
+                    <h3><b>Add Businesses</b></h3>
+                </div>
+            </div>
+            <div>
+                <p class="gap-1">
+                    <!-- Open a modal prompting to edit or add tags -->
+                    <button class="btn tertiary-btn reverse-clickable-text m-1" type="button" data-bs-toggle="modal" data-bs-target="#addBusinessModal">
+                        Add a Business
+                    </button>
+                </p>
+                <!-- add business modal start -->
+                <div class="modal fade" id="addBusinessModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Add a Business</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-start">
+                            <div>
+                                <div class="mb-2">
+                                    Profile Type
+                                </div>
+                                <div class="mb-4">
+                                    <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" id="inlineCheckbox1" v-model="businessType" value="producer" name="business">
+                                        <label class="form-check-label text-start fw-bold" for="inlineCheckbox1">Brand/Producer</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="inlineCheckbox2" v-model="businessType" value="venue" name="business">
+                                        <label class="form-check-label text-start fw-bold" for="inlineCheckbox2">Venue</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="mb-2">
+                                    Name
+                                </div>
+                                <div class="mb-4">
+                                    <input type="text" class="form-control" v-model="businessName">
+                                </div>
+                            </div>
+                            <div>
+                                <div class="mb-2">
+                                    Description
+                                </div>
+                                <div class="mb-4">
+                                    <input type="text" class="form-control" v-model="businessDesc">
+                                </div>
+                            </div>
+                            <div>
+                                <div class="mb-2">
+                                    Country
+                                </div>
+                                <div class="mb-4">
+                                    <div class="input-group">
+                                        <select class="form-select" id="countrySelect" v-model="businessCountry" style="border-color: black;">
+                                            <option v-for="country in countries" :key="country" :value="country.originCountry">
+                                                {{ country.originCountry }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="mb-2">
+                                    Claim Status
+                                </div>
+                                <div class="mb-4">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="claimed" v-model="businessClaimStatus" value="true" name="claim">
+                                        <label class="form-check-label text-start fw-bold" for="claimed">Claimed</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" id="unclaimed" v-model="businessClaimStatus" value="false" name="claim">
+                                        <label class="form-check-label text-start fw-bold" for="unclaimed">Unclaimed</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-danger" role="alert" v-if="addBizError != '' ">{{addBizError}}</div>
+                        </div>
+
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" @click="createBusiness" data-bs-dismiss="modal">Save changes</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- add business modal end -->
+            </div>
+            <!-- add business end -->
+            <hr>
             <!-- mod request -->
             <div class="row text-center">
                 <div class="col-12">
@@ -152,8 +249,8 @@
                             </ul>
                             </div>
                             <div class="card-footer">
-                                <button class="btn btn-success btn-sm mx-2 my-1" type="button" style="width: 75px;" @click="reviewModRequest(request, 'approve')">Approve</button>
-                                <button class="btn btn-danger btn-sm mx-2 my-1" type="button" style="width: 75px;" @click="reviewModRequest(request, 'reject')">Reject</button>
+                                <button class="btn btn-success btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewModRequest(request, 'approve')">Approve</button>
+                                <button class="btn btn-danger btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewModRequest(request, 'reject')">Reject</button>
                             </div>
                         </div>
                     </div>
@@ -166,6 +263,52 @@
             </div>
             <!-- mod request end -->
             <hr>
+            <!-- business sign up -->
+            <div class="row text-center">
+                <div class="col-12">
+                    <h3><b>Business Account Request</b></h3>
+                </div>
+            </div>
+            <div>
+                <div v-if="pendingAccountRequests.length > 0" class="row" style="height: 525px; overflow: auto">
+                    <div v-for="request in pendingAccountRequests" class="col-3 pb-4" v-bind:key="request._id">
+                        <div class="card h-100" style="background-color: white">
+                            <div class="card-body">
+                            <ul class="list-group list-group-flush text-start">
+                                <li class="list-group-item"><span class="fw-bold">Type: </span> {{ request.businessType }} </li>
+                                <li class="list-group-item"><span class="fw-bold">Name: </span> {{ request.businessName }} </li>
+                                <li class="list-group-item"><span class="fw-bold">Description: </span> {{ request.businessDesc }} </li>
+                                <li class="list-group-item"><span class="fw-bold">Country: </span> {{ request.country }} </li>
+                                <li class="list-group-item"><span class="fw-bold">Site: </span> 
+                                    <router-link v-if="request.businessLink" :to="{ path: request.businessLink }" style="color: inherit;">
+                                        Link
+                                    </router-link> 
+                                    <span v-if="!request.businessLink">N/A</span>
+                                </li>
+                                <li class="list-group-item"><span class="fw-bold">First Name: </span> {{ request.firstName }} </li>
+                                <li class="list-group-item"><span class="fw-bold">Last Name: </span> {{ request.lastName }} </li>
+                                <li class="list-group-item"><span class="fw-bold">Email: </span> {{ request.email }} </li>
+                                <li class="list-group-item"><span class="fw-bold">Relationship: </span> {{ request.relationship }} </li>
+                                <li class="list-group-item"><span class="fw-bold">Price Plan: </span> {{ request.pricing }} </li>
+
+
+                            </ul>
+                            </div>
+                            <div class="card-footer">
+                                <button v-if="checkBusinessExist(request.businessLink)" class="btn btn-success btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'approve')">Approve</button>
+                                <button v-else class="btn btn-success btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'add')">Add</button>
+                                <button class="btn btn-danger btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'reject')">Reject</button>
+                            </div>
+                        </div>
+                    </div>
+                            
+                    
+                </div>
+                <div v-else>
+                    No New Business Account Request
+                </div>
+            </div>
+            <!-- business sign up end -->
             
         </div>
     </div>
@@ -173,6 +316,7 @@
 
 <script>
     import NavBar from '@/components/NavBar.vue';
+    import { hashPassword } from '../../../backend/other/hashPassword.js'
 
         export default {
             name: 'adminDashboard',
@@ -183,9 +327,15 @@
                 return {
                     // data from database
                     observationTags: [],
-                    editedObservationTags: [],
                     modRequests: [],
+                    accountRequests: [],
+                    producers: [],
+                    venues: [],
+                    countries: [],
+
+                    editedObservationTags: [],
                     pendingModRequests: [],
+                    pendingAccountRequests: [],
                     
                     //User 
                     user: null,
@@ -217,6 +367,15 @@
                     // Logged in user details
                     userID: null,
                     userType: localStorage.getItem('88B_accType'),
+
+                    // create business
+                    businessType: "",
+                    businessName: "",
+                    businessDesc: "",
+                    businessCountry: "",
+                    businessClaimStatus: "",
+                    addBizError: "",
+                    tempPassword: "",
 
                 }
             },
@@ -267,6 +426,50 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
                         this.modRequests = response.data;
                         this.pendingModRequests = this.modRequests.filter(request => request.reviewStatus);
+                    } 
+                    catch (error) {
+                        console.error(error);
+                        this.loadError = true;
+                    }
+                    // account requests
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getAccountRequests');
+                        this.accountRequests = response.data;
+                        this.pendingAccountRequests = this.accountRequests.filter(request => request.reviewStatus);
+                    } 
+                    catch (error) {
+                        console.error(error);
+                        this.loadError = true;
+                    }
+                    // producer
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
+                        this.producers = response.data;
+                        // check for producer with no producer name and retrieve id
+                        for (let i = 0; i < this.producers.length; i++) {
+                            if (!this.producers[i].producerName) {
+                                console.log("no name");
+                                console.log(this.producers[i]._id.$oid);
+                            }
+                        }
+                    } 
+                    catch (error) {
+                        console.error(error);
+                        this.loadError = true;
+                    }
+                    // venues
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
+                        this.venues = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                        this.loadError = true;
+                    }
+                    // countries
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
+                        this.countries = response.data;
                     } 
                     catch (error) {
                         console.error(error);
@@ -417,7 +620,7 @@
                             console.log(response.data);
                         } catch (error) {
                             console.error(error);
-                        }    
+                        }
                     }
                     
                     // update mod request db
@@ -441,6 +644,145 @@
                     this.modRequests[index].reviewStatus = false;
                     this.pendingModRequests = this.modRequests.filter(request => request.reviewStatus);
 
+                }, 
+                checkBusinessExist(businessLink) {
+                    if (businessLink) {
+                        const businessID = businessLink.split("/").pop()
+                        if (this.producers.find(producer => producer._id.$oid == businessID)) {
+                            return true;
+                        }
+                        if (this.venues.find(venue => venue._id.$oid == businessID)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                },
+                async reviewAccountRequest(request, action) {
+                    const requestID = request._id.$oid;
+                    if (action == "approve") {
+                        const newBusinessData = {
+                            businessName: request.businessName,
+                            businessDesc: request.businessDesc,
+                            country: request.country,
+                            claimStatus: true,
+                        }
+                        const businessID = request.businessLink.split("/").pop()
+                        // producers
+                        if (request.businessType == "producer") {
+                            try {
+                                const response = await this.$axios.post('http://127.0.0.1:5200/updateProducerStatus', 
+                                    {
+                                        businessID: businessID,
+                                        newBusinessData: newBusinessData,
+                                    }, {
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                });
+                                console.log(response.data);
+                            } catch (error) {
+                                console.error(error);
+                            }
+                        }
+                        // venues 
+                        else if (request.businessType == "venue") {
+                            try {
+                                const response = await this.$axios.post('http://127.0.0.1:5300/updateVenueStatus', 
+                                    {
+                                        businessID: businessID,
+                                        newBusinessData: newBusinessData,
+                                    }, {
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                });
+                                console.log(response.data);
+                            } catch (error) {
+                                console.error(error);
+                            }
+                        }
+                    }
+                    if (action == "add") {
+                        this.businessType = request.businessType;
+                        this.businessName = request.businessName;
+                        this.businessDesc = request.businessDesc;
+                        this.businessCountry = request.country;
+                        this.businessClaimStatus = "true";
+                        this.createBusiness();
+                    }
+
+                    // update review status
+                    try {
+                        const response = await this.$axios.post('http://127.0.0.1:5031/updateAccountRequest', 
+                            {
+                                requestID: requestID,
+                                reviewStatus: false,
+                            }, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        console.log(response.data);
+                    } catch (error) {
+                        console.error(error);
+                    }
+
+                    // update frontend
+                    const index = this.accountRequests.findIndex(request => request._id.$oid == requestID);
+                    this.accountRequests[index].reviewStatus = false;
+                    this.pendingAccountRequests = this.accountRequests.filter(request => request.reviewStatus);
+
+                }, 
+                async createBusiness() {
+
+                    // form control
+                    if (this.businessType == "" || this.businessName == "" || this.businessDesc == "" || this.businessCountry == "" || this.businessClaimStatus == "") {
+                        this.addBizError = "Please fill in all fields";
+                    }
+                    else {
+                        this.addBizError = "";
+                        this.tempPassword = hashPassword(this.businessName).toString();
+                        this.tempPassword = this.tempPassword.replace(/-/g, '');
+                        const hashedPassword = hashPassword(this.businessName, this.tempPassword);
+                        if (this.businessType == "producer") {
+                            const newBusinessData = {
+                                producerName: this.businessName,
+                                producerDesc: this.businessDesc,
+                                originCountry: this.businessCountry,
+                                statusOB: "",
+                                mainDrinks: [],
+                                photo: "",
+                                hashedPassword: hashedPassword,
+                                questionsAnswers: [],
+                                updates: [],
+                                producerLink: "",
+                                claimStatus: this.businessClaimStatus === "true",
+                            }
+                            console.log(newBusinessData);
+                            try {
+                                const response = await this.$axios.post('http://127.0.0.1:5031/createProducerAccount', 
+                                    {
+                                        newBusinessData
+                                    }, {
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                });
+                                console.log(response.data);
+                            } catch (error) {
+                                console.error(error);
+                            }
+                            alert("Producer account created successfully. Please save login details. \nProducer account: " + this.businessName + "\nTemporary password: " + this.tempPassword);
+                        }
+
+                        // reset form details
+                        this.businessType = "";
+                        this.businessName = "";
+                        this.businessDesc = "";
+                        this.businessCountry = "";
+                        this.businessClaimStatus = "";
+
+                    }
                 }
             }
         }

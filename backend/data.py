@@ -173,6 +173,7 @@ class modRequests:
     userID: object
     drinkType: str
     modDesc: str
+    reviewStatus: bool
 
 # Dataclass (flavourTags)
 @dataclass

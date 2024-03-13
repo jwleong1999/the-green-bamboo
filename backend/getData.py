@@ -33,6 +33,22 @@ def parse_json(data):
     return json.loads(json_util.dumps(data))
 
 # -----------------------------------------------------------------------------------------
+# [GET] accountRequests
+@app.route("/getAccountRequests")
+def getAccountRequests():
+    #this step finds all the items in the collection, specifying accountRequests
+    data = db.accountRequests.find({})
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+    allAccountRequests = []
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allAccountRequests.append(doc)
+    return allAccountRequests
+
+# -----------------------------------------------------------------------------------------
 # [GET] Countries
 @app.route("/getCountries")
 def getCountries():
