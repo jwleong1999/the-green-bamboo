@@ -1647,7 +1647,7 @@
                     userID: this.$route.params.venueID,
                     businessType: "venue",
                     businessName: this.targetVenue.venueName,
-                    businessDesc: this.specified_venue.venueDesc,
+                    businessDesc: this.targetVenue.venueDesc,
                     businessLink: this.$route.fullPath,
                     originCountry: this.targetVenue.originLocation,
                 }

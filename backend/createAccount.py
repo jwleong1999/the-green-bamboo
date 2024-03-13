@@ -85,6 +85,7 @@ def createAccount():
 def createAccountRequest():
     rawAccount = request.get_json()
     rawEmail= rawAccount['email']
+    rawAccount['joinDate'] = datetime.strptime(rawAccount['joinDate'], "%Y-%m-%dT%H:%M:%S.%fZ")
     # Duplicate listing check: Reject if review with the same userID and reviewTarget exists in the database
     existingAccount = db.accountRequests.find_one({"email": rawEmail})
     if(existingAccount!= None):
@@ -119,6 +120,39 @@ def createAccountRequest():
                     "email": rawEmail
                 },
                 "message": "An error occurred creating the account request."
+            }
+        ), 500
+@app.route("/updateAccountRequest", methods= ['POST'])
+def updateAccountRequest():
+    data = request.get_json()
+    print(data)
+    requestID = data['requestID']
+    reviewStatus = data['reviewStatus']
+
+    try: 
+        updateReviewStatus = db.accountRequests.update_one({'_id': ObjectId(requestID)}, {'$set': {'reviewStatus': reviewStatus}})
+
+        return jsonify(
+            {   
+                "code": 201,
+                "data": {
+                    "requestID": requestID,
+                    "reviewStatus": reviewStatus
+                }
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "data": {
+                        "requestID": requestID,
+                        "reviewStatus": reviewStatus
+                    }
+                },
+                "message": "An error occurred updating the mod request."
             }
         ), 500
 

@@ -359,13 +359,14 @@
                     "businessDesc": this.businessDesc,
                     "country": this.selectedCountry,
                     "pricing": this.selectedPricing,
-                    "profileLink": this.profileLink,
+                    "businessLink": this.businessLink,
                     "firstName": this.firstName,
                     "lastName": this.lastName,
                     "email": this.email,
                     "relationship": this.relationship,
                     "photo": "",
                     "joinDate": joinDate,
+                    "reviewStatus": true
                 }
                 this.createAccount(submitAPI,submitData)
             },

@@ -264,6 +264,50 @@ def unlikeUpdates():
                 "message": "An error occurred unliking the update."
             }
         ), 500
+    
+# -----------------------------------------------------------------------------------------
+# [POST] Edit producer profile
+# - Update producer profile with new details
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/updateProducerStatus', methods=['POST'])
+def updateProducerStatus():
+
+    # fetch sent data
+    data = request.get_json()
+    print(data)
+
+    # extract components of the data
+    producerID = data['businessID']
+    producerName = data['newBusinessData']["businessName"]
+    producerDesc = data['newBusinessData']["businessDesc"]
+    originCountry = data['newBusinessData']["country"]
+    claimStatus = data['newBusinessData']["claimStatus"]
+
+    try: 
+        update = db.producers.update_one({'_id': ObjectId(producerID)}, 
+                                         {'$set': {
+                                             'producerName': producerName,
+                                             'producerDesc': producerDesc,
+                                             'originCountry': originCountry,
+                                             'claimStatus': claimStatus
+                                            }})
+
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Updated claim status successfully!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "An error occurred updating claim status!"
+            }
+        ), 500
+
 
 # -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
