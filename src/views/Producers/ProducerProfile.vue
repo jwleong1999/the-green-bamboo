@@ -42,7 +42,7 @@
                                     <!-- [else] not editing -->
                                     <h5 v-else class="text-body-secondary fs"> {{ specified_producer["originCountry"] }} </h5>
                                 </div>
-                                <!-- claim this distillery / add listing & edit profile -->
+                                <!-- claim this business / add listing & edit profile -->
                                 <div class="col-4">
                                     <!-- [if] user type is producer / admin -->
                                     <span v-if="correctProducer || isAdmin" class="row"> 
@@ -69,7 +69,7 @@
                                     </span>
                                     <!-- [else] user type is NOT producer -->
                                     <div v-else> 
-                                        <p v-if="!specified_producer['claimStatus']" class="text-body-secondary no-margin text-decoration-underline fst-italic text-end" @click="claimProducerAccount"> Claim This Distillery </p>
+                                        <p v-if="!specified_producer['claimStatus']" class="text-body-secondary no-margin text-decoration-underline fst-italic text-end" @click="claimProducerAccount"> Claim This Business </p>
                                     </div>
                                 </div>
                             </div>
@@ -312,7 +312,7 @@
                             <!-- spacer -->
                             <div class="col-4"></div>
                             <!-- button -->
-                            <button type="submit" class="col-4 btn secondary-btn-border-thick mb-3" @click="claimProducerAccount"> Claim This Distillery </button>
+                            <button type="submit" class="col-4 btn secondary-btn-border-thick mb-3" @click="claimProducerAccount"> Claim This Business </button>
                             <!-- spacer -->
                             <div class="col-4"></div>
                         </div>
@@ -640,7 +640,7 @@
                                     <!-- spacer -->
                                     <div class="col-2"></div>
                                     <!-- button -->
-                                    <button type="submit" class="col-8 btn secondary-btn-border-thick mb-3" @click="claimProducerAccount"> Claim This Distillery </button>
+                                    <button type="submit" class="col-8 btn secondary-btn-border-thick mb-3" @click="claimProducerAccount"> Claim This Business </button>
                                     <!-- spacer -->
                                     <div class="col-2"></div>
                                 </div>
@@ -1604,7 +1604,7 @@
                     userID: this.producer_id,
                     businessType: "producer",
                     businessName: this.specified_producer.producerName,
-                    // desc: this.specified_producer.producerDesc,
+                    businessDesc: this.specified_producer.producerDesc,
                     businessLink: this.$route.fullPath,
                     originCountry: this.specified_producer.originCountry,
                 }

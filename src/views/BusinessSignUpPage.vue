@@ -159,7 +159,7 @@
                                                                                                                             borderWidth:'3px' }">
                             <span>
                                 <h6> <b> Monthly plan </b> </h6>
-                                <p class="m-0"> $50 / Month </p> 
+                                <p class="m-0"> $65 / Month </p> 
                                 <small class="fst-italic p-0"> Billed monthly </small>
                             </span>
                         </button>
@@ -172,11 +172,11 @@
                                                                                                                             borderWidth:'3px' }">
                             <div class="row">
                                 <div class="col-7"> <h6> <b> Yearly plan </b> </h6> </div> 
-                                <div class="rounded col-5 text-center" style="background-color: green; color: white;">Save 16%</div>
+                                <div class="rounded col-5 text-center" style="background-color: green; color: white;">Save 23%</div>
                             </div>
                             <span>
-                                <p class="m-0"> $42 / Month </p> 
-                                <small class="fst-italic p-0"> $504 Billed annually </small>
+                                <p class="m-0"> $50 / Month </p> 
+                                <small class="fst-italic p-0"> $600 Billed annually </small>
                             </span>
                         
                         </button>
@@ -243,7 +243,7 @@
             console.log(accountDetails);
             this.businessType = accountDetails.businessType
             this.businessName = accountDetails.businessName
-            // this.businessDesc = accountDetails.businessDesc
+            this.businessDesc = accountDetails.businessDesc
             this.businessLink = accountDetails.businessLink
             this.selectedCountry = accountDetails.originCountry
             console.log(this.selectedCountry);

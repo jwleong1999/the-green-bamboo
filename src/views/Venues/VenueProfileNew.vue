@@ -101,7 +101,7 @@
                                 <div class="d-grid no-padding text-end" v-if="!selfView">
 
                                     <!-- Claim Venue -->
-                                    <p v-if="!targetVenue['claimStatus']" class="text-body-secondary no-margin text-decoration-underline fst-italic" @click="claimVenueAccount"> Claim This Venue </p>
+                                    <p v-if="!targetVenue['claimStatus']" class="text-body-secondary no-margin text-decoration-underline fst-italic" @click="claimVenueAccount"> Claim This Business </p>
                                     <p v-else class="text-body-secondary no-margin fw-bold fst-italic"> Venue Claimed </p>
 
                                     <!-- Report Menu Inaccuracy (Opens Modal) -->
@@ -1647,7 +1647,7 @@
                     userID: this.$route.params.venueID,
                     businessType: "venue",
                     businessName: this.targetVenue.venueName,
-                    // desc: this.specified_venue.venueDesc,
+                    businessDesc: this.specified_venue.venueDesc,
                     businessLink: this.$route.fullPath,
                     originCountry: this.targetVenue.originLocation,
                 }
