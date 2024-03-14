@@ -139,7 +139,7 @@
             <div>
                 <p class="gap-1">
                     <!-- Open a modal prompting to edit or add tags -->
-                    <button class="btn tertiary-btn reverse-clickable-text m-1" type="button" data-bs-toggle="modal" data-bs-target="#addBusinessModal">
+                    <button class="btn tertiary-btn reverse-clickable-text m-1" type="button" data-bs-toggle="modal" data-bs-target="#addBusinessModal" @click="resetAddBusinessModal">
                         Add a Business
                     </button>
                 </p>
@@ -151,7 +151,19 @@
                             <h1 class="modal-title fs-5" id="exampleModalLabel">Add a Business</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body text-start">
+                        <div class="modal-body text-start" v-if="createBusinessSuccess">
+                            <div class="alert alert-success" role="alert">
+                                Business account created successfully. 
+                                <br>
+                                Please save login details. 
+                                <br><br>
+                                <span v-if="businessType == 'producer'">Producer account: <b>{{ businessName }}</b></span>
+                                <!-- <span v-if="businessType == 'venue'">Venue account: {{ businessName }}</span> -->
+                                <br>
+                                Temporary password: <b>{{ tempPassword }}</b>
+                            </div>
+                        </div>
+                        <div class="modal-body text-start" v-if="!createBusinessSuccess">
                             <div>
                                 <div class="mb-2">
                                     Profile Type
@@ -218,7 +230,7 @@
                         
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" @click="createBusiness" data-bs-dismiss="modal">Save changes</button>
+                            <button v-if="!createBusinessSuccess" type="button" class="btn btn-primary" @click="createBusiness">Save changes</button>
                         </div>
                         </div>
                     </div>
@@ -296,7 +308,7 @@
                             </div>
                             <div class="card-footer">
                                 <button v-if="checkBusinessExist(request.businessLink)" class="btn btn-success btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'approve')">Approve</button>
-                                <button v-else class="btn btn-success btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'add')">Add</button>
+                                <button v-else class="btn btn-success btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'add')" data-bs-toggle="modal" data-bs-target="#addBusinessModal">Add</button>
                                 <button class="btn btn-danger btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'reject')">Reject</button>
                             </div>
                         </div>
@@ -376,6 +388,7 @@
                     businessClaimStatus: "",
                     addBizError: "",
                     tempPassword: "",
+                    createBusinessSuccess: false,
 
                 }
             },
@@ -769,20 +782,26 @@
                                     }
                                 });
                                 console.log(response.data);
+
+                                if (response.data.code == 201) {
+                                    this.createBusinessSuccess = true;
+                                }
                             } catch (error) {
                                 console.error(error);
                             }
-                            alert("Producer account created successfully. Please save login details. \nProducer account: " + this.businessName + "\nTemporary password: " + this.tempPassword);
+                            // alert("Producer account created successfully. Please save login details. \nProducer account: " + this.businessName + "\nTemporary password: " + this.tempPassword);
                         }
-
-                        // reset form details
+                    }
+                }, 
+                // reset when add a business is clicked
+                resetAddBusinessModal() {
                         this.businessType = "";
                         this.businessName = "";
                         this.businessDesc = "";
                         this.businessCountry = "";
                         this.businessClaimStatus = "";
-
-                    }
+                        this.tempPassword = "";
+                        this.createBusinessSuccess = false;
                 }
             }
         }
