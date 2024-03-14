@@ -511,7 +511,7 @@
                                                     <div class="col">
                                                         <div class="d-flex flex-wrap gap-2">
                                                             <div v-for="flavourTag in selectedFlavourTags" v-bind:key="flavourTag" class="mb-0 pb-0">
-                                                                <button :style="{ backgroundColor: '#' + flavourTag.split('#')[1] }" class="btn"> {{ flavourTag.split("#")[0] }} </button> 
+                                                                <button :style="{ color:'white', backgroundColor: '#' + flavourTag.split('#')[1] }" class="btn"> {{ flavourTag.split("#")[0] }} </button> 
                                                             </div>
                                                         </div>
                                                     </div>
