@@ -163,7 +163,10 @@
                                 Temporary password: <b>{{ tempPassword }}</b>
                             </div>
                         </div>
-                        <div class="modal-body text-start" v-if="!createBusinessSuccess">
+                        <div class="modal-body text-start" v-else-if="createBusinessError != '' ">
+                            <div class="alert alert-danger" role="alert">{{createBusinessError}}</div>
+                        </div>
+                        <div class="modal-body text-start" v-else>
                             <div>
                                 <div class="mb-2">
                                     Profile Type
@@ -230,7 +233,7 @@
                         
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button v-if="!createBusinessSuccess" type="button" class="btn btn-primary" @click="createBusiness">Save changes</button>
+                            <button v-if="!createBusinessSuccess && createBusinessError == ''" type="button" class="btn btn-primary" @click="createBusiness">Save changes</button>
                         </div>
                         </div>
                     </div>
@@ -388,6 +391,7 @@
                     businessClaimStatus: "",
                     addBizError: "",
                     tempPassword: "",
+                    createBusinessError: "",
                     createBusinessSuccess: false,
 
                 }
@@ -721,7 +725,10 @@
                         this.businessDesc = request.businessDesc;
                         this.businessCountry = request.country;
                         this.businessClaimStatus = "true";
-                        this.createBusiness();
+                        const createSuccess = await this.createBusiness();
+                        if (!createSuccess) {
+                            return;
+                        }
                     }
 
                     // update review status
@@ -785,15 +792,18 @@
 
                                 if (response.data.code == 201) {
                                     this.createBusinessSuccess = true;
-                                }
+                                } 
                             } catch (error) {
                                 console.error(error);
+                                if (error.response.data.code == 400) {
+                                    this.createBusinessError = "Business name already exists";
+                                    return false;
+                                }
                             }
-                            // alert("Producer account created successfully. Please save login details. \nProducer account: " + this.businessName + "\nTemporary password: " + this.tempPassword);
                         }
                     }
                 }, 
-                // reset when add a business is clicked
+                // reset when add a business button is clicked
                 resetAddBusinessModal() {
                         this.businessType = "";
                         this.businessName = "";
@@ -802,6 +812,7 @@
                         this.businessClaimStatus = "";
                         this.tempPassword = "";
                         this.createBusinessSuccess = false;
+                        this.createBusinessError = "";
                 }
             }
         }

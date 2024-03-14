@@ -165,6 +165,21 @@ def createProducerAccount():
     data = request.get_json()
     print(data)
     newBusinessData = data["newBusinessData"]
+
+    print(newBusinessData["producerName"])
+
+    existingAccount = db.producers.find_one({"producerName": newBusinessData['producerName']})
+    if(existingAccount!= None):
+        return jsonify(
+            {   
+                "code": 400,
+                "data": {
+                    "producerName": newBusinessData['producerName']
+                },
+                "message": "Producer Name already exists."
+            }
+        ), 400
+
     try:
         insertResult = db.producers.insert_one(newBusinessData)
         newBusinessData['_id'] = str(newBusinessData['_id'])
