@@ -302,6 +302,7 @@
                 allReviews: [],
                 drinkRatings: {},
                 reviewCounts: {},
+                categoryReviewCounts: {},
                 sortedReviewCounts: {},
                 sortedAverageRatings: {},
                 roundedSortedRatings: {},
@@ -415,14 +416,15 @@
                 this.getCountsByType()
                 this.getCountsByCategory()
 
-                this.getTotalCounts()
-                this.getTotalCategoryCounts()
-
                 this.getRatingsByType()
                 this.getAverageRatings()
                 this.getReviewCounts()
-                this.getTotalReviewCounts()
+                this.getCategoryReviewCounts()
                 this.roundSortedAverageRatings()
+
+                this.getTotalCounts()
+                this.getTotalReviewCounts()
+                this.getTotalCategoryCounts()
 
                 this.getMostPopular()
                 this.getMostDiscussed()
@@ -605,6 +607,35 @@
                 this.reviewCounts = reviewCounts;
             },
 
+            // get number of reviews for each category
+            getCategoryReviewCounts() {
+                const categoryReviewCounts = {};
+                // Iterate through all reviews
+                this.allReviews.forEach(review => {
+                    const reviewTarget = review.reviewTarget;
+                    const reviewListing = this.listings.find(listing => listing._id["$oid"] === reviewTarget["$oid"]);
+                    const drinkType = this.findDrinkTypeForListing(reviewListing);
+                    // Check if reviewTargetId is already in reviewCounts
+                    if (drinkType in categoryReviewCounts) {
+                        categoryReviewCounts[drinkType]++;
+                    } else {
+                        categoryReviewCounts[drinkType] = 1;
+                    }
+                });
+
+                // Iterate through all drinks
+                this.allDrinks.forEach(drink => {
+                    const drinkType = this.findDrinkTypeForListing(drink);
+                    // Check if drinkId is not in reviewCounts
+                    if (! (drinkType in categoryReviewCounts)) {
+                        categoryReviewCounts[drinkType] = 0;
+                    }
+                });
+
+                this.categoryReviewCounts = categoryReviewCounts;
+                console.log(this.categoryReviewCounts)
+            },
+
             // get total counts for each listing
             getTotalCounts() {
                 const drinkCountsArray = Object.entries(this.drinkCounts);
@@ -624,10 +655,11 @@
 
             // get total counts for each category
             getTotalCategoryCounts() {
-                const drinkCategoryCountsArray = Object.entries(this.drinkCategoryCounts);
+                const drinkCategoryCountsArray = Object.entries(this.categoryReviewCounts);
                 drinkCategoryCountsArray.sort((a, b) => b[1] - a[1]);
                 const sortedCategoryCounts = Object.fromEntries(drinkCategoryCountsArray);
                 this.sortedCategoryCounts = sortedCategoryCounts;
+                console.log(this.sortedCategoryCounts)
             },
 
             // get the most popular drinks
