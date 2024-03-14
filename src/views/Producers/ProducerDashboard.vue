@@ -112,7 +112,7 @@
                 <div class="row">
 
                     <!-- col 1: your best rated expressions -->
-                    <div class="col text-start pt-2 mx-3">
+                    <div class="col text-start pt-5 mx-3">
                         <h3> Your Best Rated Expressions </h3>
                         <div class="text-start pb-2" v-for="listing in mostPopular" v-bind:key="listing._id">
                             <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="reverse-clickable-text">
@@ -132,7 +132,7 @@
                     </div>
 
                     <!-- col 2: your most reviewed expressions -->
-                    <div class="col text-start pt-2 mx-3">
+                    <div class="col text-start pt-5 mx-3">
                         <h3> Your Most Reviewed Expressions </h3>
                         <div class="text-start pb-2" v-for="listing in mostDiscussed" v-bind:key="listing._id">
                             <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="reverse-clickable-text">
