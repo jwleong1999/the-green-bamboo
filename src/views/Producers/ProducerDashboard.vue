@@ -141,7 +141,7 @@
                                     <p class="ms-3 default-clickable-text"> 
                                         <b> {{ listing.listingName }} </b> 
                                         <br>
-                                        {{ this.sortedDrinksCounts[listing.listingName] || "-" }} reviews
+                                        {{ this.reviewCounts[listing.listingName] }} reviews
                                     </p>
                                 </div>
                             </router-link>
@@ -301,6 +301,8 @@
                 // all reviews for producer's drinks
                 allReviews: [],
                 drinkRatings: {},
+                reviewCounts: {},
+                sortedReviewCounts: {},
                 sortedAverageRatings: {},
                 roundedSortedRatings: {},
                 mostPopular: [],
@@ -371,13 +373,6 @@
                 try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
                         this.listings = response.data;
-                        this.getAllDrinks()
-                        this.getCountsByType()
-                        this.getCountsByCategory()
-                        this.getTotalCounts()
-                        this.getTotalCategoryCounts()
-                        this.getMostDiscussed()
-                        this.getMostDiscussedCategory()
                     } 
                     catch (error) {
                         console.error(error);
@@ -387,12 +382,6 @@
                 try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
                         this.reviews = response.data;
-                        // get all reviews
-                        this.getAllReviews()
-                        this.getRatingsByType()
-                        this.getAverageRatings()
-                        this.roundSortedAverageRatings()
-                        this.getMostPopular()
                     }
                     catch (error) {
                         console.error(error);
@@ -418,6 +407,26 @@
                     catch (error) {
                         console.error(error);
                     }
+
+                // fetch all methods
+                this.getAllDrinks()
+                this.getAllReviews()
+
+                this.getCountsByType()
+                this.getCountsByCategory()
+
+                this.getTotalCounts()
+                this.getTotalCategoryCounts()
+
+                this.getRatingsByType()
+                this.getAverageRatings()
+                this.getReviewCounts()
+                this.getTotalReviewCounts()
+                this.roundSortedAverageRatings()
+
+                this.getMostPopular()
+                this.getMostDiscussed()
+                this.getMostDiscussedCategory()
             },
 
             // go back to profile page
@@ -570,12 +579,47 @@
                 this.sortedAverageRatings = sortedProducerAverageRatings;
             },
 
+            // get number of reviews for each listing
+            getReviewCounts() {
+                const reviewCounts = {};
+                // Iterate through all reviews
+                this.allReviews.forEach(review => {
+                    const reviewTargetName = this.findDrinkNameForReview(review.reviewTarget);
+                    // Check if reviewTargetId is already in reviewCounts
+                    if (reviewTargetName in reviewCounts) {
+                        reviewCounts[reviewTargetName]++;
+                    } else {
+                        reviewCounts[reviewTargetName] = 1;
+                    }
+                });
+
+                // Iterate through all drinks
+                this.allDrinks.forEach(drink => {
+                    const drinkName = drink.listingName;
+                    // Check if drinkId is not in reviewCounts
+                    if (! (drinkName in reviewCounts)) {
+                        reviewCounts[drinkName] = 0;
+                    }
+                });
+
+                this.reviewCounts = reviewCounts;
+            },
+
             // get total counts for each listing
             getTotalCounts() {
                 const drinkCountsArray = Object.entries(this.drinkCounts);
                 drinkCountsArray.sort((a, b) => b[1] - a[1]);
                 const sortedProducerDrinkCounts = Object.fromEntries(drinkCountsArray);
                 this.sortedDrinksCounts = sortedProducerDrinkCounts;
+            },
+
+            // get total reviews for each listing
+            getTotalReviewCounts() {
+                const reviewCountsArray = Object.entries(this.reviewCounts);
+                reviewCountsArray.sort((a, b) => b[1] - a[1]);
+                const sortedProducerReviewCounts = Object.fromEntries(reviewCountsArray);
+                this.sortedReviewCounts = sortedProducerReviewCounts;
+                console.log(this.sortedReviewCounts)
             },
 
             // get total counts for each category
@@ -617,7 +661,8 @@
             // get the most discussed drinks
             getMostDiscussed() {
                 // get the drink counts
-                const drinkCounts = this.sortedDrinksCounts;
+                const drinkCounts = this.sortedReviewCounts;
+                console.log(this.sortedReviewCounts)
                 // get the first 5 items from the drink counts
                 let firstFiveItems = Object.entries(drinkCounts).slice(0, 5);
                 firstFiveItems = firstFiveItems.map(item => {
