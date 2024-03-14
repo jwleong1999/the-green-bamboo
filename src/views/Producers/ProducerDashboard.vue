@@ -95,13 +95,13 @@
                 <div class="row">
 
                     <!-- col 1: review of your expressions -->
-                    <div class="col text-start pt-5 mx-3">
+                    <div class="col text-start mx-3">
                         <h3> Review of Your Expressions </h3>
                         <Line :data="reviewsData" :options="chartOptions"></Line>
                     </div>
 
                     <!-- col 2: profile visits -->
-                    <div class="col text-start pt-5 mx-3">
+                    <div class="col text-start mx-3">
                         <h3> Profile Visits </h3>
                         <Line :data="profileData" :options="chartOptions"></Line>
                     </div>
