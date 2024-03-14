@@ -552,3 +552,9 @@ body {
     color: whitesmoke;
     background-color: #DD9E54;
 }
+
+.qa-card-body {
+    background-color:whitesmoke;
+    border: 1px solid #535C72;
+    border-radius: 10px;
+}

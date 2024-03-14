@@ -35,7 +35,7 @@
                 <!-- show all questions -->
                 <div v-for="qa in answeredQuestions" :key="qa._id" class="py-3">
                     <div class="card text-start">
-                        <div class="card-body">
+                        <div class="card-body qa-card-body">
                             <h5 class="card-title"> 
                                 <b> Question: </b>
                                 {{ qa.question }} 
@@ -61,7 +61,7 @@
                 <!-- show all questions -->
                 <div v-for="(qa, index) in unansweredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }" class="py-3">
                     <div class="card text-start">
-                        <div class="card-body">
+                        <div class="card-body qa-card-body">
                             <h5 class="card-title"> 
                                 <b> Question: </b>
                                 {{ qa.question }} 
