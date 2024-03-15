@@ -21,6 +21,9 @@ from datetime import datetime
 import csv
 import io
 
+from urllib.request import urlopen
+import base64
+
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 app.config["MONGO_URI"] = "mongodb+srv://jwleong2020:uOfXCrxLPCjgyA92@greenbamboo.wbiambw.mongodb.net/GreenBamboo?retryWrites=true&w=majority"
@@ -84,6 +87,22 @@ def updateObservationTag():
     
 # -----------------------------------------------------------------------------------------
     
+def image_url_to_base64(url):
+    try:
+        # Fetch the image from the URL
+        with urlopen(url) as response:
+            # Read the image data
+            image_data = response.read()
+            # Convert the image data to base64
+            base64_str = base64.b64encode(image_data).decode('utf-8')
+            return base64_str
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
+
+
+
+    
 # [POST] Import listings
 # - Bulk import listings
 # - Possible return codes: 201 (Updated), 400(Observation tag not found), 500 (Error during update)
@@ -102,49 +121,60 @@ def importListings():
     # Skip the header row if needed
     next(csv_data)
 
-    for row in csv_data:
-            try:
-                # Convert each value to the specified data type
-                converted_row = [data_type(value) for data_type, value in zip(column_data_types, row)]
-                
-                # Lookup producer ID based on producer name
-                producer_name = converted_row[1]  # Assuming producerName is at index 1
-                cursor = db.producers.find({'producerName': producer_name})
+    # Create a list to store all the documents to be inserted
+    documents = []
 
-                if cursor:
-                    for doc in cursor:
-                        producer_id = doc['_id']
-                else:
-                    producer_id = None  # Handle if producer not found
-                    
-                # Create a dictionary representing the row
-                row_dict = {
-                    'listingName': converted_row[0],
-                    'producerId': producer_id,
-                    'bottler': converted_row[2],
-                    'originCountry': converted_row[3],
-                    'drinkType': converted_row[4],
-                    'typeCategory': converted_row[5],
-                    'age': converted_row[6],
-                    'abv': converted_row[7],
-                    'reviewLink': converted_row[8],
-                    'officialDesc': converted_row[9],
-                    'sourceLink': converted_row[10],
-                    'photo': converted_row[11],
-                    'allowMod':True,
-                    'addedDate': datetime.now()
-                }
-                
-                # Insert the row into MongoDB
-                db.testImport.insert_one(row_dict)
-            except Exception as e:
-                print(str(e))
-                return jsonify(
-                    {
-                        "code": 500,
-                        "message": "Bulk Import Listings Failed. An error occurred."
-                    }
-                ), 500
+    for row in csv_data:
+            
+        # Convert each value to the specified data type
+        converted_row = [data_type(value) for data_type, value in zip(column_data_types, row)]
+        
+        # Lookup producer ID based on producer name
+        producer_name = converted_row[1]  # Assuming producerName is at index 1
+        cursor = db.producers.find({'producerName': producer_name})
+
+        if cursor:
+            for doc in cursor:
+                producer_id = doc['_id']
+        else:
+            producer_id = None  # Handle if producer not found
+        
+        base64_str = image_url_to_base64(converted_row[11])
+            
+        # Create a dictionary representing the row
+        row_dict = {
+            'listingName': converted_row[0],
+            'producerId': producer_id,
+            'bottler': converted_row[2],
+            'originCountry': converted_row[3],
+            'drinkType': converted_row[4],
+            'typeCategory': converted_row[5],
+            'age': converted_row[6],
+            'abv': converted_row[7],
+            'reviewLink': converted_row[8],
+            'officialDesc': converted_row[9],
+            'sourceLink': converted_row[10],
+            'photo': base64_str,
+            'allowMod':True,
+            'addedDate': datetime.now()
+        }
+        
+        # Insert the row into MongoDB
+        documents.append(row_dict)
+
+    try:
+        db.testImport.insert_many(documents)
+
+
+
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "message": "Bulk Import Listings Failed. An error occurred."
+            }
+        ), 500
 
     return jsonify({
                         "code": 201,
