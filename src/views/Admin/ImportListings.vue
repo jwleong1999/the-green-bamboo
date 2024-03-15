@@ -2,8 +2,9 @@
 
 <template>
     <NavBar />
-        <div class="container mt-5">
-            <h1>Import CSV into MongoDB</h1>
+        <div v-if="!importSuccess" class="container mt-5 mb-5">
+
+            <h1>Bulk import listings</h1>
 
             <form @submit="handleImport">
                 <div class="form-group">
@@ -12,19 +13,29 @@
                     <input type="file" name="file" id="csvFile" accept=".csv" @change="handleFileUpload" class="form-control-file">
                 </div>
                 <br>
-                <button type="submit" class="btn primary-btn-less-round" @click="importCSV">Import</button>
+                <button v-if="csvFile" type="submit" class="btn primary-btn-less-round" @click="importCSV">Import</button>
+                <button v-else type="submit" class="btn primary-btn-less-round" @click="importCSV" disabled>Import</button>
+
+
                 
             </form>
         </div>
-    
 
-    
+        <div v-else class="container mt-5 mb-5">
+
+            <h1 class="text-success">Import Success</h1>
+  
+            <button type="button" class="btn primary-btn-less-round" @click="moreImports">Import more listings</button>
+
+            <router-link :to="'/'">
+            <button type="button" class="btn primary-btn-less-round" @click="importCSV" disabled>Back to home</button>
+            </router-link>
+
+
+        </div>
+
         
 
-        
-    
-
-        
 </template>
 
 <script>
@@ -92,6 +103,7 @@
 
                     // csv file import
                     csvFile: null,
+                    importSuccess: false,
 
                 }
             },
@@ -510,6 +522,7 @@
 
                 // Calling of backend to import csv file
                 async importCSV() {
+                    let responseCode = ''
                     const formData = new FormData();
                     formData.append('file', this.csvFile);
                     
@@ -520,18 +533,34 @@
                             headers: {
                                 'Content-Type': 'multipart/form-data'
                             }
+                        })
+                        .then((response)=>{
+                        responseCode = response.data.code
+                        })
+                        .catch((error)=>{
+                            console.error(error);
+                            responseCode = error.response.data.code
+                            
                         });
-                        const data = await response.json();
-
-                        if (data.success) {
-                            alert('CSV file imported successfully!');
-                        } else {
-                            alert('Error importing CSV file: ' + data.error);
+                        
+                        if(responseCode==201){
+                            this.importSuccess=true; // Display success message
+                        }else{
+                            this.importSuccess = false
                         }
+                    return response
                     } catch (error) {
                         console.error('Error:', error);
                     }
+                },
+
+                // To import more listings
+                moreImports(){
+                    this.importSuccess = false
+                    this.csvFile = null
                 }
+
+                
             }
         }
 </script>
