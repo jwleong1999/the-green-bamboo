@@ -24,6 +24,9 @@ import io
 from urllib.request import urlopen
 import base64
 
+
+
+
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 app.config["MONGO_URI"] = "mongodb+srv://jwleong2020:uOfXCrxLPCjgyA92@greenbamboo.wbiambw.mongodb.net/GreenBamboo?retryWrites=true&w=majority"
@@ -87,6 +90,7 @@ def updateObservationTag():
     
 # -----------------------------------------------------------------------------------------
     
+# To convert image URL to base64    
 def image_url_to_base64(url):
     try:
         # Fetch the image from the URL
@@ -99,6 +103,20 @@ def image_url_to_base64(url):
     except Exception as e:
         print(f"An error occurred: {e}")
         return None
+    
+# -----------------------------------------------------------------------------------------
+
+# To hash the password
+def hash_password(id, password):
+    combined_string = str(id) + password
+    hash = 0
+
+    for char in combined_string:
+        char_code = ord(char)
+        hash = (hash << 5) - hash + char_code
+        hash &= 0xFFFFFFFF  # Convert to 32-bit integer
+
+    return hash
 
 
 
@@ -141,22 +159,34 @@ def importListings():
         producer_name = converted_row[1]  # Assuming producerName is at index 1
         producer_id=producer_name_id_dict.get(producer_name)
 
-        # try:
-
-        # cursor = db.producers.find({'producerName': producer_name})
-
-        # if cursor:
-        #     for doc in cursor:
-        #         producer_id = doc['_id']
-        # else:
-        #     producer_id = None  # Handle if producer not found
+        if producer_id == None:
+            producer_to_insert =   {
+                "producerName": producer_name,
+                "producerDesc": "",
+                "originCountry": "",
+                "statusOB": "",
+                "mainDrinks": [],
+                "photo": "",
+                "hashedPassword": hash_password(producer_name, "admin1234"),
+                "questionsAnswers": [],
+                "updates": [],
+                "producerLink": "",
+                "claimStatus": False,
+            }
+            new_producer_result = db.producers.insert_one(producer_to_insert)
+            producer_id = new_producer_result.inserted_id
         
+            # Cache the new producer ID to avoid future database queries for this producer
+            producer_name_id_dict[producer_name] = producer_id
+
+
+        # Convert the image URL to base64
         base64_str = image_url_to_base64(converted_row[11])
             
         # Create a dictionary representing the row
         row_dict = {
             'listingName': converted_row[0],
-            'producerId': producer_id,
+            'producerID': producer_id,
             'bottler': converted_row[2],
             'originCountry': converted_row[3],
             'drinkType': converted_row[4],
@@ -175,7 +205,7 @@ def importListings():
         documents.append(row_dict)
 
     try:
-        db.testImport.insert_many(documents)
+        db.listings.insert_many(documents)
 
 
 

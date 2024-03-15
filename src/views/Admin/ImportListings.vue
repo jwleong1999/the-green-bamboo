@@ -2,7 +2,7 @@
 
 <template>
     <NavBar />
-        <div class="container">
+        <div class="container mt-5">
             <h1>Import CSV into MongoDB</h1>
 
             <form @submit="handleImport">
@@ -12,7 +12,7 @@
                     <input type="file" name="file" id="csvFile" accept=".csv" @change="handleFileUpload" class="form-control-file">
                 </div>
                 <br>
-                <button type="submit" class="btn btn-primary" @click="importCSV">Import</button>
+                <button type="submit" class="btn primary-btn-less-round" @click="importCSV">Import</button>
                 
             </form>
         </div>
