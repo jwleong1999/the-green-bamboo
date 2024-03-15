@@ -124,20 +124,32 @@ def importListings():
     # Create a list to store all the documents to be inserted
     documents = []
 
+    # Create a dict to store all the id and name of producer in producer collection 
+    producer_name_id_dict={}
+    for doc in db.producers.find({}):
+        producer_name_id_dict[doc["producerName"]]=doc["_id"]
+    
+    print(producer_name_id_dict)
+
     for row in csv_data:
             
         # Convert each value to the specified data type
         converted_row = [data_type(value) for data_type, value in zip(column_data_types, row)]
         
         # Lookup producer ID based on producer name
-        producer_name = converted_row[1]  # Assuming producerName is at index 1
-        cursor = db.producers.find({'producerName': producer_name})
 
-        if cursor:
-            for doc in cursor:
-                producer_id = doc['_id']
-        else:
-            producer_id = None  # Handle if producer not found
+        producer_name = converted_row[1]  # Assuming producerName is at index 1
+        producer_id=producer_name_id_dict.get(producer_name)
+
+        # try:
+
+        # cursor = db.producers.find({'producerName': producer_name})
+
+        # if cursor:
+        #     for doc in cursor:
+        #         producer_id = doc['_id']
+        # else:
+        #     producer_id = None  # Handle if producer not found
         
         base64_str = image_url_to_base64(converted_row[11])
             
