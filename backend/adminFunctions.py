@@ -208,7 +208,7 @@ def importListings():
         db.listings.insert_many(documents)
 
 
-
+    # If error occurs, return 500 error
     except Exception as e:
         print(str(e))
         return jsonify(
@@ -218,10 +218,12 @@ def importListings():
             }
         ), 500
 
-    return jsonify({
-                        "code": 201,
-                        "message": "Bulk Import Listings Successful"
-                    }), 201
+    # If successful, return 201
+    return jsonify(
+        {
+            "code": 201,
+            "message": "Bulk Import Listings Successful"
+        }), 201
 
 
 
