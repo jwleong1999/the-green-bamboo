@@ -169,7 +169,7 @@ const routes = [
   {
     path: '/admin/dashboard',
     name: 'admindashboard',
-    component: () => import('../views/Admin/ImportListings.vue')
+    component: () => import('../views/Admin/AdminDashboard.vue')
   },
 
   { 
