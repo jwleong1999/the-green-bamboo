@@ -200,6 +200,22 @@ body {
     border: 2px solid whitesmoke;
 }
 
+.secondary-btn-less-round,
+.secondary-btn-outline-less-round:hover {
+    color: whitesmoke;
+    background-color: #DD9E54;
+    border-radius: 10px;
+    border: 4px solid #DD9E54;
+}
+
+.secondary-btn-less-round:hover,
+.secondary-btn-outline-less-round {
+    color: #DD9E54;
+    background-color: whitesmoke;
+    border-radius: 10px;
+    border: 4px solid #DD9E54;
+}
+
 
 .secondary-btn-not-rounded {
     color: whitesmoke;

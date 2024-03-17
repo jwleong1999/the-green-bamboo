@@ -24,11 +24,11 @@
         <div v-else class="container mt-5 mb-5">
 
             <h1 class="text-success">Import Success</h1>
-  
-            <button type="button" class="btn primary-btn-less-round" @click="moreImports">Import more listings</button>
 
-            <router-link :to="'/'">
-            <button type="button" class="btn .secondary-btn-border-thick" @click="importCSV" disabled>Back to home</button>
+            <button type="button" class="btn primary-btn-less-round me-2" @click="moreImports">Import more listings</button>
+
+            <router-link :to="'/'" class="btn secondary-btn-less-round ms-2" @click="importCSV" disabled>
+                Back to home
             </router-link>
 
 
