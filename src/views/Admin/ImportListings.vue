@@ -529,7 +529,7 @@
                     
                     
                     try {
-                        const response = await this.$axios.post('http://127.0.0.1:5051/importListings', 
+                        const response = await this.$axios.post('http://127.0.0.1:5052/importListings', 
                             formData, {
                             headers: {
                                 'Content-Type': 'multipart/form-data'

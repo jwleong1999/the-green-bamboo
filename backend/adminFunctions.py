@@ -147,7 +147,7 @@ def importListings():
     for doc in db.producers.find({}):
         producer_name_id_dict[doc["producerName"]]=doc["_id"]
     
-    print(producer_name_id_dict)
+    # print(producer_name_id_dict)
 
     for row in csv_data:
             
@@ -275,4 +275,4 @@ def importListings():
 
 # -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
-    app.run(debug=True, port=5051)
+    app.run(debug=True, port=5052)
