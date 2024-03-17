@@ -537,18 +537,17 @@
                         })
                         .then((response)=>{
                         this.responseCode = response.data.code
+                        if(this.responseCode == 201){
+                        this.importSuccess=true; // Display success message
+                        }else{
+                            this.importSuccess = false
+                        }
                         })
                         .catch((error)=>{
                             console.error(error);
                             this.responseCode = error.response.data.code
                             
                         });
-
-                        if(this.responseCode == 201){
-                        this.importSuccess=true; // Display success message
-                        }else{
-                            this.importSuccess = false
-                        }
                         
                         
                     return response
