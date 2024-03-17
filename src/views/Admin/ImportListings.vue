@@ -4,17 +4,32 @@
     <NavBar />
         <div v-if="!importSuccess" class="container mt-5 mb-5">
 
-            <h1>Bulk import listings</h1>
+            
             
             <div>
-                <div class="form-group">
+                <div class="form-group mb-2" >
+                    <h1>Bulk import listings</h1>
                     <label for="csvFile">CSV File:</label>
                     <!-- <input type="file" id="csvFile" accept=".csv" v-model="csvFile" class="form-control-file"> -->
                     <input type="file" name="file" id="csvFile" accept=".csv" @change="handleFileUpload" class="form-control-file">
+
+                    <br>
+
+                    <button v-if="csvFile" type="button" class="btn primary-btn-less-round mt-3" @click="importCSV">Import</button>
+                    <button v-else type="button" class="btn primary-btn-less-round mt-3" @click="importCSV" disabled>Import</button>
+
+                    
                 </div>
-                <br>
-                <button v-if="csvFile" type="button" class="btn primary-btn-less-round" @click="importCSV">Import</button>
-                <button v-else type="button" class="btn primary-btn-less-round" @click="importCSV" disabled>Import</button>
+
+                <!-- TO CHECK -->
+
+                <a href="../../../Dataset/listingsFormat.csv" download>Download listings import template</a>
+                    
+                
+
+                
+                
+                
 
 
                 
@@ -49,6 +64,9 @@
             },
             data() {
                 return {
+
+                    // TO DELETE IF NOT NEEDED
+
                     // // data from database
                     // observationTags: [],
                     // modRequests: [],
@@ -88,10 +106,6 @@
                     // submittingObservation:false,
                     // errorCreateObservation:false,
 
-                    // Logged in user details
-                    userID: null,
-                    userType: localStorage.getItem('88B_accType'),
-
                     // // create business
                     // businessType: "",
                     // businessName: "",
@@ -101,6 +115,12 @@
                     // addBizError: "",
                     // tempPassword: "",
 
+
+                    // Logged in user details
+                    userID: null,
+                    userType: localStorage.getItem('88B_accType'),
+
+                    
                     // csv file import
                     csvFile: null,
                     importSuccess: false,
@@ -207,6 +227,8 @@
 
                     this.dataLoaded = true;
                 },
+
+                // TO DELETE IF NOT NEEDED
 
                 // addObservation(){
                 //     this.addingObservation=true
