@@ -274,5 +274,17 @@ def importListings():
         ), 500
 
 # -----------------------------------------------------------------------------------------
+@app.route('/readCSV', methods=['GET'])
+def readCSV():
+    with open('Dataset/listingsFormat.csv', 'r') as file:
+        reader = csv.reader(file)
+        data = [row for row in reader]
+    return jsonify(
+        {
+            "code": 201,
+            "data": data
+        }), 201
+
+# -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(debug=True, port=5052)

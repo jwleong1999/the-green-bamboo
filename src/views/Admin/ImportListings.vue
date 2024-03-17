@@ -2,37 +2,45 @@
 
 <template>
     <NavBar />
-        <div v-if="!importSuccess" class="container mt-5 mb-5">
+    <div v-if="!importSuccess" class="container mt-5 mb-5">
 
             
             
             <div>
                 <div class="form-group mb-2" >
-                    <h1>Bulk import listings</h1>
-                    <label for="csvFile">CSV File:</label>
-                    <!-- <input type="file" id="csvFile" accept=".csv" v-model="csvFile" class="form-control-file"> -->
-                    <input type="file" name="file" id="csvFile" accept=".csv" @change="handleFileUpload" class="form-control-file">
+                    <h1>Bulk Import Listings</h1>
 
-                    <br>
+                    <h3 class="mt-5"> 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
+                        </svg>
+                        Download Listings Import Template 
+                    </h3>
+                    <button type="button" class="btn secondary-btn-less-round"  v-on:click="downloadCSV()"> Download Template </button>
 
-                    <button v-if="csvFile" type="button" class="btn primary-btn-less-round mt-3" @click="importCSV">Import</button>
-                    <button v-else type="button" class="btn primary-btn-less-round mt-3" @click="importCSV" disabled>Import</button>
+                    <h3 class="mt-5"> 
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
+                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+                            <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"/>
+                        </svg>
+                        Upload Listings CSV File 
+                    </h3>
+                    <div class="row align-items-center my-3">
+                        <div class="col-3"></div>
+                        <div class="col-6"> 
+                            <input type="file" name="file" id="csvFile" accept=".csv" @change="handleFileUpload" class="form-control">
+                        </div>
+                        <div class="col-3"></div>
+                    </div>
+
+                    <button v-if="csvFile" type="button" class="btn primary-btn-less-round" @click="importCSV">Import</button>
+                    <button v-else type="button" class="btn primary-btn-less-round" @click="importCSV" disabled>Import</button>
 
                     
                 </div>
 
                 <!-- TO CHECK -->
-
-                <a href="../../../Dataset/listingsFormat.csv" download>Download listings import template</a>
-                    
-                
-
-                
-                
-                
-
-
-                
             </div>
         </div>
 
@@ -64,6 +72,10 @@
             },
             data() {
                 return {
+
+                    // csv data
+                    fileFormat: [],
+                    csvData: [],
 
                     // TO DELETE IF NOT NEEDED
 
@@ -223,6 +235,16 @@
                     catch (error) {
                         console.error(error);
                         this.loadError = true;
+                    }
+                    // csv
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5052/readCSV');
+                        this.fileFormat = response.data.data;
+                        console.log(this.fileFormat);
+                        this.convertToCSV();
+                    }
+                    catch (error) {
+                        console.error(error);
                     }
 
                     this.dataLoaded = true;
@@ -585,6 +607,32 @@
                 moreImports(){
                     this.importSuccess = false
                     this.csvFile = null
+                },
+
+                convertToCSV() {
+                    let keepColumns = this.fileFormat.filter(item => Object.values(item).some(value => value !== ''));
+                    console.log(keepColumns)
+                    const keys = keepColumns[0];
+                    const values = keepColumns[1];
+
+                    let result = values.reduce((acc, value, index) => {
+                        acc[keys[index]] = value;
+                        return acc;
+                    }, {});
+
+                    this.csvData = result
+                },
+
+                downloadCSV() {
+                    const keys = Object.keys(this.csvData);
+                    const values = Object.values(this.csvData);
+                    let csvContent = "data:text/csv;charset=utf-8," + keys.join(",") + "\n" + values.join(",");
+                    const encodedUri = encodeURI(csvContent);
+                    const link = document.createElement("a");
+                    link.setAttribute("href", encodedUri);
+                    link.setAttribute("download", "listingsFormat.csv");
+                    document.body.appendChild(link);
+                    link.click();
                 }
 
                 
