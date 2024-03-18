@@ -1,4 +1,4 @@
-# Port: 5051
+# Port: 5052
 # Routes: /updateObservationTag (PUT)
 # -----------------------------------------------------------------------------------------
 
@@ -88,6 +88,49 @@ def updateObservationTag():
             }
         ), 500
     
+# -----------------------------------------------------------------------------------------
+# [DELETE] Deletes a observationTag
+# - Delete entry with specified id from the "observationTag" collection.
+# - Possible return codes: 201 (Deleted), 400 (Review doesn't exist), 500 (Error during deletion)
+@app.route("/deleteObservationTag/<id>", methods= ['DELETE'])
+def deleteObservationTag(id):
+
+    # Find the review entry with the specified id
+    existingObservation = db.observationTags.find_one({"_id": ObjectId(id)})
+    if(existingObservation == None):
+        return jsonify(
+            {   
+                "code": 400,
+                "data": {
+                    "id": id
+                },
+                "message": "Observation tag doesn't exist."
+            }
+        ), 400
+    
+
+    # Delete the review entry with the specified id
+    try:
+        deleteObservation = db.observationTags.delete_one({"_id": ObjectId(id)})
+
+        return jsonify( 
+            {   
+                "code": 200,
+                "data": id
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "id": id
+                },
+                "message": "An error occurred deleting the observation."
+            }
+        ), 500
+
 # -----------------------------------------------------------------------------------------
     
 # To convert image URL to base64    

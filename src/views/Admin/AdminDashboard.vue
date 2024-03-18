@@ -44,7 +44,7 @@
                 <p class="gap-1">
                     <!-- Open a modal prompting to edit or add tags -->
                     <button class="btn tertiary-btn reverse-clickable-text m-1" type="button" data-bs-toggle="modal" data-bs-target="#observationModal">
-                        Observation Tags
+                        Action Tags
                     </button>
                     <button class="btn tertiary-btn reverse-clickable-text m-1" type="button">
                         Flavour Tags
@@ -56,72 +56,102 @@
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header" style="background-color: #535C72">
-                                <h1 v-if="selectingObservation" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Observation Tag Control</h1>
-                                <h1 v-if="addingObservation" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Add Observation Tag</h1>
-                                <h1 v-if="editingObservation" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Edit Observation Tag</h1>
+                                <h1 v-if="selectingObservation" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Action Tag Control</h1>
+                                <h1 v-if="addingObservation" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Add Action Tag</h1>
+                                <h1 v-if="editingObservation" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Edit Action Tag</h1>
+                                <h1 v-if="deletingObservation" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Delete Action Tag</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
 
                             <!-- Modal for success and error message -->
                             <div v-if="successUpdateObservation" class="modal-body text-center text-success fst-italic fw-bold fs-3">
-                                <span>Observation tags have successfully been updated!</span>
+                                <span>Action tags have successfully been updated!</span>
                             </div>
 
                             <div v-if="successCreateObservation" class="modal-body text-center text-success fst-italic fw-bold fs-3">
-                                <span>Observation tags have successfully been created!</span>
+                                <span>Action tags have successfully been created!</span>
                             </div>
 
                             <div v-if="updatingObservation" class="modal-body text-center text-primary fst-italic fw-bold fs-3">
-                                <span>Observation tags are being updated!</span>
+                                <span>Action tags are being updated!</span>
                             </div>
 
                             <div v-if="submittingObservation" class="modal-body text-center text-primary fst-italic fw-bold fs-3">
-                                <span>Observation tags are being added!</span>
+                                <span>Action tags are being added!</span>
                             </div>
 
                             <div v-if="errorUpdateObservation" class="modal-body text-center text-danger fst-italic fw-bold fs-3">
-                                <span v-if="invalidTag"> The observation tag you are trying to update does not exist</span>
-                                <span v-if="errorMessage">An error occurred updating the observation tags. Please try again.</span>
+                                <span v-if="invalidTag"> The Action tag you are trying to update does not exist</span>
+                                <span v-if="errorMessage">An error occurred updating the action tags. Please try again.</span>
                             </div>
 
                             <div v-if="errorCreateObservation" class="modal-body text-center text-danger fst-italic fw-bold fs-3">
-                                <span v-if="duplicateTag"> The observation tag you are trying to create already exists!</span>
-                                <span v-if="errorMessage">An error occurred updating the observation tags. Please try again.</span>
+                                <span v-if="duplicateTag"> The Action tag you are trying to create already exists!</span>
+                                <span v-if="errorMessage">An error occurred updating the Action tags. Please try again.</span>
                             </div>
-                            
+
+                            <div v-if="successDeleteObservation" class="modal-body text-center text-success fst-italic fw-bold fs-3">
+                                <span>Action tag have successfully been deleted!</span>
+                            </div>
+                            <div v-if="errorDeletingObservation" class="modal-body text-center text-danger fst-italic fw-bold fs-3">
+                                <span v-if="notExistObservation"> The action tag you are trying to delete does not exist!</span>
+                                <span v-if="errorDeleteObservation">An error occurred deleting the action tag. Please try again.</span>
+                            </div>
 
                             <!-- Modal body for selecting mode for observation operations -->
                             <div v-if="selectingObservation" class="modal-body">
                                 <button class="btn btn-warning reverse-clickable-text text-dark" @click="addObservation" type="button">
-                                    Add Observation Tags
+                                    Add Action Tags
                                 </button> 
 
                                 <button class="btn btn-primary mx-1 reverse-clickable-text" @click="editObservation" type="button">
-                                    Edit Observation Tags
+                                    Edit Action Tags
+                                </button>
+
+                                <button class="btn btn-danger mx-1 reverse-clickable-text" @click="deleteObservations" type="button">
+                                    Delete Action Tags
                                 </button>
                             </div>
                             <!-- Modal body for adding observation -->
                             <div v-if="addingObservation" class="modal-body">
                                 <input v-model="newObservation" type="text" class="form-control">
-                                <p v-if="newObservation ==''" class='text-danger text-start mb-2 fw-bold'>Observation Tag cannot be empty</p>
+                                <p v-if="newObservation ==''" class='text-danger text-start mb-2 fw-bold'>Action Tag cannot be empty</p>
                             </div>
                             <!-- Modal body for editing observation -->
                             <div v-if="editingObservation" class="modal-body">
                                 <div class="row">
                                     <div v-for="tag in editedObservationTags" class="mb-2 col-md-6"  v-bind:key="tag._id">
                                         <input v-model="tag.observationTag" type="text" class="form-control">
-                                        <p v-if="tag.observationTag==''" class='text-danger text-start mb-2 fw-bold'>Observation Tag cannot be empty</p>
+                                        <p v-if="tag.observationTag==''" class='text-danger text-start mb-2 fw-bold'>Action Tag cannot be empty</p>
                                     </div>
                                 </div>
-                                <p class='text-danger text-center mb-2 fw-bold' v-if="nothingChanged">There is no changed observation tag</p>
+                                <p class='text-danger text-center mb-2 fw-bold' v-if="nothingChanged">There is no changed action tag</p>
                             </div>
+
+                            <div v-if="deletingObservation" class="modal-body">
+                                <div class="row">
+                                    <div v-for="tag in observationTags" class="mb-2 col-md-4"  v-bind:key="tag._id">
+                                        <button @click="deleteObservation(tag._id, tag.observationTag)" type="button" class="btn btn-danger" style="width: 150px; height: 60px;">{{ tag.observationTag }}</button>
+                                    </div>
+                                </div>
+                                <div v-if="observationToDelete!=''">
+                                    <div class="row">
+                                        <span class='text-danger mb-2 fw-bold'>Are you sure you want to delete [{{ observationToDelete.observationTag }}]?</span>
+                                    </div>
+                                    
+                                    <button @click="confirmDeleteTag" type="button" class="btn btn-danger mx-1">Confirm Delete</button>
+                                    <button @click="resetDeleteTag" type="button" class="btn tertiary-btn reverse-clickable-text">No, do not delete</button>
+                                </div>
+                            </div>
+
+
 
                             <div class="modal-footer">
                                 <button v-if="selectingObservation" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 <button v-if="!selectingObservation" @click="resetObservation" type="button" class="btn btn-secondary">Return</button>
                                 <button v-if="editingObservation" @click="updateObservation" type="button" class="btn btn-primary">Save Updates</button>
                                 <button v-if="addingObservation" @click="createNewObservation" type="button" class="btn btn-primary">Add Tag</button>
-                                <button v-if="successUpdateObservation || errorUpdateObservation" @click="resetErrors" type="button" data-bs-dismiss="modal" class="btn btn-secondary">Close</button>
+                                <button v-if="successUpdateObservation || errorUpdateObservation || errorCreateObservation || successCreateObservation || successDeleteObservation || errorDeleteObservation" @click="resetErrors" type="button" data-bs-dismiss="modal" class="btn btn-secondary">Close</button>
                             </div>
                         </div>
                     </div>
@@ -351,6 +381,8 @@
                     editedObservationTags: [],
                     pendingModRequests: [],
                     pendingAccountRequests: [],
+
+                    observationToDelete:'',
                     
                     //User 
                     user: null,
@@ -368,6 +400,7 @@
                     editingObservation:false,
                     addingObservation:false,
                     selectingObservation:true,
+                    deletingObservation:false,
                     nothingChanged:false,
                     successUpdateObservation:false,
                     invalidTag:false,
@@ -378,6 +411,11 @@
                     successCreateObservation:false,
                     submittingObservation:false,
                     errorCreateObservation:false,
+                    errorDeletingObservation:false,
+                    errorDeleteObservation:false,
+                    successDeleteObservation:false,
+                    notExistObservation:false,
+
 
                     // Logged in user details
                     userID: null,
@@ -500,12 +538,21 @@
                     this.addingObservation=true
                     this.editingObservation=false
                     this.selectingObservation=false
+                    this.deletingObservation=false
                 },
 
                 editObservation(){
                     this.addingObservation=false
                     this.editingObservation=true
                     this.selectingObservation=false
+                    this.deletingObservation =false
+                },
+
+                deleteObservations(){
+                    this.addingObservation=false
+                    this.editingObservation=false
+                    this.selectingObservation=false
+                    this.deletingObservation= true
                 },
 
                 resetObservation(){
@@ -513,6 +560,9 @@
                     this.addingObservation=false
                     this.selectingObservation=true
                     this.updatingObservation = false
+                    this.deletingObservation =false
+                    this.submittingObservation =false
+                    this.deletingObservation =false
                     this.resetErrors()
                 },
 
@@ -577,6 +627,10 @@
                     this.duplicateTagTag = false
                     this.errorMessage = false
                     this.selectingObservation = true
+                    this.errorDeletingObservation = false
+                    this.errorDeleteObservation = false
+                    this.successDeleteObservation = false
+                    this.notExistObservation = false
                 },
 
                 createNewObservation(){
@@ -586,7 +640,7 @@
                     }
                     this.submittingObservation=true
                     this.addingObservation=false
-                    let submitAPI = "http://127.0.0.1:5052/createObservationTag"
+                    let submitAPI = "http://127.0.0.1:5053/createObservationTag"
                     let submitData = {"observationTag":this.newObservation}
                     this.createTag(submitAPI, submitData)
                 },
@@ -614,6 +668,47 @@
                     }
                     return response
                 }, 
+
+                deleteObservation(tagId,tag){
+                    // alert(tagId.$oid)
+                    this.observationToDelete = {"tagId":tagId, "observationTag":tag}
+                },
+                async confirmDeleteTag(){
+                    let responseCode = ''
+                    let deleteAPI = "http://127.0.0.1:5052/deleteObservationTag/" + this.observationToDelete.tagId.$oid
+                    const response = await this.$axios.delete(deleteAPI)
+                    .then((response)=>{
+                        responseCode = response.data.code
+                    })
+                    .catch((error)=>{
+                        console.error(error);
+                        responseCode = error.response.data.code
+                    });
+                    if(responseCode==200){
+                        this.successDeleteObservation=true; // Display success message
+                        this.deletingObservation=false; // Hide submission in progress message
+                        let observationToRemove = this.observationTags.findIndex(obj => obj._id.$oid === this.observationToDelete.tagId.$oid);
+                        console.log(observationToRemove)
+                        if (observationToRemove !== -1) {
+                            this.observationTags.splice(observationToRemove, 1);
+                        }
+                        console.log(this.observationTags)
+                    }else{
+                        this.errorDeletingObservation=true; // Display error message
+                        this.deletingObservation=false; // Hide submission in progress message
+                        if(responseCode==400){
+                            this.notExistObservation = true // Display duplicate entry message
+                        }else{
+                            this.errorDeleteObservation = true // Display generic error message
+                        }
+                    }
+                    this.observationToDelete = ''
+                    return response
+                },
+                resetDeleteTag(){
+                    this.observationToDelete=''
+                },
+
                 getUserbyID(userID) {
                     return this.users.find(user => user["_id"]["$oid"] == userID["$oid"]);
                 }, 
