@@ -307,6 +307,116 @@
                 </div>
             </div>
             <!-- mod request end -->
+
+            <hr>
+            <!-- mod addition and removal -->
+            <div class="row text-center">
+                <div class="col-12">
+                    <h3><b>Moderator Request</b></h3>
+                </div>
+            </div>
+            <div>
+                <button class="btn tertiary-btn reverse-clickable-text m-1" type="button" data-bs-toggle="modal" data-bs-target="#addModeratorModal">
+                    Add a moderator
+                </button>      
+                <button class="btn tertiary-btn reverse-clickable-text m-1" type="button" data-bs-toggle="modal" data-bs-target="#removeModeratorModal">
+                    Remove a moderator
+                </button>      
+            </div>
+
+            <!-- Mod addition modal -->
+            <div class="modal fade" id="addModeratorModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addModeratorLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: #535C72">
+                            <h1 class="modal-title fs-5" id="addModeratorLabel" style="color: white;">Add Moderator</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <!-- Success add mod modal body -->
+                        <div v-if="successAddMod" class="modal-body text-center text-success fst-italic fw-bold fs-3">
+                            <span>User has successfully been added as moderator!</span>
+                        </div>
+                        <!-- Error add mod modal body -->
+                        <div v-if="errorAddMod" class="modal-body text-center text-danger fst-italic fw-bold fs-3">
+                            <span>There is an error adding user as moderator, please try again!</span>
+                        </div>
+                        <!-- Initial select user to promote -->
+                        <div v-if="!confirmModerator && !(successAddMod||errorAddMod)" class="modal-body">
+                            <div class="form-group mb-3">
+                                <p class="text-start mb-1"> Choose user to promote to a moderator: <span class="text-danger">*</span></p>
+                                <input list="users" v-model="promotedUser" class="form-control" id="promotedUser" placeholder="Enter user name" v-on:change="updateUsername">
+                                <datalist id="users">
+                                    <option v-for="user in users" :key="user._id.$oid" :value="user.username">
+                                        {{user.username}}
+                                    </option>
+                                </datalist>
+                                <p v-show="promotedUser.length > 0" class="text-start mb-1 text-danger" id="usernameError"></p>
+                            </div>
+                            <div class="form-group mb-3">
+                                <p class="text-start mb-1"> Choose drink type user can moderate: <span class="text-danger">*</span></p>
+                                <input list="drinkType" v-model="promotedType" class="form-control" id="promotedType" placeholder="Enter drink type" v-on:change="updateDrinkType">
+                                <datalist id="drinkType">
+                                    <option v-for="drinkType in drinkTypes" :key="drinkType._id.$oid" :value="drinkType.drinkType">
+                                        {{drinkType.drinkType}}
+                                    </option>
+                                </datalist>
+                                <p v-show="promotedType.length > 0" class="text-start mb-1 text-danger" id="promotedTypeError"></p>
+                            </div>
+                            <p class="text-start mb-1 text-danger" id="alreadyModError"></p>
+                        </div>
+
+                        <!-- confirm mod to promote -->
+                        <div v-if="confirmModerator && !(successAddMod||errorAddMod)" class="modal-body">
+                            <p class="text-start mb-1"> Do you really want to add <strong>{{ promotedUser }}</strong> as a moderator for <strong>{{ promotedType }}</strong>? <span class="text-danger">*</span></p>
+                        </div>
+
+                        <!-- Initial select mod to promote footer -->
+                        <div v-if="!confirmModerator && !(successAddMod||errorAddMod)" class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button v-if="!confirmModerator" type="button" @click="addModerator" class="btn btn-primary">Add Moderator</button>
+                        </div>
+
+                        <!-- confirm mod to promote footer -->
+                        <div v-if="confirmModerator && !(successAddMod||errorAddMod)" class="modal-footer">
+                            <button type="button" @click="selectPromotedUser" class="btn btn-secondary">Return</button>
+                            <button type="button" @click="confirmAddModerator" class="btn btn-primary">Confirm Moderator</button>
+                        </div>
+
+                        <!-- successaddmod and erroraddmod footer -->
+                        <div v-if="successAddMod||errorAddMod" class="modal-footer">
+                            <button type="button" @click="selectPromotedUser" class="btn btn-secondary">Return</button>
+                            <button type="button" @click="resetAddMod" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mod removal modal -->
+
+            <div class="modal fade" id="removeModeratorModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addModeratorLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: #535C72">
+                            <h1 class="modal-title fs-5" id="removeModeratorLabel" style="color: white;">Remove Moderator</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Choose user to remove as a moderator:
+                            <input v-model="downgradedMod" type="text" class="form-control">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Remove Moderator</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- mod addition and removal end -->
+
+
             <hr>
             <!-- business sign up -->
             <div class="row text-center">
@@ -377,6 +487,7 @@
                     producers: [],
                     venues: [],
                     countries: [],
+                    drinkTypes: [],
 
                     editedObservationTags: [],
                     pendingModRequests: [],
@@ -387,6 +498,12 @@
                     //User 
                     user: null,
                     users: [],
+                    promotedUser:'',
+                    selectedPromotedUser:null,
+                    downgradedMod:'',
+                    selectedDowngradedMod:'',
+                    promotedType:'',
+                    selectedPromotedType:null,
 
                     // creation of new observation tag
                     newObservation:'',
@@ -416,6 +533,9 @@
                     successDeleteObservation:false,
                     notExistObservation:false,
 
+                    confirmModerator:false,
+                    successAddMod:false,
+                    errorAddMod:false,
 
                     // Logged in user details
                     userID: null,
@@ -525,6 +645,15 @@
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
                         this.countries = response.data;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                        this.loadError = true;
+                    }
+                    // drinkType
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
+                        this.drinkTypes = response.data;
                     } 
                     catch (error) {
                         console.error(error);
@@ -688,11 +817,9 @@
                         this.successDeleteObservation=true; // Display success message
                         this.deletingObservation=false; // Hide submission in progress message
                         let observationToRemove = this.observationTags.findIndex(obj => obj._id.$oid === this.observationToDelete.tagId.$oid);
-                        console.log(observationToRemove)
                         if (observationToRemove !== -1) {
                             this.observationTags.splice(observationToRemove, 1);
                         }
-                        console.log(this.observationTags)
                     }else{
                         this.errorDeletingObservation=true; // Display error message
                         this.deletingObservation=false; // Hide submission in progress message
@@ -720,7 +847,7 @@
                         const newModType = request.drinkType;
 
                         try {
-                            const response = await this.$axios.post('http://127.0.0.1:5100/updateModType', 
+                            await this.$axios.post('http://127.0.0.1:5100/updateModType', 
                                 {
                                     userID: userID,
                                     newModType: newModType,
@@ -729,7 +856,6 @@
                                     'Content-Type': 'application/json'
                                 }
                             });
-                            console.log(response.data);
                         } catch (error) {
                             console.error(error);
                         }
@@ -737,7 +863,7 @@
                     
                     // update mod request db
                     try {
-                        const response = await this.$axios.post('http://127.0.0.1:5101/updateModRequest', 
+                        await this.$axios.post('http://127.0.0.1:5101/updateModRequest', 
                             {
                                 requestID: requestID,
                                 reviewStatus: false,
@@ -746,7 +872,6 @@
                                 'Content-Type': 'application/json'
                             }
                         });
-                        console.log(response.data);
                     } catch (error) {
                         console.error(error);
                     }
@@ -782,7 +907,7 @@
                         // producers
                         if (request.businessType == "producer") {
                             try {
-                                const response = await this.$axios.post('http://127.0.0.1:5200/updateProducerStatus', 
+                                await this.$axios.post('http://127.0.0.1:5200/updateProducerStatus', 
                                     {
                                         businessID: businessID,
                                         newBusinessData: newBusinessData,
@@ -791,7 +916,6 @@
                                         'Content-Type': 'application/json'
                                     }
                                 });
-                                console.log(response.data);
                             } catch (error) {
                                 console.error(error);
                             }
@@ -799,7 +923,7 @@
                         // venues 
                         else if (request.businessType == "venue") {
                             try {
-                                const response = await this.$axios.post('http://127.0.0.1:5300/updateVenueStatus', 
+                                await this.$axios.post('http://127.0.0.1:5300/updateVenueStatus', 
                                     {
                                         businessID: businessID,
                                         newBusinessData: newBusinessData,
@@ -808,7 +932,6 @@
                                         'Content-Type': 'application/json'
                                     }
                                 });
-                                console.log(response.data);
                             } catch (error) {
                                 console.error(error);
                             }
@@ -828,7 +951,7 @@
 
                     // update review status
                     try {
-                        const response = await this.$axios.post('http://127.0.0.1:5031/updateAccountRequest', 
+                        await this.$axios.post('http://127.0.0.1:5031/updateAccountRequest', 
                             {
                                 requestID: requestID,
                                 reviewStatus: false,
@@ -837,7 +960,6 @@
                                 'Content-Type': 'application/json'
                             }
                         });
-                        console.log(response.data);
                     } catch (error) {
                         console.error(error);
                     }
@@ -873,7 +995,6 @@
                                 producerLink: "",
                                 claimStatus: this.businessClaimStatus === "true",
                             }
-                            console.log(newBusinessData);
                             try {
                                 const response = await this.$axios.post('http://127.0.0.1:5031/createProducerAccount', 
                                     {
@@ -883,7 +1004,6 @@
                                         'Content-Type': 'application/json'
                                     }
                                 });
-                                console.log(response.data);
 
                                 if (response.data.code == 201) {
                                     this.createBusinessSuccess = true;
@@ -908,6 +1028,98 @@
                         this.tempPassword = "";
                         this.createBusinessSuccess = false;
                         this.createBusinessError = "";
+                },
+
+                updateUsername(){
+                    // get error message element
+                    let usernameError = document.getElementById("usernameError")
+                    // find listing based on bottle name
+                    let user = this.users.find(user => user.username === this.promotedUser)
+                    if (user) {
+                        this.selectedPromotedUser = user
+                        usernameError.innerHTML = ""
+                    }
+                    else {
+                        this.selectedPromotedUser = null
+                        usernameError.innerHTML = "Please enter a valid username"
+                    }
+                },
+
+                updateDrinkType(){
+                    // get error message element
+                    let promotedTypeError = document.getElementById("promotedTypeError")
+                    // find listing based on bottle name
+                    let drinkType = this.drinkTypes.find(drinkType => drinkType.drinkType === this.promotedType)
+                    if (drinkType) {
+                        this.selectedPromotedType = drinkType
+                        promotedTypeError.innerHTML = ""
+                    }
+                    else {
+                        this.selectedPromotedType = null
+                        promotedTypeError.innerHTML = "Please enter a valid drink type"
+                    }
+                },
+
+                addModerator(){
+                    let alreadyModError = document.getElementById("alreadyModError")
+                    if(this.selectedPromotedUser.modType.includes(this.selectedPromotedType.drinkType)){
+                        alreadyModError.innerHTML = "This user is already a moderator for this drink type"
+                        return null
+                    }else{
+                        alreadyModError.innerHTML = ""
+                    }
+                    let errorMessage = ''
+                    if(this.selectedPromotedUser == null){
+                        errorMessage+="Please enter a valid username!\n"
+                    }
+                    if(this.selectedPromotedType == null){
+                        errorMessage+="Please enter a valid drink type!\n"
+                    }
+                    if(errorMessage!=''){
+                        alert(errorMessage)
+                        return null
+                    }
+                    this.confirmModerator = true
+                    
+                },
+
+                async confirmAddModerator(){
+                    try {
+                        await this.$axios.post('http://127.0.0.1:5100/updateModType', 
+                            {
+                                userID: this.selectedPromotedUser._id.$oid,
+                                newModType: this.selectedPromotedType.drinkType,
+                            }, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(response => {
+                            // Handle the response here
+                            if(response.data.code == 201){
+                                this.successAddMod = true
+                                this.selectedPromotedUser.modType.push(this.selectedPromotedType.drinkType)
+                            }
+                        });
+                    } catch (error) {
+                        console.error(error);
+                        this.errorAddMod = true
+                        this.confirmModerator = false
+                    }
+                },
+
+                selectPromotedUser(){
+                    this.confirmModerator=false
+                    this.successAddMod = false
+                    this.errorAddMod = false
+                },
+                resetAddMod(){
+                    this.confirmModerator=false
+                    this.selectedPromotedType = null
+                    this.selectedPromotedUser = null
+                    this.promotedType=''
+                    this.promotedUser=''
+                    this.successAddMod = false
+                    this.errorAddMod = false
                 }
             }
         }
