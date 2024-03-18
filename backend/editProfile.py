@@ -213,5 +213,49 @@ def updateModType():
         ), 500
 
 # -----------------------------------------------------------------------------------------
+# [POST] Remove mod type
+# - Remove user mod type by specified drink type
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/removeModType', methods=['POST'])
+def removeModType():
+    data = request.get_json()
+    print(data)
+    userID = data['userID']
+    removeModType = data['removeModType']
+
+    user_document = db.users.find_one({"_id": ObjectId(userID)})
+    modType = user_document['modType']
+
+    modType.remove(removeModType)
+
+    try: 
+        updateModType = db.users.update_one({'_id': ObjectId(userID)}, {'$set': {'modType': modType}})
+
+
+        return jsonify(
+            {   
+                "code": 201,
+                "data": {
+                    "userID": userID,
+                    "removeModType": removeModType
+                }
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "data": {
+                        "userID": userID,
+                        "removeModType": removeModType
+                    }
+                },
+                "message": "An error occurred updating mod type."
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(debug=True, port=5100)
