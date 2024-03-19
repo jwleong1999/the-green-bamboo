@@ -615,21 +615,22 @@
                 convertToCSV() {
                     let keepColumns = this.fileFormat.filter(item => Object.values(item).some(value => value !== ''));
                     console.log(keepColumns)
-                    const keys = keepColumns[0];
-                    const values = keepColumns[1];
 
-                    let result = values.reduce((acc, value, index) => {
-                        acc[keys[index]] = value;
-                        return acc;
-                    }, {});
+                    this.csvData = keepColumns.map(column => {
+                        return { value: column };
+                    });
 
-                    this.csvData = result
+                    console.log(this.csvData)
                 },
 
                 downloadCSV() {
-                    const keys = Object.keys(this.csvData);
-                    const values = Object.values(this.csvData);
-                    let csvContent = "data:text/csv;charset=utf-8," + keys.join(",") + "\n" + values.join(",");
+                    let csvContent = "data:text/csv;charset=utf-8,";
+
+                    this.csvData.forEach(row => {
+                        csvContent += row.value + "\n";
+                    });
+
+                    console.log(csvContent)
                     const encodedUri = encodeURI(csvContent);
                     const link = document.createElement("a");
                     link.setAttribute("href", encodedUri);
