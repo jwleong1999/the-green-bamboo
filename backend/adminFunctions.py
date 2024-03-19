@@ -184,6 +184,7 @@ def importListings():
 
     # Skip the header row if needed
     next(csv_data)
+    next(csv_data)
 
     # Create a list to store all the documents to be inserted
     documents = []
