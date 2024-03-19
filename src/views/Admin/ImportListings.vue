@@ -154,6 +154,17 @@
             methods: {
                 async loadData(){
 
+                    // csv
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5052/readCSV');
+                        this.fileFormat = response.data.data;
+                        console.log(this.fileFormat);
+                        this.convertToCSV();
+                    }
+                    catch (error) {
+                        console.error(error);
+                    }
+
                     // Check if admin, if not reroute to home page
                     // users
                     try {
@@ -235,16 +246,6 @@
                     catch (error) {
                         console.error(error);
                         this.loadError = true;
-                    }
-                    // csv
-                    try {
-                        const response = await this.$axios.get('http://127.0.0.1:5052/readCSV');
-                        this.fileFormat = response.data.data;
-                        console.log(this.fileFormat);
-                        this.convertToCSV();
-                    }
-                    catch (error) {
-                        console.error(error);
                     }
 
                     this.dataLoaded = true;
