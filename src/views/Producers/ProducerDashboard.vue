@@ -105,7 +105,7 @@
                         <h3> Profile Visits </h3>
                         <Line :data="profileData" :options="chartOptions"></Line>
                     </div>
-\
+
                 </div>
 
                 <!-- row 2: your best rated expressions & your most reviewed expressions -->

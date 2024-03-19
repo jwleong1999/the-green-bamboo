@@ -152,19 +152,21 @@ def image_url_to_base64(url):
 
 # To hash the password
 def hash_password(id, password):
-    combined_string = str(id) + password
+    combinedString = str(id) + password
     hash = 0
 
-    for char in combined_string:
-        char_code = ord(char)
-        hash = (hash << 5) - hash + char_code
+    for i in range(len(combinedString)):
+        char = ord(combinedString[i])
+        hash = (hash << 5) - hash + char
         hash &= 0xFFFFFFFF  # Convert to 32-bit integer
+
+    if hash & (1 << 31):  # If the highest bit is set
+        hash -= 1 << 32  # Convert to a signed integer
 
     return hash
 
+# -----------------------------------------------------------------------------------------
 
-
-    
 # [POST] Import listings
 # - Bulk import listings
 # - Possible return codes: 201 (Updated), 400(Observation tag not found), 500 (Error during update)
