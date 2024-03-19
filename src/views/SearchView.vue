@@ -175,9 +175,23 @@
                                     <b> Category: </b>
                                     {{ resultListing['typeCategory'] }}</p>
                                 <!-- Country of Origin -->
-                                <p>
+                                <p class="m-0">
                                     <b> Origin: </b>
-                                    {{ resultListing['originCountry'] }}</p>
+                                    {{ resultListing['originCountry'] }}
+                                </p>
+                                <!-- Added Date -->
+                                <p class="m-0">
+                                    <b> Date Added: </b>
+                                    {{ formatDate(resultListing['addedDate'].$date) }}
+                                </p>
+                                <!-- Rating -->
+                                <p class="d-flex justify-content-end">
+                                    <b> Rating: </b> &nbsp;
+                                    {{ getRatings(resultListing) }}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
+                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                    </svg>
+                                </p>
                             </div>
 
                             <!-- Description -->
@@ -410,14 +424,14 @@
                 // #5: Ratings (Highest - Lowest)
                 else if (category == 'Ratings (Highest - Lowest)') {
                     this.resultListings.sort((a, b) => {
-                        return this.getRatings(b) - this.getRatings(a);
+                        return this.getAllRatings(b) - this.getAllRatings(a);
                     });
                 }
 
                 // #6: Ratings (Lowest - Highest)
                 else if (category == 'Ratings (Lowest - Highest)') {
                     this.resultListings.sort((a, b) => {
-                        return this.getRatings(a) - this.getRatings(b);
+                        return this.getAllRatings(a) - this.getAllRatings(b);
                     });
                 }
             },
@@ -434,8 +448,26 @@
                 }
             },
 
-            // get ratings for a listing
+            // get ratings for a listing --> return "-" if no ratings
             getRatings(listing) {
+                const ratings = this.reviews.filter((rating) => {
+                    return rating["reviewTarget"]["$oid"] == listing["_id"]["$oid"];
+                });
+                // if there are no ratings
+                if (ratings.length == 0) {
+                    return "-";
+                }
+                // else there are ratings
+                const averageRating = ratings.reduce((total, rating) => {
+                    return total + rating["rating"];
+                }, 0) / ratings.length;
+                // round to 1 decimal place
+                const roundedRating = Math.round(averageRating * 10) / 10;
+                return roundedRating;
+            },
+
+            // get ratings for a listing --> return 0 if no ratings
+            getAllRatings(listing) {
                 const ratings = this.reviews.filter((rating) => {
                     return rating["reviewTarget"]["$oid"] == listing["_id"]["$oid"];
                 });
@@ -455,7 +487,17 @@
             // for bookmark component
             handleIconClick(data) {
                 this.bookmarkListingID = data
-            }
+            },
+
+            // format date
+            formatDate(dateTimeString) {
+                let datePart = dateTimeString.split("T")[0];
+                // splitting the date into year, month, and day
+                let [year, month, day] = datePart.split("-");
+                // formatting the date
+                let formattedDate = `${day}/${month}/${year}`;
+                return formattedDate;
+            },
         }
     }
 </script>
