@@ -50,8 +50,12 @@
                         <button v-else-if="following && user" type="button" class="btn primary-btn-outline-less-round" @click="editFollow('unfollow')">Following</button>
                         <button v-else-if="user" type="button" class="btn primary-btn-less-round" @click="editFollow('follow')">+ Follow User</button>
                         <button v-if="ownProfile && user" class="btn btn-warning mt-3">View My Analytics</button>
-                        <button v-else-if="displayUser.modType != ''" class="btn btn-warning mt-3">★ Certified Moderator</button> 
-                        <a v-if="user" href="#" class="mt-3" data-bs-toggle="modal" data-bs-target="#applyModerator" style="color: black">Want to be a moderator? Apply here!</a>
+                        <span style="position: relative; display: inline-block" class="m-0 p-0">
+                            <button v-if="!ownProfile && displayUser.modType != []" class="btn btn-warning mt-3 hover-button" style="width: 356px">★ Certified Moderator</button> 
+                            <div v-if="!ownProfile && displayUser.modType != []" class="speech-bubble">{{ displayUser.modType ? displayUser.modType.join(', ') : 'None' }}</div>
+
+                        </span>
+                        <a v-if="user && !user.isAdmin" href="#" class="mt-3" data-bs-toggle="modal" data-bs-target="#applyModerator" style="color: black">Want to be a moderator? Apply here!</a>
                     </div>
 
                     <!-- editProfileModal start -->
@@ -296,9 +300,11 @@
                                 <img :src=" 'data:image/png;base64,' + (photo || defaultDrinkImage)" alt="" class="bottle-img me-3">
                                 <div style="height: 150px; display: flex; flex-direction: column;" >
                                     <h3 class="mt-1" @click="toggleView(name)" style="cursor: pointer"> {{ name }} </h3>
-                                    <p v-if="bookmarkList.listItems.length > 1"> {{ bookmarkList.listItems.length }} items in list </p>
-                                    <p v-else> {{ bookmarkList.listItems.length }} item in list </p>
-                                    <p> {{ bookmarkList.listDesc }} </p>
+                                    <span v-if="bookmarkList.listItems.length > 1"> {{ bookmarkList.listItems.length }} items in list </span>
+                                    <span v-else> {{ bookmarkList.listItems.length }} item in list </span>
+                                    <div style="max-height: 48px; overflow-y: auto; font-style: italic;">
+                                        {{ bookmarkList.listDesc }}
+                                    </div>
                                     <div style="display: flex; margin-top: auto;" class="mb-1">
                                         <a class="me-4" @click="toggleView(name)" href="#" style="color: #535C72;">View List</a>
                                         <a v-if="ownProfile && !(name == 'Drinks I Have Tried' || name == 'Drinks I Want To Try')" class="me-4" href="#" style="color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#editListModal${index}`" @click="resetEditList(name, bookmarkList.listDesc)">Edit List</a>
@@ -1167,8 +1173,36 @@ export default {
     flex-direction: row;
 }
 
-.selected-drink {
-  color: green; /* Replace with the color you want */
+.speech-bubble {
+    z-index: 1;
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    left: calc(100% + 12px);
+    top: 10px;
+    width: 200px;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px; /* Adds rounded corners to the speech bubble */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: opacity 0.3s, visibility 0s linear 0.3s;
+    /* Creates the tail of the speech bubble */
+    &:after {
+        content: "";
+        position: absolute;
+        top: 10px;
+        left: -10px; /* Adjusts the position of the tail to be just outside the speech bubble */
+        border-style: solid;
+        border-width: 10px 10px 10px 0;
+        border-color: transparent white transparent transparent;
+    }
+}
+
+.hover-button:hover + .speech-bubble, .speech-bubble:hover {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
 }
 
 </style>
