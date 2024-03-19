@@ -156,13 +156,18 @@
                             <div class="col-8">
                                 <!-- Listing Name + Router Link -->
                                 <router-link class="text-dark text-decoration-none" :to="{ path: '/listing/view/' + resultListing._id['$oid'] }">
-                                    <h4 class="fw-bold">{{ resultListing['listingName'] }}</h4>
+                                    <h4 class="fw-bold m-1">{{ resultListing['listingName'] }}</h4>
                                 </router-link>
                                 <!-- Producer Name + Router Link -->
                                 <router-link class="text-secondary-emphasis text-decoration-none" :to="{ path: '/profile/producer/' + resultListing.producerID['$oid'] }">
-                                    <h5 class="fw-bold mb-0">{{ resultListing['producerName'] }}</h5>
-                                    <p class="fw-bold fst-italic" v-if="resultListing['bottler'] != 'OB'">Bottler: {{ resultListing['bottler'] }}</p>
+                                    <h5 class="fw-bold m-1">{{ resultListing['producerName'] }}</h5>
+                                    <p class="fw-bold fst-italic m-0" v-if="resultListing['bottler'] != 'OB'">Bottler: {{ resultListing['bottler'] }}</p>
                                 </router-link>
+                                <!-- Added Date -->
+                                <p class="mt-1 mb-3">
+                                    <b> Date Added: </b>
+                                    {{ formatDate(resultListing['addedDate'].$date) }}
+                                </p>
                             </div>
 
                             <div class="col-4 text-end" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
@@ -178,11 +183,6 @@
                                 <p class="m-0">
                                     <b> Origin: </b>
                                     {{ resultListing['originCountry'] }}
-                                </p>
-                                <!-- Added Date -->
-                                <p class="m-0">
-                                    <b> Date Added: </b>
-                                    {{ formatDate(resultListing['addedDate'].$date) }}
                                 </p>
                                 <!-- Rating -->
                                 <p class="d-flex justify-content-end">
