@@ -569,45 +569,47 @@
                 // Calling of backend to import csv file
                 async importCSV() {
                     
-                    const formData = new FormData();
+                    if (this.csvFile != []) {
+                        const formData = new FormData();
                     formData.append('file', this.csvFile);
                     
                     
-                    try {
-                        const response = await this.$axios.post('http://127.0.0.1:5052/importListings', 
-                            formData, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data'
+                        try {
+                            const response = await this.$axios.post('http://127.0.0.1:5052/importListings', 
+                                formData, {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data'
+                                }
+                            })
+                            .then((response)=>{
+                            this.responseCode = response.data.code
+                            if(this.responseCode == 201){
+                            this.importSuccess=true; // Display success message
+                            }else{
+                                this.importSuccess = false
                             }
-                        })
-                        .then((response)=>{
-                        this.responseCode = response.data.code
-                        if(this.responseCode == 201){
-                        this.importSuccess=true; // Display success message
-                        }else{
-                            this.importSuccess = false
-                        }
-                        })
-                        .catch((error)=>{
-                            console.error(error);
-                            this.responseCode = error.response.data.code
+                            })
+                            .catch((error)=>{
+                                console.error(error);
+                                this.responseCode = error.response.data.code
+                                
+                            });
                             
-                        });
+                            
+                        return response
+                        } catch (error) {
+                            console.error('Error:', error);
+                        }
                         
-                        
-                    return response
-                    } catch (error) {
-                        console.error('Error:', error);
+                        console.log(this.responseCode)
+                        console.log(this.importSuccess)
                     }
-                    
-                    console.log(this.responseCode)
-                    console.log(this.importSuccess)
                 },
 
                 // To import more listings
                 moreImports(){
                     this.importSuccess = false
-                    this.csvFile = null
+                    this.csvFile = []
                 },
 
                 convertToCSV() {
