@@ -182,7 +182,9 @@ def importListings():
     #Read the CSV file
     csv_data = csv.reader(io.TextIOWrapper(file, 'utf-8'))
 
-    # Skip the header row if needed
+    # Skip to the data import rows
+    next(csv_data)
+    next(csv_data)
     next(csv_data)
     next(csv_data)
 
