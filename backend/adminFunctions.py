@@ -20,6 +20,7 @@ from datetime import datetime
 
 import csv
 import io
+import codecs
 
 from urllib.request import urlopen
 import base64
@@ -319,7 +320,7 @@ def importListings():
 # -----------------------------------------------------------------------------------------
 @app.route('/readCSV', methods=['GET'])
 def readCSV():
-    with open('Dataset/listingsFormat.csv', 'r') as file:
+    with codecs.open('Dataset/listingsFormat.csv', 'r', encoding='utf-8-sig') as file:
         reader = csv.reader(file)
         data = [row for row in reader]
     return jsonify(
