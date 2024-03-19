@@ -156,7 +156,7 @@
                     <!-- col 1: spread of ratings -->
                     <div class="col text-start pt-5 mx-3">
                         <h3> Spread of Ratings </h3>
-                        <Bar :data="ratingsData" :options="ratingChartOptions" />
+                        <Bar :data="ratingsData" :options="chartOptions" />
                     </div>
 
                     <!-- col 2: your most reviewed categories -->
