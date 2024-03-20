@@ -185,7 +185,9 @@
                             <div class="alert alert-success" role="alert">
                                 Business account created successfully. 
                                 <br>
-                                Please save login details. 
+                                Please save login details below.
+                                <br>
+                                <span class="text-danger">*This is the only time you can access the password. You cannot recover them later.</span>
                                 <br><br>
                                 <span v-if="businessType == 'producer'">Producer account: <b>{{ businessName }}</b></span>
                                 <!-- <span v-if="businessType == 'venue'">Venue account: {{ businessName }}</span> -->
@@ -198,22 +200,22 @@
                         </div>
                         <div class="modal-body text-start" v-else>
                             <div>
-                                <div class="mb-2">
+                                <div class="mb-2 fw-bold">
                                     Profile Type
                                 </div>
                                 <div class="mb-4">
                                     <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" id="inlineCheckbox1" v-model="businessType" value="producer" name="business">
-                                        <label class="form-check-label text-start fw-bold" for="inlineCheckbox1">Brand/Producer</label>
+                                        <label class="form-check-label text-start" for="inlineCheckbox1">Brand/Producer</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" id="inlineCheckbox2" v-model="businessType" value="venue" name="business">
-                                        <label class="form-check-label text-start fw-bold" for="inlineCheckbox2">Venue</label>
+                                        <label class="form-check-label text-start" for="inlineCheckbox2">Venue</label>
                                     </div>
                                 </div>
                             </div>
                             <div>
-                                <div class="mb-2">
+                                <div class="mb-2 fw-bold">
                                     Name
                                 </div>
                                 <div class="mb-4">
@@ -221,7 +223,7 @@
                                 </div>
                             </div>
                             <div>
-                                <div class="mb-2">
+                                <div class="mb-2 fw-bold">
                                     Description
                                 </div>
                                 <div class="mb-4">
@@ -229,12 +231,12 @@
                                 </div>
                             </div>
                             <div>
-                                <div class="mb-2">
+                                <div class="mb-2 fw-bold">
                                     Country
                                 </div>
                                 <div class="mb-4">
                                     <div class="input-group">
-                                        <select class="form-select" id="countrySelect" v-model="businessCountry" style="border-color: black;">
+                                        <select class="form-select" id="countrySelect" v-model="businessCountry">
                                             <option v-for="country in countries" :key="country" :value="country.originCountry">
                                                 {{ country.originCountry }}
                                             </option>
@@ -243,17 +245,17 @@
                                 </div>
                             </div>
                             <div>
-                                <div class="mb-2">
+                                <div class="mb-2 fw-bold">
                                     Claim Status
                                 </div>
                                 <div class="mb-4">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" id="claimed" v-model="businessClaimStatus" value="true" name="claim">
-                                        <label class="form-check-label text-start fw-bold" for="claimed">Claimed</label>
+                                        <label class="form-check-label text-start" for="claimed">Claimed</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" id="unclaimed" v-model="businessClaimStatus" value="false" name="claim">
-                                        <label class="form-check-label text-start fw-bold" for="unclaimed">Unclaimed</label>
+                                        <label class="form-check-label text-start" for="unclaimed">Unclaimed</label>
                                     </div>
                                 </div>
                             </div>
@@ -475,6 +477,8 @@
                     <div v-for="request in pendingAccountRequests" class="col-3 pb-4" v-bind:key="request._id">
                         <div class="card h-100" style="background-color: white">
                             <div class="card-body">
+                            <span class="fw-bold">Business Information</span>
+                            <hr>
                             <ul class="list-group list-group-flush text-start">
                                 <li class="list-group-item"><span class="fw-bold">Type: </span> {{ request.businessType }} </li>
                                 <li class="list-group-item"><span class="fw-bold">Name: </span> {{ request.businessName }} </li>
@@ -486,6 +490,11 @@
                                     </router-link> 
                                     <span v-if="!request.businessLink">N/A</span>
                                 </li>
+                            </ul>
+                            <hr>
+                            <span class="fw-bold">Requestor Information</span>
+                            <hr>
+                            <ul class="list-group list-group-flush text-start">
                                 <li class="list-group-item"><span class="fw-bold">First Name: </span> {{ request.firstName }} </li>
                                 <li class="list-group-item"><span class="fw-bold">Last Name: </span> {{ request.lastName }} </li>
                                 <li class="list-group-item"><span class="fw-bold">Email: </span> {{ request.email }} </li>
@@ -496,8 +505,8 @@
                             </ul>
                             </div>
                             <div class="card-footer">
-                                <button v-if="checkBusinessExist(request.businessLink)" class="btn btn-success btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'approve')">Approve</button>
-                                <button v-else class="btn btn-success btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'add')" data-bs-toggle="modal" data-bs-target="#addBusinessModal">Add</button>
+                                <button v-if="checkBusinessExist(request.businessLink)" class="btn btn-success btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'approve')" data-bs-toggle="modal" data-bs-target="#addBusinessModal">Approve</button>
+                                <button v-else class="btn btn-primary btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'add')" data-bs-toggle="modal" data-bs-target="#addBusinessModal">Add</button>
                                 <button class="btn btn-danger btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'reject')">Reject</button>
                             </div>
                         </div>
@@ -953,17 +962,24 @@
                 async reviewAccountRequest(request, action) {
                     const requestID = request._id.$oid;
                     if (action == "approve") {
+                        this.businessType = request.businessType;
+                        this.businessName = request.businessName;
+                        this.tempPassword = hashPassword(request.businessName).toString();
+                        this.tempPassword = this.tempPassword.replace(/-/g, '');
+                        const hashedPassword = hashPassword(request.businessName, this.tempPassword);
+
                         const newBusinessData = {
                             businessName: request.businessName,
                             businessDesc: request.businessDesc,
                             country: request.country,
+                            hashedPassword: hashedPassword,
                             claimStatus: true,
                         }
                         const businessID = request.businessLink.split("/").pop()
                         // producers
                         if (request.businessType == "producer") {
                             try {
-                                await this.$axios.post('http://127.0.0.1:5200/updateProducerStatus', 
+                                const response = await this.$axios.post('http://127.0.0.1:5200/updateProducerStatus', 
                                     {
                                         businessID: businessID,
                                         newBusinessData: newBusinessData,
@@ -972,6 +988,11 @@
                                         'Content-Type': 'application/json'
                                     }
                                 });
+
+                                if (response.data.code == 201) {
+                                    this.createBusinessSuccess = true;
+                                } 
+
                             } catch (error) {
                                 console.error(error);
                             }
@@ -979,7 +1000,7 @@
                         // venues 
                         else if (request.businessType == "venue") {
                             try {
-                                await this.$axios.post('http://127.0.0.1:5300/updateVenueStatus', 
+                                const response = await this.$axios.post('http://127.0.0.1:5300/updateVenueStatus', 
                                     {
                                         businessID: businessID,
                                         newBusinessData: newBusinessData,
@@ -988,6 +1009,11 @@
                                         'Content-Type': 'application/json'
                                     }
                                 });
+
+                                if (response.data.code == 201) {
+                                    this.createBusinessSuccess = true;
+                                } 
+
                             } catch (error) {
                                 console.error(error);
                             }
@@ -1034,8 +1060,12 @@
                     }
                     else {
                         this.addBizError = "";
-                        this.tempPassword = hashPassword(this.businessName).toString();
-                        this.tempPassword = this.tempPassword.replace(/-/g, '');
+                        if (this.businessClaimStatus == "true") {
+                            this.tempPassword = hashPassword(this.businessName).toString();
+                            this.tempPassword = this.tempPassword.replace(/-/g, '');
+                        } else {
+                            this.tempPassword = "admin1234";
+                        }
                         const hashedPassword = hashPassword(this.businessName, this.tempPassword);
                         if (this.businessType == "producer") {
                             const newBusinessData = {
@@ -1063,6 +1093,7 @@
 
                                 if (response.data.code == 201) {
                                     this.createBusinessSuccess = true;
+                                    return true
                                 } 
                             } catch (error) {
                                 console.error(error);

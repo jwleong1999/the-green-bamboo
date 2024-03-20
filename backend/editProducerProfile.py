@@ -281,15 +281,17 @@ def updateProducerStatus():
     producerName = data['newBusinessData']["businessName"]
     producerDesc = data['newBusinessData']["businessDesc"]
     originCountry = data['newBusinessData']["country"]
+    hashedPassword = data['newBusinessData']["hashedPassword"]
     claimStatus = data['newBusinessData']["claimStatus"]
 
     try: 
         update = db.producers.update_one({'_id': ObjectId(producerID)}, 
                                          {'$set': {
-                                             'producerName': producerName,
-                                             'producerDesc': producerDesc,
-                                             'originCountry': originCountry,
-                                             'claimStatus': claimStatus
+                                                'producerName': producerName,
+                                                'producerDesc': producerDesc,
+                                                'originCountry': originCountry,
+                                                'hashedPassword': hashedPassword,
+                                                'claimStatus': claimStatus
                                             }})
 
         return jsonify(
