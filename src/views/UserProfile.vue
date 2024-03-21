@@ -49,7 +49,11 @@
                         <button v-if="ownProfile && user" type="button" class="btn primary-btn-outline-less-round" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
                         <button v-else-if="following && user" type="button" class="btn primary-btn-outline-less-round" @click="editFollow('unfollow')">Following</button>
                         <button v-else-if="user" type="button" class="btn primary-btn-less-round" @click="editFollow('follow')">+ Follow User</button>
-                        <button v-if="ownProfile && user" class="btn btn-warning mt-3">View My Analytics</button>
+                        <button v-if="ownProfile && user" class="btn btn-warning mt-3">
+                            <router-link :to="{ path: '/dashboard/user' }" class="default-clickable-text">
+                                View My Analytics
+                            </router-link>
+                        </button>
                         <span style="position: relative; display: inline-block" class="m-0 p-0">
                             <button v-if="!ownProfile && displayUser.modType != []" class="btn btn-warning mt-3 hover-button" style="width: 356px">★ Certified Moderator</button> 
                             <div v-if="!ownProfile && displayUser.modType != []" class="speech-bubble">{{ displayUser.modType ? displayUser.modType.join(', ') : 'None' }}</div>

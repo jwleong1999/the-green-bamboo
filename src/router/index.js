@@ -162,6 +162,11 @@ const routes = [
     name: 'producersdashboard',
     component: () => import('../views/Producers/ProducerDashboard.vue')
   },
+  {
+    path: '/dashboard/user',
+    name: 'dashboarduser',
+    component: () => import('../views/Users/UserDashboard.vue')
+  },
 
   // -------------------------------------------------------------------------------------
 
