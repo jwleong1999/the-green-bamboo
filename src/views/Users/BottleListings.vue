@@ -74,13 +74,13 @@
                                     <div v-if="drinkShelf.length != 0" class="overflow-auto" style="max-height: 100%;">
                                         <div class="text-start" v-for="listing in drinkShelf" v-bind:key="listing._id">
                                             <router-link :to="{ path: '/listing/view/' +listing._id.$oid}" class="reverse-clickable-text">
-                                                <div class="d-flex align-items-center">
+                                                <div class="d-flex align-items-start mb-3">
                                                     <img :src="'data:image/png;base64,'+ (listing.photo || defaultProfilePhoto)" style="width: 70px; height: 70px;">
-                                                    <p class="ms-3 reverse-clickable-text"> 
+                                                    <span class="ms-3 reverse-clickable-text"> 
                                                         <b> {{ listing.listingName }} </b> 
                                                         <br>
                                                         {{ getProducerName(listing) }}
-                                                    </p>
+                                                    </span>
                                                 </div>
                                             </router-link>
                                         </div>
