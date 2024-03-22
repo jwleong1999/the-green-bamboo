@@ -57,20 +57,20 @@ const routes = [
     component: () => import('../views/Producers/ProducerProfile.vue')
   },
   {
-    path: '/profile/venue/:venueID?',
-    name: 'profilevenue',
+    // TO BE DELETED
+    path: '/profile/venueOld/:venueID?',
+    name: 'profilevenueOld',
 
     // OLD LINK FOR REFERENECE
     // path: '/Venues/Profile-Page/:id',
     // name: 'venuesprofilepage',
 
-    component: () => import('../views/Venues/VenueProfile.vue')
+    component: () => import('../views/Venues/VenueProfileOld.vue')
   },
   {
-    // TEMPORARY
-    path: '/profile/venueNew/:venueID?',
-    name: 'profilevenueNew',
-    component: () => import('../views/Venues/VenueProfileNew.vue')
+    path: '/profile/venue/:venueID?',
+    name: 'profilevenue',
+    component: () => import('../views/Venues/VenueProfile.vue')
   },
   // -------------------------------------------------------------------------------------
 
