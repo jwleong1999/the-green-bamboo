@@ -10,12 +10,20 @@ import App from './App.vue'
 import router from './router'
 import './assets/global.css';
 import VueQRCodeComponent from 'vue-qrcode-component'
+import VueGoogleMaps from '@fawmi/vue-google-maps'
 
 // Set up Axios as a global property in Vue prototype
 const app = createApp(App);
 // Set up QR code component
 app.component('qr-code', VueQRCodeComponent)
 app.config.globalProperties.$axios = axios;
+
+// Set up Google Maps
+app.use(VueGoogleMaps, {
+    load: {
+        key: 'AIzaSyD5aukdDYDbnc8BKjFF_YjApx-fUe515Hs',
+    },
+})
 
 // Mount the app to the DOM
 app.use(router).mount('#app');
