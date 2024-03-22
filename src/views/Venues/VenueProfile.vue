@@ -207,28 +207,12 @@
                             <button class="btn btn-primary" type="button" @click="changeSectionName()">Submit</button>
                         </form> -->
 
-                        <div class="map-container">
                         
-                        <div class="map-content" style="padding: 25px;">
-                            <h4>Our location</h4>
-                            <GMapMap
-                                :center="{lat: latitude, lng: longitude}"
-                                :zoom="15"
-                                map-type-id="terrain"
-                                style="width: 500px; height: 300px"
-                            >
-                                <GMapMarker
-                                    :key="index"
-                                    v-for="(m, index) in markers"
-                                    :position="m.position"
-                                />
-                            </GMapMap>
-                            
-                        </div>
+
                     </div>
                     
                         
-                    </div>
+                    
 
                     
                     
@@ -249,6 +233,31 @@
                             </button>
                         </div>
                     </div>
+                </div>
+
+                <div class="row p-3">
+                    <div class="map-container">
+                            
+                        <div class="map-content" style="padding: 25px;">
+                            <h4 style="text-align: left;">Our Location</h4>
+                            <h5 style="text-align: left;">{{ specified_venue["address"] }}</h5>
+
+                            <GMapMap
+                                :center="{lat: latitude, lng: longitude}"
+                                :zoom="15"
+                                map-type-id="terrain"
+                                style="width: 100%; height: 300px"
+                            >
+                                <GMapMarker
+                                    :key="index"
+                                    v-for="(m, index) in markers"
+                                    :position="m.position"
+                                />
+                            </GMapMap>
+                            
+                        </div>
+                    </div>
+
                 </div>
 
                 <hr>
@@ -1334,7 +1343,7 @@
             try {
                 const response = await this.$axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
                 params: {
-                    address: this.specified_venue["venueName"],
+                    address: this.specified_venue["address"],
                     key: 'AIzaSyD5aukdDYDbnc8BKjFF_YjApx-fUe515Hs'
                 }
                 });
