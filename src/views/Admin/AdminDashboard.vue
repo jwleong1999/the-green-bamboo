@@ -219,9 +219,12 @@
                                         </div>
                                         <div class="form-group mb-3">
                                             <p class="text-start mb-1"> Choose drink type user can moderate: <span class="text-danger">*</span></p>
-                                            <input list="drinkType" v-model="promotedType" class="form-control" id="promotedType" placeholder="Enter drink type" v-on:change="updateDrinkType">
-                                            <datalist id="drinkType">
-                                                <option v-for="drinkType in drinkTypes" :key="drinkType._id.$oid" :value="drinkType.drinkType">
+                                            <div v-if="selectedPromotedUser!=null" >
+                                                <p v-html="formattedPromotedModTypes" class="text-start mb-1"></p>
+                                            </div>
+                                            <input list="addableDrinkType" v-model="promotedType" class="form-control" id="promotedType" placeholder="Enter drink type" v-on:change="updateDrinkType">
+                                            <datalist id="addableDrinkType">
+                                                <option v-for="drinkType in addableDrinkType" :key="drinkType._id.$oid" :value="drinkType.drinkType">
                                                     {{drinkType.drinkType}}
                                                 </option>
                                             </datalist>
@@ -288,9 +291,12 @@
                                         </div>
                                         <div class="form-group mb-3">
                                             <p class="text-start mb-1"> Choose drink type to remove moderator rights from: <span class="text-danger">*</span></p>
-                                            <input list="drinkType" v-model="removedType" class="form-control" id="removedType" placeholder="Enter drink type" v-on:change="updateRemovedDrinkType">
-                                            <datalist id="drinkType">
-                                                <option v-for="drinkType in drinkTypes" :key="drinkType._id.$oid" :value="drinkType.drinkType">
+                                            <div v-if="selectedRemoveMod!=null" >
+                                                <p v-html="formattedRemoveModTypes" class="text-start mb-1"></p>
+                                            </div>
+                                            <input list="removableDrinkType" v-model="removedType" class="form-control" id="removedType" placeholder="Enter drink type" v-on:change="updateRemovedDrinkType">
+                                            <datalist id="removableDrinkType">
+                                                <option v-for="drinkType in removableDrinkType" :key="drinkType._id.$oid" :value="drinkType.drinkType">
                                                     {{drinkType.drinkType}}
                                                 </option>
                                             </datalist>
@@ -584,14 +590,14 @@
                     users: [],
                     promotedUser:'',
                     selectedPromotedUser:null,
-                    downgradedMod:'',
-                    selectedDowngradedMod:'',
                     promotedType:'',
                     selectedPromotedType:null,
                     removeMod:'',
-                    selectedRemoveMod:'',
+                    selectedRemoveMod:null,
                     removedType:'',
-                    selectedRemoveType:'',
+                    selectedRemoveType:null,
+                    removableDrinkType:[],
+                    addableDrinkType:[],
 
                     // creation of new observation tag
                     newObservation:'',
@@ -645,6 +651,26 @@
                     createBusinessSuccess: false,
 
                 }
+            },
+            computed: {
+                formattedPromotedModTypes() {
+                    // Join the modType array elements with commas and spaces
+                    if(this.selectedPromotedUser.modType.length === 0){
+                        return "This user is currently not a moderator!"
+                    }
+                    else{
+                        return "This use is currently a moderator for <b>" + this.selectedPromotedUser.modType.join(', ') +"</b>!";
+                    }
+                },
+                formattedRemoveModTypes() {
+                    // Join the modType array elements with commas and spaces
+                    if(this.selectedRemoveMod.modType.length === 0){
+                        return "This user is currently not a moderator!"
+                    }
+                    else{
+                        return "This use is currently a moderator for <b>" + this.selectedRemoveMod.modType.join(', ') +"</b>!";
+                    }
+                },
             },
             mounted() {
                 // Check if user is logged in
@@ -1153,9 +1179,15 @@
                     if (user) {
                         this.selectedPromotedUser = user
                         usernameError.innerHTML = ""
+                        let currentMod = user.modType
+                        this.addableDrinkType = this.drinkTypes.filter(drinkType=>{
+                            return !currentMod.includes(drinkType.drinkType);
+                        })
                     }
                     else {
                         this.selectedPromotedUser = null
+                        this.addableDrinkType= []
+                        console.log(this.addableDrinkType)
                         usernameError.innerHTML = "Please enter a valid username"
                     }
                 },
@@ -1167,9 +1199,15 @@
                     if (user) {
                         this.selectedRemoveMod = user
                         usernameError.innerHTML = ""
+                        let currentMod = user.modType
+                        this.removableDrinkType = this.drinkTypes.filter(drinkType=>{
+                            return currentMod.includes(drinkType.drinkType);
+                        })
                     }
                     else {
                         this.selectedRemoveMod = null
+                        this.removableDrinkType = []
+                        console.log(this.removableDrinkType)
                         usernameError.innerHTML = "Please enter a valid username"
                     }
                 },
