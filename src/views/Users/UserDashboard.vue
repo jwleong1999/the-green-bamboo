@@ -43,20 +43,24 @@
                         <div>
                             <!-- v-for loop here-->
                             <div v-for="activity in recentActivity" v-bind:key="activity._id" class="py-2">
-                                <!-- <router-link :to="{ path: '/profile/user/' + review.userID.$oid }" class="reverse-clickable-text">
-                                    <b> @{{ getUsernameFromID(review.userID.$oid) }}</b>
-                                </router-link> 
-                                rated 
-                                <router-link :to="{ path: '/listing/view/' + getListingFromID(review.reviewTarget.$oid)._id.$oid }" class="reverse-clickable-text">
-                                    <u> {{ getListingFromID(review.reviewTarget.$oid).listingName }} </u>
-                                </router-link>
-                                <span class="ps-2">
-                                    <i> {{ review.rating }} 
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                                        </svg>
+                                <div v-if="activity.type === 'upvote' || activity.type === 'downvote'">
+                                    <i> 
+                                        Someone {{ activity.type }}d your review on 
+                                        <router-link :to="{ path: '/listing/view/' + activity.reviewTarget.$oid }" class="reverse-clickable-text">
+                                            <u> {{ getListingFromID(activity.reviewTarget.$oid).listingName }} </u>
+                                        </router-link>
+                                        {{ getTimeDifference(activity.date.$date) }}
                                     </i>
-                                </span> -->
+                                </div>
+                                <div v-else-if="activity.type === 'follow'">
+                                    <i> 
+                                        <router-link :to="{ path: '/profile/user/' + activity.userID.$oid }" class="reverse-clickable-text">
+                                            @<b> {{ activity.username }} </b>
+                                        </router-link> 
+                                        started following you
+                                        {{ getTimeDifference(activity.date.$date) }}
+                                    </i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -232,6 +236,42 @@
                 bestRatedCategories.sort((a, b) => b.averageRating - a.averageRating);
                 bestRatedCategories.splice(5);
                 return bestRatedCategories;
+            }, 
+            recentActivity() {
+                // upvotes and downvotes and follows
+
+                const upvotes = this.userReviews
+                    .map(review => review.userVotes.upvotes
+                        .map(upvote => ({ ...upvote, reviewTarget: review.reviewTarget }))
+                    )
+                    .filter(upvote => upvote.length > 0)
+                    .flat();
+                const downvotes = this.userReviews
+                    .map(review => review.userVotes.downvotes
+                        .map(downvote => ({ ...downvote, reviewTarget: review.reviewTarget }))
+                    )
+                    .filter(downvote => downvote.length > 0)
+                    .flat();
+
+                const follows = this.users
+                    .map(user => {
+                        const followUser = user.followLists.users.find(followUser => followUser.followerID.$oid === this.userID);
+                        return followUser ? {
+                            username: user.username,
+                            userID: user._id,
+                            date: followUser.date
+                        } : null;
+                    })
+                    .filter(Boolean);
+
+                const activities = [
+                    ...upvotes.map(upvote => ({ ...upvote, type: 'upvote' })),
+                    ...downvotes.map(downvote => ({ ...downvote, type: 'downvote' })),
+                    ...follows.map(follow => ({ ...follow, type: 'follow' }))
+                ];
+                activities.sort((a, b) => new Date(b.date.$date) - new Date(a.date.$date));
+                
+                return activities;
             }
         },
         data() {
@@ -240,9 +280,6 @@
                 userID: null,
                 userType: null,
                 user: null,
-
-                // recent activity on reviews
-                recentActivity: [],
 
                 chartOptions: {
                     responsive: true,
@@ -324,7 +361,37 @@
                 // formatting the date
                 let formattedDate = `${month}/${year}`;
                 return formattedDate
-            }
+            }, 
+
+            getTimeDifference(date) {
+                let currentDate = new Date();
+                let updateDate = new Date(date);
+                let timeDifference = currentDate - updateDate;
+                console.log(currentDate, updateDate, timeDifference);
+                let seconds = Math.floor(timeDifference / 1000);
+                let minutes = Math.floor(seconds / 60);
+                let hours = Math.floor(minutes / 60);
+                let days = Math.floor(hours / 24);
+                let months = Math.floor(days / 30);
+                let years = Math.floor(months / 12);
+                if (years > 0) {
+                    return years + (years === 1 ? ' year ago' : ' years ago');
+                } else if (months > 0) {
+                    return months + (months === 1 ? ' month ago' : ' months ago');
+                } else if (days > 0) {
+                    return days + (days === 1 ? ' day ago' : ' days ago');
+                } else if (hours > 0) {
+                    return hours + (hours === 1 ? ' hour ago' : ' hours ago');
+                } else if (minutes > 0) {
+                    return minutes + (minutes === 1 ? ' minute ago' : ' minutes ago');
+                } else {
+                    return seconds + (seconds === 1 ? ' second ago' : ' seconds ago');
+                }
+            }, 
+
+            getListingFromID(listingID) {
+                return this.listings.find(listing => listing._id.$oid == listingID);
+            },
 
         }
     };

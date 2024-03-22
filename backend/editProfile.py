@@ -15,6 +15,7 @@ from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
 from datetime import datetime
+import pytz
 
 from gridfs import GridFS
 import os
@@ -136,7 +137,7 @@ def updateFollowList():
     else:
         followLists[target].append({
             "followerID": ObjectId(followerID),
-            "date": datetime.now()
+            "date": datetime.now(pytz.timezone('Etc/GMT-8'))
             })
 
     try: 
