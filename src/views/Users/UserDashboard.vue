@@ -112,18 +112,17 @@
                     <!-- col 2: your best rated categories -->
                     <div class="col text-start pt-5 mx-3">
                         <h3> Your Best Rated Categories </h3>
-                        bestRatedCategories
-                        <div class="text-start pb-2" v-for="listing in bestRatedCategories" v-bind:key="listing._id">
-                            <!-- <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="reverse-clickable-text">
-                                <div class="d-flex align-items-center">
-                                    <img :src="'data:image/png;base64,'+ (listing.photo || defaultProfilePhoto)" style="width: 70px; height: 70px;">
-                                    <p class="ms-3 default-clickable-text"> 
-                                        <b> {{ listing.listingName }} </b> 
-                                        <br>
-                                        {{ this.reviewCounts[listing.listingName] }} reviews
-                                    </p>
+                        <div class="text-start pb-2" v-for="(category, index) in bestRatedCategories" v-bind:key="category">
+                            <div class="row ms-3 default-clickable-text"> 
+                                <div class="col-2 d-flex align-items-center justify-content-center rounded-circle me-3">
+                                    <h5 class="my-auto"> {{ index + 1 }} </h5>
                                 </div>
-                            </router-link> -->
+                                <div class="col-10">
+                                    <b> {{ category.category }} </b> 
+                                    <br>
+                                    {{ category.averageRating || "-" }} reviews
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -174,8 +173,6 @@
                     }
                 });
                 const counts = dates.map(date => this.userReviews.filter(review => this.formatDateMonthYear(review.createdDate.$date) === date).length);
-                console.log("dates: ", dates);
-                console.log("counts: ", counts);
                 return {
                     labels: dates,
                     datasets: [
@@ -211,13 +208,31 @@
                         return {
                             ...listing,
                             rating: review ? review.rating : '',
-                            // listingPhoto: listing ? listing.photo : ''
                         };
                     });
-                console.log("bestRatedListings: ", bestRatedListings);
                 return bestRatedListings;
             },
-
+            bestRatedCategories() {
+                const reviewsWithCat = this.userReviews.map(review => {
+                    const listing = this.listings.find(listing => listing._id.$oid === review.reviewTarget.$oid);
+                    return {
+                        ...review,
+                        drinkType: listing.drinkType
+                    };
+                });
+                const categories = [...new Set(reviewsWithCat.map(review => review.drinkType))];
+                const bestRatedCategories = categories.map(category => {
+                    const reviewsInCategory = reviewsWithCat.filter(review => review.drinkType === category);
+                    const averageRating = reviewsInCategory.reduce((acc, review) => acc + review.rating, 0) / reviewsInCategory.length;
+                    return {
+                        category,
+                        averageRating
+                    };
+                });
+                bestRatedCategories.sort((a, b) => b.averageRating - a.averageRating);
+                bestRatedCategories.splice(5);
+                return bestRatedCategories;
+            }
         },
         data() {
             return {
