@@ -194,7 +194,7 @@
                                 <div class="modal-content">
                                     <div class="modal-header" style="background-color: #535C72">
                                         <h1 class="modal-title fs-5" id="addModeratorLabel" style="color: white;">Add Moderator</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="resetAddMod"></button>
                                     </div>
 
                                     <!-- Success add mod modal body -->
@@ -266,7 +266,7 @@
                                 <div class="modal-content">
                                     <div class="modal-header" style="background-color: #535C72">
                                         <h1 class="modal-title fs-5" id="removeModeratorLabel" style="color: white;">Remove Moderator</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="resetRemoveMod"></button>
                                     </div>
                                     <!-- Success remove mod modal body -->
                                     <div v-if="successRemoveMod" class="modal-body text-center text-success fst-italic fw-bold fs-3">
@@ -1242,13 +1242,6 @@
                 },
 
                 addModerator(){
-                    let alreadyModError = document.getElementById("alreadyModError")
-                    if(this.selectedPromotedUser.modType.includes(this.selectedPromotedType.drinkType)){
-                        alreadyModError.innerHTML = "This user is already a moderator for this drink type"
-                        return null
-                    }else{
-                        alreadyModError.innerHTML = ""
-                    }
                     let errorMessage = ''
                     if(this.selectedPromotedUser == null){
                         errorMessage+="Please enter a valid username!\n"
@@ -1260,17 +1253,17 @@
                         alert(errorMessage)
                         return null
                     }
+                    let alreadyModError = document.getElementById("alreadyModError")
+                    if(this.selectedPromotedUser.modType.includes(this.selectedPromotedType.drinkType)){
+                        alreadyModError.innerHTML = "This user is already a moderator for this drink type"
+                        return null
+                    }else{
+                        alreadyModError.innerHTML = ""
+                    }
                     this.confirmModerator = true
                     
                 },
                 removeModerator(){
-                    let notModError = document.getElementById("notModError")
-                    if(!this.selectedRemoveMod.modType.includes(this.selectedRemoveType.drinkType)){
-                        notModError.innerHTML = "This user is not a moderator for this drink type"
-                        return null
-                    }else{
-                        notModError.innerHTML = ""
-                    }
                     let errorMessage = ''
                     if(this.selectedRemoveMod == null){
                         errorMessage+="Please enter a valid username!\n"
@@ -1281,6 +1274,13 @@
                     if(errorMessage!=''){
                         alert(errorMessage)
                         return null
+                    }
+                    let notModError = document.getElementById("notModError")
+                    if(!this.selectedRemoveMod.modType.includes(this.selectedRemoveType.drinkType)){
+                        notModError.innerHTML = "This user is not a moderator for this drink type"
+                        return null
+                    }else{
+                        notModError.innerHTML = ""
                     }
                     this.confirmRemoveModerator = true
                     

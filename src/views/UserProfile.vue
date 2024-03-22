@@ -57,10 +57,112 @@
                         <span style="position: relative; display: inline-block" class="m-0 p-0">
                             <button v-if="!ownProfile && displayUser.modType != []" class="btn btn-warning mt-3 hover-button" style="width: 100%">★ Certified Moderator</button> 
                             <div v-if="!ownProfile && displayUser.modType != []" class="speech-bubble">{{ displayUser.modType ? displayUser.modType.join(', ') : 'None' }}</div>
-
+                            <button v-if="user.isAdmin" class="btn tertiary-btn reverse-clickable-text mt-3" style="width: 100%" type="button" data-bs-toggle="modal" data-bs-target="#addModeratorModal">Add/Remove Moderator Rights</button>
                         </span>
+                        
                         <a v-if="user && !user.isAdmin" href="#" class="mt-3" data-bs-toggle="modal" data-bs-target="#applyModerator" style="color: black">Want to be a moderator? Apply here!</a>
                     </div>
+
+
+                    <!-- Add/Remove modal start -->
+                    <!-- Mod addition modal -->
+                    <div class="modal fade" id="addModeratorModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addModeratorLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header" style="background-color: #535C72">
+                                    <h1 class="modal-title fs-5" id="addModeratorLabel" style="color: white;">Add Moderator</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+
+                                <!-- Success remove mod modal body -->
+                                <div v-if="successRemoveMod" class="modal-body text-center text-success fst-italic fw-bold fs-3">
+                                    <span>User has successfully been removed as moderator!</span>
+                                </div>
+                                <!-- Error remove mod modal body -->
+                                <div v-if="errorRemoveMod" class="modal-body text-center text-danger fst-italic fw-bold fs-3">
+                                    <span>There is an error removing user as moderator, please try again!</span>
+                                </div>
+                                <!-- Success add mod modal body -->
+                                <div v-if="successAddMod" class="modal-body text-center text-success fst-italic fw-bold fs-3">
+                                    <span>User has successfully been added as moderator!</span>
+                                </div>
+                                <!-- Error add mod modal body -->
+                                <div v-if="errorAddMod" class="modal-body text-center text-danger fst-italic fw-bold fs-3">
+                                    <span>There is an error adding user as moderator, please try again!</span>
+                                </div>
+                                <!-- Initial select mode, add or remove moderator -->
+                                <div v-if="chooseMod==''" class="modal-body">
+                                    <button class="btn tertiary-btn reverse-clickable-text m-1" type="button" @click="addModMode">
+                                        Add a moderator
+                                    </button>      
+                                    <button class="btn tertiary-btn reverse-clickable-text m-1" type="button" @click="removeModMode">
+                                        Remove a moderator
+                                    </button>      
+                                </div>
+
+                                <!-- Initial select user to promote -->
+                                <div v-if="chooseMod=='add' && !doubleConfirmMod && !(successAddMod||errorAddMod||successRemoveMod||errorRemoveMod)" class="modal-body">                                    
+                                    <div class="form-group mb-3">
+                                        <p class="text-start mb-1"> Choose drink type that user can moderate: <span class="text-danger">*</span></p>
+                                        <p v-html="formattedModTypes" class="text-start mb-1"></p>
+                                        <input list="addableDrinkType" v-model="promotedType" class="form-control" id="promotedType" placeholder="Enter drink type" v-on:change="updateDrinkType">
+                                        <datalist id="addableDrinkType">
+                                            <option v-for="drinkType in addableDrinkType" :key="drinkType._id.$oid" :value="drinkType.drinkType">
+                                                {{drinkType.drinkType}}
+                                            </option>
+                                        </datalist>
+                                        <p v-show="promotedType.length > 0" class="text-start mb-1 text-danger" id="promotedTypeError"></p>
+                                    </div>
+                                    <p class="text-start mb-1 text-danger" id="alreadyModError"></p>
+                                </div>
+
+                                <div v-if="chooseMod=='remove' && !doubleConfirmMod && !(successAddMod||errorAddMod||successRemoveMod||errorRemoveMod)" class="modal-body">                                    
+                                    <div class="form-group mb-3">
+                                        <p class="text-start mb-1"> Choose drink type for user to remove moderator rights: <span class="text-danger">*</span></p>
+                                        <p v-html="formattedModTypes" class="text-start mb-1"></p>
+                                        <input list="removableDrinkType" v-model="removedType" class="form-control" id="removedType" placeholder="Enter drink type" v-on:change="updateRemovedDrinkType">
+                                        <datalist id="removableDrinkType">
+                                            <option v-for="drinkType in removableDrinkType" :key="drinkType._id.$oid" :value="drinkType.drinkType">
+                                                {{drinkType.drinkType}}
+                                            </option>
+                                        </datalist>
+                                        <p v-show="promotedType.length > 0" class="text-start mb-1 text-danger" id="removedTypeError"></p>
+                                    </div>
+                                    <p class="text-start mb-1 text-danger" id="notModError"></p>
+                                </div>
+
+                                <!-- confirm mod to promote -->
+                                <div v-if="chooseMod=='add' && doubleConfirmMod && !(successAddMod||errorAddMod||successRemoveMod||errorRemoveMod)" class="modal-body">
+                                    <p class="text-start mb-1"> Do you really want to add <strong>{{ displayUser.username }}</strong> as a moderator for <strong>{{ promotedType }}</strong>? <span class="text-danger">*</span></p>
+                                </div>
+                                <div v-if="chooseMod=='remove' && doubleConfirmMod && !(successAddMod||errorAddMod||successRemoveMod||errorRemoveMod)" class="modal-body">
+                                    <p class="text-start mb-1"> Do you really want to remove <strong>{{ displayUser.username }}</strong> as a moderator for <strong>{{ removedType }}</strong>? <span class="text-danger">*</span></p>
+                                </div>
+
+                                <!-- Initial confirm mod to promote to promote footer -->
+                                <div v-if="(chooseMod=='add' || chooseMod=='remove') && !doubleConfirmMod && !(successAddMod||errorAddMod||successRemoveMod||errorRemoveMod)" class="modal-footer">
+                                    <button type="button" @click="selectMode" class="btn btn-secondary">Return</button>
+                                    <button v-if="chooseMod=='add'" type="button" @click="doubleConfirm" class="btn btn-primary">Add Moderator</button>
+                                    <button v-if="chooseMod=='remove'" type="button" @click="doubleConfirm" class="btn btn-primary">Remove Moderator</button>
+                                </div>
+
+                                <!-- Double confirm mod to promote footer -->
+                                <div v-if="(chooseMod=='add' || chooseMod=='remove') && doubleConfirmMod && !(successAddMod||errorAddMod||successRemoveMod||errorRemoveMod)" class="modal-footer">
+                                    <button v-if="chooseMod=='add'" type="button" @click="addModMode" class="btn btn-secondary">Return</button>
+                                    <button v-if="chooseMod=='remove'" type="button" @click="removeModMode" class="btn btn-secondary">Return</button>
+                                    <button type="button" @click="confirmModifyModerator" class="btn btn-primary">Confirm Moderator</button>
+                                </div>
+
+                                <!-- successaddmod and erroraddmod footer -->
+                                <div v-if="successAddMod||errorAddMod||successRemoveMod||errorRemoveMod" class="modal-footer">
+                                    <button type="button" @click="selectMode" class="btn btn-secondary">Return</button>
+                                    <button type="button" @click="selectMode" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Add/Remove moderator modal end -->
+
 
                     <!-- editProfileModal start -->
                     <div v-if="user" class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -243,7 +345,7 @@
                                         </a>
                                         <h2>
                                             {{ review.rating }}
-                                            <svg class="mb-2" xmlns="http://www.w3.org/2000/svg" height="18" width="20.25" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M287.9 0c9.2 0 17.6 5.2 21.6 13.5l68.6 141.3 153.2 22.6c9 1.3 16.5 7.6 19.3 16.3s.5 18.1-5.9 24.5L433.6 328.4l26.2 155.6c1.5 9-2.2 18.1-9.7 23.5s-17.3 6-25.3 1.7l-137-73.2L151 509.1c-8.1 4.3-17.9 3.7-25.3-1.7s-11.2-14.5-9.7-23.5l26.2-155.6L31.1 218.2c-6.5-6.4-8.7-15.9-5.9-24.5s10.3-14.9 19.3-16.3l153.2-22.6L266.3 13.5C270.4 5.2 278.7 0 287.9 0zm0 79L235.4 187.2c-3.5 7.1-10.2 12.1-18.1 13.3L99 217.9 184.9 303c5.5 5.5 8.1 13.3 6.8 21L171.4 443.7l105.2-56.2c7.1-3.8 15.6-3.8 22.6 0l105.2 56.2L384.2 324.1c-1.3-7.7 1.2-15.5 6.8-21l85.9-85.1L358.6 200.5c-7.8-1.2-14.6-6.1-18.1-13.3L287.9 79z"/></svg>
+                                            <svg class="mb-2" xmlns="http://www.w3.org/2000/svg" height="18" width="20.25" viewBox="0 0 576 512"><!-- !Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc. --><path d="M287.9 0c9.2 0 17.6 5.2 21.6 13.5l68.6 141.3 153.2 22.6c9 1.3 16.5 7.6 19.3 16.3s.5 18.1-5.9 24.5L433.6 328.4l26.2 155.6c1.5 9-2.2 18.1-9.7 23.5s-17.3 6-25.3 1.7l-137-73.2L151 509.1c-8.1 4.3-17.9 3.7-25.3-1.7s-11.2-14.5-9.7-23.5l26.2-155.6L31.1 218.2c-6.5-6.4-8.7-15.9-5.9-24.5s10.3-14.9 19.3-16.3l153.2-22.6L266.3 13.5C270.4 5.2 278.7 0 287.9 0zm0 79L235.4 187.2c-3.5 7.1-10.2 12.1-18.1 13.3L99 217.9 184.9 303c5.5 5.5 8.1 13.3 6.8 21L171.4 443.7l105.2-56.2c7.1-3.8 15.6-3.8 22.6 0l105.2 56.2L384.2 324.1c-1.3-7.7 1.2-15.5 6.8-21l85.9-85.1L358.6 200.5c-7.8-1.2-14.6-6.1-18.1-13.3L287.9 79z"/></svg>
                                         </h2>
                                         <p>
                                             <b>{{ review.reviewTitle }}</b> <br v-if="review.reviewTitle">
@@ -586,7 +688,31 @@ export default {
             // for bookmark component
             bookmarkListingID: {},
 
+            // flags and variables for adding moderator
+            successAddMod:false,
+            successRemoveMod:false,
+            errorRemoveMod:false,
+            errorAddMod:false,
+            addableDrinkType:[],
+            removableDrinkType:[],
+            promotedType:"",
+            removedType:"",
+            selectedPromotedType:null,
+            selectedRemoveType:null,
+            chooseMod:"",
+            doubleConfirmMod:false,
         };
+    },
+    computed: {
+        formattedModTypes() {
+            // Join the modType array elements with commas and spaces
+            if(this.displayUser.modType.length === 0){
+                return "This user is currently not a moderator!"
+            }
+            else{
+                return "This use is currently a moderator for <b>" + this.displayUser.modType.join(', ') +"</b>!";
+            }
+        },
     },
     mounted() {
         // get local storage
@@ -642,7 +768,7 @@ export default {
                 this.user = this.getUser(this.userID);
                 this.displayUser = this.getUser(this.displayUserID);
                 console.log(this.user);
-
+                
                 if (this.userID === this.displayUserID) {
                     this.ownProfile = true;
                 }
@@ -702,6 +828,15 @@ export default {
                     if (this.modRequestsType.length > 0) {
                         this.filteredDrinkType = this.filteredDrinkType.filter(type => !this.modRequestsType.includes(type));
                     }
+                }
+                if(this.displayUser){
+                    let currentMod = this.displayUser.modType
+                    this.removableDrinkType = this.drinkTypes.filter(drinkType=>{
+                        return currentMod.includes(drinkType.drinkType);
+                    })
+                    this.addableDrinkType = this.drinkTypes.filter(drinkType=>{
+                        return !currentMod.includes(drinkType.drinkType);
+                    })
                 }
             } 
             catch (error) {
@@ -1150,8 +1285,158 @@ export default {
         // for bookmark component
         handleIconClick(data) {
             this.bookmarkListingID = data
-        }
-
+        },
+        updateDrinkType(){
+            // get error message element
+            let promotedTypeError = document.getElementById("promotedTypeError")
+            // find listing based on bottle name
+            let drinkType = this.addableDrinkType.find(drinkType => drinkType.drinkType === this.promotedType)
+            if (drinkType) {
+                this.selectedPromotedType = drinkType
+                promotedTypeError.innerHTML = ""
+            }
+            else {
+                this.selectedPromotedType = null
+                promotedTypeError.innerHTML = "Please enter a valid drink type"
+            }
+        },
+        updateRemovedDrinkType(){
+            // get error message element
+            let removedTypeError = document.getElementById("removedTypeError")
+            // find listing based on bottle name
+            let drinkType = this.removableDrinkType.find(drinkType => drinkType.drinkType === this.removedType)
+            if (drinkType) {
+                this.selectedRemoveType = drinkType
+                removedTypeError.innerHTML = ""
+            }
+            else {
+                this.selectedRemoveType = null
+                removedTypeError.innerHTML = "Please enter a valid drink type"
+            }
+        },
+        doubleConfirm(){
+            if(this.chooseMod == 'add'){
+                let errorMessage = ''
+                if(this.selectedPromotedType == null){
+                    errorMessage+="Please enter a valid drink type!\n"
+                }
+                if(errorMessage!=''){
+                    alert(errorMessage)
+                    return null
+                }
+                let alreadyModError = document.getElementById("alreadyModError")
+                if(this.displayUser.modType.includes(this.selectedPromotedType.drinkType)){
+                    alreadyModError.innerHTML = "This user is already a moderator for this drink type"
+                    return null
+                }else{
+                    alreadyModError.innerHTML = ""
+                }
+            }
+            if(this.chooseMod =='remove'){
+                let errorMessage = ''
+                if(this.selectedRemoveType == null){
+                    errorMessage+="Please enter a valid drink type!\n"
+                }
+                if(errorMessage!=''){
+                    alert(errorMessage)
+                    return null
+                }
+                let notModError = document.getElementById("notModError")
+                if(!this.displayUser.modType.includes(this.selectedRemoveType.drinkType)){
+                    notModError.innerHTML = "This user is not a moderator for this drink type"
+                    return null
+                }else{
+                    notModError.innerHTML = ""
+                }
+            }
+            this.doubleConfirmMod = true
+        },
+        addModMode(){
+            this.chooseMod = 'add'
+            this.doubleConfirmMod = false
+        },
+        removeModMode(){
+            this.chooseMod = 'remove'
+            this.doubleConfirmMod = false
+        },
+        selectMode(){
+            this.chooseMod = ''
+            this.doubleConfirmMod = false
+            this.resetErrors()
+        },
+        resetErrors(){
+            this.successAddMod = false
+            this.successRemoveMod =false
+            this.errorAddMod = false
+            this.errorRemoveMod = false
+            this.selectedPromotedType = null
+            this.selectedRemoveType = null
+            this.promotedType = ''
+            this.removedType = ''
+        },
+        async confirmModifyModerator(){
+            try {
+                let submitURL = ''
+                let submitData = {}
+                if(this.chooseMod=='remove'){
+                    submitURL = 'http://127.0.0.1:5100/removeModType'
+                    submitData={
+                        userID: this.displayUser._id.$oid,
+                        removeModType: this.selectedRemoveType.drinkType,
+                    }
+                }
+                if(this.chooseMod=='add'){
+                    submitURL = 'http://127.0.0.1:5100/updateModType'
+                    submitData = {
+                        userID: this.displayUser._id.$oid,
+                        newModType: this.selectedPromotedType.drinkType,
+                    }
+                }
+                await this.$axios.post(submitURL, submitData, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => {
+                    // Handle the response here
+                    if(response.data.code == 201){
+                        if(this.chooseMod == 'remove'){
+                            this.successRemoveMod = true
+                            let modToDowngrade = this.displayUser.modType.findIndex(obj => obj === this.selectedRemoveType.drinkType);
+                            if (modToDowngrade !== -1) {
+                                this.displayUser.modType.splice(modToDowngrade, 1);
+                            }
+                            let currentMod = this.displayUser.modType
+                            this.removableDrinkType = this.drinkTypes.filter(drinkType=>{
+                                return currentMod.includes(drinkType.drinkType);
+                            })
+                            this.addableDrinkType = this.drinkTypes.filter(drinkType=>{
+                                return !currentMod.includes(drinkType.drinkType);
+                            })
+                        }
+                        if(this.chooseMod == 'add'){
+                            this.successAddMod = true
+                            this.confirmModerator = false
+                            this.displayUser.modType.push(this.selectedPromotedType.drinkType)
+                            let currentMod = this.displayUser.modType
+                            this.removableDrinkType = this.drinkTypes.filter(drinkType=>{
+                                return currentMod.includes(drinkType.drinkType);
+                            })
+                            this.addableDrinkType = this.drinkTypes.filter(drinkType=>{
+                                return !currentMod.includes(drinkType.drinkType);
+                            })
+                                }
+                            }
+                });
+            } catch (error) {
+                console.error(error);
+                if(this.chooseMod == 'add'){
+                    this.errorAddMod = true
+                }
+                if(this.chooseMod == 'remove'){
+                    this.errorRemoveMod = true
+                }
+            }
+        },
         
     },
 };
