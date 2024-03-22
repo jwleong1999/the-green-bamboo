@@ -36,114 +36,146 @@
                 </div>
             </div>
 
-            <!-- Dropdown Buttons -->
+            <!-- Navtab Buttons-->
             <hr>
-            <p class="gap-1">
-                <button class="btn btn-warning mx-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNew" aria-expanded="true" aria-controls="collapseNew">
-                    New Listing Requests
-                </button>
-                <button class="btn btn-secondary mx-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEdit" aria-expanded="false" aria-controls="collapseEdit">
-                    Listing Edit Requests
-                </button>
-                <button class="btn btn-dark mx-1" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDupe" aria-expanded="false" aria-controls="collapseDupe">
-                    Duplicate Reports
-                </button>
-            </p>
+            <!-- Navtab to toggle between requests -->
+            <nav class="pb-0">
+                <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
+                    <!-- New Listing Requests -->
+                    <button class="nav-link active w-25" id="nav-listing-request-tab" data-bs-toggle="tab" data-bs-target="#nav-listing-request" type="button" role="tab" aria-controls="nav-listing-request" aria-selected="true"> 
+                        <span class="d-flex align-items-center justify-content-center mb-0">
+                            New Listing Requests
+                            <span class="rounded-circle mx-3 d-flex align-items-center justify-content-center"> 
+                                <p class="m-0">{{ requestListings.length }}</p>
+                            </span> 
+                        </span>
+                    </button>
+                    <!-- Listing Edit Requests -->
+                    <button class="nav-link w-25" id="nav-listing-edit-tab" data-bs-toggle="tab" data-bs-target="#nav-listing-edit" type="button" role="tab" aria-controls="nav-listing-edit" aria-selected="false">
+                        <span class="d-flex align-items-center justify-content-center mb-0">
+                            Listing Edit Requests
+                            <span class="rounded-circle mx-3 d-flex align-items-center justify-content-center"> 
+                                <p class="m-0">{{ requestEdits.length }}</p>
+                            </span> 
+                        </span>
+                    </button>
+                    <!-- Duplicate Reports -->
+                    <button class="nav-link w-25" id="nav-duplicate-reports-tab" data-bs-toggle="tab" data-bs-target="#nav-duplicate-reports" type="button" role="tab" aria-controls="nav-duplicate-reports" aria-selected="false">
+                        <span class="d-flex align-items-center justify-content-center mb-0">
+                            Duplicate Reports
+                            <span class="rounded-circle mx-3 d-flex align-items-center justify-content-center"> 
+                                <p class="m-0">{{ requestDupes.length }}</p>
+                            </span> 
+                        </span>
+                    </button>
+                </div>
+            </nav>
             
-            <!-- Display New Listing Requests -->
-            <div class="collapse show row" id="collapseNew">
-                <hr>
-                <p class="fw-bold fst-italic fs-4 m-0" v-if="requestListings.length > 0">Viewing: New Listing Requests</p>
-                <p class="fw-bold fst-italic fs-4 m-0" v-else>No New Listing Requests!</p>
-                <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-12 my-1 px-1" v-for="requestNew in requestListings" :key="requestNew._id">
-                    <div class="card border-warning h-100">
-                        <div class="card-header">
-                            New Listing
-                        </div>
-                        <img :src="'data:image/jpeg;base64,' + (requestNew['photo'] || defaultPhoto)" class="card-img-top p-2 img-thumbnail" style="object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ requestNew['listingName'] }}</h5>
-                        </div>
-                        <ul class="list-group list-group-flush text-start">
-                            <li class="list-group-item" v-if="requestNew['bottler'] != 'OB'"><span class="fw-bold">Bottler: </span>{{ requestNew['bottler'] }}</li>
-                            <li class="list-group-item"><span class="fw-bold">Producer: </span>{{ findProducer(requestNew) }}</li>
-                            <li class="list-group-item"><span class="fw-bold">Type: </span>{{ requestNew['drinkType'] }}</li>
-                            <li class="list-group-item"><span class="fw-bold">Requested By: </span>{{ findUser(requestNew["userID"]["$oid"]) }}</li>
-                        </ul>
-                        <div class="card-footer">
-                            <router-link v-if="role == 'producer' || types.includes('admin') || types.includes(requestNew['drinkType'])" :to="{ path: '/listing/create/' + requestNew._id['$oid'] }">
-                                <button class="border btn btn-warning btn-sm align-bottom">Review Request</button>
-                            </router-link>
-                            <router-link v-if="role == 'user' && requestNew['userID']['$oid'] == accID" :to="{ path: '/request/new/' + requestNew._id['$oid'] }">
-                                <button class="border btn btn-warning btn-sm align-bottom">Modify Request</button>
-                            </router-link>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- Navtab Content -->
+            <div class="container tab-content" id="nav-tabContent">
 
-            <!-- Display Listing Edit Requests -->
-            <div class="collapse show row" id="collapseEdit">
-                <hr>
-                <p class="fw-bold fst-italic fs-4 m-0" v-if="requestEdits.length > 0">Viewing: Listing Edit Requests</p>
-                <p class="fw-bold fst-italic fs-4 m-0" v-else>No Listing Edit Requests!</p>
-                <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-12 my-1 px-1" v-for="requestEdit in requestEdits" :key="requestEdit._id">
-                    <div class="card border-secondary h-100">
-                        <div class="card-header">
-                            Listing Edit
-                        </div>
-                        <img :src="'data:image/jpeg;base64,' + (requestEdit['photo'] || defaultPhoto)" class="card-img-top p-2 img-thumbnail" style="object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ requestEdit['listingName'] }}</h5>
-                        </div>
-                        <ul class="list-group list-group-flush text-start">
-                            <li class="list-group-item" v-if="requestEdit['sourceLink']"><span class="fw-bold">Source Link: </span>{{ requestEdit['sourceLink'] }}</li>
-                            <li class="list-group-item"><span class="fw-bold">Producer: </span>{{ findProducer(requestEdit) }}</li>
-                            <li class="list-group-item"><span class="fw-bold">Brand Relation: </span>{{ requestEdit['brandRelation'] }}</li>
-                            <li class="list-group-item"><span class="fw-bold">Requested By: </span>{{ findUser(requestEdit["userID"]["$oid"]) }}</li>
-                        </ul>
-                        <div class="card-footer">
-                            <router-link v-if="role == 'producer' || types.includes('admin') || types.includes(requestEdit['drinkType'])" :to="{ path: '/listing/edit/' + requestEdit.listingID['$oid'] + '/' + requestEdit._id['$oid'] }">
-                                <button class="border btn btn-secondary btn-sm align-bottom">Review Request</button>
-                            </router-link>
-                            <router-link v-if="role == 'user' && requestEdit['userID']['$oid'] == accID" :to="{ path: '/request/modify/edit/' + requestEdit.listingID['$oid'] + '/' + requestEdit._id['$oid'] }">
-                                <button class="border btn btn-secondary btn-sm align-bottom">Modify Request</button>
-                            </router-link>
+                <!-- Tab 1: Display New Listing Requests -->
+                <div class="row tab-pane fade show active" id="nav-listing-request" role="tabpanel" aria-labelledby="nav-listing-request-tab">
+                    <div class="row">
+                        <hr>
+                        <p class="fw-bold fst-italic fs-4 m-0" v-if="requestListings.length > 0">Viewing: New Listing Requests</p>
+                        <p class="fw-bold fst-italic fs-4 m-0" v-else>No New Listing Requests!</p>
+                        <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-12 my-1 px-1" v-for="requestNew in requestListings" :key="requestNew._id">
+                            <div class="card border-warning h-100">
+                                <div class="card-header">
+                                    New Listing
+                                </div>
+                                <img :src="'data:image/jpeg;base64,' + (requestNew['photo'] || defaultPhoto)" class="card-img-top p-2 img-thumbnail" style="object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ requestNew['listingName'] }}</h5>
+                                </div>
+                                <ul class="list-group list-group-flush text-start">
+                                    <li class="list-group-item" v-if="requestNew['bottler'] != 'OB'"><span class="fw-bold">Bottler: </span>{{ requestNew['bottler'] }}</li>
+                                    <li class="list-group-item"><span class="fw-bold">Producer: </span>{{ findProducer(requestNew) }}</li>
+                                    <li class="list-group-item"><span class="fw-bold">Type: </span>{{ requestNew['drinkType'] }}</li>
+                                    <li class="list-group-item"><span class="fw-bold">Requested By: </span>{{ findUser(requestNew["userID"]["$oid"]) }}</li>
+                                </ul>
+                                <div class="card-footer">
+                                    <router-link v-if="role == 'producer' || types.includes('admin') || types.includes(requestNew['drinkType'])" :to="{ path: '/listing/create/' + requestNew._id['$oid'] }">
+                                        <button class="border btn btn-warning btn-sm align-bottom">Review Request</button>
+                                    </router-link>
+                                    <router-link v-if="role == 'user' && requestNew['userID']['$oid'] == accID" :to="{ path: '/request/new/' + requestNew._id['$oid'] }">
+                                        <button class="border btn btn-warning btn-sm align-bottom">Modify Request</button>
+                                    </router-link>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Display Duplicate Reports -->
-            <div class="collapse show row" id="collapseDupe">
-                <hr>
-                <p class="fw-bold fst-italic fs-4 m-0" v-if="requestDupes.length > 0">Viewing: Duplicate Reports</p>
-                <p class="fw-bold fst-italic fs-4 m-0" v-else>No Duplicate Reports!</p>
-                <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-12 my-1 px-1" v-for="requestDupe in requestDupes" :key="requestDupe._id">
-                    <div class="card border-dark h-100">
-                        <div class="card-header">
-                            Duplicate Report
-                        </div>
-                        <img :src="'data:image/jpeg;base64,' + (requestDupe['photo'] || defaultPhoto)" class="card-img-top p-2 img-thumbnail" style="object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ requestDupe['listingName'] }}</h5>
-                        </div>
-                        <ul class="list-group list-group-flush text-start">
-                            <li class="list-group-item" v-if="requestDupe['duplicateLink']"><span class="fw-bold">Duplicate Link: </span>{{ requestDupe['duplicateLink'] }}</li>
-                            <li class="list-group-item"><span class="fw-bold">Producer: </span>{{ findProducer(requestDupe) }}</li>
-                            <li class="list-group-item"><span class="fw-bold">Brand Relation: </span>{{ requestDupe['brandRelation'] }}</li>
-                            <li class="list-group-item"><span class="fw-bold">Requested By: </span>{{ findUser(requestDupe["userID"]["$oid"]) }}</li>
-                        </ul>
-                        <div class="card-footer">
-                            <router-link v-if="role == 'producer' || types.includes('admin') || types.includes(requestDupe['drinkType'])" :to="{ path: '/listing/edit/' + requestDupe.listingID['$oid'] + '/' + requestDupe._id['$oid'] }">
-                                <button class="border btn btn-dark btn-sm align-bottom">Review Request</button>
-                            </router-link>
-                            <router-link v-if="role == 'user' && requestDupe['userID']['$oid'] == accID" :to="{ path: '/request/modify/duplicate/' + requestDupe.listingID['$oid'] + '/' + requestDupe._id['$oid'] }">
-                                <button class="border btn btn-dark btn-sm align-bottom">Modify Request</button>
-                            </router-link>
+                <!-- Tab 2: Display Listing Edit Requests -->
+                <div class="row tab-pane fade show" id="nav-listing-edit" role="tabpanel" aria-labelledby="nav-listing-edit-tab">
+                    <div class="row">
+                        <hr>
+                        <p class="fw-bold fst-italic fs-4 m-0" v-if="requestEdits.length > 0">Viewing: Listing Edit Requests</p>
+                        <p class="fw-bold fst-italic fs-4 m-0" v-else>No Listing Edit Requests!</p>
+                        <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-12 my-1 px-1" v-for="requestEdit in requestEdits" :key="requestEdit._id">
+                            <div class="card border-secondary h-100">
+                                <div class="card-header">
+                                    Listing Edit
+                                </div>
+                                <img :src="'data:image/jpeg;base64,' + (requestEdit['photo'] || defaultPhoto)" class="card-img-top p-2 img-thumbnail" style="object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ requestEdit['listingName'] }}</h5>
+                                </div>
+                                <ul class="list-group list-group-flush text-start">
+                                    <li class="list-group-item" v-if="requestEdit['sourceLink']"><span class="fw-bold">Source Link: </span>{{ requestEdit['sourceLink'] }}</li>
+                                    <li class="list-group-item"><span class="fw-bold">Producer: </span>{{ findProducer(requestEdit) }}</li>
+                                    <li class="list-group-item"><span class="fw-bold">Brand Relation: </span>{{ requestEdit['brandRelation'] }}</li>
+                                    <li class="list-group-item"><span class="fw-bold">Requested By: </span>{{ findUser(requestEdit["userID"]["$oid"]) }}</li>
+                                </ul>
+                                <div class="card-footer">
+                                    <router-link v-if="role == 'producer' || types.includes('admin') || types.includes(requestEdit['drinkType'])" :to="{ path: '/listing/edit/' + requestEdit.listingID['$oid'] + '/' + requestEdit._id['$oid'] }">
+                                        <button class="border btn btn-secondary btn-sm align-bottom">Review Request</button>
+                                    </router-link>
+                                    <router-link v-if="role == 'user' && requestEdit['userID']['$oid'] == accID" :to="{ path: '/request/modify/edit/' + requestEdit.listingID['$oid'] + '/' + requestEdit._id['$oid'] }">
+                                        <button class="border btn btn-secondary btn-sm align-bottom">Modify Request</button>
+                                    </router-link>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Tab 3: Display Duplicate Reports -->
+                <div class="tab-pane fade show" id="nav-duplicate-reports" role="tabpanel" aria-labelledby="nav-duplicate-reports-tab">
+                    <div class="row">
+                        <hr>
+                        <p class="fw-bold fst-italic fs-4 m-0" v-if="requestDupes.length > 0">Viewing: Duplicate Reports</p>
+                        <p class="fw-bold fst-italic fs-4 m-0" v-else>No Duplicate Reports!</p>
+                        <div class="col-xxl-2 col-lg-3 col-md-4 col-sm-6 col-12 my-1 px-1" v-for="requestDupe in requestDupes" :key="requestDupe._id">
+                            <div class="card border-dark h-100">
+                                <div class="card-header">
+                                    Duplicate Report
+                                </div>
+                                <img :src="'data:image/jpeg;base64,' + (requestDupe['photo'] || defaultPhoto)" class="card-img-top p-2 img-thumbnail" style="object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ requestDupe['listingName'] }}</h5>
+                                </div>
+                                <ul class="list-group list-group-flush text-start">
+                                    <li class="list-group-item" v-if="requestDupe['duplicateLink']"><span class="fw-bold">Duplicate Link: </span>{{ requestDupe['duplicateLink'] }}</li>
+                                    <li class="list-group-item"><span class="fw-bold">Producer: </span>{{ findProducer(requestDupe) }}</li>
+                                    <li class="list-group-item"><span class="fw-bold">Brand Relation: </span>{{ requestDupe['brandRelation'] }}</li>
+                                    <li class="list-group-item"><span class="fw-bold">Requested By: </span>{{ findUser(requestDupe["userID"]["$oid"]) }}</li>
+                                </ul>
+                                <div class="card-footer">
+                                    <router-link v-if="role == 'producer' || types.includes('admin') || types.includes(requestDupe['drinkType'])" :to="{ path: '/listing/edit/' + requestDupe.listingID['$oid'] + '/' + requestDupe._id['$oid'] }">
+                                        <button class="border btn btn-dark btn-sm align-bottom">Review Request</button>
+                                    </router-link>
+                                    <router-link v-if="role == 'user' && requestDupe['userID']['$oid'] == accID" :to="{ path: '/request/modify/duplicate/' + requestDupe.listingID['$oid'] + '/' + requestDupe._id['$oid'] }">
+                                        <button class="border btn btn-dark btn-sm align-bottom">Modify Request</button>
+                                    </router-link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
         </div>
