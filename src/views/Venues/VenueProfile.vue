@@ -180,7 +180,7 @@
 
                 <!-- more information (bar overview, bar menu) -->
                 <div class="row p-3">
-                    <div class="col-7">
+                    <div class="col-7 p-3">
                         <div class="row">
                             <!-- bar overview -->
                             <div class="col-6 d-grid">
@@ -194,18 +194,10 @@
                                     Bar Menu
                                 </button>
                             </div>
-                            
                         </div>
 
-                        <GMapMap
-                            :center="{lat: 51.093048, lng: 6.842120}"
-                            :zoom="7"
-                            map-type-id="terrain"
-                            style="width: 500px; height: 300px"
-                        >
                         
-                        </GMapMap>
-
+                        
 
                         
 
@@ -221,6 +213,16 @@
                         </form> -->
                         
                     </div>
+
+                    <GMapMap
+                            :center="{lat: latitude, lng: longitude}"
+                            :zoom="15"
+                            map-type-id="terrain"
+                            style="width: 500px; height: 300px"
+                            >
+                            <GmapMarker :position="{lat: latitude, lng: longitude}"></GmapMarker>
+                    </GMapMap>
+
                     <!-- follow this distillery -->
                     <div class="col-5">
                         <div v-if="userType == 'user' && !following" class="d-grid gap-2">
@@ -1149,6 +1151,13 @@
                                     'Ratings (Lowest - Highest)',
                                 ],
                 sortedListings: [],
+
+                // for google map
+                venueName: 'Your Venue Name',
+                loading: true,
+                latitude: null,
+                longitude: null
+
             };
         },
         async mounted() {
@@ -1163,8 +1172,11 @@
             }
 
             await this.loadData();
+
             // Accessing the current URL
             this.currentURL = window.location.href;
+
+            await this.getCoordinates();
         },
         methods: {
             // load data from database
@@ -1306,6 +1318,26 @@
                     //     console.error(error);
                     // }
             },
+
+            async getCoordinates() {
+            try {
+                const response = await this.$axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+                params: {
+                    address: this.specified_venue["venueName"],
+                    key: 'AIzaSyD5aukdDYDbnc8BKjFF_YjApx-fUe515Hs'
+                }
+                });
+
+                const { lat, lng } = response.data.results[0].geometry.location;
+                this.latitude = lat;
+                this.longitude = lng;
+                this.loading = false;
+            } catch (error) {
+                console.error('Error fetching coordinates:', error);
+                this.loading = false;
+            }
+            },
+
 
             // copy to clipboard
             copyToClipboard(item) {
