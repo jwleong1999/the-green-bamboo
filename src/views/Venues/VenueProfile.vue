@@ -196,11 +196,6 @@
                             </div>
                         </div>
 
-                        
-                        
-
-                        
-
                         <!-- [TEMPORARY COMPONENT]o Test Section Name Change  -->
                         <!-- <form>
                             
@@ -211,17 +206,32 @@
                             
                             <button class="btn btn-primary" type="button" @click="changeSectionName()">Submit</button>
                         </form> -->
+
+                        <div class="map-container">
+                        
+                        <div class="map-content" style="padding: 25px;">
+                            <h4>Our location</h4>
+                            <GMapMap
+                                :center="{lat: latitude, lng: longitude}"
+                                :zoom="15"
+                                map-type-id="terrain"
+                                style="width: 500px; height: 300px"
+                            >
+                                <GMapMarker
+                                    :key="index"
+                                    v-for="(m, index) in markers"
+                                    :position="m.position"
+                                />
+                            </GMapMap>
+                            
+                        </div>
+                    </div>
+                    
                         
                     </div>
 
-                    <GMapMap
-                            :center="{lat: latitude, lng: longitude}"
-                            :zoom="15"
-                            map-type-id="terrain"
-                            style="width: 500px; height: 300px"
-                            >
-                            <GmapMarker :position="{lat: latitude, lng: longitude}"></GmapMarker>
-                    </GMapMap>
+                    
+                    
 
                     <!-- follow this distillery -->
                     <div class="col-5">
@@ -1156,7 +1166,8 @@
                 venueName: 'Your Venue Name',
                 loading: true,
                 latitude: null,
-                longitude: null
+                longitude: null,
+                markers:[]
 
             };
         },
@@ -1331,6 +1342,7 @@
                 const { lat, lng } = response.data.results[0].geometry.location;
                 this.latitude = lat;
                 this.longitude = lng;
+                this.markers = [{position:{ lat:this.latitude, lng:this.longitude }}];
                 this.loading = false;
             } catch (error) {
                 console.error('Error fetching coordinates:', error);
