@@ -1866,21 +1866,24 @@
             },
 
             async voteReview(review, vote){
-                if (vote == "upvote") {
-                    review.userVotes.upvotes.push(this.userID);
-                    if (review.userVotes.downvotes.some(vote => JSON.stringify(vote) === JSON.stringify(this.userID))) {
-                        review.userVotes.downvotes = review.userVotes.downvotes.filter(vote => JSON.stringify(vote) !== JSON.stringify(this.userID));
-                    } 
-                } else if (vote == "downvote") {
-                    review.userVotes.downvotes.push(this.userID);
-                    if (review.userVotes.upvotes.some(vote => JSON.stringify(vote) === JSON.stringify(this.userID))) {
-                        review.userVotes.upvotes = review.userVotes.upvotes.filter(vote => JSON.stringify(vote) !== JSON.stringify(this.userID));
-                    }
-                } else if (vote == "unupvote") {
-                    review.userVotes.upvotes = review.userVotes.upvotes.filter(vote => JSON.stringify(vote) !== JSON.stringify(this.userID));
-                } else if (vote == "undownvote") {
-                    review.userVotes.downvotes = review.userVotes.downvotes.filter(vote => JSON.stringify(vote) !== JSON.stringify(this.userID));
+                const voteObject = {
+                    userID: this.user._id,
+                    date: new Date()
                 }
+
+                if (vote == "upvote") {
+                    review.userVotes.upvotes.push(voteObject);
+                    review.userVotes.downvotes = review.userVotes.downvotes.filter(vote => vote.userID.$oid !== this.userID)
+                } else if (vote == "downvote") {
+                    review.userVotes.downvotes.push(voteObject);
+                    review.userVotes.upvotes = review.userVotes.upvotes.filter(vote => vote.userID.$oid !== this.userID)
+                } else if (vote == "unupvote") {
+                    review.userVotes.upvotes = review.userVotes.upvotes.filter(vote => vote.userID.$oid !== this.userID)
+                } else if (vote == "undownvote") {
+                    review.userVotes.downvotes = review.userVotes.downvotes.filter(vote => vote.userID.$oid !== this.userID)
+                }
+
+                console.log(review.userVotes);
 
                 try {
                     await this.$axios.post('http://127.0.0.1:5022/voteReview', 

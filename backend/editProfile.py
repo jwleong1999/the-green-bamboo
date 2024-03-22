@@ -132,9 +132,12 @@ def updateFollowList():
     followLists = user_document['followLists']
 
     if action == "unfollow":
-        followLists[target] = [user for user in user_document['followLists'][target] if user != ObjectId(followerID)]
+        followLists[target] = [user for user in user_document['followLists'][target] if user["followerID"] != ObjectId(followerID)]
     else:
-        followLists[target].append(ObjectId(followerID))
+        followLists[target].append({
+            "followerID": ObjectId(followerID),
+            "date": datetime.now()
+            })
 
     try: 
         updateFollowLists = db.users.update_one({'_id': ObjectId(userID)}, {'$set': {'followLists': followLists}})

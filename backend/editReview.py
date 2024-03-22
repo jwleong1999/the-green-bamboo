@@ -37,6 +37,12 @@ def voteReview():
     reviewID = data['reviewID']
     userVotes = data['userVotes']
 
+    for voteType in userVotes:
+        votes = userVotes[voteType]
+        for vote in votes:
+            if isinstance(vote["date"], str):
+                vote["date"] = datetime.strptime(vote["date"], "%Y-%m-%dT%H:%M:%S.%fZ")
+
     try: 
         voteReview = db.reviews.update_one({'_id': ObjectId(reviewID['$oid'])}, {'$set': {'userVotes': userVotes}})
 
