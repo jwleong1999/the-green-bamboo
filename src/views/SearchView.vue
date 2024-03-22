@@ -46,7 +46,7 @@
                 <div class="d-md-grid d-none col-lg-3"></div>
 
                 <!-- Filter Options: On smaller screens, this is "moved below" Search Term -->
-                <div class="d-sm-grid d-none col-lg-2 col-md-3 dropdown">
+                <div class="d-sm-grid d-none col-lg-2 col-md-3 dropdown" v-if="tabActive == 'listings'">
                     <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
                         Filter: {{ searchFilter.drinkType != '' ? searchFilter.drinkType : 'by Drink Type' }}
                     </button>
@@ -60,7 +60,7 @@
                 </div>
 
                 <!-- Sort Options -->
-                <div class="d-sm-grid d-none col-lg-2 col-md-3 dropdown">
+                <div class="d-sm-grid d-none col-lg-2 col-md-3 dropdown" v-if="tabActive == 'listings'">
                     <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
                         Sort: {{ sortSelection.category != '' ? sortSelection.category : 'by Category' }}
                     </button>
@@ -86,7 +86,7 @@
             </div>
 
             <!-- Filter Options: On larger screens, this is "moved above" Search Term -->
-            <div class="row">
+            <div class="row" v-if="tabActive == 'listings'">
                 <div class="d-grid d-sm-none col-12 dropdown">
                     <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
                         Filter: {{ searchFilter.drinkType != '' ? searchFilter.drinkType : 'by Drink Type' }}
@@ -124,104 +124,270 @@
                     Listings
                 </button>
             </p> -->
-            
+
+            <!-- navtab to toggle between search results -->
+            <nav class="pb-0">
+                <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
+                    <!-- Listings -->
+                    <button class="nav-link active w-25" id="nav-listings-tab" data-bs-toggle="tab" data-bs-target="#nav-listings" type="button" role="tab" aria-controls="nav-listings" aria-selected="true" @click="changeActiveTabStatus('listings')"> 
+                        <span class="d-flex align-items-center justify-content-center mb-0">
+                            Listings
+                            <span class="rounded-circle mx-3 d-flex align-items-center justify-content-center"> 
+                                <p class="m-0">{{ resultListings.length }}</p>
+                            </span> 
+                        </span>
+                    </button>
+                    <!-- Producers -->
+                    <button class="nav-link w-25" id="nav-producers-tab" data-bs-toggle="tab" data-bs-target="#nav-producers" type="button" role="tab" aria-controls="nav-producers" aria-selected="false" @click="changeActiveTabStatus('producers')">
+                        <span class="d-flex align-items-center justify-content-center mb-0">
+                            Producers
+                            <span class="rounded-circle mx-3 d-flex align-items-center justify-content-center"> 
+                                <p class="m-0">{{ producerListings.length }}</p>
+                            </span> 
+                        </span>
+                    </button>
+                    <!-- Venues -->
+                    <button class="nav-link w-25" id="nav-venues-tab" data-bs-toggle="tab" data-bs-target="#nav-venues" type="button" role="tab" aria-controls="nav-venues" aria-selected="false" @click="changeActiveTabStatus('venues')">
+                        <span class="d-flex align-items-center justify-content-center mb-0">
+                            Venues
+                            <span class="rounded-circle mx-3 d-flex align-items-center justify-content-center"> 
+                                <p class="m-0">{{ venueListings.length }}</p>
+                            </span> 
+                        </span>
+                    </button>
+                </div>
+            </nav>
+
             <!-- Display Listings -->
-            <div class="collapse show row" id="collapseListings">
-                <hr>
-                <p class="fw-bold fst-italic fs-5 m-0" v-if="resultListings.length > 0">Viewing: {{ resultListings.length }} Listing Search Results</p>
-                <p class="fw-bold fst-italic fs-5 m-0" v-else>No Listing Results Found!</p>
+            <div class="tab-content" id="nav-tabContent">
 
-                <div class="container pt-3 text-start">
-                    <div class="row" v-for="resultListing in resultListings" :key="resultListing._id">
-                        <hr>
-                        <!-- Image -->
-                        <div class="col-3 image-container-256">
-                            <router-link :to="{ path: '/listing/view/' + resultListing._id['$oid'] }">
-                                <img v-if="resultListing['photo']" :src="'data:image/png;base64,' + resultListing['photo']" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px">
-                                <img v-else src="../../Images/Drinks/Placeholder.png" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px"> 
-                            </router-link>
-                            <BookmarkIcon 
-                                v-if="user" 
-                                :user="user" 
-                                :listing="resultListing" 
-                                :overlay="true"
-                                size="30"
-                                @icon-clicked="handleIconClick" />
-                        </div>
-
-                        <!-- Details -->
-                        <div class="row col-9">
-
-                            <div class="col-8">
-                                <!-- Listing Name + Router Link -->
-                                <router-link class="text-dark text-decoration-none" :to="{ path: '/listing/view/' + resultListing._id['$oid'] }">
-                                    <h4 class="fw-bold m-1">{{ resultListing['listingName'] }}</h4>
+                <!-- NAVTAB 1: LISTINGS -->
+                <div class="tab-pane fade show active" id="nav-listings" role="tabpanel" aria-labelledby="nav-listings-tab">
+                    <hr>
+                    <p class="fw-bold fst-italic fs-5 m-0" v-if="resultListings.length > 0">Viewing: {{ resultListings.length }} Listing Search Results</p>
+                    <p class="fw-bold fst-italic fs-5 m-0" v-else>No Listing Results Found!</p>
+                    
+                    <div class="container text-start">
+                        <div class="row" v-for="resultListing in resultListings" :key="resultListing._id">
+                            <hr>
+                            <!-- Image -->
+                            <div class="col-3 image-container-256">
+                                <router-link :to="{ path: '/listing/view/' + resultListing._id['$oid'] }">
+                                    <img v-if="resultListing['photo']" :src="'data:image/png;base64,' + resultListing['photo']" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px">
+                                    <img v-else src="../../Images/Drinks/Placeholder.png" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px"> 
                                 </router-link>
-                                <!-- Producer Name + Router Link -->
-                                <router-link class="text-secondary-emphasis text-decoration-none" :to="{ path: '/profile/producer/' + resultListing.producerID['$oid'] }">
-                                    <h5 class="fw-bold m-1">{{ resultListing['producerName'] }}</h5>
-                                    <p class="fw-bold fst-italic m-0" v-if="resultListing['bottler'] != 'OB'">Bottler: {{ resultListing['bottler'] }}</p>
-                                </router-link>
-                                <!-- Country of Origin -->
-                                <p class="m-0">
-                                    <b> Origin: </b>
-                                    {{ resultListing['originCountry'] }}
-                                </p>
-                                <!-- Added Date -->
-                                <p class="m-0 mb-3">
-                                    <b> Date Added: </b>
-                                    {{ formatDate(resultListing['addedDate'].$date) }}
-                                </p>
-
+                                <BookmarkIcon 
+                                    v-if="user" 
+                                    :user="user" 
+                                    :listing="resultListing" 
+                                    :overlay="true"
+                                    size="30"
+                                    @icon-clicked="handleIconClick" />
                             </div>
 
-                            <div class="col-4 text-end" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
-                                <!-- Drink Type / Type Category -->
-                                <p class="m-0">
-                                    <b> Type: </b>
-                                    {{ resultListing['drinkType'] }}
-                                </p>
-                                <p class="m-0" v-if="resultListing['typeCategory']">
-                                    <b> Category: </b>
-                                    {{ resultListing['typeCategory'] }}</p>
-                                <!-- Rating -->
-                                <p class="m-0 d-flex justify-content-end">
-                                    <b> Rating: </b> &nbsp;
-                                    {{ getRatings(resultListing) }}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
-                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                                    </svg>
-                                </p>
-                                <!-- Buttons -->
-                                <div class="row py-1">
-                                    <!-- have tried button -->
-                                    <div class="col-5 m-0 p-0">
-                                        <div v-if="user" v-html="checkDrinkLists(resultListing).buttons.haveTried" class="d-grid w-100" @click="addToTriedList(resultListing)"></div>
-                                    </div>
-                                    <!-- want to try button -->
-                                    <div class="col-5 m-0 p-0">
-                                        <div v-if="user" v-html="checkDrinkLists(resultListing).buttons.wantToTry" class="d-grid w-100" @click="addToWantList(resultListing)"></div>
-                                    </div>
-                                    <!-- bookmark button -->
-                                    <div class="col-2 m-0 text-end">
-                                        <BookmarkIcon 
-                                            v-if="user" 
-                                            :user="user" 
-                                            :listing="resultListing" 
-                                            :overlay="false"
-                                            size="30"
-                                            @icon-clicked="handleIconClick" />
+                            <!-- Details -->
+                            <div class="row col-9">
+
+                                <div class="col-8">
+                                    <!-- Listing Name + Router Link -->
+                                    <router-link class="text-dark text-decoration-none" :to="{ path: '/listing/view/' + resultListing._id['$oid'] }">
+                                        <h4 class="fw-bold m-1">{{ resultListing['listingName'] }}</h4>
+                                    </router-link>
+                                    <!-- Producer Name + Router Link -->
+                                    <router-link class="text-secondary-emphasis text-decoration-none" :to="{ path: '/profile/producer/' + resultListing.producerID['$oid'] }">
+                                        <h5 class="fw-bold m-1">{{ resultListing['producerName'] }}</h5>
+                                        <p class="fw-bold fst-italic m-0" v-if="resultListing['bottler'] != 'OB'">Bottler: {{ resultListing['bottler'] }}</p>
+                                    </router-link>
+                                    <!-- Country of Origin -->
+                                    <p class="m-0">
+                                        <b> Origin: </b>
+                                        {{ resultListing['originCountry'] }}
+                                    </p>
+                                    <!-- Added Date -->
+                                    <p class="m-0 mb-3">
+                                        <b> Date Added: </b>
+                                        {{ formatDate(resultListing['addedDate'].$date) }}
+                                    </p>
+
+                                </div>
+
+                                <div class="col-4 text-end" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                                    <!-- Drink Type / Type Category -->
+                                    <p class="m-0">
+                                        <b> Type: </b>
+                                        {{ resultListing['drinkType'] }}
+                                    </p>
+                                    <p class="m-0" v-if="resultListing['typeCategory']">
+                                        <b> Category: </b>
+                                        {{ resultListing['typeCategory'] }}</p>
+                                    <!-- Rating -->
+                                    <p class="m-0 d-flex justify-content-end">
+                                        <b> Rating: </b> &nbsp;
+                                        {{ getRatings(resultListing) }}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
+                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                        </svg>
+                                    </p>
+                                    <!-- Buttons -->
+                                    <div class="row py-1">
+                                        <!-- have tried button -->
+                                        <div class="col-5 m-0 p-0">
+                                            <div v-if="user" v-html="checkDrinkLists(resultListing).buttons.haveTried" class="d-grid w-100" @click="addToTriedList(resultListing)"></div>
+                                        </div>
+                                        <!-- want to try button -->
+                                        <div class="col-5 m-0 p-0">
+                                            <div v-if="user" v-html="checkDrinkLists(resultListing).buttons.wantToTry" class="d-grid w-100" @click="addToWantList(resultListing)"></div>
+                                        </div>
+                                        <!-- bookmark button -->
+                                        <div class="col-2 m-0 text-end">
+                                            <BookmarkIcon 
+                                                v-if="user" 
+                                                :user="user" 
+                                                :listing="resultListing" 
+                                                :overlay="false"
+                                                size="30"
+                                                @icon-clicked="handleIconClick" />
+                                        </div>
                                     </div>
                                 </div>
+
+                                <!-- Description -->
+                                <p class="fst-italic scrollable-long">{{ resultListing["officialDesc"] }}</p>
+
                             </div>
-
-                            <!-- Description -->
-                            <p class="fst-italic scrollable-long">{{ resultListing["officialDesc"] }}</p>
-
                         </div>
                     </div>
                 </div>
+
+                <!-- ------------------------------------------------------------------------------------------------------- -->
+
+                <!-- NAVTAB 2: PRODUCERS -->
+                <div class="tab-pane fade show" id="nav-producers" role="tabpanel" aria-labelledby="nav-producers-tab">
+                    <hr>
+                    <p class="fw-bold fst-italic fs-5 m-0" v-if="producerListings.length > 0">Viewing: {{ producerListings.length }} Producer Search Results</p>
+                    <p class="fw-bold fst-italic fs-5 m-0" v-else>No Producer Results Found!</p>
+                    
+                    <div class="container text-start">
+                        <div class="row" v-for="producer in producerListings" :key="producer._id">
+                            <hr>
+                            <!-- Image -->
+                            <div class="col-3 image-container-256">
+                                <router-link :to="{ path: '/profile/producer/' + producer._id['$oid'] }">
+                                    <img v-if="producer['photo']" :src="'data:image/png;base64,' + producer['photo']" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px">
+                                    <img v-else src="../../Images/Drinks/Placeholder.png" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px"> 
+                                </router-link>
+                            </div>
+
+                            <!-- Details -->
+                            <div class="row col-9">
+
+                                <div class="col-8">
+                                    <!-- Producer Name + Router Link -->
+                                    <router-link class="text-dark text-decoration-none" :to="{ path: '/profile/producer/' + producer._id['$oid'] }">
+                                        <h4 class="fw-bold m-1">{{ producer['producerName'] }}</h4>
+                                    </router-link>
+                                    <!-- Country of Origin -->
+                                    <p class="m-0">
+                                        <b> Origin: </b>
+                                        {{ producer['originCountry'] }}
+                                    </p>
+                                    <!-- Main Drinks -->
+                                    <div class="m-0">
+                                        <b> Main Drinks: </b>
+                                        <div class="d-inline" v-for="(drink, index) in producer['mainDrinks']" v-bind:key="drink">
+                                            {{ index > 0 ? ', ' : '' }}{{ drink }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-4 text-end" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                                    <!-- Claim Status -->
+                                    <div class="m-0">
+                                        <div v-if="producer['claimStatus']"> 
+                                            <button type="button" class="btn secondary-btn-less-round"> Claimed </button>
+                                        </div>
+                                        <div v-else>
+                                            <button type="button" class="btn primary-btn-less-round"> Unclaimed </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- Description -->
+                                <p class="fst-italic scrollable-long mt-3">{{ producer["producerDesc"] }}</p>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ------------------------------------------------------------------------------------------------------- -->
+
+                <!-- NAVTAB 3: VENUES -->
+                <div class="tab-pane fade show" id="nav-venues" role="tabpanel" aria-labelledby="nav-venues-tab">
+                    <hr>
+                    <p class="fw-bold fst-italic fs-5 m-0" v-if="venueListings.length > 0">Viewing: {{ venueListings.length }} Venue Search Results</p>
+                    <p class="fw-bold fst-italic fs-5 m-0" v-else>No Venue Results Found!</p>
+                    
+                    <div class="container text-start">
+                        <div class="row" v-for="venue in venueListings" :key="venue._id">
+                            <hr>
+                            <!-- Image -->
+                            <div class="col-3 image-container-256">
+                                <router-link :to="{ path: '/profile/venue/' + venue._id['$oid'] }">
+                                    <img v-if="venue['photo']" :src="'data:image/png;base64,' + venue['photo']" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px">
+                                    <img v-else src="../../Images/Drinks/Placeholder.png" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px"> 
+                                </router-link>
+                            </div>
+
+                            <!-- Details -->
+                            <div class="row col-9">
+
+                                <div class="col-8">
+                                    <!-- Venue Name + Router Link -->
+                                    <router-link class="text-dark text-decoration-none" :to="{ path: '/profile/venue/' + venue._id['$oid'] }">
+                                        <h4 class="fw-bold m-1">{{ venue['venueName'] }}</h4>
+                                    </router-link>
+                                    <!-- Country of Origin -->
+                                    <p class="m-0">
+                                        <b> Origin: </b>
+                                        {{ venue['originLocation'] }}
+                                    </p>
+                                    <!-- Venue Type -->
+                                    <p class="m-0">
+                                        <b> Type: </b>
+                                        {{ venue['venueType'] }}
+                                    </p>
+                                    <!-- Venue Address -->
+                                    <p class="m-0">
+                                        <b> Address: </b>
+                                        {{ venue['address'] }}
+                                    </p>
+                                </div>
+
+                                <div class="col-4 text-end" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                                    <!-- Claim Status -->
+                                    <div class="m-0">
+                                        <div v-if="venue['claimStatus']"> 
+                                            <button type="button" class="btn secondary-btn-less-round"> Claimed </button>
+                                        </div>
+                                        <div v-else>
+                                            <button type="button" class="btn primary-btn-less-round"> Unclaimed </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- Description -->
+                                <p class="fst-italic scrollable-long mt-3">{{ venue["venueDesc"] }}</p>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
             <BookmarkModal 
                 v-if="user"
                 :user="user" 
@@ -254,8 +420,11 @@
                 },
                 drinkTypeList: [],
                 producerList: [],
+                venueList: [],
                 originalResults: [],
                 resultListings: [],
+                producerListings: [],
+                venueListings: [],
                 listings: [],
 
                 // reviews
@@ -290,6 +459,9 @@
 
                 // for bookmark component
                 bookmarkListingID: {},
+
+                // for search results display
+                tabActive: 'listings',
             }
         },
         mounted() {
@@ -330,20 +502,13 @@
                     this.loadError = true;
                 }
 
-                // Producers
-                try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
-                    this.producerList = response.data;
-                }
-                catch (error) {
-                    console.error(error);
-                    this.loadError = true;
-                }
-
                 // Listings
                 try {
                     const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
                     this.listings = response.data;
+
+                    // clear previous results
+                    this.resultListings = [];
 
                     for (let listing of response.data) {
                         const producer = this.producerList.find((producer) => {
@@ -358,14 +523,51 @@
                         this.resultListings.push(listing);
                     }
 
+                    // search by listingName, originCountry, drinkType, typeCategory
                     this.resultListings = this.resultListings.filter((listing) => {
-                        return listing["listingName"].toLowerCase().includes(this.searchTerm) || listing["producerName"].toLowerCase().includes(this.searchTerm) || listing["bottler"].toLowerCase().includes(this.searchTerm) || listing["originCountry"].toLowerCase().includes(this.searchTerm) || listing["drinkType"].toLowerCase().includes(this.searchTerm) || listing["typeCategory"].toLowerCase().includes(this.searchTerm);
+                        return listing["listingName"].toLowerCase().includes(this.searchTerm) || listing["originCountry"].toLowerCase().includes(this.searchTerm) || listing["drinkType"].toLowerCase().includes(this.searchTerm) || listing["typeCategory"].toLowerCase().includes(this.searchTerm);
                     });
                     this.originalResults = this.resultListings;
                 }
                 catch (error) {
                     console.error(error);
                     this.loadError = true;
+                }
+
+                // Producers
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
+                    this.producerList = response.data;
+
+                    // clear previous results
+                    this.producerListings = [];
+
+                    // search by producerName, bottler
+                    this.producerListings = this.producerList.filter((producer) => {
+                        return producer["producerName"].toLowerCase().includes(this.searchTerm) || producer["originCountry"].toLowerCase().includes(this.searchTerm);
+                    });
+                }
+                catch (error) {
+                    console.error(error);
+                    this.loadError = true;
+                }
+
+                // Venues
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
+                    this.venueList = response.data;
+
+                    // clear previous results
+                    this.venueListings = [];
+
+                    // search by producerName, bottler
+                    this.venueListings = this.venueList.filter((venue) => {
+                        return venue["venueName"].toLowerCase().includes(this.searchTerm) || venue["originLocation"].toLowerCase().includes(this.searchTerm);
+                    });
+
+                } 
+                catch (error) {
+                    console.error(error);
                 }
 
                 // Users
@@ -617,6 +819,12 @@
                 }
                 window.location.reload();
             },
+
+            // to change active tab
+            changeActiveTabStatus(selectedTab) {
+                // change active tab
+                this.tabActive = selectedTab;
+            }
         }
     }
 </script>
