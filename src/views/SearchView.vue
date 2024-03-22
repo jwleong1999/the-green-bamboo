@@ -134,7 +134,6 @@
                 <div class="container pt-3 text-start">
                     <div class="row" v-for="resultListing in resultListings" :key="resultListing._id">
                         <hr>
-
                         <!-- Image -->
                         <div class="col-3 image-container-256">
                             <router-link :to="{ path: '/listing/view/' + resultListing._id['$oid'] }">
@@ -163,11 +162,17 @@
                                     <h5 class="fw-bold m-1">{{ resultListing['producerName'] }}</h5>
                                     <p class="fw-bold fst-italic m-0" v-if="resultListing['bottler'] != 'OB'">Bottler: {{ resultListing['bottler'] }}</p>
                                 </router-link>
+                                <!-- Country of Origin -->
+                                <p class="m-0">
+                                    <b> Origin: </b>
+                                    {{ resultListing['originCountry'] }}
+                                </p>
                                 <!-- Added Date -->
-                                <p class="mt-1 mb-3">
+                                <p class="m-0 mb-3">
                                     <b> Date Added: </b>
                                     {{ formatDate(resultListing['addedDate'].$date) }}
                                 </p>
+
                             </div>
 
                             <div class="col-4 text-end" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
@@ -179,19 +184,35 @@
                                 <p class="m-0" v-if="resultListing['typeCategory']">
                                     <b> Category: </b>
                                     {{ resultListing['typeCategory'] }}</p>
-                                <!-- Country of Origin -->
-                                <p class="m-0">
-                                    <b> Origin: </b>
-                                    {{ resultListing['originCountry'] }}
-                                </p>
                                 <!-- Rating -->
-                                <p class="d-flex justify-content-end">
+                                <p class="m-0 d-flex justify-content-end">
                                     <b> Rating: </b> &nbsp;
                                     {{ getRatings(resultListing) }}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
                                         <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                     </svg>
                                 </p>
+                                <!-- Buttons -->
+                                <div class="row py-1">
+                                    <!-- have tried button -->
+                                    <div class="col-5 m-0 p-0">
+                                        <div v-if="user" v-html="checkDrinkLists(resultListing).buttons.haveTried" class="d-grid w-100" @click="addToTriedList(resultListing)"></div>
+                                    </div>
+                                    <!-- want to try button -->
+                                    <div class="col-5 m-0 p-0">
+                                        <div v-if="user" v-html="checkDrinkLists(resultListing).buttons.wantToTry" class="d-grid w-100" @click="addToWantList(resultListing)"></div>
+                                    </div>
+                                    <!-- bookmark button -->
+                                    <div class="col-2 m-0 text-end">
+                                        <BookmarkIcon 
+                                            v-if="user" 
+                                            :user="user" 
+                                            :listing="resultListing" 
+                                            :overlay="false"
+                                            size="30"
+                                            @icon-clicked="handleIconClick" />
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Description -->
@@ -260,6 +281,12 @@
                 // for bookmark
                 user: null,
                 userBookmarks: [],
+                drinkList:  {
+                                "haveTried": [""],
+                                "wantToTry": [""]
+                            },
+                haveTried: false,
+                wantToTry: false,
 
                 // for bookmark component
                 bookmarkListingID: {},
@@ -303,19 +330,6 @@
                     this.loadError = true;
                 }
 
-                // Users
-                try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
-                    this.users = response.data;
-                    this.user = this.users.find(user => user._id.$oid == this.userID)
-                    if (this.user) {
-                        this.userBookmarks = this.user.drinkLists;
-                    }
-                } 
-                catch (error) {
-                    console.error(error);
-                }
-
                 // Producers
                 try {
                     const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
@@ -352,6 +366,34 @@
                 catch (error) {
                     console.error(error);
                     this.loadError = true;
+                }
+
+                // Users
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
+                    this.users = response.data;
+                    this.user = this.users.find(user => user._id.$oid == this.userID)
+                    if (this.user) {
+                        this.userBookmarks = this.user.drinkLists;
+                        let triedDrinks=[]
+                        let wantToTryDrinks=[]
+                        for (let drink of this.user.drinkLists["Drinks I Have Tried"]["listItems"]) {
+                            let triedDrink = this.listings.find(listing => listing._id.$oid === drink[1].$oid).listingName;
+                            // let triedDrinkName = triedDrink ? triedDrink.listingName : null;
+                            triedDrinks.push(triedDrink)
+                        }
+                        for (let drink of this.user.drinkLists["Drinks I Want To Try"]["listItems"]) {
+                            let wantDrinkName = this.listings.find(listing => listing._id.$oid === drink[1].$oid).listingName;   
+                            wantToTryDrinks.push(wantDrinkName)
+                        }
+                        this.drinkList = {
+                            haveTried: triedDrinks,
+                            wantToTry: wantToTryDrinks
+                        }
+                    }
+                } 
+                catch (error) {
+                    console.error(error);
                 }
 
                 // Reviews
@@ -497,6 +539,83 @@
                 // formatting the date
                 let formattedDate = `${day}/${month}/${year}`;
                 return formattedDate;
+            },
+
+            checkDrinkLists(listing) {
+                const haveTried = this.drinkList.haveTried.includes(listing.listingName);
+                const wantToTry = this.drinkList.wantToTry.includes(listing.listingName);
+
+                const haveTriedButton = `
+                <button type="button" class="btn custom-drink-list-btn rounded-0 ${haveTried ? 'disabled' : ''}">
+                    Have tried
+                </button>
+                `;
+
+                const wantToTryButton = `
+                <button type="button" class="btn custom-drink-list-btn rounded-0 ${wantToTry ? 'disabled' : ''}">
+                    Want to try
+                </button>
+                `;
+
+                return {
+                    buttons: {
+                        haveTried: haveTriedButton,
+                        wantToTry: wantToTryButton,
+                    }
+                }
+            },
+
+            async addToTriedList(resultListing){
+                let responseCode = "";
+                
+                let submitData = {
+                            "date": new Date(),
+                            "listingID": resultListing._id,
+                            "userID": this.userID,
+                            
+                }
+                console.log(submitData)
+                await this.$axios.put('http://127.0.0.1:5070/addToTried/', submitData)
+                    .then((response) => {
+                        responseCode = response.data.code;
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        responseCode = error.response.data.code;
+                    });
+
+                if (responseCode == 200) {
+                    console.log("Success")
+                } else {
+                    console.log("Fail");
+                }
+                window.location.reload();
+            },
+
+            async addToWantList(resultListing){
+                let responseCode = "";
+                let submitData = {
+                            "date": new Date(),
+                            "listingID": resultListing._id,
+                            "userID": this.userID,
+                            
+                }
+                console.log(submitData)
+                await this.$axios.put('http://127.0.0.1:5070/addToWant/', submitData)
+                    .then((response) => {
+                        responseCode = response.data.code;
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        responseCode = error.response.data.code;
+                    });
+
+                if (responseCode == 210) {
+                    console.log("Success")
+                } else {
+                    console.log("Fail");
+                }
+                window.location.reload();
             },
         }
     }
