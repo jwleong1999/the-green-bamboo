@@ -46,28 +46,30 @@
                 <div class="d-md-grid d-none col-lg-3"></div>
 
                 <!-- Filter Options: On smaller screens, this is "moved below" Search Term -->
-                <div class="d-sm-grid d-none col-lg-2 col-md-3 dropdown" v-if="tabActive == 'listings'">
-                    <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
-                        Filter: {{ searchFilter.drinkType != '' ? searchFilter.drinkType : 'by Drink Type' }}
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><span class="dropdown-item" @click="filterByDrinkType('')">Clear Filter</span></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li v-for="drinkType in drinkTypeList" :key="drinkType._id">
-                            <span class="dropdown-item" @click="filterByDrinkType(drinkType['drinkType'])">{{ drinkType['drinkType'] }}</span>
-                        </li>
-                    </ul>
+                <div class="d-sm-grid d-none col-lg-2 col-md-3 dropdown">
+                    <div v-if="tabActive == 'listings'">
+                        <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                            Filter: {{ searchFilter.drinkType != '' ? searchFilter.drinkType : 'by Drink Type' }}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><span class="dropdown-item" @click="filterByDrinkType('')">Clear Filter</span></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li v-for="drinkType in drinkTypeList" :key="drinkType._id">
+                                <span class="dropdown-item" @click="filterByDrinkType(drinkType['drinkType'])">{{ drinkType['drinkType'] }}</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
 
                 <!-- Sort Options -->
-                <div class="d-sm-grid d-none col-lg-2 col-md-3 dropdown" v-if="tabActive == 'listings'">
+                <div class="d-sm-grid d-none col-lg-2 col-md-3 dropdown">
                     <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
                         Sort: {{ sortSelection.category != '' ? sortSelection.category : 'by Category' }}
                     </button>
                     <ul class="dropdown-menu">
                         <li><span class="dropdown-item" @click="sortByCategory('')"> Clear Sort </span></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li v-for="category in sortCategoryList" :key="category">
+                        <li v-for="category in sortCategoryList[tabActive]" :key="category">
                             <span class="dropdown-item" @click="sortByCategory(category)"> {{ category }} </span>
                         </li>
                     </ul>
@@ -301,6 +303,14 @@
                                 </div>
 
                                 <div class="col-4 text-end" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                                    <!-- Rating -->
+                                    <p class="m-0">
+                                        <b> Rating: </b> &nbsp;
+                                        {{ getAllProducerRating(producer) }}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
+                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                        </svg>
+                                    </p>
                                     <!-- Claim Status -->
                                     <div class="m-0">
                                         <div v-if="producer['claimStatus']"> 
@@ -366,6 +376,14 @@
                                 </div>
 
                                 <div class="col-4 text-end" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                                    <!-- Rating -->
+                                    <p class="m-0">
+                                        <b> Rating: </b> &nbsp;
+                                        {{ getAllVenueRating(venue) }}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
+                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                        </svg>
+                                    </p>
                                     <!-- Claim Status -->
                                     <div class="m-0">
                                         <div v-if="venue['claimStatus']"> 
@@ -434,14 +452,28 @@
                 sortSelection: {
                     category: ''
                 },
-                sortCategoryList: [
-                                    'Alphabetical (A - Z)',
-                                    'Alphabetical (Z - A)',
-                                    'Date (Newest - Oldest)',
-                                    'Date (Oldest - Newest)',
-                                    'Ratings (Highest - Lowest)',
-                                    'Ratings (Lowest - Highest)',
-                                ],
+                sortCategoryList: {
+                    listings: [
+                        'Alphabetical (A - Z)',
+                        'Alphabetical (Z - A)',
+                        'Date (Newest - Oldest)',
+                        'Date (Oldest - Newest)',
+                        'Ratings (Highest - Lowest)',
+                        'Ratings (Lowest - Highest)',
+                    ],
+                    producers: [
+                        'Alphabetical (A - Z)',
+                        'Alphabetical (Z - A)',
+                        'Ratings (Highest - Lowest)',
+                        'Ratings (Lowest - Highest)',
+                    ],
+                    venues: [
+                        'Alphabetical (A - Z)',
+                        'Alphabetical (Z - A)',
+                        'Ratings (Highest - Lowest)',
+                        'Ratings (Lowest - Highest)',
+                    ]
+                },
                 sortedListings: [],
 
                 userID: "",
@@ -637,46 +669,101 @@
 
             sortResults() {
                 let category = this.sortSelection.category;
-                // #1: Alphabetical (A - Z)
-                if (category == 'Alphabetical (A - Z)') {
-                    this.resultListings.sort((a, b) => {
-                        return a.listingName.localeCompare(b.listingName);
-                    });
+
+                // ------ SORT LISTINGS --------
+                if (this.tabActive == 'listings') {
+                    // #1: Alphabetical (A - Z)
+                    if (category == 'Alphabetical (A - Z)') {
+                        this.resultListings.sort((a, b) => {
+                            return a.listingName.localeCompare(b.listingName);
+                        });
+                    }
+                    // #2: Alphabetical (Z - A)
+                    else if (category == 'Alphabetical (Z - A)') {
+                        this.resultListings.sort((a, b) => {
+                            return b.listingName.localeCompare(a.listingName);
+                        });
+                    }
+                    // #3: Date (Newest - Oldest)
+                    else if (category == 'Date (Newest - Oldest)') {
+                        this.resultListings.sort((a, b) => {
+                            return new Date(b.addedDate.$date) - new Date(a.addedDate.$date);
+                        });
+                    }
+                    // [DEFAULT] #4: Date (Oldest - Newest)
+                    else if (category == '' || category == 'Date (Oldest - Newest)') {
+                        this.resultListings.sort((a, b) => {
+                            return new Date(a.addedDate.$date) - new Date(b.addedDate.$date);
+                        });
+                    }
+                    // #5: Ratings (Highest - Lowest)
+                    else if (category == 'Ratings (Highest - Lowest)') {
+                        this.resultListings.sort((a, b) => {
+                            return this.getAllRatings(b) - this.getAllRatings(a);
+                        });
+                    }
+                    // #6: Ratings (Lowest - Highest)
+                    else if (category == 'Ratings (Lowest - Highest)') {
+                        this.resultListings.sort((a, b) => {
+                            return this.getAllRatings(a) - this.getAllRatings(b);
+                        });
+                    }
                 }
 
-                // #2: Alphabetical (Z - A)
-                else if (category == 'Alphabetical (Z - A)') {
-                    this.resultListings.sort((a, b) => {
-                        return b.listingName.localeCompare(a.listingName);
-                    });
+                // ------ SORT PRODUCERS ------
+                else if (this.tabActive == 'producers') {
+                    // #1: [DEFAULT] Alphabetical (A - Z)
+                    if (category == '' || category == 'Alphabetical (A - Z)') {
+                        this.producerListings.sort((a, b) => {
+                            return a.producerName.localeCompare(b.producerName);
+                        });
+                    }
+                    // #2: Alphabetical (Z - A)
+                    else if (category == 'Alphabetical (Z - A)') {
+                        this.producerListings.sort((a, b) => {
+                            return b.producerName.localeCompare(a.producerName);
+                        });
+                    }
+                    // #3: Ratings (Highest - Lowest)
+                    else if (category == 'Ratings (Highest - Lowest)') {
+                        this.producerListings.sort((a, b) => {
+                            return this.getAvgProducerRating(b) - this.getAvgProducerRating(a);
+                        });
+                    }
+                    // #4: Ratings (Lowest - Highest)
+                    else if (category == 'Ratings (Lowest - Highest)') {
+                        this.producerListings.sort((a, b) => {
+                            return this.getAvgProducerRating(a) - this.getAvgProducerRating(b);
+                        });
+                    }
                 }
 
-                // #3: Date (Newest - Oldest)
-                else if (category == 'Date (Newest - Oldest)') {
-                    this.resultListings.sort((a, b) => {
-                        return new Date(b.addedDate.$date) - new Date(a.addedDate.$date);
-                    });
-                }
-
-                // [DEFAULT] #4: Date (Oldest - Newest)
-                else if (category == '' || category == 'Date (Oldest - Newest)') {
-                    this.resultListings.sort((a, b) => {
-                        return new Date(a.addedDate.$date) - new Date(b.addedDate.$date);
-                    });
-                }
-
-                // #5: Ratings (Highest - Lowest)
-                else if (category == 'Ratings (Highest - Lowest)') {
-                    this.resultListings.sort((a, b) => {
-                        return this.getAllRatings(b) - this.getAllRatings(a);
-                    });
-                }
-
-                // #6: Ratings (Lowest - Highest)
-                else if (category == 'Ratings (Lowest - Highest)') {
-                    this.resultListings.sort((a, b) => {
-                        return this.getAllRatings(a) - this.getAllRatings(b);
-                    });
+                // ------ SORT VENUES ------
+                else if (this.tabActive == 'venues') {
+                    // #1: [DEFAULT] Alphabetical (A - Z)
+                    if (category == '' || category == 'Alphabetical (A - Z)') {
+                        this.venueListings.sort((a, b) => {
+                            return a.venueName.localeCompare(b.venueName);
+                        });
+                    }
+                    // #2: Alphabetical (Z - A)
+                    else if (category == 'Alphabetical (Z - A)') {
+                        this.venueListings.sort((a, b) => {
+                            return b.venueName.localeCompare(a.venueName);
+                        });
+                    }
+                    // #3: Ratings (Highest - Lowest)
+                    else if (category == 'Ratings (Highest - Lowest)') {
+                        this.venueListings.sort((a, b) => {
+                            return this.getAvgVenueRating(b) - this.getAvgVenueRating(a);
+                        });
+                    }
+                    // #4: Ratings (Lowest - Highest)
+                    else if (category == 'Ratings (Lowest - Highest)') {
+                        this.venueListings.sort((a, b) => {
+                            return this.getAvgVenueRating(a) - this.getAvgVenueRating(b);
+                        });
+                    }
                 }
             },
 
@@ -723,6 +810,103 @@
                 const averageRating = ratings.reduce((total, rating) => {
                     return total + rating["rating"];
                 }, 0) / ratings.length;
+                // round to 1 decimal place
+                const roundedRating = Math.round(averageRating * 10) / 10;
+                return roundedRating;
+            },
+
+            // get average rating for producer --> return "-" if no ratings
+            getAllProducerRating(producer) {
+                let allProducerReviews = this.reviews.filter(review => {
+                    let review_target = review.reviewTarget["$oid"];
+                    let all_drinks = this.listings.filter(listing => listing.producerID["$oid"] == producer._id.$oid);
+                    return all_drinks.some(drink => drink._id["$oid"] === review_target);
+                });
+                // if there are no ratings
+                if (allProducerReviews.length == 0) {
+                    return "-";
+                }
+                // else there are ratings
+                const averageRating = allProducerReviews.reduce((total, review) => {
+                    return total + review.rating;
+                }, 0) / allProducerReviews.length;
+                // round to 1 decimal place
+                const roundedRating = Math.round(averageRating * 10) / 10;
+                return roundedRating;
+            },
+
+            // get average rating for producer --> return 0 if no ratings
+            getAvgProducerRating(producer) {
+                let allProducerReviews = this.reviews.filter(review => {
+                    let review_target = review.reviewTarget["$oid"];
+                    let all_drinks = this.listings.filter(listing => listing.producerID["$oid"] == producer._id.$oid);
+                    return all_drinks.some(drink => drink._id["$oid"] === review_target);
+                });
+                // if there are no ratings
+                if (allProducerReviews.length == 0) {
+                    return 0;
+                }
+                // else there are ratings
+                const averageRating = allProducerReviews.reduce((total, review) => {
+                    return total + review.rating;
+                }, 0) / allProducerReviews.length;
+                // round to 1 decimal place
+                const roundedRating = Math.round(averageRating * 10) / 10;
+                return roundedRating;
+            },
+
+            // get all drinks that a venue has
+            getAllVenueDrinks(venue) {
+                let allMenuItems = venue["menu"]
+                let allSectionMenus = allMenuItems.reduce((acc, menuItem) => {
+                    return acc.concat(menuItem.sectionMenu);
+                }, []);
+                let allListingsIDs = allSectionMenus.reduce((acc, menuItem) => {
+                    return acc.concat(menuItem.itemID); 
+                }, []);
+                let uniqueListingsIDs = [...new Set(allListingsIDs.map(item => item["$oid"]))];
+                let allVenueDrinks = this.listings.filter(listing => {
+                    let listing_id = listing._id["$oid"];
+                    return uniqueListingsIDs.includes(listing_id);
+                });
+                return allVenueDrinks
+            },
+
+            // get average rating for venue --> return "-" if no ratings
+            getAllVenueRating(venue) {
+                let allVenueReviews = this.reviews.filter(review => {
+                    let review_target = review.reviewTarget["$oid"];
+                    let all_drinks = this.getAllVenueDrinks(venue)
+                    return all_drinks.some(drink => drink._id["$oid"] === review_target);
+                });
+                // if there are no ratings
+                if (allVenueReviews.length == 0) {
+                    return "-";
+                }
+                // else there are ratings
+                const averageRating = allVenueReviews.reduce((total, review) => {
+                    return total + review.rating;
+                }, 0) / allVenueReviews.length;
+                // round to 1 decimal place
+                const roundedRating = Math.round(averageRating * 10) / 10;
+                return roundedRating;
+            },
+
+            // get average rating for venue --> return 0 if no ratings
+            getAvgVenueRating(venue) {
+                let allVenueReviews = this.reviews.filter(review => {
+                    let review_target = review.reviewTarget["$oid"];
+                    let all_drinks = this.getAllVenueDrinks(venue)
+                    return all_drinks.some(drink => drink._id["$oid"] === review_target);
+                });
+                // if there are no ratings
+                if (allVenueReviews.length == 0) {
+                    return 0;
+                }
+                // else there are ratings
+                const averageRating = allVenueReviews.reduce((total, review) => {
+                    return total + review.rating;
+                }, 0) / allVenueReviews.length;
                 // round to 1 decimal place
                 const roundedRating = Math.round(averageRating * 10) / 10;
                 return roundedRating;
@@ -824,6 +1008,8 @@
             changeActiveTabStatus(selectedTab) {
                 // change active tab
                 this.tabActive = selectedTab;
+                // clear sort selection
+                this.sortSelection.category = '';
             }
         }
     }
