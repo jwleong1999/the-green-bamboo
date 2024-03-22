@@ -98,7 +98,7 @@
                             <!-- Claim Venue / Report Menu Inaccuracy / Edit Profile -->
                             <div class="col-4">
                                 <!-- [if] not logged in as viewed venue -->
-                                <div class="d-grid no-padding text-end" v-if="!selfView">
+                                <div class="d-grid no-padding text-end" v-if="!selfView && !powerView">
 
                                     <!-- Claim Venue -->
                                     <p v-if="!targetVenue['claimStatus']" class="text-body-secondary no-margin text-decoration-underline fst-italic" @click="claimVenueAccount"> Claim This Business </p>
@@ -1165,11 +1165,346 @@
 
             <!-- ------- END Venue Information / START Venue Sidebar ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
-            <!-- TODO Line 726 -->
-
             <!-- Venue Sidebar -->
             <div class="col-3">
-                
+
+                <!-- ------- START View Analytics ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+
+                <!-- View Analytics Button (Venue) -->
+                <div v-if="selfView" class="row">
+                    <router-link class="d-grid pb-3 text-decoration-none" :to="{ path: '/dashboard/venue' }">
+                        <button type="button" class="btn secondary-btn-not-rounded rounded-0"> View My Analytics </button>
+                    </router-link>
+                </div>
+
+                <!-- View Analytics Button (Admin) -->
+                <div v-if="powerView" class="row">
+                    <router-link class="d-grid pb-3 text-decoration-none" :to="{ path: '/dashboard/venue/' + targetVenue._id['$oid'] }">
+                        <button type="button" class="btn secondary-btn-not-rounded rounded-0"> View Venue's Analytics </button>
+                    </router-link>
+                </div>
+
+                <!-- ------- END View Analytics / START Q & A ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+
+                <!-- Q & A -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="square primary-square rounded p-3 mb-3">
+
+                            <!-- Header -->
+                            <div class="square-inline text-start">
+
+                                <!-- [if] Self Venue -->
+                                <div v-if="selfView" class="mr-auto">
+                                    <h4> Q&A for You! </h4>
+                                    <router-link :to="{ path: '/Venues/VenuesQA/' + targetVenue._id['$oid'] }" class="default-text-no-background">
+                                        <p class="reverse-text no-margin text-decoration-underline text-start pb-2"> View All </p>
+                                    </router-link>
+                                </div>
+
+                                <!-- [else] -->
+                                <h4 v-else class="mr-auto"> Q&As for {{ targetVenue["venueName"] }} </h4>
+
+                            </div>
+
+                            <!-- Buttons for Answered/Unanswered Questions -->
+                            <div v-if="selfView" class="row text-center px-2">
+                                <div class="col-6 d-grid gap-0 no-padding">
+                                    <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" @click="qaMode = 'answered'">
+                                        Answered
+                                    </button>
+                                </div>
+                                <div class="col-6 d-grid gap-0 no-padding">
+                                    <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" @click="qaMode = 'unanswered'">
+                                        Unanswered
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Q & A Content -->
+                            <div class="text-start pt-2 py-1">
+                                <div class="carousel slide" id="carouselQA">
+                                    <div class="carousel-inner px-4">
+
+                                        <!-- [if] Self Venue -->
+                                        <div v-if="selfView">
+
+                                            <!-- Answered Questions -->
+                                            <div v-if="qaMode == 'answered'">
+                                                <div class="carousel-item" v-for="(qa, index) in answeredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
+                                                    <p class="fw-bold">Q: {{ qa["question"] }}</p>
+                                                    <p> A: {{ qa["answer"] }} </p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Unanswered Questions -->
+                                            <div v-if="qaMode == 'unanswered'">
+                                                <div class="carousel-item" v-for="(qa, index) in unansweredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
+                                                    <p class="fw-bold">Q: {{ qa["question"] }}</p>
+                                                    <div class="input-group centered pt-2">
+                                                        <textarea class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Respond to your fans' latest questions." v-model="qaAnswer"></textarea>
+                                                        <div @click="sendAnswer(qa)" class="send-icon ps-1">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                                                                <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <!-- [else] Other Viewers -->
+                                        <div v-else>
+
+                                            <!-- Answered Questions -->
+                                            <div class="carousel-item" v-for="(qa, index) in answeredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
+                                                <p class="fw-bold">Q: {{ qa["question"] }}</p>
+                                                <p> A: {{ qa["answer"] }} </p>
+                                                
+                                                <!-- Ask Question -->
+                                                <div class="input-group centered pt-2">
+                                                    <textarea class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Ask a question!" v-model="qaQuestion"></textarea>
+                                                    <div @click="sendQuestion" class="send-icon ps-1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                                                            <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- If No Answered Questions -->
+                                            <div v-if="answeredQuestions.length === 0">
+                                                <!-- Ask Question -->
+                                                <div class="input-group centered pt-2">
+                                                    <textarea class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Ask a question!" v-model="qaQuestion"></textarea>
+                                                    <div @click="sendQuestion" class="send-icon ps-1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                                                            <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Carousel Control Buttons -->
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselQA" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#carouselQA" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ------- END Q & A / START Map View ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+
+                <!-- Map View -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="square secondary-square rounded p-3 mb-3">
+
+                            <!-- Header -->
+                            <h4 class="text-start"> Venue Location </h4>
+                            <p class="text-start mb-1 fst-italic">{{ targetVenue["address"] }}</p>
+
+                            <!-- Map -->
+                            <GMapMap
+                                :center="{lat: mapLat, lng: mapLong}"
+                                :zoom="15"
+                                map-type-id="terrain"
+                                style="width: 100%; height: 200px"
+                            >
+                                <GMapMarker
+                                    :key="index"
+                                    v-for="(m, index) in mapMarkers"
+                                    :position="m.position"
+                                />
+                            </GMapMap>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ------- END Map View / START Opening Hours + Reservation Details ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+
+                <!-- Opening Hours + Reservation Details -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="square secondary-square rounded p-3 mb-3">
+
+                            <!-- Header -->
+                            <div class="square-inline text-start">
+                                <h4 class="mr-auto"> Opening Hours and Reservation Details </h4>
+                            </div>
+
+                            <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+
+                            <!-- Opening Hours -->
+                            <div class="py-2 text-start">
+
+                                <!-- Section Header -->
+                                <div class="square-inline">
+                                    <h5 class="mr-auto"> Opening Hours </h5>
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="pb-1" v-if="selfView">
+                                    <!-- [if] not editing -->
+                                    <button v-if="!editOpeningHours" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" @click="editOpeningHours = true; checkOpeningHours()">
+                                        Edit
+                                    </button>
+                                    
+                                    <!-- [else] if editing -->
+                                    <button v-if="editOpeningHours" type="button" class="btn success-btn rounded-0 reverse-clickable-text" @click="saveOpeningHours" :disabled="editOpeningHoursError">
+                                        Save
+                                    </button>
+                                    <button v-if="editOpeningHours" type="button" class="btn secondary-btn rounded-0 reverse-clickable-text ms-1" @click="editOpeningHours = false">
+                                        Cancel
+                                    </button>
+                                    <button v-if="editOpeningHours" type="button" class="btn btn-danger rounded-0 reverse-clickable-text ms-1" @click="newOpeningHours = JSON.parse(JSON.stringify(openingHours)); checkOpeningHours()">
+                                        Reset
+                                    </button>
+                                </div>
+
+                                <!-- Section Content (Edit Mode) -->
+                                <div v-if="editOpeningHours">
+                                    <div class="default-text-no-background" v-for = "(hours, day) in newOpeningHours" v-bind:key="day">
+                                        <span class="fw-bold">{{ day }}: </span>
+                                        <div class="pb-1">
+                                            <div class="d-flex align-items-center">
+                                                <input type="time" class="form-control" :id="day + 'start'" v-model="hours[0]" @change="checkOpeningHours">
+                                                <span class="mx-2">-</span>
+                                                <input type="time" class="form-control" :id="day + 'end'" v-model="hours[1]" @change="checkOpeningHours">
+                                            </div>
+                                            <!-- for error message -->
+                                            <span :id="day + 'error'" class="text-danger ms-1 fst-italic d-none"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section Content (View Mode) -->
+                                <div v-else>
+                                    <div class="default-text-no-background" v-for = "(hours, day) in openingHours" v-bind:key="day">
+                                        <span class="fw-bold">{{ day }}: </span>
+                                        <p class="d-inline">{{ hours[0] }} - {{ hours[1] }}</p>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+
+                            <!-- Public Holidays -->
+                            <div class="py-2 text-start">
+
+                                <!-- Section Header -->
+                                <div class="square-inline">
+                                    <h5 class="mr-auto"> Public Holiday Information </h5>
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="pb-1" v-if="selfView">
+                                    <!-- [if] not editing -->
+                                    <button v-if="!editPublicHolidays" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" @click="editPublicHolidays = true">
+                                        Edit
+                                    </button>
+                                    
+                                    <!-- [else] if editing -->
+                                    <button v-if="editPublicHolidays" type="button" class="btn success-btn rounded-0 reverse-clickable-text" @click="savePublicHolidays">
+                                        Save
+                                    </button>
+                                    <button v-if="editPublicHolidays" type="button" class="btn secondary-btn rounded-0 reverse-clickable-text ms-1" @click="editPublicHolidays = false">
+                                        Cancel
+                                    </button>
+                                    <button v-if="editPublicHolidays" type="button" class="btn btn-danger rounded-0 reverse-clickable-text ms-1" @click="newPublicHolidays = targetVenue['publicHolidays']">
+                                        Reset
+                                    </button>
+                                </div>
+
+                                <!-- Section Content (Edit Mode) -->
+                                <div v-if="editPublicHolidays">
+                                    <textarea v-model="newPublicHolidays" class="form-control" id="publicHolidaysTextArea" rows="3" placeholder="Enter public holiday information"></textarea>
+                                </div>
+
+                                <!-- Section Content (View Mode) -->
+                                <div v-else>
+                                    <div class="text-body-secondary">
+                                        <div v-if="targetVenue['publicHolidays'] == ''" class="fst-italic">
+                                            No information about public holiday opening hours!
+                                        </div>
+                                        <div v-else>
+                                            {{ targetVenue["publicHolidays"] }}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                            <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+                            
+                            <!-- Reservation Details -->
+                            <div class="py-2 text-start">
+
+                                <!-- Section Header -->
+                                <div class="square-inline">
+                                    <h5 class="mr-auto"> Reservation Details </h5>
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="pb-1" v-if="selfView">
+                                    <!-- [if] not editing -->
+                                    <button v-if="!editReservationDetails" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" @click="editReservationDetails = true">
+                                        Edit
+                                    </button>
+                                    
+                                    <!-- [else] if editing -->
+                                    <button v-if="editReservationDetails" type="button" class="btn success-btn rounded-0 reverse-clickable-text" @click="saveReservationDetails">
+                                        Save
+                                    </button>
+                                    <button v-if="editReservationDetails" type="button" class="btn secondary-btn rounded-0 reverse-clickable-text ms-1" @click="editReservationDetails = false">
+                                        Cancel
+                                    </button>
+                                    <button v-if="editReservationDetails" type="button" class="btn btn-danger rounded-0 reverse-clickable-text ms-1" @click="newReservationDetails = targetVenue['reservationDetails']">
+                                        Reset
+                                    </button>
+                                </div>
+
+                                <!-- Section Content (Edit Mode) -->
+                                <div v-if="editReservationDetails">
+                                    <textarea v-model="newReservationDetails" class="form-control" id="reservationDetailsTextArea" rows="3" placeholder="Enter reservation details"></textarea>
+                                </div>
+
+                                <!-- Section Content (View Mode) -->
+                                <div v-else>
+                                    <div class="text-body-secondary">
+                                        <div v-if="targetVenue['reservationDetails'] == ''" class="fst-italic">
+                                            No reservation details available!
+                                        </div>
+                                        <div v-else>
+                                            {{ targetVenue["reservationDetails"] }}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ------- END Opening Hours + Reservation Details ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+
             </div>
 
             <!-- ------- END Venue Sidebar / START Bookmark Modal ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
@@ -1254,14 +1589,19 @@
                 mostPopular: [],
                 mostDiscussed: [],
                 recentlyAdded: [],
+                answeredQuestions: [],
+                unansweredQuestions: [],
+                openingHours: {},
                 detailedMenu: [],
 
                 // flags
                 dataLoaded: false,
                 venueExists: null,
                 contentMode: 'overview',
+                qaMode: 'answered',
                 loggedIn: false,
                 selfView: false,
+                powerView: false,
                 editProfile: false,
                 clipboardItem: false,
 
@@ -1269,6 +1609,41 @@
                 editVenueName: '',
                 editVenueDesc: '',
                 editCountry: '',
+                qaQuestion: '',
+                qaAnswer: '',
+
+                // Profile Photo
+                editProfilePhoto: '',
+                defaultProfilePhoto: '',
+
+                // Updates
+                newUpdateText: '',
+                newUpdatePhoto: '',
+                showMoreUpdates: false,
+
+                // Map View
+                mapLat: null,
+                mapLong: null,
+                mapMarkers: [],
+
+                // Opening Hours + Public Holidays + Reservation Details
+                editOpeningHours: false,
+                editOpeningHoursError: false,
+                newOpeningHours: {},
+                editPublicHolidays: false,
+                newPublicHolidays: "",
+                editReservationDetails: false,
+                newReservationDetails: "",
+
+                // User Features
+                userInfo: {},
+                userFollowing: false,
+                userBookmarks: [],
+                bookmarkModalTarget: {},
+                selectedBookmarkList: [],
+                saveToNewList: false,
+                othersListName: '',
+                othersListNameError: '',
 
                 // Search + Sort Menu
                 searchMenuResults: [],
@@ -1283,6 +1658,18 @@
                     'Price (High to Low)',
                 ],
 
+                // Menu Editing
+                editMenuMode: false,
+                editMenuDataLoaded: false,
+                allListings: [],
+                editMenu: [],
+                newMenuItemID: '',
+                newMenuItemTarget: {},
+                newMenuItemTargetSection: {},
+                renameMenuSectionModalTarget: {},
+                renameMenuSectionModalOld: '',
+                renameMenuSectionModalNew: '',
+
                 // Report Menu Inaccuracy
                 reportFormView: true,
                 reportSubmitLoading: false,
@@ -1295,37 +1682,6 @@
                 reportItemNone: false,
                 reportReasonNone: false,
                 reportResponseCode: null,
-
-                // Profile Photo
-                editProfilePhoto: '',
-                defaultProfilePhoto: '',
-
-                // Updates
-                newUpdateText: '',
-                newUpdatePhoto: '',
-                showMoreUpdates: false,
-
-                // User Features
-                userInfo: {},
-                userFollowing: false,
-                userBookmarks: [],
-                bookmarkModalTarget: {},
-                selectedBookmarkList: [],
-                saveToNewList: false,
-                othersListName: '',
-                othersListNameError: '',
-
-                // Menu Editing
-                editMenuMode: false,
-                editMenuDataLoaded: false,
-                allListings: [],
-                editMenu: [],
-                newMenuItemID: '',
-                newMenuItemTarget: {},
-                newMenuItemTargetSection: {},
-                renameMenuSectionModalTarget: {},
-                renameMenuSectionModalOld: '',
-                renameMenuSectionModalNew: '',
                 
             }
         },
@@ -1390,24 +1746,36 @@
                         this.editVenueName = this.targetVenue["venueName"];
                         this.editVenueDesc = this.targetVenue["venueDesc"];
                         this.editCountry = this.targetVenue["originLocation"];
+                        this.newPublicHolidays = this.targetVenue["publicHolidays"];
+                        this.newReservationDetails = this.targetVenue["reservationDetails"];
 
-                        // Set menu data
-                        this.detailedMenu = this.targetVenue["menu"];
-                        
-                        // TEMPORARY DATA CONVERSION: order = sectionOrder, listingsID = sectionMenu
-                        for (let section of this.detailedMenu) {
-                            if (section.order != undefined) {
-                                section.sectionOrder = section.order;
-                                delete section.order;
-                            }
-
-                            if (section.listingsID != undefined) {
-                                section.sectionMenu = section.listingsID;
-                                delete section.listingsID;
+                        // Set questions and answers data
+                        let qaData = this.targetVenue["questionsAnswers"];
+                        if (qaData.length > 0) {
+                            for (let qa in qaData) {
+                                let answer = qaData[qa]["answer"];
+                                if (answer != "") {
+                                    this.answeredQuestions.push(qaData[qa]);
+                                }
+                                else {
+                                    this.unansweredQuestions.push(qaData[qa]);
+                                }
                             }
                         }
 
-                        // Sort menu
+                        // Set and sort opening hours data
+                        this.openingHours = this.targetVenue["openingHours"];
+                        const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                        const sortedOpeningHours = Object.fromEntries(
+                            dayOrder
+                                .filter(key => key in this.openingHours) // Filter keys that exist in this.openingHours
+                                .map(key => [key, this.openingHours[key]]) // Map each key to its corresponding value
+                        );
+                        this.openingHours = sortedOpeningHours;
+                        this.newOpeningHours = JSON.parse(JSON.stringify(this.openingHours));
+
+                        // Set and sort menu data
+                        this.detailedMenu = this.targetVenue["menu"];
                         this.detailedMenu.sort((a, b) => (a.sectionOrder > b.sectionOrder) ? 1 : -1); // Sort by section order
                         for (let section of this.detailedMenu) {
                             section.sectionMenu.sort((a, b) => (a.itemOrder > b.itemOrder) ? 1 : -1); // Sort by item order
@@ -1423,6 +1791,18 @@
                         // Obtain servingTypes
                         const servingTypesResponse = await this.$axios.get('http://127.0.0.1:5000/getServingTypes');
                         this.servingTypes = servingTypesResponse.data;
+
+                        // Obtain map data
+                        const mapResponse = await this.$axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+                            params: {
+                                address: this.targetVenue["address"],
+                                key: 'AIzaSyD5aukdDYDbnc8BKjFF_YjApx-fUe515Hs'
+                            }
+                        });
+                        const { lat, lng } = mapResponse.data.results[0].geometry.location;
+                        this.mapLat = lat;
+                        this.mapLong = lng;
+                        this.mapMarkers = [{ position: { lat, lng } }];
 
                         this.venueExists = true;
                         this.loadData();
@@ -1578,6 +1958,11 @@
                             
                             else {
                                 this.userInfo = response.data;
+
+                                // Check if user is admin
+                                if (this.userInfo.isAdmin == true) {
+                                    this.powerView = true;
+                                }
 
                                 // Check if user is following venue
                                 this.userFollowing = JSON.stringify(this.userInfo.followLists.venues).includes(JSON.stringify({$oid: this.targetVenue._id['$oid']}));
@@ -1837,6 +2222,144 @@
 
                 // Refresh page
                 this.$router.go(0);
+            },
+
+            // Send Answer to a Question
+            async sendAnswer(qa) {
+                try {
+                    await this.$axios.post('http://127.0.0.1:5300/sendAnswers', 
+                        {
+                            venueID: this.targetVenue['_id']['$oid'],
+                            questionsAnswersID: qa._id['$oid'],
+                            answer: this.qaAnswer,
+                        },
+                        {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                }
+                catch (error) {
+                    alert("An error occurred while attempting to send your answer, please try again!\nWe have tried to copy your answer's text to your clipboard.");
+                    // Copy answer text to clipboard
+                    this.copyToClipboard(this.qaAnswer);
+                }
+
+                // Refresh page
+                this.$router.go(0);
+            },
+
+            // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+            // Check Opening Hours
+            checkOpeningHours() {
+
+                // Reset error flag
+                this.editOpeningHoursError = false;
+
+                for (let day in this.newOpeningHours) {
+                    // Get start and end time values
+                    const startTimeValue = parseInt(this.newOpeningHours[day][0].replace(/:/g, ''));
+                    const endTimeValue = parseInt(this.newOpeningHours[day][1].replace(/:/g, ''));
+                    const errorElement = document.getElementById(day + 'error')
+
+                    // Check if start time is before end time
+                    if (startTimeValue >= endTimeValue) {
+                        this.editOpeningHoursError = true;
+                        if (errorElement) {
+                            errorElement.classList.remove('d-none');
+                            errorElement.innerText = "Start time must be before end time!";
+                        }
+                    }
+                    else {
+                        if (errorElement) {
+                            errorElement.classList.add('d-none');
+                            errorElement.innerText = "";
+                        }
+                    }
+                }
+
+            },
+            
+            // Update Opening Hours
+            async saveOpeningHours() {
+
+                this.editOpeningHours = false;
+
+                try {
+                    this.$axios.post('http://localhost:5300/editOpeningHours', 
+                        {
+                            venueID: this.targetVenue['_id']['$oid'],
+                            updatedOpeningHours: this.newOpeningHours,
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                }
+                catch (error) {
+                    alert("An error occurred while attempting to save your changes, please try again!");
+                    // console.error(error);
+                }
+
+                // Refresh page
+                this.$router.go(0);
+
+            },
+
+            // Update Public Holiday Information
+            async savePublicHolidays() {
+
+                this.editPublicHolidays = false;
+
+                try {
+                    this.$axios.post('http://localhost:5300/editPublicHolidays', 
+                        {
+                            venueID: this.targetVenue['_id']['$oid'],
+                            updatedPublicHolidays: this.newPublicHolidays,
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                }
+                catch (error) {
+                    alert("An error occurred while attempting to save your changes, please try again!");
+                    // console.error(error);
+                }
+
+                // Refresh page
+                this.$router.go(0);
+
+            },
+
+            // Update Reservation Details
+            async saveReservationDetails() {
+
+                this.editReservationDetails = false;
+
+                try {
+                    this.$axios.post('http://localhost:5300/editReservationDetails', 
+                        {
+                            venueID: this.targetVenue['_id']['$oid'],
+                            updatedReservationDetails: this.newReservationDetails,
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                }
+                catch (error) {
+                    alert("An error occurred while attempting to save your changes, please try again!");
+                    // console.error(error);
+                }
+
+                // Refresh page
+                this.$router.go(0);
+
             },
 
             // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -2151,6 +2674,31 @@
                 } 
                 catch (error) {
                     // console.error(error);
+                }
+
+                // Reload page
+                this.$router.go(0);
+            },
+
+            // Send Question
+            async sendQuestion() {
+                try {
+                    await this.$axios.post('http://127.0.0.1:5300/sendQuestions', 
+                        {
+                            venueID: this.targetVenue['_id']['$oid'],
+                            question: this.qaQuestion,
+                            answer: "",
+                        },
+                        {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                } 
+                catch (error) {
+                    alert("An error occurred while attempting to send your question, please try again!\nWe have tried to copy your question's text to your clipboard.");
+                    // Copy answer text to clipboard
+                    this.copyToClipboard(this.qaAnswer);
                 }
 
                 // Reload page
