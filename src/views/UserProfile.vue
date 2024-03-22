@@ -55,7 +55,7 @@
                             </router-link>
                         </button>
                         <span style="position: relative; display: inline-block" class="m-0 p-0">
-                            <button v-if="!ownProfile && displayUser.modType != []" class="btn btn-warning mt-3 hover-button" style="width: 356px">★ Certified Moderator</button> 
+                            <button v-if="!ownProfile && displayUser.modType != []" class="btn btn-warning mt-3 hover-button" style="width: 100%">★ Certified Moderator</button> 
                             <div v-if="!ownProfile && displayUser.modType != []" class="speech-bubble">{{ displayUser.modType ? displayUser.modType.join(', ') : 'None' }}</div>
 
                         </span>
