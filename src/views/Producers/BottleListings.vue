@@ -1480,16 +1480,23 @@
                         if (results.length > 0) {
                             const { lat, lng } = results[0].geometry.location;
                             venue.coordinates = { lat, lng };
+
+                            // const response2 = await this.$axios.get('http://127.0.0.1:5002/getDistance/' + apiKey)
+                            // console.log(response2.data)
+
+                            // const response2 = await this.$axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${this.currentLocation.lat}-${this.currentLocation.lng}&destinations=${venue.coordinates.lat}-${venue.coordinates.lng}&key=${apiKey}`);
+                            
+                            // const response2 = await this.$axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?destinations=40.659569%2C-73.933783%7C40.729029%2C-73.851524%7C40.6860072%2C-73.6334271%7C40.598566%2C-73.7527626&origins=40.6655101%2C-73.89188969999998&key=${apiKey}`);
+                            // console.log(response2.data)
+                            // const { rows } = response2.data;
+                            // if (rows.length > 0 && rows[0].elements.length > 0) {
+                            //     const distance = rows[0].elements[0].distance.text;
+                            //     venue.distance = distance;
+                            //     console.log(venue.venueName, venue.distance)
+                                
+                            // }
                         }
 
-                        // const response2 = await this.$axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${this.currentLocation}&destinations=${venue.coordinates}&key=${apiKey}`);
-                        // const { rows } = response2.data;
-                        // if (rows.length > 0 && rows[0].elements.length > 0) {
-                        //     const distance = rows[0].elements[0].distance.text;
-                        //     venue.distance = distance;
-                        //     console.log(venue.venueName, venue.distance)
-                            
-                        // }
 
                         // if (venue.distance != null && venue.distance != undefined && venue.distance < maxDistance){
                         //     this.nearestBars.push(venue.venueName)    
