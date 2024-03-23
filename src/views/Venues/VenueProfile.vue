@@ -282,13 +282,25 @@
                     <div class="row">
                         <div class="col-12">
                             <p class="text-start text-body-secondary fs-3 fw-bold m-0">Latest Updates from {{ targetVenue["venueName"] }}</p>
-                            <p v-if="targetVenue['updates'].length > 0" class="text-start text-decoration-underline fs-5 m-0 pb-2">Posted on: {{ targetVenue["updates"][0].date }}</p>
-                            <p v-else class="text-start fs-5 fst-italic m-0 pb-2">{{ targetVenue["venueName"] }} has not posted any updates!</p>
+                            <p v-if="targetVenue['updates'].length > 0 && targetVenue['claimStatus']" class="text-start text-decoration-underline fs-5 m-0 pb-2">Posted on: {{ targetVenue["updates"][0].date }}</p>
+                            <p v-if="!(targetVenue['updates'].length > 0) && targetVenue['claimStatus']" class="text-start fs-5 fst-italic m-0 pb-2">{{ targetVenue["venueName"] }} has not posted any updates!</p>
                         </div>
                     </div>
 
+                    <!-- Latest Updates Lock Message (Venue Unclaimed) -->
+                    <div class="row text-center py-2 mx-1" v-if="!targetVenue['claimStatus']" style="background-color:#DDC8A9;">
+                        <p class="fs-3 fw-bold fst-italic mt-3" style="font-family: Radley, serif;">
+                            Do you own this distillery?
+                        </p>
+                        <p> Sign up for a venue account to share your latest updates with your fans! </p>
+
+                        <div class="col-lg-4 col-sm-3 col-2"></div>
+                        <button type="submit" class="col-lg-4 col-sm-6 col-8 btn secondary-btn-border-thick mb-3" @click="claimVenueAccount"> Claim This Business </button>
+                        <div class="col-lg-4 col-sm-3 col-2"></div>
+                    </div>
+
                     <!-- Latest Update Information -->
-                    <div class="row" v-if="targetVenue['updates'].length > 0">
+                    <div class="row" v-if="targetVenue['updates'].length > 0 && targetVenue['claimStatus']">
 
                         <!-- Photo / Number of Likes -->
                         <div class="col-xl-2 col-md-3">
@@ -396,7 +408,7 @@
                     <!-- ------- END Add Update / START View More Updates ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
                     <!-- View More Updates -->
-                    <div class="row">
+                    <div class="row" v-if="targetVenue['claimStatus']">
 
                         <!-- Toggle Button -->
                         <button type="button" class="btn tertiary-text text-decoration-underline pt-2 no-margin border border-0" data-bs-toggle="collapse" data-bs-target="#collapseMoreUpdates" aria-expanded="false" aria-controls="collapseMoreUpdates" @click="showMoreUpdates = !showMoreUpdates;"> View <span v-if="showMoreUpdates">less</span><span v-else>more</span> </button>
