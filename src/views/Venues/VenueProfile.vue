@@ -235,10 +235,10 @@
                                 <!-- [if] editing -->
                                 <div v-if="editProfile">
                                     <label for="venueDescInput"> Venue Description </label>
-                                    <textarea type="text" class="form-control mb-3" id="venueDescInput" aria-describedby="venueDesc" v-model="editVenueDesc"></textarea>
+                                    <textarea type="text" class="form-control" id="venueDescInput" aria-describedby="venueDesc" v-model="editVenueDesc"></textarea>
                                 </div>
                                 <!-- [else] not editing -->
-                                <p v-else class="text-body-secondary fs"> {{ targetVenue["venueDesc"] }} </p>
+                                <p v-else class="text-body-secondary fs m-0"> {{ targetVenue["venueDesc"] }} </p>
                             </div>
                         </div>
 
@@ -253,7 +253,7 @@
                 <!-- ------- END Header / START Content Buttons ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
                 <!-- Content Buttons (Bar Overview / Bar Menu / Follow Venue) -->
-                <div class="row">
+                <div class="row mt-3">
                     <div class="col-8 d-flex justify-content-start">
                         <!-- Toggle Bar Overview -->
                         <button v-if="contentMode == 'overview'" class="btn primary-btn-outline-less-round mx-1" @click="contentMode = 'overview'"> Bar Overview </button>
