@@ -533,10 +533,24 @@
                 <!-- Bar Menu -->
                 <div v-if="contentMode == 'menu'">
 
-                    <!-- ------- START Menu Header + Option Buttons ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+                    <!-- ------- START Menu Lock Message (Venue Unclaimed) ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+
+                    <!-- Menu Lock Message (Venue Unclaimed) -->
+                    <div class="row text-center py-2 mx-1" v-if="!targetVenue['claimStatus']" style="background-color:#DDC8A9;">
+                        <p class="fs-3 fw-bold fst-italic mt-3" style="font-family: Radley, serif;">
+                            Do you own this distillery?
+                        </p>
+                        <p> Sign up for a venue account to share your bar's menu with your fans! </p>
+
+                        <div class="col-lg-4 col-sm-3 col-2"></div>
+                        <button type="submit" class="col-lg-4 col-sm-6 col-8 btn secondary-btn-border-thick mb-3" @click="claimVenueAccount"> Claim This Business </button>
+                        <div class="col-lg-4 col-sm-3 col-2"></div>
+                    </div>
+
+                    <!-- ------- END Menu Lock Message (Venue Unclaimed) / START Menu Header + Option Buttons ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
                     <!-- Menu Header + Option Buttons -->
-                    <div v-if="!editMenuMode" class="row align-items-center pb-3">
+                    <div v-if="!editMenuMode && targetVenue['claimStatus']" class="row align-items-center pb-3">
 
                         <!-- Menu Header -->
                         <div class="col-8">
@@ -598,7 +612,7 @@
                     <!-- ------- END Menu Header + Option Buttons / START Search + Edit Menu Options + Sort ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
                     <!-- Search + Edit Menu Options + Sort -->
-                    <div class="row align-items-center" v-if="!(editMenuMode && !editMenuDataLoaded)">
+                    <div class="row align-items-center" v-if="!(editMenuMode && !editMenuDataLoaded) && targetVenue['claimStatus']">
 
                         <!-- Reset Search -->
                         <div v-if="!editMenuMode" class="col-1 p-0">
@@ -656,7 +670,7 @@
                     <!-- ------- END Search + Edit Menu Options + Sort / START Menu View (Not Editing) ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
                     <!-- Menu View (Not Editing) -->
-                    <div v-if="!editMenuMode" class="container text-start scrollable-listings">
+                    <div v-if="!editMenuMode && targetVenue['claimStatus']" class="container text-start scrollable-listings">
 
                         <!-- No Menu Sections to Show -->
                         <div v-if="searchMenuResults.length == 0" class="row my-4">
