@@ -923,21 +923,22 @@
             <div class="col-3">
                 <!-- where to buy -->
                 <div class="row">
-                    <div class="square primary-square rounded p-3 mb-3">
+                    <div class="square primary-square rounded p-3 mb-3 text-start" style="height: 250px;">
                         <!-- header text -->
                         <div class="square-inline text-start">
                             <h4 class="mr-auto"> Where to Buy </h4>
                         </div>
                         <!-- body -->
-                        <div class="text-start pt-2">
-                            <!-- [function] where to buy -->
-                            <div v-for="producer in producerListings" v-bind:key="producer._id">
-                                <router-link :to="{ path: '/profile/producer/' + producer.$oid }" class="reverse-clickable-text">
-                                    <p> {{ getProducerName(producer) }} </p>
-                                </router-link>
+                        <div style="height: 85%;">
+                            <div class="text-start pt-2 overflow-auto" style="max-height: 100%;">
+                                <!-- [function] where to buy -->
+                                <div v-for="producer in producerListings" v-bind:key="producer._id">
+                                    <router-link :to="{ path: '/profile/producer/' + producer.$oid }" class="reverse-clickable-text">
+                                        <p> {{ getProducerName(producer) }} </p>
+                                    </router-link>
+                                </div>
                             </div>
                         </div>
-                        <div class="py-5"></div>
                     </div>
                 </div>
 
@@ -946,23 +947,46 @@
             
                 <!-- where to try -->
                 <div class="row">
-                    <div class="square primary-square rounded p-3 mb-3">
+                    <div class="square primary-square rounded p-3 mb-3 text-start" style="height: 250px;">
                         <!-- header text -->
                         <div class="square-inline text-start">
                             <h4 class="mr-auto"> Where to Try </h4>
                         </div>
                         <!-- body -->
-                        <div class="text-start pt-2">
-                            <!-- [function] where to try -->
-                            <div v-for="venue in venueListings" v-bind:key="venue._id">
-                                <router-link :to="{ path: '/profile/venue/' + venue._id.$oid }" class="reverse-clickable-text">
-                                    <p class="mb-1"> {{ venue.venueName }} </p>
-                                </router-link>
+                        <div style="height: 85%;">
+                            <div class="text-start pt-2 overflow-auto" style="max-height: 100%;">
+                                <!-- [function] where to try -->
+                                <!-- [if] user does not allow location -->
+                                <div v-if="nearestBars.length == 0" >
+                                    <div v-for="venue in venueListings" v-bind:key="venue._id">
+                                        <router-link :to="{ path: '/profile/venue/' + venue._id.$oid }" class="reverse-clickable-text">
+                                            <p class="mb-1"> {{ venue.venueName }} </p>
+                                        </router-link>
+                                    </div>
+                                </div>
+                                <!-- [else] user allows location -->
+                                <div v-else>
+                                    <div v-for="(distance, venueID) in nearestBars" v-bind:key="venueID">
+                                        <router-link :to="{ path: '/profile/venue/' + venueID }" class="reverse-clickable-text">
+                                            <p class="mb-4"> 
+                                                <u> {{ getVenueNameFromID(venueID) }}  </u>
+                                                <br>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+                                                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
+                                                </svg>
+                                                Distance: {{ venueDetails[venueID]["distance"] }}
+                                                <br>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
+                                                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"/>
+                                                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"/>
+                                                </svg>
+                                                Duration: {{ venueDetails[venueID]["duration"] }}
+                                            </p>
+                                        </router-link>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <!-- {{nearestBars}} -->
-                        {{currentLocation}}
-                        <div class="py-5"></div>
                     </div>
                 </div>
                 <!-- 88 bamboo's review -->
@@ -1156,7 +1180,7 @@
                 // nearest Bars based on current location
                 nearestBars: [],
                 currentLocation: {lat: 0, lng: 0},
-                    
+                venueDetails: {},
         
         };
 
@@ -1466,14 +1490,14 @@
                         this.venueListings.push(venue);
                     }
                 }
-                console.log("all venues pushed")
 
                 if (this.currentLocation.lat != 0 | this.currentLocation.lng != 0){
                     
                     const apiKey = 'AIzaSyD5aukdDYDbnc8BKjFF_YjApx-fUe515Hs'; // Replace with your Google Places API key
                     // const maxDistance = 5000
-                    
-                    console.log("hereeee")
+
+                    // create an object to store the distance of each venue from the current location
+                    let venueDistances = {};
                     
                     this.venueListings.forEach(async (venue) => {
                         const response = await this.$axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${venue.venueName}&key=${apiKey}`);
@@ -1492,21 +1516,35 @@
                                 const rows = responseData.rows;
                                 console.log(rows)
                                 if (rows.length > 0 && rows[0].elements.length > 0) {
-                                    const distance = rows[0].elements[0].distance.text;
-                                    venue.distance = distance;
-                                    console.log(venue.venueName, venue.distance)
-                                    
+                                    const distance = rows[0].elements[0].distance
+                                    const duration = rows[0].elements[0].duration
+
+                                    const distance_text = distance.text;
+                                    const distance_value = distance.value;
+                                    const duration_text = duration.text;
+
+                                    // to store the distance value only
+                                    venueDistances[venue._id.$oid] = distance_value
+
+                                    // to store other info
+                                    this.venueDetails[venue._id.$oid] = {
+                                        distance: distance_text,
+                                        duration: duration_text
+                                    }
                                 }
                             } catch (error) {
                                 console.error('Error in getDistance request:', error);
                             }
                         }
-
-
                         // if (venue.distance != null && venue.distance != undefined && venue.distance < maxDistance){
                         //     this.nearestBars.push(venue.venueName)    
                         //     console.log(this.nearestBars)
                         // }
+
+                        // sort the venues by distance
+                        let nearestBars = this.sortDistanceValues(venueDistances)
+                        this.nearestBars = nearestBars
+
                 
                     });
                         
@@ -1537,13 +1575,22 @@
                 const venue = this.venues.find((venue) => {
                     return venue["_id"]["$oid"] == venueID["$oid"];
                 });
-                // ensures that producer is found before accessing "producerName"
+                // ensures that venue is found before accessing "venueName"
                 if (venue) {
                     const venueName = venue["venueName"];
                     return venueName;
                 }
                 else {
                     return null;
+                }
+            },
+
+            getVenueNameFromID(venueID) {
+                const venue = this.venues.find((venue) => {
+                    return venue["_id"]["$oid"] == venueID;
+                });
+                if (venue) {
+                    return venue["venueName"];
                 }
             },
 
@@ -2254,6 +2301,13 @@
                 this.showFriendTagList = this.showFriendTagList.filter(item => item.username !== friend.username);
                 this.friendTagList = this.friendTagList.filter(item => item !== friend.id);
             },
+
+            sortDistanceValues(distanceObject) {
+                let sortedDistanceValues = Object.fromEntries(
+                    Object.entries(distanceObject).sort(([,a],[,b]) => a-b)
+                );
+                return sortedDistanceValues;
+            }
         }
     };
 </script>
