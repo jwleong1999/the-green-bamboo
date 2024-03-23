@@ -1409,7 +1409,7 @@
                                 </div>
 
                                 <!-- Buttons -->
-                                <div class="pb-1" v-if="selfView">
+                                <div class="pb-1" v-if="selfView || powerView">
                                     <!-- [if] not editing -->
                                     <button v-if="!editOpeningHours" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" @click="editOpeningHours = true; checkOpeningHours()">
                                         Edit
@@ -1464,7 +1464,7 @@
                                 </div>
 
                                 <!-- Buttons -->
-                                <div class="pb-1" v-if="selfView">
+                                <div class="pb-1" v-if="selfView || powerView">
                                     <!-- [if] not editing -->
                                     <button v-if="!editPublicHolidays" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" @click="editPublicHolidays = true">
                                         Edit
@@ -1512,7 +1512,7 @@
                                 </div>
 
                                 <!-- Buttons -->
-                                <div class="pb-1" v-if="selfView">
+                                <div class="pb-1" v-if="selfView || powerView">
                                     <!-- [if] not editing -->
                                     <button v-if="!editReservationDetails" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" @click="editReservationDetails = true">
                                         Edit
