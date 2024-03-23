@@ -105,8 +105,8 @@
                                     <p v-else class="text-body-secondary no-margin fw-bold fst-italic"> Venue Claimed </p>
 
                                     <!-- Report Menu Inaccuracy (Opens Modal) -->
-                                    <p v-if="loggedIn" class="text-body-secondary no-margin text-decoration-underline fst-italic" data-bs-toggle="modal" data-bs-target="#inaccurateModal"> Report Menu Inaccuracy </p>
-                                    <p v-else class="text-body-secondary no-margin text-decoration-underline fst-italic" @click="this.$router.push('/login');"> Report Menu Inaccuracy </p>
+                                    <p v-if="loggedIn && targetVenue['claimStatus']" class="text-body-secondary no-margin text-decoration-underline fst-italic" data-bs-toggle="modal" data-bs-target="#inaccurateModal"> Report Menu Inaccuracy </p>
+                                    <p v-if="!loggedIn && targetVenue['claimStatus']" class="text-body-secondary no-margin text-decoration-underline fst-italic" @click="this.$router.push('/login');"> Report Menu Inaccuracy </p>
                                 </div>
 
                                 <!-- [else] logged in as viewed venue -->
