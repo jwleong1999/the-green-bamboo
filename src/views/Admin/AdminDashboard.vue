@@ -407,7 +407,7 @@
                                             <span class="text-danger">*This is the only time you can access the password. You cannot recover them later.</span>
                                             <br><br>
                                             <span v-if="businessType == 'producer'">Producer account: <b>{{ businessName }}</b></span>
-                                            <!-- <span v-if="businessType == 'venue'">Venue account: {{ businessName }}</span> -->
+                                            <span v-if="businessType == 'venue'">Venue account: {{ businessName }}</span>
                                             <br>
                                             Temporary password: <b>{{ tempPassword }}</b>
                                         </div>
@@ -459,6 +459,22 @@
                                                         </option>
                                                     </select>
                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div v-if="businessType == 'venue'">
+                                            <div class="mb-2 fw-bold">
+                                                Address
+                                            </div>
+                                            <div class="mb-4">
+                                                <input type="text" class="form-control" v-model="venueAddress">
+                                            </div>
+                                        </div>
+                                        <div v-if="businessType == 'venue'">
+                                            <div class="mb-2 fw-bold">
+                                                Venue Type
+                                            </div>
+                                            <div class="mb-4">
+                                                <input type="text" class="form-control" v-model="venueType">
                                             </div>
                                         </div>
                                         <div>
@@ -644,6 +660,8 @@
                     businessName: "",
                     businessDesc: "",
                     businessCountry: "",
+                    venueAddress: "",
+                    venueType: "",
                     businessClaimStatus: "",
                     addBizError: "",
                     tempPassword: "",
@@ -1078,6 +1096,8 @@
                         this.businessName = request.businessName;
                         this.businessDesc = request.businessDesc;
                         this.businessCountry = request.country;
+                        this.venueAddress = request.country;
+                        this.venueType = '';
                         this.businessClaimStatus = "true";
                         const createSuccess = await this.createBusiness();
                         if (!createSuccess) {
@@ -1109,7 +1129,7 @@
                 async createBusiness() {
 
                     // form control
-                    if (this.businessType == "" || this.businessName == "" || this.businessDesc == "" || this.businessCountry == "" || this.businessClaimStatus == "") {
+                    if (this.businessType == "" || this.businessName == "" || this.businessDesc == "" || this.businessCountry == "" || this.businessClaimStatus == "" || (this.businessType == "venue" && (this.venueAddress == "" || this.venueType == ""))) {
                         this.addBizError = "Please fill in all fields";
                     }
                     else {
@@ -1157,6 +1177,53 @@
                                 }
                             }
                         }
+                        else if (this.businessType == "venue") {
+                            const newBusinessData = {
+                                venueName: this.businessName,
+                                venueDesc: this.businessDesc,
+                                originLocation: this.businessCountry,
+                                address: this.venueAddress,
+                                venueType: this.venueType,
+                                menu: [],
+                                photo: "",
+                                hashedPassword: hashedPassword,
+                                questionsAnswers: [],
+                                updates: [],
+                                claimStatus: this.businessClaimStatus === "true",
+                                openingHours: {
+                                    Monday: ["", ""],
+                                    Tuesday: ["", ""],
+                                    Wednesday: ["", ""],
+                                    Thursday: ["", ""],
+                                    Friday: ["", ""],
+                                    Saturday: ["", ""],
+                                    Sunday: ["", ""],
+                                },
+                                publicHolidays: "",
+                                reservationDetails: "",
+                            }
+                            try {
+                                const response = await this.$axios.post('http://127.0.0.1:5031/createVenueAccount', 
+                                    {
+                                        newBusinessData
+                                    }, {
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                });
+
+                                if (response.data.code == 201) {
+                                    this.createBusinessSuccess = true;
+                                    return true
+                                } 
+                            } catch (error) {
+                                console.error(error);
+                                if (error.response.data.code == 400) {
+                                    this.createBusinessError = "Business name already exists";
+                                    return false;
+                                }
+                            }
+                        }
                     }
                 }, 
                 // reset when add a business button is clicked
@@ -1165,6 +1232,8 @@
                         this.businessName = "";
                         this.businessDesc = "";
                         this.businessCountry = "";
+                        this.venueAddress = "";
+                        this.venueType = "";
                         this.businessClaimStatus = "";
                         this.tempPassword = "";
                         this.createBusinessSuccess = false;

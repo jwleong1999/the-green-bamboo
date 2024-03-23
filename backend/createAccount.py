@@ -201,6 +201,50 @@ def createProducerAccount():
                 "message": "An error occurred creating the account."
             }
         ), 500
+# -----------------------------------------------------------------------------------------
+# [POST] Creates a Venue Account
+# - Insert entry into the "venues" collection.
+@app.route("/createVenueAccount", methods= ['POST'])
+def createVenueAccount():
+    data = request.get_json()
+    print(data)
+    newBusinessData = data["newBusinessData"]
+
+    print(newBusinessData["venueName"])
+
+    existingAccount = db.venues.find_one({"venueName": newBusinessData['venueName']})
+    if(existingAccount!= None):
+        return jsonify(
+            {   
+                "code": 400,
+                "data": {
+                    "venueName": newBusinessData['venueName']
+                },
+                "message": "Venue Name already exists."
+            }
+        ), 400
+
+    try:
+        insertResult = db.venues.insert_one(newBusinessData)
+        newBusinessData['_id'] = str(newBusinessData['_id'])
+
+        return jsonify( 
+            {   
+                "code": 201,
+                "data": newBusinessData
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "userame": newBusinessData
+                },
+                "message": "An error occurred creating the account."
+            }
+        ), 500
 
 # -----------------------------------------------------------------------------------------
 if __name__ == "__main__":
