@@ -1386,10 +1386,22 @@
                                 <h4 class="mr-auto"> Opening Hours and Reservation Details </h4>
                             </div>
 
+                            <!-- Opening Hours + Reservation Details Lock Message (Venue Unclaimed) -->
+                            <div class="row text-center py-2 mx-1 default-text-no-background" v-if="!targetVenue['claimStatus']" style="background-color:#DDC8A9;">
+                                <p class="fs-3 fw-bold fst-italic mt-3" style="font-family: Radley, serif;">
+                                    Do you own this business?
+                                </p>
+                                <p> Sign up for a venue account to share your opening hours and reservation details with your fans! </p>
+
+                                <div class="col-lg-2 col-1"></div>
+                                <button type="submit" class="col-lg-8 col-10 btn secondary-btn-border-thick mb-3" @click="claimVenueAccount"> Claim This Business </button>
+                                <div class="col-lg-2 col-1"></div>
+                            </div>
+
                             <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
 
                             <!-- Opening Hours -->
-                            <div class="py-2 text-start">
+                            <div class="py-2 text-start" v-if="targetVenue['claimStatus']">
 
                                 <!-- Section Header -->
                                 <div class="square-inline">
@@ -1444,7 +1456,7 @@
                             <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
 
                             <!-- Public Holidays -->
-                            <div class="py-2 text-start">
+                            <div class="py-2 text-start" v-if="targetVenue['claimStatus']">
 
                                 <!-- Section Header -->
                                 <div class="square-inline">
@@ -1492,7 +1504,7 @@
                             <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
                             
                             <!-- Reservation Details -->
-                            <div class="py-2 text-start">
+                            <div class="py-2 text-start" v-if="targetVenue['claimStatus']">
 
                                 <!-- Section Header -->
                                 <div class="square-inline">
