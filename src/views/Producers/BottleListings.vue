@@ -2199,7 +2199,6 @@
                 this.bookmarkListingID = data
             },
 
-<<<<<<< Updated upstream
             // Get current location using browser's Geolocation API
             getCurrentLocation() {
             
@@ -2216,7 +2215,6 @@
             );
             },
             
-=======
             updateFriendTag(){
                 let friendTagError = document.getElementById("friendTagError")
                 // find listing based on bottle name
@@ -2244,7 +2242,6 @@
                 this.showFriendTagList = this.showFriendTagList.filter(item => item.username !== friend.username);
                 this.friendTagList = this.friendTagList.filter(item => item !== friend.id);
             },
->>>>>>> Stashed changes
         }
     };
 </script>
