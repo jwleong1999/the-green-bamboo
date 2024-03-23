@@ -288,9 +288,9 @@
                     </div>
 
                     <!-- Latest Updates Lock Message (Venue Unclaimed) -->
-                    <div class="row text-center py-2 mx-1" v-if="!targetVenue['claimStatus']" style="background-color:#DDC8A9;">
+                    <div class="row text-center py-2 mx-1 default-text-no-background" v-if="!targetVenue['claimStatus']" style="background-color:#DDC8A9;">
                         <p class="fs-3 fw-bold fst-italic mt-3" style="font-family: Radley, serif;">
-                            Do you own this distillery?
+                            Do you own this business?
                         </p>
                         <p> Sign up for a venue account to share your latest updates with your fans! </p>
 
@@ -536,9 +536,9 @@
                     <!-- ------- START Menu Lock Message (Venue Unclaimed) ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
                     <!-- Menu Lock Message (Venue Unclaimed) -->
-                    <div class="row text-center py-2 mx-1" v-if="!targetVenue['claimStatus']" style="background-color:#DDC8A9;">
+                    <div class="row text-center py-2 mx-1 default-text-no-background" v-if="!targetVenue['claimStatus']" style="background-color:#DDC8A9;">
                         <p class="fs-3 fw-bold fst-italic mt-3" style="font-family: Radley, serif;">
-                            Do you own this distillery?
+                            Do you own this business?
                         </p>
                         <p> Sign up for a venue account to share your bar's menu with your fans! </p>
 
@@ -1247,8 +1247,20 @@
                                 </div>
                             </div>
 
+                            <!-- Q & A Lock Message (Venue Unclaimed) -->
+                            <div class="row text-center py-2 mx-1 default-text-no-background" v-if="!targetVenue['claimStatus']" style="background-color:#DDC8A9;">
+                                <p class="fs-3 fw-bold fst-italic mt-3" style="font-family: Radley, serif;">
+                                    Do you own this business?
+                                </p>
+                                <p> Sign up for a venue account to answer questions from your fans! </p>
+
+                                <div class="col-lg-2 col-1"></div>
+                                <button type="submit" class="col-lg-8 col-10 btn secondary-btn-border-thick mb-3" @click="claimVenueAccount"> Claim This Business </button>
+                                <div class="col-lg-2 col-1"></div>
+                            </div>
+
                             <!-- Q & A Content -->
-                            <div class="text-start pt-2 py-1">
+                            <div class="text-start pt-2 py-1" v-else>
                                 <div class="carousel slide" id="carouselQA">
                                     <div class="carousel-inner px-4">
 
