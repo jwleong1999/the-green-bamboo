@@ -39,6 +39,11 @@ def createReviews():
     rawReview['userID'] = ObjectId(rawReview['userID'])  # Convert userID to ObjectId
     rawReview['createdDate'] = datetime.strptime(rawReview['createdDate'], "%Y-%m-%dT%H:%M:%S.%fZ")# convert date to datetime object
 
+    if len(rawReview['taggedUsers']) >0:
+        temp_tag_id =[]
+        for id in rawReview['taggedUsers']:
+            temp_tag_id.append(ObjectId(id))
+        rawReview['taggedUsers'] = temp_tag_id
     # Duplicate listing check: Reject if review with the same userID and reviewTarget exists in the database
     rawReviewBottle = rawReview["reviewTarget"]
     rawReviewUserID = rawReview["userID"]

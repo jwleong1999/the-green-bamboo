@@ -330,7 +330,29 @@
                                         <div class="col-6 justify-content-start">
                                             <p class = 'text-start mb-2 fw-bold'>Tag Friends</p>
                                             <div class="form-group mb-2">
-                                                <input type="text" class="form-control" id="friendTag">
+                                                <div v-if="showFriendTagList.length > 0" class="form-label pb-2 text-start"> 
+                                                Tagged Friends: 
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="d-flex flex-wrap gap-2">
+                                                                <div v-for="friend in showFriendTagList" v-bind:key="friend.id" class="mb-0 pb-0">
+                                                                    <button @click='removeFriendTag(friend)' class="btn btn-primary"> {{ friend.username }} </button> 
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- <input type="text" class="form-control" id="friendTag"> -->
+                                                <input list="followList" v-model="friendTag" class="form-control" id="friendTag" placeholder="Enter username" v-on:keyup="updateFriendTag">
+                                                <datalist id="followList">
+                                                    <option v-for="user in followList" :key="user._id.$oid" :value="user.username">
+                                                        {{user.username}}
+                                                    </option>
+                                                </datalist>  
+                                                <div class="text-start mt-1">                                            
+                                                    <button v-if="selectedFriendTag!==null" class="btn primary-btn-less-round btn-sm" @click="tagSpecificFriend">Tag this friend</button>
+                                                </div>  
+                                                <p v-show="friendTag.length > 0" class="text-start mb-1 text-danger" id="friendTagError"></p>
                                             </div>
                                         </div>
                                         <!-- add photo -->
@@ -1097,6 +1119,11 @@
                 errorMessage: false,
                 duplicateEntry: false,
                 errorSubmission:false,
+                followList:[],
+                friendTag:'',
+                selectedFriendTag:null,
+                friendTagList:[],
+                showFriendTagList:[],
 
                 // To delete review
                 deleteID :null,
@@ -1307,6 +1334,20 @@
                             this.userBookmarks = this.user.drinkLists
                             let triedDrinks=[]
                             let wantToTryDrinks=[]
+                            this.followList = this.users.filter(user => {
+                                return this.user.followLists.users.some(item => item.followerID.$oid === user._id.$oid);
+                            });
+                            if(this.specificReview.length >0){
+                                console.log(this.friendTagList)
+                                this.showFriendTagList = this.friendTagList.map(id => {
+                                    const user = this.users.find(user => user._id.$oid === id);
+                                    return {
+                                        username: user.username,
+                                        id: id
+                                    };
+                                });
+                            }
+                            console.log(this.followList, "yellow")
                             for (let drink of this.user.drinkLists["Drinks I Have Tried"]["listItems"]) {
                                 let triedDrink = this.listings.find(listing => listing._id.$oid === drink[1].$oid).listingName;
                                 // let triedDrinkName = triedDrink ? triedDrink.listingName : null;
@@ -1320,6 +1361,7 @@
                                 haveTried: triedDrinks,
                                 wantToTry: wantToTryDrinks
                             }
+                            
                         }
                         
                         
@@ -1605,6 +1647,7 @@
                     this.finish= specificReview[0].finish
                     this.rating= specificReview[0].rating
                     this.selectedFlavourTags= specificReview[0].flavorTag
+                    this.friendTagList = specificReview[0].taggedUsers.map(user => user.$oid);
                     this.selectedObservations= specificReview[0].observationTag
                     this.image64= specificReview[0].photo
                     const selectedLocation = this.locationOptions.filter((location)=>{
@@ -1670,6 +1713,9 @@
                     alert("Submission has error, please fill in the required fields properly")
                     return "Submission error"
                 }
+                else{
+                    this.reviewDescError = ''
+                }
                 if(this.selectedLanguage ==''){
                     this.nullSelectedLanguage = true
                     alert("Submission has error, please fill in the required fields properly")
@@ -1707,6 +1753,7 @@
                     "finish" : this.finish,
                     "location" :this.selectedLocationId,
                     "willRecommend": this.wouldRecommend,
+                    "taggedUsers": this.friendTagList,
                     "wouldBuyAgain": this.wouldBuyAgain,
                     "observationTag": this.selectedObservations,
                     "createdDate": createdDate,
@@ -1727,6 +1774,11 @@
                 }
                 if(this.selectedLanguage ==''){
                     this.nullSelectedLanguage = true
+                    alert("Submission has error, please fill in the required fields properly")
+                    return "Submission error"
+                }
+                if(this.selectedFriendTag == null){
+                    this.reviewDescError +="Selected friend tag is not valid.\n"
                     alert("Submission has error, please fill in the required fields properly")
                     return "Submission error"
                 }
@@ -1760,6 +1812,7 @@
                     "taste" : this.taste,
                     "finish" : this.finish,
                     "location" :this.selectedLocationId,
+                    "taggedUsers": this.friendTagList,
                     "willRecommend": this.wouldRecommend,
                     "wouldBuyAgain": this.wouldBuyAgain,
                     "observationTag": this.selectedObservations,
@@ -2146,6 +2199,7 @@
                 this.bookmarkListingID = data
             },
 
+<<<<<<< Updated upstream
             // Get current location using browser's Geolocation API
             getCurrentLocation() {
             
@@ -2162,6 +2216,35 @@
             );
             },
             
+=======
+            updateFriendTag(){
+                let friendTagError = document.getElementById("friendTagError")
+                // find listing based on bottle name
+                let user = this.followList.find(user => user.username === this.friendTag)
+                if (user) {
+                    this.selectedFriendTag = user
+                    friendTagError.innerHTML = ""
+                }
+                else {
+                    this.selectedfriendTag = null
+                    friendTagError.innerHTML = "Please enter a valid username"
+                }
+            },
+
+            tagSpecificFriend(){
+                if (this.selectedFriendTag !== null && !this.friendTagList.includes(this.selectedFriendTag._id.$oid)) {
+                    this.friendTagList.push(this.selectedFriendTag._id.$oid);
+                    this.showFriendTagList.push({username:this.selectedFriendTag.username,id:this.selectedFriendTag._id.$oid})
+                    this.friendTag=''
+                    this.selectedFriendTag=null
+                }
+            },
+
+            removeFriendTag(friend){
+                this.showFriendTagList = this.showFriendTagList.filter(item => item.username !== friend.username);
+                this.friendTagList = this.friendTagList.filter(item => item !== friend.id);
+            },
+>>>>>>> Stashed changes
         }
     };
 </script>
