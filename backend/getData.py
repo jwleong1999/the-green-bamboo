@@ -309,6 +309,21 @@ def getFlavourTags():
         # print(doc)
         allFlavourTags.append(doc)
     return allFlavourTags
+# -----------------------------------------------------------------------------------------
+# [GET] subTags
+@app.route("/getSubTags")
+def getSubTags():
+    #this step finds all the items in the collection, specifying Flavour Tags
+    data = db.subTags.find({})
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+    allSubTags = []
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allSubTags.append(doc)
+    return allSubTags
 
 # -----------------------------------------------------------------------------------------
 # [GET] observationTags

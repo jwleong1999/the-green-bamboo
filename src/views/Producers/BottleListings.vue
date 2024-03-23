@@ -546,8 +546,8 @@
                                             <div v-for="family in flavourTags" :key="family['_id']">
                                                 <div v-if="family.showBox" class="rounded p-3" :style="{border: '3px solid ' + family['hexcode'] }">
                                                     <div class="row">
-                                                        <div class="col-3" v-for="(element, index) in family.subtag" :key="index">
-                                                            <button @click="toggleFlavourSelection(element, family['hexcode'])" class="btn mb-2" :style="{ width: '100px', height: '60px',color:'white', backgroundColor: selectedFlavourTags.includes(element+family['hexcode']) ? 'grey' :family['hexcode'], borderColor: family['hexcode'], borderWidth:'1px' }">{{ element }}</button>
+                                                        <div class="col-3" v-for="(element, index) in family.subTag2" :key="index">
+                                                            <button @click="toggleFlavourSelection(element.subTag, family['hexcode'],element.id)" class="btn mb-2" :style="{ width: '100px', height: '60px',color:'white', backgroundColor: selectedFlavourTags.includes(element.subTag+family['hexcode']) ? 'grey' :family['hexcode'], borderColor: family['hexcode'], borderWidth:'1px' }">{{ element.subTag }}</button>
                                                         </div>                        
                                                     </div>
                                                 </div>
@@ -1122,7 +1122,9 @@
                 observationTags: [],
                 selectedObservations:[],
                 flavourTags: [],
+                subTags: [],
                 selectedFlavourTags:[],
+                finalSelectedFlavourTags:[],
                 aroma:"",
                 taste:"",
                 finish:"",
@@ -1256,7 +1258,26 @@
                     try {
                                 const response = await this.$axios.get('http://127.0.0.1:5000/getFlavourTags');
                                 this.flavourTags = response.data.map(item => {
-                                    return { ...item, showBox: false }; // Add the showBox property with initial value of false
+                                    return { ...item, showBox: false };
+                                })                            } 
+                        catch (error) {
+                            console.error(error);
+                        }
+                    // subTags
+                    // _id, familyTagId, subtag
+                    try {
+                                const response = await this.$axios.get('http://127.0.0.1:5000/getSubTags');
+                                this.subTags = response.data
+                                this.flavourTags.forEach(flavourTag => {
+                                    // Filter subtags belonging to the current flavor tag
+                                    const subTagsForFlavourTag = this.subTags.filter(subTag => subTag.familyTagId.$oid === flavourTag._id.$oid);
+                                    // Extract required information from subtags
+                                    const subTagsInfo = subTagsForFlavourTag.map(subTag=> ({
+                                        id: subTag._id,
+                                        subTag: subTag.subTag
+                                    }));
+                                    // Assign subtag information to flavor tag object
+                                    flavourTag.subTag2 = subTagsInfo;
                                 });
                             } 
                         catch (error) {
@@ -1362,7 +1383,6 @@
                                 return this.user.followLists.users.some(item => item.followerID.$oid === user._id.$oid);
                             });
                             if(this.specificReview.length >0){
-                                console.log(this.friendTagList)
                                 this.showFriendTagList = this.friendTagList.map(id => {
                                     const user = this.users.find(user => user._id.$oid === id);
                                     return {
@@ -1371,7 +1391,6 @@
                                     };
                                 });
                             }
-                            console.log(this.followList, "yellow")
                             for (let drink of this.user.drinkLists["Drinks I Have Tried"]["listItems"]) {
                                 let triedDrink = this.listings.find(listing => listing._id.$oid === drink[1].$oid).listingName;
                                 // let triedDrinkName = triedDrink ? triedDrink.listingName : null;
@@ -1705,7 +1724,16 @@
                     this.taste= specificReview[0].taste
                     this.finish= specificReview[0].finish
                     this.rating= specificReview[0].rating
-                    this.selectedFlavourTags= specificReview[0].flavorTag
+                    // reconcile id with flavourtags
+                    // this.selectedFlavourTags= specificReview[0].flavorTag
+                    specificReview[0].flavorTag.forEach(subtag=>{
+                        const subTag = this.subTags.find(subTag=>subtag.$oid===subTag._id.$oid)
+                        const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
+                        const hexcode = familyTag.hexcode
+                        const subtagInfo = subTag.subTag
+                        this.selectedFlavourTags.push(subtagInfo+ hexcode)
+                    })
+                    this.finalSelectedFlavourTags = specificReview[0].flavorTag
                     this.friendTagList = specificReview[0].taggedUsers.map(user => user.$oid);
                     this.selectedObservations= specificReview[0].observationTag
                     this.image64= specificReview[0].photo
@@ -1803,7 +1831,7 @@
                     "rating" : Number(this.rating),
                     "reviewDesc": this.reviewDesc,
                     "reviewType": "Listing",
-                    "flavorTag" : this.selectedFlavourTags,
+                    "flavorTag" : this.finalSelectedFlavourTags,
                     "photo" : this.image64,
                     "colour" : this.selectedColour,
                     "language" : this.selectedLanguage,
@@ -1836,11 +1864,6 @@
                     alert("Submission has error, please fill in the required fields properly")
                     return "Submission error"
                 }
-                if(this.selectedFriendTag == null){
-                    this.reviewDescError +="Selected friend tag is not valid.\n"
-                    alert("Submission has error, please fill in the required fields properly")
-                    return "Submission error"
-                }
                 if (this.reviewDesc !== "") {
                     this.reviewDesc = this.reviewDesc.trim();
                 }
@@ -1863,7 +1886,7 @@
                     "rating" : Number(this.rating),
                     "reviewDesc": this.reviewDesc,
                     "reviewType": "Listing",
-                    "flavorTag" : this.selectedFlavourTags,
+                    "flavorTag" : this.finalSelectedFlavourTags,
                     "photo" : this.image64,
                     "colour" : this.selectedColour,
                     "language" : this.selectedLanguage,
@@ -1966,14 +1989,16 @@
                 }
             },
 
-            toggleFlavourSelection(flavour, hexcode) {
+            toggleFlavourSelection(flavour, hexcode, id) {
                 const index = this.selectedFlavourTags.indexOf(flavour+hexcode);
                 if (index === -1) {
                     // Observation is not selected, so add it to the array
                     this.selectedFlavourTags.push(flavour+hexcode);
+                    this.finalSelectedFlavourTags.push(id)
                 } else {
                     // Observation is selected, so remove it from the array
                     this.selectedFlavourTags.splice(index, 1);
+                    this.finalSelectedFlavourTags.splice(index, 1);
                 }
             },
 
@@ -2065,11 +2090,21 @@
                 this.$router.go(); // Reloads the current route
             },
             getTagName(tag) {
-            const tagParts = tag.split("#");
-            return tagParts[0];
+                const subTag = this.subTags.find(subTag=>subTag._id.$oid === tag.$oid)
+                const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
+                const hexcode = familyTag.hexcode
+                const subtagInfo = subTag.subTag
+                const tagInfo = subtagInfo + hexcode
+                const tagParts = tagInfo.split("#");
+                return tagParts[0];
             },
             getTagColor(tag) {
-                const tagParts = tag.split("#");
+                const subTag = this.subTags.find(subTag=>subTag._id.$oid === tag.$oid)
+                const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
+                const hexcode = familyTag.hexcode
+                const subtagInfo = subTag.subTag
+                const tagInfo = subtagInfo + hexcode
+                const tagParts = tagInfo.split("#");
                 return "#" + tagParts[1];
             },
 
@@ -2129,7 +2164,6 @@
                             "userID": this.userID,
                             
                 }
-                console.log(submitData)
                 await this.$axios.put('http://127.0.0.1:5070/addToTried/', submitData)
                     .then((response) => {
                         responseCode = response.data.code;
@@ -2155,7 +2189,6 @@
                             "userID": this.userID,
                             
                 }
-                console.log(submitData)
                 await this.$axios.put('http://127.0.0.1:5070/addToWant/', submitData)
                     .then((response) => {
                         responseCode = response.data.code;
@@ -2190,12 +2223,17 @@
                 let flavorTags = []
                 for (let review of allReviews) {
                     for (let tag of review.flavorTag) {
-                        flavorTags.push(tag)
+                        // convert ID into the string instead, make life easier
+                        // flavorTags.push(tag)
+                        const subTag = this.subTags.find(subTag=>subTag._id.$oid === tag.$oid)
+                        const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
+                        const hexcode = familyTag.hexcode
+                        const subtagInfo = subTag.subTag
+                        flavorTags.push(subtagInfo + hexcode)
                     }
                 }
                 let flavorTagCounts = {}
                 for (let tag of flavorTags) {
-                    console.log(tag)
                     if (tag in flavorTagCounts) {
                         flavorTagCounts[tag] += 1
                     } else {
@@ -2216,7 +2254,6 @@
                 } else {
                     this.sorted_flavorTagCounts = sorted_flavorTagCounts
                 }
-                console.log(this.sorted_flavorTagCounts)
             },
 
             // from filtered reviews, create a dictionary with the count of each flavour tag
@@ -2230,7 +2267,6 @@
                 }
                 let observationTagCounts = {}
                 for (let tag of observationTags) {
-                    console.log(tag)
                     if (tag in observationTagCounts) {
                         observationTagCounts[tag] += 1
                     } else {
@@ -2251,7 +2287,6 @@
                 } else {
                     this.sorted_observationTagCounts = sorted_observationTagCounts
                 }
-                console.log(this.sorted_observationTagCounts)
             },
             // for bookmark component
             handleIconClick(data) {

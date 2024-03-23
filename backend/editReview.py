@@ -71,10 +71,23 @@ def voteReview():
 # - Possible return codes: 200 (Updated), 400(Review not found), 500 (Error during update)
 @app.route('/updateReview/<id>', methods=['PUT'])
 def updateReview(id):
+    reviewID= ObjectId(id)
     data = request.get_json()
     existingReview = db.reviews.find_one({'_id': ObjectId(id)})
     data['reviewTarget'] = ObjectId(data['reviewTarget'])  # Convert reviewTarget to ObjectId
     data['userID'] = ObjectId(data['userID'])  # Convert userID to ObjectId
+
+    if len(data['taggedUsers']) >0:
+        temp_tag_id =[]
+        for userId in data['taggedUsers']:
+            temp_tag_id.append(ObjectId(userId))
+        data['taggedUsers'] = temp_tag_id
+    if len(data['flavorTag']) >0:
+        temp_flavour_tag =[]
+        for flavour_id in data['flavorTag']:
+            temp_flavour_tag.append(ObjectId(flavour_id['$oid']))
+        data['flavorTag'] = temp_flavour_tag
+
     if(existingReview == None):
         return jsonify(
             {   
@@ -87,8 +100,7 @@ def updateReview(id):
         ), 400
 
     try: 
-        voteReview = db.reviews.update_one({'_id': ObjectId(id)}, {'$set': data})
-
+        voteReview = db.reviews.update_one({'_id': reviewID}, {'$set': data})
         return jsonify(
             {   
                 "code": 200,

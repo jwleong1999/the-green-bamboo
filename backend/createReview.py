@@ -44,6 +44,12 @@ def createReviews():
         for id in rawReview['taggedUsers']:
             temp_tag_id.append(ObjectId(id))
         rawReview['taggedUsers'] = temp_tag_id
+    if len(rawReview['flavorTag']) >0:
+        temp_flavour_tag =[]
+        for id in rawReview['flavorTag']:
+            temp_flavour_tag.append(ObjectId(id['$oid']))
+        rawReview['flavorTag'] = temp_flavour_tag
+
     # Duplicate listing check: Reject if review with the same userID and reviewTarget exists in the database
     rawReviewBottle = rawReview["reviewTarget"]
     rawReviewUserID = rawReview["userID"]
