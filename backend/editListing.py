@@ -156,34 +156,27 @@ def deleteListing(id):
 # [GET] Get distance between two locations
 # - Get distance between two locations
 # - Possible return codes: 201 (Success), 500 (Error)
-@app.route("/getDistance/<key>", methods=['GET'])
-def getDistance(key):
-    url = f"https://maps.googleapis.com/maps/api/distancematrix/json?destinations=40.659569%2C-73.933783%7C40.729029%2C-73.851524%7C40.6860072%2C-73.6334271%7C40.598566%2C-73.7527626&origins=40.6655101%2C-73.89188969999998&key={key}"
+@app.route("/getDistance/<origins>/<destinations>/<key>", methods=['GET'])
+def getDistance(origins, destinations, key):
+    url = f"https://maps.googleapis.com/maps/api/distancematrix/json?destinations={destinations}&origins={origins}&key={key}"
     response = requests.get(url)
     data = response.json()
-    print(data)
 
-    # if response.status_code == 200 and data["status"] == "OK":
-    #     distance = data["rows"][0]["elements"][0]["distance"]["text"]
-    #     return jsonify(
-    #         {
-    #             "code": 201,
-    #             "data": {
-    #                 "distance": distance
-    #             },
-    #             "message": "Distance retrieved successfully."
-    #         }
-    #     ), 201
-    # else:
-    #     return jsonify(
-    #         {
-    #             "code": 500,
-    #             "data": {
-    #                 "distance": None
-    #             },
-    #             "message": "An error occurred retrieving distance."
-    #         }
-    #     ), 500
+    if data["status"] == "OK":
+        return jsonify(
+            {
+                "code": 201,
+                "data": data
+            }
+        ), 201
+    else:
+        return jsonify(
+            {
+                "code": 500,
+                "message": "An error occurred getting distance!"
+            }
+        ), 500
+
 # -----------------------------------------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, port = 5002)
