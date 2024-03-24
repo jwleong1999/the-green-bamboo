@@ -167,6 +167,11 @@ const routes = [
     name: 'dashboarduser',
     component: () => import('../views/Users/UserDashboard.vue')
   },
+  {
+    path: '/dashboard/venue/:venueID?',
+    name: 'dashboardVenue',
+    component: () => import('../views/Venues/VenueDashboard.vue')
+  },
 
   // -------------------------------------------------------------------------------------
 
