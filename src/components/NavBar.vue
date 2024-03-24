@@ -98,8 +98,7 @@
                     url = url + 'Venue/' + accID;
                     this.loadData(url);
 
-                    this.profileURL = '/profile/venue/' + accID;
-                    // [RE-ROUTE FLAG] this.profileURL = '/profile/venue';
+                    this.profileURL = '/profile/venue';
                 }
             }
         },
