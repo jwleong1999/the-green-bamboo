@@ -1004,7 +1004,7 @@
                 this.search = true;
                 const searchResults = this.listings.filter((listing) => {
                     const expressionName = listing["listingName"].toLowerCase();
-                    const producer = this.getProducerName(listing).toLowerCase();
+                    const producer = this.getProducerName(listing).toLowerCase(); //error here if return null, meaning drink doesnt belong to any producer
                     return expressionName.includes(searchInput) || producer.includes(searchInput);
                 });
 
@@ -1241,7 +1241,8 @@
         },
             clearSelection() {
                 // Handle the click event here
-                this.searchListings(); // Or perform any other actions
+                this.resetListings()
+                // this.searchListings();  //Or perform any other actions
                 this.selectedDrinkType = ''
                 this.selectedCategory = ''
                 this.isFilterType = ''
@@ -1255,7 +1256,8 @@
         },
             clearCategory() {
                 // Handle the click event here
-                this.searchListings(); // Or perform any other actions
+                this.resetListings()
+                //this.searchListings(); // Or perform any other actions
                 this.selectDrinkType(this.selectedDrinkType)
         },
 
