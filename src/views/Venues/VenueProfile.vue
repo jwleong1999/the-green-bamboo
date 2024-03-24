@@ -1354,7 +1354,35 @@
 
                             <!-- Header -->
                             <h4 class="text-start"> Venue Location </h4>
-                            <p class="text-start mb-1 fst-italic">{{ targetVenue["address"] }}</p>
+
+                            <!-- Buttons -->
+                            <div class="pb-1 text-start" v-if="selfView || powerView">
+                                <!-- [if] not editing -->
+                                <button v-if="!editAddress" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" @click="editAddress = true">
+                                    Edit
+                                </button>
+                                
+                                <!-- [else] if editing -->
+                                <button v-if="editAddress" type="button" class="btn success-btn rounded-0 reverse-clickable-text" @click="saveAddress" :disabled="!(newAddress.trim().length > 0)">
+                                    Save
+                                </button>
+                                <button v-if="editAddress" type="button" class="btn secondary-btn rounded-0 reverse-clickable-text ms-1" @click="editAddress = false">
+                                    Cancel
+                                </button>
+                                <button v-if="editAddress" type="button" class="btn btn-danger rounded-0 reverse-clickable-text ms-1" @click="newAddress = targetVenue['address']">
+                                    Reset
+                                </button>
+                            </div>
+
+                            <!-- Section Content (Edit Mode) -->
+                            <div v-if="editAddress">
+                                <textarea v-model="newAddress" class="form-control" id="addressTextArea" rows="3" placeholder="Enter venue address"></textarea>
+                            </div>
+
+                            <!-- Section Content (View Mode) -->
+                            <div v-else>
+                                <p class="text-start mb-1 fst-italic">{{ targetVenue["address"] }}</p>
+                            </div>
 
                             <!-- Map -->
                             <GMapMap
@@ -1676,7 +1704,9 @@
                 mapLong: null,
                 mapMarkers: [],
 
-                // Opening Hours + Public Holidays + Reservation Details
+                // Address + Opening Hours + Public Holidays + Reservation Details
+                editAddress: false,
+                newAddress: "",
                 editOpeningHours: false,
                 editOpeningHoursError: false,
                 newOpeningHours: {},
@@ -1796,6 +1826,7 @@
                         this.editVenueName = this.targetVenue["venueName"];
                         this.editVenueDesc = this.targetVenue["venueDesc"];
                         this.editCountry = this.targetVenue["originLocation"];
+                        this.newAddress = this.targetVenue["address"];
                         this.newPublicHolidays = this.targetVenue["publicHolidays"];
                         this.newReservationDetails = this.targetVenue["reservationDetails"];
 
@@ -1849,10 +1880,19 @@
                                 key: 'AIzaSyD5aukdDYDbnc8BKjFF_YjApx-fUe515Hs'
                             }
                         });
-                        const { lat, lng } = mapResponse.data.results[0].geometry.location;
-                        this.mapLat = lat;
-                        this.mapLong = lng;
-                        this.mapMarkers = [{ position: { lat, lng } }];
+
+                        // Check if map data is valid
+                        if (mapResponse.data.status == "OK") {
+                            const { lat, lng } = mapResponse.data.results[0].geometry.location;
+                            this.mapLat = lat;
+                            this.mapLong = lng;
+                            this.mapMarkers = [{ position: { lat, lng } }];
+                        }
+                        else {
+                            this.mapLat = 0;
+                            this.mapLong = 0;
+                            this.mapMarkers = [{ position: { lat: 0, lng: 0 } }];
+                        }
 
                         this.venueExists = true;
                         this.loadData();
@@ -2301,6 +2341,33 @@
 
             // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+            // Update Public Holiday Information
+            async saveAddress() {
+
+                this.editAddress = false;
+
+                try {
+                    this.$axios.post('http://localhost:5300/editAddress', 
+                        {
+                            venueID: this.targetVenue['_id']['$oid'],
+                            updatedAddress: this.newAddress,
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                }
+                catch (error) {
+                    alert("An error occurred while attempting to save your changes, please try again!");
+                    // console.error(error);
+                }
+
+                // Refresh page
+                this.$router.go(0);
+
+            },
+            
             // Check Opening Hours
             checkOpeningHours() {
 

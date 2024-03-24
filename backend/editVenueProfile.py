@@ -267,6 +267,38 @@ def unlikeUpdates():
         ), 500
 
 # -----------------------------------------------------------------------------------------
+# [POST] Edit address
+# - Edit address
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/editAddress', methods=['POST'])
+def editAddress():
+    data = request.get_json()
+    print(data)
+    venueID = data['venueID']
+    updatedAddress = data['updatedAddress']
+
+    try: 
+        editAddress = db.venues.update_one(
+            {'_id': ObjectId(venueID)},
+            {'$set': {'address': updatedAddress}}
+        )
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Address edited successfully!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "An error occurred editing the address!"
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------
 # [POST] Edit opening hours
 # - Edit opening hours
 # - Possible return codes: 201 (Updated), 500 (Error during update)
