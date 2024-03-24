@@ -248,7 +248,7 @@
                 }
                 // [Venue]
                 if (this.role == "venue") {
-                    this.$router.push({path: `/profile/venue/${this.accountID}`});
+                    this.$router.push({path: `/profile/venue`});
                 }
             }
         }
