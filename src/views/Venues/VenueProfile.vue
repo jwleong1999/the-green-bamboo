@@ -256,11 +256,11 @@
                 <div class="row mt-3">
                     <div class="col-8 d-flex justify-content-start">
                         <!-- Toggle Bar Overview -->
-                        <button v-if="contentMode == 'overview'" class="btn primary-btn-outline-less-round mx-1" @click="contentMode = 'overview'"> Bar Overview </button>
-                        <button v-else class="btn primary-btn-less-round mx-1" @click="contentMode = 'overview'"> Bar Overview </button>
+                        <button v-if="contentMode == 'overview'" class="btn primary-btn-less-round mx-1" @click="contentMode = 'overview'"> Bar Overview </button>
+                        <button v-else class="btn primary-btn-outline-less-round mx-1" @click="contentMode = 'overview'"> Bar Overview </button>
                         <!-- Toggle Bar Menu -->
-                        <button v-if="contentMode == 'menu'" class="btn primary-btn-outline-less-round mx-1" @click="contentMode = 'menu'"> Bar Menu </button>
-                        <button v-else class="btn primary-btn-less-round mx-1" @click="contentMode = 'menu'"> Bar Menu </button>
+                        <button v-if="contentMode == 'menu'" class="btn primary-btn-less-round mx-1" @click="contentMode = 'menu'"> Bar Menu </button>
+                        <button v-else class="btn primary-btn-outline-less-round mx-1" @click="contentMode = 'menu'"> Bar Menu </button>
                     </div>
                     <!-- Follow Venue -->
                     <div v-if="viewerType == 'user'" class="col-4 d-flex justify-content-end">
