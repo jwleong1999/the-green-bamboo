@@ -38,19 +38,61 @@
                         <div class="square-inline pb-2">
                             <h4 class="square-inline text-start mr-auto"> Recent Fan Posted Questions </h4>
                         </div>
+                        <!-- buttons-->
+                        <div class="row text-center px-2">
+                            <div class="col-6 d-grid gap-0 no-padding">
+                                <button type="button" class="btn tertiary-btn-qa rounded-0 reverse-clickable-text">
+                                    <a class="reverse-clickable-text" v-on:click="showAnswered()">
+                                        Answered
+                                    </a>
+                                </button>
+                            </div>
+                            <div class="col-6 d-grid gap-0 no-padding">
+                                <button type="button" class="btn tertiary-btn-qa rounded-0 reverse-clickable-text">
+                                    <a class="reverse-clickable-text" v-on:click="showUnanswered()">
+                                        Unanswered
+                                    </a>
+                                </button>
+                            </div>
+                        </div>
                         <!-- body -->
-                        <div>
-                            <!-- v-for loop here-->
-                            <div v-for="(qa, index) in unansweredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
-                                <b> Q: </b> {{ qa.question }} 
-                                <div class="d-flex align-items-center pb-3">
-                                    <textarea class="search-bar form-control rounded fst-italic question-box flex-grow-1" type="text" placeholder="Reply to question" v-model="answers[qa._id.$oid]"></textarea>
-                                    <div v-on:click="sendAnswer(qa)" class="send-icon ps-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                                            <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                                        </svg>
+                        <div class="text-start pt-2">
+                            <!-- responses to q&a -->
+                            <div id="carouselExample" class="carousel slide">
+                                <div class="carousel-inner px-4">
+                                    <!-- show answered questions -->
+                                    <div v-if="answerStatus">
+                                        <div class="carousel-item" v-for="(qa, index) in answeredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
+                                            <p> <b> Q: {{ qa["question"] }} </b> </p>
+                                            <p> A: {{ qa["answer"] }} </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- show unanswered questions -->
+                                    <div v-else>
+                                            <div class="carousel-item" v-for="(qa, index) in unansweredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
+                                            <p> <b> Q: {{ qa["question"] }} </b> </p>
+                                            <div class="input-group centered">
+                                                <div class="input-group centered pt-2">
+                                                    <textarea class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Respond to your fans latest questions." v-model="answer"></textarea>
+                                                    <div v-on:click="sendAnswer(qa)" class="send-icon ps-1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                                                            <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -58,29 +100,31 @@
 
                 <!-- row 4: latest review -->
                 <div class="row pt-3">
-                    <div class="square primary-square rounded p-3 mb-3 text-start">
+                    <div class="square primary-square rounded p-3 mb-3 text-start" style="height: 325px;">
                         <!-- header text -->
                         <div class="square-inline pb-2">
                             <h4 class="square-inline text-start mr-auto"> Latest Reviews </h4>
                         </div>
                         <!-- body -->
-                        <div>
-                            <!-- v-for loop here-->
-                            <div v-for="review in allReviews" v-bind:key="review._id" class="py-2">
-                                <router-link :to="{ path: '/profile/user/' + review.userID.$oid }" class="reverse-clickable-text">
-                                    <b> @{{ getUsernameFromID(review.userID.$oid) }}</b>
-                                </router-link> 
-                                rated 
-                                <router-link :to="{ path: '/listing/view/' + getListingFromID(review.reviewTarget.$oid)._id.$oid }" class="reverse-clickable-text">
-                                    <u> {{ getListingFromID(review.reviewTarget.$oid).listingName }} </u>
-                                </router-link>
-                                <span class="ps-2">
-                                    <i> {{ review.rating }} 
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
-                                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                                        </svg>
-                                    </i>
-                                </span>
+                        <div style="height: 85%;">
+                            <div class="overflow-auto" style="max-height: 100%;">
+                                <!-- v-for loop here-->
+                                <div v-for="review in allReviews" v-bind:key="review._id" class="py-2">
+                                    <router-link :to="{ path: '/profile/user/' + review.userID.$oid }" class="reverse-clickable-text">
+                                        <b> @{{ getUsernameFromID(review.userID.$oid) }}</b>
+                                    </router-link> 
+                                    rated 
+                                    <router-link :to="{ path: '/listing/view/' + getListingFromID(review.reviewTarget.$oid)._id.$oid }" class="reverse-clickable-text">
+                                        <u> {{ getListingFromID(review.reviewTarget.$oid).listingName }} </u>
+                                    </router-link>
+                                    <span class="ps-2">
+                                        <i> {{ review.rating }} 
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
+                                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                            </svg>
+                                        </i>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -286,8 +330,10 @@
                 specified_producer: {},
 
                 // for Q&A
+                // to get producer's answered questions
+                answeredQuestions: [],
                 unansweredQuestions: [],
-                answers: {},
+                answerStatus: true,
 
                 // all drinks that producer has
                 allDrinks: [],
@@ -366,7 +412,7 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
                         this.producers = response.data;
                         this.specified_producer = this.producers.find(producer => producer["_id"]["$oid"] == this.producer_id); // find specified producer
-                        this.checkProducerQuestions();
+                        this.checkProducerAnswered()
 
                     } 
                     catch (error) {
@@ -439,29 +485,41 @@
                 this.$router.go(-1)
             },
 
-            // get producer's answered & unanswered questions
-            checkProducerQuestions() {
+            // get producer's answered questions (to be displayed to the users/venues)
+            checkProducerAnswered() {
                 let answeredQuestions = this.specified_producer["questionsAnswers"];
                 if (answeredQuestions.length > 0) {
                     for (let qa in answeredQuestions) {
                         let answer = answeredQuestions[qa]["answer"];
-                        if (answer == "") {
+                        if (answer != "") {
+                            this.answeredQuestions.push(answeredQuestions[qa]);
+                        }
+                        else {
                             this.unansweredQuestions.push(answeredQuestions[qa]);
                         }
                     }
                 }
             },
 
+            // change status of producer's answer to true
+            showAnswered() {
+                this.answerStatus = true;
+            },
+
+            // change status of producer's answer
+            showUnanswered() {
+                this.answerStatus = false;
+            },
+
             // send answer that producers give to users
             async sendAnswer (qa) {
                 let q_and_a_id = qa._id.$oid;
-                let answer = this.answers[q_and_a_id];
                 try {
                     const response = await this.$axios.post('http://127.0.0.1:5200/sendAnswers', 
                         {
                             producerID: this.producer_id,
                             questionsAnswersID: q_and_a_id,
-                            answer: answer,
+                            answer: this.answer,
                         },
                         {
                         headers: {
