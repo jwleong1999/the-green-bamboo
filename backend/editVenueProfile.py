@@ -545,6 +545,88 @@ def updateVenueStatus():
                 "message": "An error occurred updating claim status!"
             }
         ), 500
+
+# -----------------------------------------------------------------------------------------
+
+# [POST] Edit venue update
+# - Update a venue update with new details
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/editUpdate', methods=['POST'])
+def editUpdate():
+
+    # fetch sent data
+    data = request.get_json()
+    print(data)
+
+    # extract components of the data
+    venueID = data['venueID']
+    updateID = data['updateID']
+    update = data['update']
+    image64 = data['image64']
+
+    try: 
+        update = db.venues.update_one(
+            {'_id': ObjectId(venueID), 'updates._id': ObjectId(updateID)},
+            {'$set': 
+                {'updates.$.text': update,
+                'updates.$.photo': image64}
+        }
+        )
+
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Updated venue's update!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "An error occurred updating venue's update!"
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------
+
+# [POST] Delete venue update
+# - Delete a venue update with new details
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/deleteUpdate', methods=['POST'])
+def deleteUpdate():
+
+    # fetch sent data
+    data = request.get_json()
+    print(data)
+
+    # extract components of the data
+    venueID = data['venueID']
+    updateID = data['updateID']
+
+    try: 
+        deleteUpdate = db.venues.update_one(
+            {'_id': ObjectId(venueID)},
+            {'$pull': {'updates': {'_id': ObjectId(updateID)}}}
+        )
+
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Deleted venue's update!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "An error occurred deleting venue's update!"
+            }
+        ), 500
+
 # -----------------------------------------------------------------------------------------
 if __name__ == '__main__':
     app.run(debug=True, port=5300)

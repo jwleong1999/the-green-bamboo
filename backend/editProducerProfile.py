@@ -92,7 +92,8 @@ def addUpdates():
                             '_id': ObjectId(),
                             'date': date,
                             'text': text,
-                            'photo': image64
+                            'photo': image64,
+                            'likes': []
                         }
                     }
             }
@@ -376,6 +377,89 @@ def addNewProfileCount():
                 "message": "An error occurred updating the new profile view count."
             }
         ), 500
+
 # -----------------------------------------------------------------------------------------
+
+# [POST] Edit producer update
+# - Update a producer update with new details
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/editUpdate', methods=['POST'])
+def editUpdate():
+
+    # fetch sent data
+    data = request.get_json()
+    print(data)
+
+    # extract components of the data
+    producerID = data['producerID']
+    updateID = data['updateID']
+    update = data['update']
+    image64 = data['image64']
+
+    try: 
+        update = db.producers.update_one(
+            {'_id': ObjectId(producerID), 'updates._id': ObjectId(updateID)},
+            {'$set': 
+                {'updates.$.text': update,
+                'updates.$.photo': image64}
+        }
+        )
+
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Updated producer's update!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "An error occurred updating producer's update!"
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------
+
+# [POST] Delete producer update
+# - Delete a producer update with new details
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/deleteUpdate', methods=['POST'])
+def deleteUpdate():
+
+    # fetch sent data
+    data = request.get_json()
+    print(data)
+
+    # extract components of the data
+    producerID = data['producerID']
+    updateID = data['updateID']
+
+    try: 
+        deleteUpdate = db.producers.update_one(
+            {'_id': ObjectId(producerID)},
+            {'$pull': {'updates': {'_id': ObjectId(updateID)}}}
+        )
+
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Deleted producer's update!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "An error occurred deleting producer's update!"
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------
+
 if __name__ == '__main__':
     app.run(debug=True, port=5200)

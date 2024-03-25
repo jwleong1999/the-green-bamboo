@@ -924,6 +924,7 @@
                 let [year, month, day] = datePart.split("-");
                 // formatting the date
                 let formattedDate = `${day}/${month}/${year}`;
+                console.log(formattedDate)
                 return formattedDate;
             },
 
