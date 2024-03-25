@@ -1025,6 +1025,7 @@
     import BookmarkIcon from '@/components/BookmarkIcon.vue';
     import BookmarkModal from '@/components/BookmarkModal.vue';
     
+    
     export default {
         // setup(){
 
@@ -1519,7 +1520,8 @@
                     let venueDistances = {};
                     
                     this.venueListings.forEach(async (venue) => {
-                        const response = await this.$axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${venue.venueName}&key=${apiKey}`);
+                        const address = encodeURIComponent(venue.address);
+                        const response = await this.$axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${apiKey}`);
                         const { results } = response.data;
                         console.log(results)
                         if (results.length > 0) {
