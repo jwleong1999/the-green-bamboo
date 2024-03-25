@@ -165,9 +165,8 @@
 
                 <!-- NAVTAB 1: LISTINGS -->
                 <div class="tab-pane fade show active" id="nav-listings" role="tabpanel" aria-labelledby="nav-listings-tab">
-                    <hr>
-                    <p class="fw-bold fst-italic fs-5 m-0" v-if="resultListings.length > 0">Viewing: {{ resultListings.length }} Listing Search Results</p>
-                    <p class="fw-bold fst-italic fs-5 m-0" v-else>No Listing Results Found!</p>
+                    <p class="fw-bold fst-italic fs-5 m-0 py-2" v-if="resultListings.length > 0">Viewing: {{ resultListings.length }} Listing Search Results</p>
+                    <p class="fw-bold fst-italic fs-5 m-0 py-2" v-else>No Listing Results Found!</p>
                     
                     <div class="container text-start">
                         <div class="row" v-for="resultListing in resultListings" :key="resultListing._id">
@@ -197,7 +196,10 @@
                                     </router-link>
                                     <!-- Producer Name + Router Link -->
                                     <router-link class="text-secondary-emphasis text-decoration-none" :to="{ path: '/profile/producer/' + resultListing.producerID['$oid'] }">
-                                        <h5 class="fw-bold m-1">{{ resultListing['producerName'] }}</h5>
+                                        <p class="m-0">
+                                            <b> Producer: </b>
+                                            {{ getProducerName(resultListing['producerID']) }}
+                                        </p>
                                         <p class="fw-bold fst-italic m-0" v-if="resultListing['bottler'] != 'OB'">Bottler: {{ resultListing['bottler'] }}</p>
                                     </router-link>
                                     <!-- Country of Origin -->
@@ -265,9 +267,8 @@
 
                 <!-- NAVTAB 2: PRODUCERS -->
                 <div class="tab-pane fade show" id="nav-producers" role="tabpanel" aria-labelledby="nav-producers-tab">
-                    <hr>
-                    <p class="fw-bold fst-italic fs-5 m-0" v-if="producerListings.length > 0">Viewing: {{ producerListings.length }} Producer Search Results</p>
-                    <p class="fw-bold fst-italic fs-5 m-0" v-else>No Producer Results Found!</p>
+                    <p class="fw-bold fst-italic fs-5 m-0 py-2" v-if="producerListings.length > 0">Viewing: {{ producerListings.length }} Producer Search Results</p>
+                    <p class="fw-bold fst-italic fs-5 m-0 py-2" v-else>No Producer Results Found!</p>
                     
                     <div class="container text-start">
                         <div class="row" v-for="producer in producerListings" :key="producer._id">
@@ -335,9 +336,8 @@
 
                 <!-- NAVTAB 3: VENUES -->
                 <div class="tab-pane fade show" id="nav-venues" role="tabpanel" aria-labelledby="nav-venues-tab">
-                    <hr>
-                    <p class="fw-bold fst-italic fs-5 m-0" v-if="venueListings.length > 0">Viewing: {{ venueListings.length }} Venue Search Results</p>
-                    <p class="fw-bold fst-italic fs-5 m-0" v-else>No Venue Results Found!</p>
+                    <p class="fw-bold fst-italic fs-5 m-0 py-2" v-if="venueListings.length > 0">Viewing: {{ venueListings.length }} Venue Search Results</p>
+                    <p class="fw-bold fst-italic fs-5 m-0 py-2" v-else>No Venue Results Found!</p>
                     
                     <div class="container text-start">
                         <div class="row" v-for="venue in venueListings" :key="venue._id">
@@ -543,7 +543,7 @@
                     this.resultListings = [];
 
                     for (let listing of response.data) {
-                        const producer = this.producerList.find((producer) => {
+                        let producer = this.producerList.find((producer) => {
                             return producer["_id"]["$oid"] == listing["producerID"]["$oid"];
                         });
                         if (producer) {
@@ -1010,7 +1010,22 @@
                 this.tabActive = selectedTab;
                 // clear sort selection
                 this.sortSelection.category = '';
-            }
+            },
+
+            // get producerName for a listing based on producerID
+            getProducerName(producerID) {
+                const producer = this.producerList.find((producer) => {
+                    return producer["_id"]["$oid"] == producerID["$oid"];
+                });
+                // ensures that producer is found before accessing "producerName"
+                if (producer) {
+                    const producerName = producer["producerName"];
+                    return producerName;
+                }
+                else {
+                    return null;
+                }
+            },
         }
     }
 </script>
