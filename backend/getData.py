@@ -16,11 +16,8 @@ from bson import json_util
 from flask import Flask
 from flask_pymongo import PyMongo
 from flask_cors import CORS
-from werkzeug.local import LocalProxy
 
-from pymongo.errors import DuplicateKeyError, OperationFailure
 from bson.objectid import ObjectId
-from bson.errors import InvalidId
 
 app = Flask(__name__)
 CORS(app)  # Allow all requests

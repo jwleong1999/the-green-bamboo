@@ -9,14 +9,12 @@ from bson import json_util
 from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from flask_cors import CORS
-from werkzeug.local import LocalProxy
 
-from pymongo.errors import DuplicateKeyError, OperationFailure
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
 import data
-import requests
+import pip._vendor.requests as requests
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
