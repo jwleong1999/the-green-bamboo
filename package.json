@@ -7,7 +7,7 @@
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "test": "jest". ""
+    "test": "jest"
   },
   "dependencies": {
     "@canvasjs/vue-charts": "^1.0.4",
