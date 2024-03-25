@@ -11,9 +11,7 @@ permissions:
 
 jobs:
   test-jest:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: Run all jest tests
@@ -21,19 +19,17 @@ jobs:
         npm install
         npm test
   
-  test-php:
-
+  test-python:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
-    - uses: php-actions/composer@v6
-    - name: Install MySQL and MySQLi
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install mysql-server
-        sudo service mysql start
-        sudo apt-get install php-mysql
-    - name: Run all php tests
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run all pytest tests
       run: |
-        phpunit unit_testing/DatabaseTest.php
+        pytest
