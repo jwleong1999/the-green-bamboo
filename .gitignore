@@ -21,3 +21,10 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Ignore all our developing unit tests
+# tests/unit/Login.spec.js
+# tests/unit/Producers.spec.js
+# tests/unit/Users.spec.js
+# tests/unit/test_createListing.py
+# tests/unit/test_data.py
