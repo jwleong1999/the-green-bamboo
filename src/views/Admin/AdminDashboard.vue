@@ -53,16 +53,44 @@
                         </div>
                     </div>
                     <div>
-                        <p class="gap-1">
+                        <div class="gap-1">
                             <!-- Open a modal prompting to edit or add tags -->
                             <button class="btn tertiary-btn reverse-clickable-text m-1" type="button" data-bs-toggle="modal" data-bs-target="#observationModal">
                                 Action Tags
                             </button>
-                            <button class="btn tertiary-btn reverse-clickable-text m-1" type="button">
+                            <button class="btn tertiary-btn reverse-clickable-text m-1" data-bs-toggle="button" type="button" @click="toggleFlavourControl" :style="{ 'background-color': showFlavourControl ? '#535C72' : '', 'color':'whitesmoke'}">
                                 Flavour Tags
                             </button>
+                            <div v-if="showFlavourControl" class="rounded p-3 border border-black">
+                                <div class="row">
+                                        <div class="col-12">
+                                            <button class="btn btn-warning reverse-clickable-text text-dark" type="button">
+                                                Add Family Tags
+                                            </button>
+                                            <button class="btn btn-primary mx-1 reverse-clickable-text" type="button">
+                                                Edit Family Tags
+                                            </button>
+                                            <button class="btn btn-danger mx-1 reverse-clickable-text" type="button">
+                                                Delete Family Tags
+                                            </button>
+                                        </div>
+                                </div>
+                                <div class="row">
+                                        <div class="col-12">
+                                            <button class="btn btn-warning reverse-clickable-text text-dark" type="button">
+                                                Add Sub Tags
+                                            </button>
+                                            <button class="btn btn-primary mx-1 reverse-clickable-text" type="button">
+                                                Edit Sub Tags
+                                            </button>
+                                            <button class="btn btn-danger mx-1 reverse-clickable-text" type="button">
+                                                Delete Sub Tags
+                                            </button>
+                                        </div> 
+                                </div>
+                            </div>
                         
-                        </p>
+                        </div>
                         <!-- modal for lock listing to moderators -->
                         <div class="modal fade" id="observationModal" tabindex="-1" aria-labelledby="observationModalLabel" aria-hidden="true" data-bs-backdrop="static">
                             <div class="modal-dialog modal-lg">
@@ -651,6 +679,7 @@
                     successRemoveMod:false,
                     errorRemoveMod:false,
 
+                    showFlavourControl: false,
 
                     // Logged in user details
                     userID: null,
@@ -1456,6 +1485,10 @@
                     link.setAttribute("download", "loginDetail.csv");
                     document.body.appendChild(link);
                     link.click();
+                },
+
+                toggleFlavourControl(){
+                    this.showFlavourControl = !this.showFlavourControl
                 }
             }
         }
