@@ -410,6 +410,7 @@
                                             <span v-if="businessType == 'venue'">Venue account: {{ businessName }}</span>
                                             <br>
                                             Temporary password: <b>{{ tempPassword }}</b>
+                                            <button type="button" class="btn secondary-btn-less-round"  v-on:click="downloadCSV()"> Download login details </button>
                                         </div>
                                     </div>
                                     <div class="modal-body text-start" v-else-if="createBusinessError != '' ">
@@ -1434,6 +1435,27 @@
                     this.removeMod=''
                     this.successRemoveMod = false
                     this.errorRemoveMod = false
+                },
+
+                downloadCSV() {
+                    let csvContent = "data:text/csv;charset=utf-8,";
+
+                    let csvData = [
+                        ['Name', 'Temporary Password'],
+                        [this.businessName, this.tempPassword]
+                    ]
+
+                    csvData.forEach(row => {
+                        csvContent += row + "\n";
+                    });
+
+                    console.log(csvContent)
+                    const encodedUri = encodeURI(csvContent);
+                    const link = document.createElement("a");
+                    link.setAttribute("href", encodedUri);
+                    link.setAttribute("download", "loginDetail.csv");
+                    document.body.appendChild(link);
+                    link.click();
                 }
             }
         }
