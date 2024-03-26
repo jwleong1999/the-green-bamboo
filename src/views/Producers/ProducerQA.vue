@@ -37,23 +37,27 @@
                     <div class="card text-start">
                         <div class="card-body qa-card-body">
                             <div class="row">
-                                <div class="col-10">
+                                <div class="col-9">
                                     <h5 class="card-title"> 
                                         <b> Question: </b>
                                         {{ qa.question }} 
                                     </h5>
                                 </div>
-                                <div class="col-2 mb-2">
+                                <div class="col-3 mb-2 text-end">
                                     <!-- [if] not editing -->
                                     <button v-if="editingQA == false || editingQAID != qa._id.$oid" type="button" class="btn btn-warning rounded-0 me-1" v-on:click="editQA(qa)">
                                         Edit answer
                                     </button>
                                     <!-- [else] if editing -->
-                                    <button v-else type="button" class="btn success-btn rounded-0 me-1" v-on:click="saveQAEdit(qa)">
+                                    <button v-if="editingQAID == qa._id.$oid" type="button" class="btn success-btn rounded-0 me-1" v-on:click="saveQAEdit(qa)">
                                         Save
                                     </button>
+                                    <!-- [else] if editing -->
+                                    <button v-if="editingQAID == qa._id.$oid" type="button" class="btn secondary-btn rounded-0 me-1" v-on:click="cancelQAEdit(qa)">
+                                        Cancel
+                                    </button>
                                     <!-- delete -->
-                                    <button ype="button" class="btn btn-danger rounded-0 ms-1" v-on:click="deleteQAEdit(qa)">
+                                    <button type="button" class="btn btn-danger rounded-0" v-on:click="deleteQAEdit(qa)">
                                         Delete
                                     </button>
                                 </div>
@@ -300,6 +304,12 @@
                 window.location.reload();
             },
 
+            // cancel Q&A edit
+            cancelQAEdit(qa) {
+                this.editingQA = false;
+                this.edit_answer[qa._id.$oid] = "";
+                this.editingQAID = "";
+            },
         }
     };
 </script>
