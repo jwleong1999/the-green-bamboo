@@ -168,7 +168,8 @@
                                 <div v-if="correctProducer" class="col-6 text-end">
                                     <!-- edit & delete button -->
                                     <button v-if="editingLatestUpdate == false" type="button" class="btn btn-warning rounded-0 me-1" @click="editUpdate(latestUpdate, 'latest')"> Edit </button>
-                                    <button v-else type="button" class="btn success-btn rounded-0 reverse-clickable-text me-1" @click="saveUpdateEdit(latestUpdate, 'latest')"> Save Changes </button>
+                                    <button v-if="editingLatestUpdate" type="button" class="btn success-btn rounded-0 reverse-clickable-text me-1" @click="saveUpdateEdit(latestUpdate, 'latest')"> Save Changes </button>
+                                    <button v-if="editingLatestUpdate" type="button" class="btn secondary-btn rounded-0 reverse-clickable-text ms-1" @click="cancelUpdate(latestUpdate, 'latest')"> Cancel </button>
                                     <button type="button" class="btn btn-danger rounded-0 ms-1" @click="deleteUpdate(latestUpdate)"> Delete </button>
                                 </div>
                             </div>
@@ -283,7 +284,8 @@
                                         <div v-if="correctProducer" class="col-6 text-end">
                                             <!-- edit & delete button -->
                                             <button v-if="editingRemainingUpdate == false || editingRemainingUpdateID != update._id.$oid" type="button" class="btn btn-warning rounded-0 me-1" @click="editUpdate(update, 'remaining')"> Edit </button>
-                                            <button v-else-if="editingRemainingUpdateID == update._id.$oid" type="button" class="btn success-btn rounded-0 reverse-clickable-text me-1" @click="saveUpdateEdit(update, 'remaining')"> Save Changes </button>
+                                            <button v-if="editingRemainingUpdateID == update._id.$oid" type="button" class="btn success-btn rounded-0 reverse-clickable-text me-1" @click="saveUpdateEdit(update, 'remaining')"> Save Changes </button>
+                                            <button v-if="editingRemainingUpdateID == update._id.$oid" type="button" class="btn secondary-btn rounded-0 reverse-clickable-text ms-1" @click="cancelUpdate(update, 'remaining')"> Cancel </button>
                                             <button type="button" class="btn btn-danger rounded-0 ms-1" @click="deleteUpdate(update)"> Delete </button>
                                         </div>
                                     </div>
@@ -1992,6 +1994,20 @@
                 // force page to reload
                 window.location.reload();
 
+            },
+
+            // cancel update
+            cancelUpdate(update, status) {
+                // set editing status to true
+                if (status == "latest") {
+                    this.editingLatestUpdate = false;
+                    this.edit_latestUpdateText = ""
+                }
+                else if (status == "remaining") {
+                    this.editingRemainingUpdateID = ""
+                    this.editingRemainingUpdate = false;
+                    this.edit_remainingUpdateText[update._id.$oid] = ""
+                }
             },
 
             // for editing Q&A answers
