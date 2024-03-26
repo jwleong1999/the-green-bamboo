@@ -102,7 +102,7 @@
 
                                     <!-- Claim Venue -->
                                     <p v-if="!targetVenue['claimStatus']" class="text-body-secondary no-margin text-decoration-underline fst-italic" @click="claimVenueAccount"> Claim This Business </p>
-                                    <p v-else class="text-body-secondary no-margin fw-bold fst-italic"> Venue Claimed </p>
+                                    <p v-else class="text-body-secondary no-margin fw-bold fst-italic"> Verified Venue </p>
 
                                     <!-- Report Menu Inaccuracy (Opens Modal) -->
                                     <p v-if="loggedIn && targetVenue['claimStatus']" class="text-body-secondary no-margin text-decoration-underline fst-italic" data-bs-toggle="modal" data-bs-target="#inaccurateModal"> Report Menu Inaccuracy </p>
@@ -256,16 +256,16 @@
                 <div class="row mt-3">
                     <div class="col-8 d-flex justify-content-start">
                         <!-- Toggle Bar Overview -->
-                        <button v-if="contentMode == 'overview'" class="btn primary-btn-less-round mx-1" @click="contentMode = 'overview'"> Bar Overview </button>
-                        <button v-else class="btn primary-btn-outline-less-round mx-1" @click="contentMode = 'overview'"> Bar Overview </button>
+                        <button v-if="contentMode == 'overview'" class="btn btn-lg primary-btn-less-round mx-1" @click="contentMode = 'overview'"> Bar Overview </button>
+                        <button v-else class="btn btn-lg primary-btn-outline-less-round mx-1" @click="contentMode = 'overview'"> Bar Overview </button>
                         <!-- Toggle Bar Menu -->
-                        <button v-if="contentMode == 'menu'" class="btn primary-btn-less-round mx-1" @click="contentMode = 'menu'"> Bar Menu </button>
-                        <button v-else class="btn primary-btn-outline-less-round mx-1" @click="contentMode = 'menu'"> Bar Menu </button>
+                        <button v-if="contentMode == 'menu'" class="btn btn-lg primary-btn-less-round mx-1" @click="contentMode = 'menu'"> Bar Menu </button>
+                        <button v-else class="btn btn-lg primary-btn-outline-less-round mx-1" @click="contentMode = 'menu'"> Bar Menu </button>
                     </div>
                     <!-- Follow Venue -->
                     <div v-if="viewerType == 'user'" class="col-4 d-flex justify-content-end">
-                        <button v-if="!userFollowing" class="btn primary-btn-less-round mx-1" @click="editFollow('follow')"> + Follow Venue </button>
-                        <button v-else class="btn primary-btn-outline-less-round mx-1" @click="editFollow('unfollow')"> Following </button>
+                        <button v-if="!userFollowing" class="btn btn-lg primary-btn-less-round mx-1" @click="editFollow('follow')"> + Follow Venue </button>
+                        <button v-else class="btn btn-lg primary-btn-outline-less-round mx-1" @click="editFollow('unfollow')"> Following </button>
                     </div>
                 </div>
 
@@ -282,7 +282,6 @@
                     <div class="row">
                         <div class="col-12">
                             <p class="text-start text-body-secondary fs-3 fw-bold m-0">Latest Updates from {{ targetVenue["venueName"] }}</p>
-                            <p v-if="targetVenue['updates'].length > 0 && targetVenue['claimStatus']" class="text-start text-decoration-underline fs-5 m-0 pb-2">Posted on: {{ targetVenue["updates"][0].date }}</p>
                             <p v-if="!(targetVenue['updates'].length > 0) && targetVenue['claimStatus']" class="text-start fs-5 fst-italic m-0 pb-2">{{ targetVenue["venueName"] }} has not posted any updates!</p>
                         </div>
                     </div>
@@ -302,9 +301,59 @@
                     <!-- Latest Update Information -->
                     <div class="row" v-if="targetVenue['updates'].length > 0 && targetVenue['claimStatus']">
 
+                        <!-- Update Date + Edit / Delete Update -->
+                        <div class="row">
+                            <div class="col-xl-8 col-md-6 col-12">
+                                <p class="text-start text-decoration-underline fs-5 m-0 pb-2">Posted on: {{ targetVenue["updates"][0].date }}</p>
+                            </div>
+                            <div v-if="selfView || powerView" class="col-xl-4 col-md-6 col-12 text-end">
+                                <!-- [if] not editing -->
+                                <button v-if="editUpdateTarget != targetVenue['updates'][0]._id['$oid']" type="button" class="btn btn-warning rounded-0" @click="editUpdate(targetVenue['updates'][0])">
+                                    Edit
+                                </button>
+                                <button v-if="editUpdateTarget != targetVenue['updates'][0]._id['$oid']" type="button" class="btn btn-danger rounded-0 ms-1" @click="deleteUpdate(targetVenue['updates'][0])">
+                                    Delete
+                                </button>
+                                
+                                <!-- [else] if editing -->
+                                <button v-if="editUpdateTarget == targetVenue['updates'][0]._id['$oid']" type="button" class="btn success-btn rounded-0 reverse-clickable-text" @click="saveUpdate(targetVenue['updates'][0])" :disabled="!(editUpdateContent[targetVenue['updates'][0]._id['$oid']].newText.length > 0)">
+                                    Save
+                                </button>
+                                <button v-if="editUpdateTarget == targetVenue['updates'][0]._id['$oid']" type="button" class="btn secondary-btn rounded-0 reverse-clickable-text ms-1" @click="editUpdateTarget = null">
+                                    Cancel
+                                </button>
+                                <button v-if="editUpdateTarget == targetVenue['updates'][0]._id['$oid']" type="button" class="btn btn-danger rounded-0 reverse-clickable-text ms-1" @click="editUpdateContent[targetVenue['updates'][0]._id['$oid']] = {newText: targetVenue['updates'][0].text, newPhoto: targetVenue['updates'][0].photo}">
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+
                         <!-- Photo / Number of Likes -->
                         <div class="col-xl-2 col-md-3">
-                            <img :src=" 'data:image/jpeg;base64,' + (targetVenue['updates'][0].photo || defaultProfilePhoto)" alt="" style="width: 128px; height: 128px;">
+
+                            <!-- Image -->
+                            <div class="image-container">
+
+                                <!-- [if] editing profile -->
+                                <div v-if="editUpdateTarget == targetVenue['updates'][0]._id['$oid']" style="position: relative; text-align: center;">
+                                    <!-- image -->
+                                    <img :src="'data:image/jpeg;base64,' + (editUpdateContent[targetVenue['updates'][0]._id['$oid']].newPhoto || defaultProfilePhoto)" alt="" style="width: 128px; height: 128px; z-index: 1; opacity: 50%">
+                                    <!-- change option -->
+                                    <label :for="'fileSelectEditUpdate' + targetVenue['updates'][0]._id['$oid']" class="btn primary-light-dropdown m-1">Choose File</label>
+                                    <input :id="'fileSelectEditUpdate' + targetVenue['updates'][0]._id['$oid']" type="file" @change="handleFileSelectEditUpdate" ref="fileInput" style="width: 0px; height: 0px;">
+                                    <!-- reset image option -->
+                                    <button class="btn primary-light-dropdown m-1" @click="editUpdateContent[targetVenue['updates'][0]._id['$oid']].newPhoto = targetVenue['updates'][0].photo">Revert</button>
+                                    <!-- remove image option -->
+                                    <button class="btn primary-light-dropdown m-1" @click="editUpdateContent[targetVenue['updates'][0]._id['$oid']].newPhoto = ''">Remove</button>
+                                    
+                                </div>
+
+                                <!-- [else] not editing -->
+                                <div v-else>
+                                    <img :src=" 'data:image/jpeg;base64,' + (targetVenue['updates'][0].photo || defaultProfilePhoto)" alt="" style="width: 128px; height: 128px; z-index: 1;">
+                                </div>
+
+                            </div>
 
                             <div class="row pt-2">
                                 <!-- Like Symbol -->
@@ -339,7 +388,11 @@
                         </div>
                         
                         <!-- Description -->
-                        <div class="col-xl-10 col-md-9">
+                        <div v-if="editUpdateTarget == targetVenue['updates'][0]._id['$oid']" class="col-xl-10 col-md-9 text-start p-text-lg">
+                            <label :for="'editUpdateText' + targetVenue['updates'][0]._id['$oid']"> Update Text </label>
+                            <textarea type="text" class="form-control" :id="'editUpdateText' + targetVenue['updates'][0]._id['$oid']" aria-describedby="editUpdateText" v-model="editUpdateContent[targetVenue['updates'][0]._id['$oid']].newText"></textarea>
+                        </div>
+                        <div v-else class="col-xl-10 col-md-9">
                             <p class="text-start p-text-lg">{{ targetVenue['updates'][0].text }}</p>
                         </div>
 
@@ -1722,6 +1775,8 @@
                 newUpdateText: '',
                 newUpdatePhoto: '',
                 showMoreUpdates: false,
+                editUpdateTarget: '',
+                editUpdateContent: {},
 
                 // Map View
                 mapLat: null,
@@ -1893,6 +1948,9 @@
 
                         // Format updates
                         if (this.targetVenue["updates"].length > 0) {
+                            this.targetVenue["updates"].sort((a, b) => {
+                                return new Date(b.date.$date) - new Date(a.date.$date);
+                            });
                             for (let update of this.targetVenue["updates"]) {
                                 update.date = update.date['$date'].split('T')[0].split('-').reverse().join('/');
                             }
@@ -1918,9 +1976,10 @@
                             this.mapMarkers = [{ position: { lat, lng } }];
                         }
                         else {
-                            this.mapLat = 0;
-                            this.mapLong = 0;
-                            this.mapMarkers = [{ position: { lat: 0, lng: 0 } }];
+                            this.mapLat = 25;
+                            this.mapLong = -71;
+                            this.mapMarkers = [{ position: { lat: 25, lng: -71 } }];
+                            this.targetVenue["address"] = "(The Bermuda Triangle)";
                         }
 
                         this.venueExists = true;
@@ -2145,6 +2204,24 @@
                 }
             },
 
+            // Helper function to handle file selections for edit update photo
+            handleFileSelectEditUpdate(event){
+                try {
+                    const file = event.target.files[0];
+                    const reader = new FileReader;
+                    
+                    reader.onload = () => {
+                        const base64String = reader.result.split(',')[1];
+                        this.editUpdateContent[this.editUpdateTarget].newPhoto = base64String
+                    };
+                    
+                    reader.readAsDataURL(file);
+                }
+                catch (error) {
+                    // console.error(error);
+                }
+            },
+
             // Claim Venue Account
             claimVenueAccount() {
                 let accountDetails = {
@@ -2343,6 +2420,29 @@
                 this.$router.go(0);
             },
 
+            // Edit Update
+            editUpdate(update) {
+                this.editUpdateTarget = update['_id']['$oid'];
+                if (!this.editUpdateContent[this.editUpdateTarget]) {
+                    this.editUpdateContent[this.editUpdateTarget] = {
+                        newText: update['text'],
+                        newPhoto: update['photo'],
+                    };
+                }
+            },
+
+            // Save Update Edits
+            async saveUpdateEdits(update) {
+                alert("Not implemented yet!");
+                console.log(update);
+            },
+
+            // Delete Update
+            async deleteUpdate(update) {
+                alert("Not implemented yet!");
+                console.log(update);
+            },
+
             // Send Answer to a Question
             async sendAnswer(qa) {
                 try {
@@ -2376,7 +2476,7 @@
                 this.editAddress = false;
 
                 try {
-                    this.$axios.post('http://localhost:5300/editAddress', 
+                    await this.$axios.post('http://localhost:5300/editAddress', 
                         {
                             venueID: this.targetVenue['_id']['$oid'],
                             updatedAddress: this.newAddress,
@@ -2433,7 +2533,7 @@
                 this.editOpeningHours = false;
 
                 try {
-                    this.$axios.post('http://localhost:5300/editOpeningHours', 
+                    await this.$axios.post('http://localhost:5300/editOpeningHours', 
                         {
                             venueID: this.targetVenue['_id']['$oid'],
                             updatedOpeningHours: this.newOpeningHours,
@@ -2460,7 +2560,7 @@
                 this.editPublicHolidays = false;
 
                 try {
-                    this.$axios.post('http://localhost:5300/editPublicHolidays', 
+                    await this.$axios.post('http://localhost:5300/editPublicHolidays', 
                         {
                             venueID: this.targetVenue['_id']['$oid'],
                             updatedPublicHolidays: this.newPublicHolidays,
@@ -2487,7 +2587,7 @@
                 this.editReservationDetails = false;
 
                 try {
-                    this.$axios.post('http://localhost:5300/editReservationDetails', 
+                    await this.$axios.post('http://localhost:5300/editReservationDetails', 
                         {
                             venueID: this.targetVenue['_id']['$oid'],
                             updatedReservationDetails: this.newReservationDetails,
