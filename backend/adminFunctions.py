@@ -221,6 +221,53 @@ def createFamilyTag():
             }
         ), 500
 # -----------------------------------------------------------------------------------------
+# [POST] Creates a flavour sub tag
+# - Insert entry into the "subTags" collection. Follows subTag dataclass requirements.
+# - Duplicate review check: If a subTag with the same subTag, reject the request
+# - Possible return codes: 201 (Created), 400 (Duplicate Detected), 500 (Error during creation)
+@app.route("/createSubTag", methods= ['POST'])
+def createSubTag():
+    rawTag = request.get_json()
+    print(rawTag)
+    rawSub= rawTag['subTag']
+    # Duplicate listing check: Reject if review with the same observation exists in the database
+    existingTag = db.subTags.find_one({"subTag": rawSub})
+    if(existingTag!= None):
+        return jsonify(
+            {   
+                "code": 400,
+                "data": {
+                    "subTag": rawSub
+                },
+                "message": "Sub tag already exists."
+            }
+        ), 400
+    
+    
+    # Insert new review into database
+    rawTag['familyTagId']= ObjectId(rawTag['familyTagId'])
+    newSub = data.subTags(**rawTag)
+    try:
+        insertResult = db.subTags.insert_one(data.asdict(newSub))
+
+        return jsonify( 
+            {   
+                "code": 201,
+                "data": rawSub
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "subTag": rawSub
+                },
+                "message": "An error occurred creating the sub tag."
+            }
+        ), 500
+# -----------------------------------------------------------------------------------------
     
 # To convert image URL to base64    
 def image_url_to_base64(url):
