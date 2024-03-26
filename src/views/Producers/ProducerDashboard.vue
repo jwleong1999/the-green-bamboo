@@ -363,11 +363,19 @@
                     type: Object,
                     default: () => {},
                     scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
                         y: {
                             beginAtZero: true,
                             precision: 0,
                             ticks: {
                                 stepSize: 1
+                            },
+                            grid: {
+                                display: false
                             }
                         }
                     }

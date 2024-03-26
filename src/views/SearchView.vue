@@ -315,10 +315,10 @@
                                     <!-- Claim Status -->
                                     <div class="m-0">
                                         <div v-if="producer['claimStatus']"> 
-                                            <button type="button" class="btn secondary-btn-less-round"> Claimed </button>
+                                            <button type="button" class="btn secondary-btn-less-round"> Verified </button>
                                         </div>
                                         <div v-else>
-                                            <button type="button" class="btn primary-btn-less-round"> Unclaimed </button>
+                                            <button type="button" class="btn primary-btn-less-round"> Unverified </button>
                                         </div>
                                     </div>
 
@@ -387,10 +387,10 @@
                                     <!-- Claim Status -->
                                     <div class="m-0">
                                         <div v-if="venue['claimStatus']"> 
-                                            <button type="button" class="btn secondary-btn-less-round"> Claimed </button>
+                                            <button type="button" class="btn secondary-btn-less-round"> Verified </button>
                                         </div>
                                         <div v-else>
-                                            <button type="button" class="btn primary-btn-less-round"> Unclaimed </button>
+                                            <button type="button" class="btn primary-btn-less-round"> Unverified </button>
                                         </div>
                                     </div>
 

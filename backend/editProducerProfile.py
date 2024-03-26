@@ -130,6 +130,7 @@ def sendQuestions():
     producerID = data['producerID']
     question = data['question']
     answer = data['answer']
+    date = datetime.strptime(data['date'], "%Y-%m-%dT%H:%M:%S.%fZ")
 
     try:
         submitReq = db.producers.update_one(
@@ -138,7 +139,8 @@ def sendQuestions():
                         {
                             '_id': ObjectId(),
                             'question': question,
-                            'answer': answer
+                            'answer': answer,
+                            'date': date,
                         }
                     }
             }
@@ -402,7 +404,7 @@ def editUpdate():
             {'$set': 
                 {'updates.$.text': update,
                 'updates.$.photo': image64}
-        }
+            }
         )
 
         return jsonify(
@@ -456,6 +458,84 @@ def deleteUpdate():
                 "code": 500,
                 "data": data,
                 "message": "An error occurred deleting producer's update!"
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------
+
+# [POST] Edit Q&A
+# - Update a producer Q&A with new details
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/editQA', methods=['POST'])
+def editQA():
+
+    # fetch sent data
+    data = request.get_json()
+    print(data)
+
+    # extract components of the data
+    producerID = data['producerID']
+    questionsAnswersID = data['questionsAnswersID']
+    answer = data['answer']
+
+    try: 
+        updateQA = db.producers.update_one(
+            {'_id': ObjectId(producerID), 'questionsAnswers._id': ObjectId(questionsAnswersID)},
+            {'$set': {'questionsAnswers.$.answer': answer}}
+        )
+
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Updated producer's Q&A!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "An error occurred updating producer's Q&A!"
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------
+
+# [POST] Delete producer Q&A
+# - Delete a producer Q&A with new details
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/deleteQA', methods=['POST'])
+def deleteQA():
+
+    # fetch sent data
+    data = request.get_json()
+    print(data)
+
+    # extract components of the data
+    producerID = data['producerID']
+    questionsAnswersID = data['questionsAnswersID']
+    answer = data['answer']
+
+    try: 
+        deleteQA = db.producers.update_one(
+            {'_id': ObjectId(producerID), 'questionsAnswers._id': ObjectId(questionsAnswersID)},
+            {'$set': {'questionsAnswers.$.answer': answer}}
+        )
+
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Deleted producer's Q&A!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "An error occurred deleting producer's Q&A!"
             }
         ), 500
 

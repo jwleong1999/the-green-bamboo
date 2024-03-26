@@ -36,14 +36,32 @@
             <div v-for="qa in answeredQuestions" :key="qa._id" class="py-3">
                 <div class="card text-start">
                     <div class="card-body qa-card-body">
-                        <h5 class="card-title"> 
-                            <b> Question: </b>
-                            {{ qa.question }} 
-                        </h5>
-                        <p class="card-text"> 
-                            <b> Answer: </b>
-                            {{ qa.answer }}
-                        </p>
+                        <div class="row">
+                            <div class="col-10">
+                                <h5 class="card-title"> 
+                                    <b> Question: </b>
+                                    {{ qa.question }} 
+                                </h5>
+                            </div>
+                            <div class="col-2 mb-2">
+                                <!-- [if] not editing -->
+                                <button v-if="editingQA == false || editingQAID != qa._id.$oid" type="button" class="btn btn-warning rounded-0 me-1" v-on:click="editQA(qa)">
+                                    Edit answer
+                                </button>
+                                <!-- [else] if editing -->
+                                <button v-else type="button" class="btn success-btn rounded-0 me-1" v-on:click="saveQAEdit(qa)">
+                                    Save
+                                </button>
+                                <!-- delete -->
+                                <button ype="button" class="btn btn-danger rounded-0 ms-1" v-on:click="deleteQAEdit(qa)">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-text"> 
+                            <p v-if="editingQA == false || editingQAID != qa._id.$oid"> A: {{ qa["answer"] }} </p>
+                            <textarea v-else-if="editingQAID == qa._id.$oid" class="search-bar form-control rounded fst-italic question-box flex-grow-1" type="text" placeholder="Edit answer." v-model="edit_answer[qa._id.$oid]"></textarea>
+                        </div>
                         <hr>
                         <b> Date: </b> {{ this.formatDate(qa.date.$date) }}
                     </div>
@@ -121,6 +139,10 @@
                 // for answer
                 answers: {},
 
+                // for editing Q&A
+                editingQA: false,
+                edit_answer: {},
+                editingQAID: "",
             };
         },
         async mounted() {
@@ -213,6 +235,62 @@
                             'Content-Type': 'application/json'
                         }
                     });
+                    console.log(response.data);
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+
+                // force page to reload
+                window.location.reload();
+            },
+
+            // for editing Q&A answers
+            editQA(qa) {
+                this.editingQA = true;
+                // set the current details to the edit details
+                this.edit_answer[qa._id.$oid] = qa.answer
+                this.editingQAID = qa._id.$oid;
+            }, 
+            
+            saveQAEdit(qa) {
+                // set editing status to false
+                this.editingQA = false;
+                let q_and_a_id = qa._id.$oid;
+                try {
+                    this.$axios.post('http://127.0.0.1:5300/editQA', 
+                        {
+                            venueID: this.venue_id,
+                            questionsAnswersID: q_and_a_id,
+                            answer: this.edit_answer[qa._id.$oid],
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+                // force page to reload
+                window.location.reload();
+            },
+
+            deleteQAEdit(qa) {
+                let q_and_a_id = qa._id.$oid;
+                try {
+                    const response = this.$axios.post('http://127.0.0.1:5300/deleteQA', 
+                        {
+                            venueID: this.venue_id,
+                            questionsAnswersID: q_and_a_id,
+                            answer: "",
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
                     console.log(response.data);
                 } 
                 catch (error) {

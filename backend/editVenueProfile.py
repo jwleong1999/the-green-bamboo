@@ -130,6 +130,7 @@ def sendQuestions():
     venueID = data['venueID']
     question = data['question']
     answer = data['answer']
+    date = datetime.strptime(data['date'], "%Y-%m-%dT%H:%M:%S.%fZ")
 
     try:
         submitReq = db.venues.update_one(
@@ -138,7 +139,8 @@ def sendQuestions():
                         {
                             '_id': ObjectId(),
                             'question': question,
-                            'answer': answer
+                            'answer': answer,
+                            'date': date,
                         }
                     }
             }
@@ -627,6 +629,86 @@ def deleteUpdate():
             }
         ), 500
 
+
 # -----------------------------------------------------------------------------------------
+
+# [POST] Edit Q&A
+# - Update a venue Q&A with new details
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/editQA', methods=['POST'])
+def editQA():
+
+    # fetch sent data
+    data = request.get_json()
+    print(data)
+
+    # extract components of the data
+    venueID = data['venueID']
+    questionsAnswersID = data['questionsAnswersID']
+    answer = data['answer']
+
+    try: 
+        updateQA = db.venues.update_one(
+            {'_id': ObjectId(venueID), 'questionsAnswers._id': ObjectId(questionsAnswersID)},
+            {'$set': {'questionsAnswers.$.answer': answer}}
+        )
+
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Updated venue's Q&A!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "An error occurred updating venue's Q&A!"
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------
+
+# [POST] Delete venue Q&A
+# - Delete a venue Q&A with new details
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/deleteQA', methods=['POST'])
+def deleteQA():
+
+    # fetch sent data
+    data = request.get_json()
+    print(data)
+
+    # extract components of the data
+    venueID = data['venueID']
+    questionsAnswersID = data['questionsAnswersID']
+    answer = data['answer']
+
+    try: 
+        deleteQA = db.venues.update_one(
+            {'_id': ObjectId(venueID), 'questionsAnswers._id': ObjectId(questionsAnswersID)},
+            {'$set': {'questionsAnswers.$.answer': answer}}
+        )
+
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Deleted venue's Q&A!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": data,
+                "message": "An error occurred deleting venue's Q&A!"
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------
+
 if __name__ == '__main__':
     app.run(debug=True, port=5300)

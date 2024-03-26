@@ -1279,8 +1279,23 @@
                                             <!-- Answered Questions -->
                                             <div v-if="qaMode == 'answered'">
                                                 <div class="carousel-item" v-for="(qa, index) in answeredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
-                                                    <p class="fw-bold">Q: {{ qa["question"] }}</p>
-                                                    <p> A: {{ qa["answer"] }} </p>
+                                                    <p> <b> Q: {{ qa["question"] }} </b> </p>
+                                                    <!-- [if] not editing -->
+                                                    <button v-if="editingQA == false || editingQAID != qa._id.$oid" type="button" class="btn btn-warning rounded-0 me-1" v-on:click="editQA(qa)">
+                                                        Edit answer
+                                                    </button>
+                                                    <!-- [else] if editing -->
+                                                    <button v-else type="button" class="btn success-btn rounded-0 me-1" v-on:click="saveQAEdit(qa)">
+                                                        Save
+                                                    </button>
+                                                    <!-- delete -->
+                                                    <button ype="button" class="btn btn-danger rounded-0 ms-1" v-on:click="deleteQAEdit(qa)">
+                                                        Delete
+                                                    </button>
+                                                    <!-- spacer -->
+                                                    <div class="mt-2"></div>
+                                                    <p v-if="editingQA == false || editingQAID != qa._id.$oid"> A: {{ qa["answer"] }} </p>
+                                                    <textarea v-else-if="editingQAID == qa._id.$oid" class="search-bar form-control rounded fst-italic question-box flex-grow-1" type="text" placeholder="Edit answer." v-model="edit_answer[qa._id.$oid]"></textarea>
                                                 </div>
                                             </div>
 
@@ -1771,6 +1786,11 @@
                 reportItemNone: false,
                 reportReasonNone: false,
                 reportResponseCode: null,
+
+                // for editing Q&A
+                editingQA: false,
+                edit_answer: {},
+                editingQAID: "",
                 
             }
         },
@@ -2814,6 +2834,7 @@
                             venueID: this.targetVenue['_id']['$oid'],
                             question: this.qaQuestion,
                             answer: "",
+                            date: this.currDate
                         },
                         {
                         headers: {
@@ -3082,6 +3103,63 @@
                 this.$router.go(0);
 
             },
+
+            // for editing Q&A answers
+            editQA(qa) {
+                this.editingQA = true;
+                // set the current details to the edit details
+                this.edit_answer[qa._id.$oid] = qa.answer
+                this.editingQAID = qa._id.$oid;
+            }, 
+            
+            async saveQAEdit(qa) {
+                // set editing status to false
+                this.editingQA = false;
+                let q_and_a_id = qa._id.$oid;
+                try {
+                    await this.$axios.post('http://127.0.0.1:5300/editQA', 
+                        {
+                            venueID: this.targetVenue['_id']['$oid'],
+                            questionsAnswersID: q_and_a_id,
+                            answer: this.edit_answer[qa._id.$oid],
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+                // force page to reload
+                window.location.reload();
+            },
+
+            async deleteQAEdit(qa) {
+                let q_and_a_id = qa._id.$oid;
+                try {
+                    const response = await this.$axios.post('http://127.0.0.1:5300/deleteQA', 
+                        {
+                            venueID: this.targetVenue['_id']['$oid'],
+                            questionsAnswersID: q_and_a_id,
+                            answer: "",
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                    console.log(response.data);
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+
+                // force page to reload
+                window.location.reload();
+            },
+
 
         }
     }
