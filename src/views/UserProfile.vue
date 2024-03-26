@@ -352,7 +352,8 @@
                                             {{ review.reviewDesc }}
                                         </p>
                                         <!-- flavor tag -->
-                                        <span v-for="(tag, index) in review.flavorTag" :key="index" class="badge rounded-pill me-2" :style="{ backgroundColor: getTagColor(tag) }">{{ getTagName(tag) }}</span>
+                                        <span v-for="(tag, index) in review.flavorTag" :key="index" class="badge rounded-pill me-2" :style="{ backgroundColor: getTagColor(tag) }"> {{ getTagName(tag) }}</span>
+                                        <span v-for="(tag, index) in review.observationTag" :key="index" class="badge rounded-pill me-2" style="backgroundColor: grey;">{{ tag }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -650,6 +651,8 @@ export default {
             drinkCategories: [],
             drinkTypes: [],
             drinkType: [],
+            subTags: null,
+            flavourTags: null,
 
             filteredDrinkType: [],
 
@@ -842,6 +845,37 @@ export default {
             catch (error) {
                 console.error(error);
             }
+            // flavourTags
+            // _id, hexcode, familyTag, subtag, showbox
+            try {
+                const response = await this.$axios.get('http://127.0.0.1:5000/getFlavourTags');
+                this.flavourTags = response.data.map(item => {
+                    return { ...item, showBox: false };
+                })
+            } 
+            catch (error) {
+                console.error(error);
+            }
+            // subTags
+            // _id, familyTagId, subtag
+            try {
+                const response = await this.$axios.get('http://127.0.0.1:5000/getSubTags');
+                this.subTags = response.data
+                this.flavourTags.forEach(flavourTag => {
+                    // Filter subtags belonging to the current flavor tag
+                    const subTagsForFlavourTag = this.subTags.filter(subTag => subTag.familyTagId.$oid === flavourTag._id.$oid);
+                    // Extract required information from subtags
+                    const subTagsInfo = subTagsForFlavourTag.map(subTag=> ({
+                        id: subTag._id,
+                        subTag: subTag.subTag
+                    }));
+                    // Assign subtag information to flavor tag object
+                    flavourTag.subTag2 = subTagsInfo;
+                });
+            } 
+            catch (error) {
+                console.error(error);
+            }
         },
 
         // ------------------- User Profile -------------------
@@ -936,7 +970,6 @@ export default {
         // return oid from name of drink listing
         getListingID(listingName) {
             const listing = this.listings.find(listing => listing.listingName === listingName);
-            console.log(listing);
             return listing._id;
         },
         // return search items for bookmarking
@@ -1117,8 +1150,6 @@ export default {
             if (index !== -1) {
                 this.filteredDrinkType.splice(index, 1);
             }
-            console.log(index);
-            console.log(this.filteredDrinkType);
             this.modCat = "";
             this.modDesc = "";
         },
@@ -1198,11 +1229,33 @@ export default {
             return listing.photo;
         },
         getTagName(tag) {
-            const tagParts = tag.split("#");
+            if (!this.subTags || !this.flavourTags) {
+                return "";
+            }
+            const subTag = this.subTags.find(subTag=>subTag._id.$oid === tag.$oid)
+            const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
+            if (!familyTag || !subTag) {
+                return "";
+            }
+            const hexcode = familyTag.hexcode
+            const subtagInfo = subTag.subTag
+            const tagInfo = subtagInfo + hexcode
+            const tagParts = tagInfo.split("#");
             return tagParts[0];
         },
         getTagColor(tag) {
-            const tagParts = tag.split("#");
+            if (!this.subTags || !this.flavourTags) {
+                return "";
+            }
+            const subTag = this.subTags.find(subTag=>subTag._id.$oid === tag.$oid)
+            const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
+            if (!familyTag || !subTag) {
+                return "";
+            }
+            const hexcode = familyTag.hexcode
+            const subtagInfo = subTag.subTag
+            const tagInfo = subtagInfo + hexcode
+            const tagParts = tagInfo.split("#");
             return "#" + tagParts[1];
         },
 

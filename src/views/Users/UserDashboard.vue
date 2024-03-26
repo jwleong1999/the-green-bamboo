@@ -44,8 +44,10 @@
                             <!-- v-for loop here-->
                             <div v-for="activity in recentActivity" v-bind:key="activity._id" class="py-2">
                                 <div v-if="activity.type === 'upvote' || activity.type === 'downvote'">
+                                    <svg v-if="activity.type == 'upvote'" fill="#ffffff" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="m4 14h2 2v3 4c0 .553.447 1 1 1h6c.553 0 1-.447 1-1v-5-2h1 3c.385 0 .734-.221.901-.566.166-.347.12-.758-.12-1.059l-8-10c-.381-.475-1.181-.475-1.562 0l-8 10c-.24.301-.286.712-.12 1.059.167.345.516.566.901.566z"/></svg>
+                                    <svg v-if="activity.type == 'downvote'" fill="#ffffff" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="m20.901 10.566c-.167-.345-.516-.566-.901-.566h-2-2v-3-4c0-.553-.447-1-1-1h-6c-.553 0-1 .447-1 1v5 2h-1-3c-.385 0-.734.221-.901.566-.166.347-.12.758.12 1.059l8 10c.19.237.477.375.781.375s.591-.138.781-.375l8-10c.24-.301.286-.712.12-1.059z"/></svg>
                                     <i> 
-                                        Someone {{ activity.type }}d your review on 
+                                        Someone <span :style="{ color: activity.type === 'upvote' ? '#90ee90' : '#ff7f7f' }">{{ activity.type }}d</span> your review on 
                                         <router-link :to="{ path: '/listing/view/' + activity.reviewTarget.$oid }" class="reverse-clickable-text">
                                             <u> {{ getListingFromID(activity.reviewTarget.$oid).listingName }} </u>
                                         </router-link>
@@ -370,7 +372,6 @@
                 let currentDate = new Date();
                 let updateDate = new Date(date);
                 let timeDifference = currentDate - updateDate;
-                console.log(currentDate, updateDate, timeDifference);
                 let seconds = Math.floor(timeDifference / 1000);
                 let minutes = Math.floor(seconds / 60);
                 let hours = Math.floor(minutes / 60);
