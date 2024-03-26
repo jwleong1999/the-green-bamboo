@@ -18,6 +18,7 @@ from datetime import datetime
 import csv
 import io
 import codecs
+import data
 
 from urllib.request import urlopen
 import base64
@@ -29,6 +30,53 @@ db = PyMongo(app).db
 
 mongo = PyMongo(app)
 fs = GridFS(mongo.db)
+
+# -----------------------------------------------------------------------------------------
+# [POST] Creates an observation tag
+# - Insert entry into the "observationTags" collection. Follows observationTag dataclass requirements.
+# - Duplicate review check: If an observationTag with the same observationTag, reject the request
+# - Possible return codes: 201 (Created), 400 (Duplicate Detected), 500 (Error during creation)
+@app.route("/createObservationTag", methods= ['POST'])
+def createObservationTag():
+    rawTag = request.get_json()
+    print(rawTag)
+    rawObservation= rawTag['observationTag']
+    # Duplicate listing check: Reject if review with the same observation exists in the database
+    existingAccount = db.observationTags.find_one({"observationTag": rawObservation})
+    if(existingAccount!= None):
+        return jsonify(
+            {   
+                "code": 400,
+                "data": {
+                    "ObservationTag": rawObservation
+                },
+                "message": "Observation tag already exists."
+            }
+        ), 400
+    
+    
+    # Insert new review into database
+    newAccount = data.observationTags(**rawTag)
+    try:
+        insertResult = db.observationTags.insert_one(data.asdict(newAccount))
+
+        return jsonify( 
+            {   
+                "code": 201,
+                "data": rawObservation
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "ObservationTag": rawObservation
+                },
+                "message": "An error occurred creating the observation tag."
+            }
+        ), 500
 
 # -----------------------------------------------------------------------------------------
     
@@ -125,7 +173,53 @@ def deleteObservationTag(id):
                 "message": "An error occurred deleting the observation."
             }
         ), 500
+    
+# -----------------------------------------------------------------------------------------
+# [POST] Creates a flavour family tag
+# - Insert entry into the "familyTags" collection. Follows flavourTag dataclass requirements.
+# - Duplicate review check: If a flavourTag with the same flavourTag, reject the request
+# - Possible return codes: 201 (Created), 400 (Duplicate Detected), 500 (Error during creation)
+@app.route("/createFamilyTag", methods= ['POST'])
+def createFamilyTag():
+    rawTag = request.get_json()
+    print(rawTag)
+    rawFamily= rawTag['familyTag']
+    # Duplicate listing check: Reject if review with the same observation exists in the database
+    existingTag = db.flavourTags.find_one({"familyTag": rawFamily})
+    if(existingTag!= None):
+        return jsonify(
+            {   
+                "code": 400,
+                "data": {
+                    "familyTag": rawFamily
+                },
+                "message": "Family tag already exists."
+            }
+        ), 400
+    
+    
+    # Insert new review into database
+    newFamily = data.flavourTags(**rawTag)
+    try:
+        insertResult = db.flavourTags.insert_one(data.asdict(newFamily))
 
+        return jsonify( 
+            {   
+                "code": 201,
+                "data": rawFamily
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "familyTag": rawFamily
+                },
+                "message": "An error occurred creating the family tag."
+            }
+        ), 500
 # -----------------------------------------------------------------------------------------
     
 # To convert image URL to base64    

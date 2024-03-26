@@ -62,9 +62,9 @@
                                 Flavour Tags
                             </button>
                             <div v-if="showFlavourControl" class="rounded p-3 border border-black">
-                                <div class="row">
+                                <div class="rowv mb-1">
                                         <div class="col-12">
-                                            <button class="btn btn-warning reverse-clickable-text text-dark" type="button">
+                                            <button @click="setAddFlavour('family')" class="btn btn-warning reverse-clickable-text text-dark" type="button" data-bs-toggle="modal" data-bs-target="#addFlavourModal">
                                                 Add Family Tags
                                             </button>
                                             <button class="btn btn-primary mx-1 reverse-clickable-text" type="button">
@@ -76,22 +76,79 @@
                                         </div>
                                 </div>
                                 <div class="row">
-                                        <div class="col-12">
-                                            <button class="btn btn-warning reverse-clickable-text text-dark" type="button">
-                                                Add Sub Tags
-                                            </button>
-                                            <button class="btn btn-primary mx-1 reverse-clickable-text" type="button">
-                                                Edit Sub Tags
-                                            </button>
-                                            <button class="btn btn-danger mx-1 reverse-clickable-text" type="button">
-                                                Delete Sub Tags
-                                            </button>
-                                        </div> 
+                                    <div class="col-12">
+                                        <button @click="setAddFlavour('sub')" class="btn btn-warning reverse-clickable-text text-dark" type="button" data-bs-toggle="modal" data-bs-target="#addFlavourModal">
+                                            Add Sub Tags
+                                        </button>
+                                        <button class="btn btn-primary mx-1 reverse-clickable-text" type="button">
+                                            Edit Sub Tags
+                                        </button>
+                                        <button class="btn btn-danger mx-1 reverse-clickable-text" type="button">
+                                            Delete Sub Tags
+                                        </button>
+                                    </div> 
                                 </div>
                             </div>
                         
                         </div>
-                        <!-- modal for lock listing to moderators -->
+                        <!-- Add family/subtag modal -->
+                        <div class="modal fade" id="addFlavourModal" tabindex="-1" aria-labelledby="addFlavourModalLabel" aria-hidden="true" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header" style="background-color: #535C72">
+                                        <!-- color: selectedObservations.includes(observation) ? 'white' : 'black' -->
+                                        <h1 v-if="addFlavour == 'family'" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Add Family Tag</h1>
+                                        <h1 v-if="addFlavour == 'sub'" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Add Sub Tag</h1>
+                                        <button @click="resetFlavourMode" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div v-if="errorAddFlavour || successAddFlavour">
+                                        <div v-if="successAddFlavour" class="modal-body text-center text-success fst-italic fw-bold fs-3">
+                                            <span>Flavour tag has successfully been created!</span>
+                                        </div>
+                                        <div v-if="errorAddFlavour" class="modal-body text-center text-danger fst-italic fw-bold fs-3">
+                                            <span>Error has occured while adding flavour tags. Please try again.</span>
+                                        </div>
+                                    </div>
+                                    <div v-if="!(errorAddFlavour || successAddFlavour || confirmCreateFlavour)">
+                                        <div v-if="addFlavour == 'family'" class="modal-body">
+                                            <div class = 'row text-center'>
+                                                <div class = 'col'>
+                                                    <p>New family tag looks like this:</p>
+                                                    <button :style="{ color: hexcode==''?'black':'white', backgroundColor: '#' + hexcode, width: '100px', height: '60px' }" class="btn mb-1"> {{ newFamily }} </button>
+                                                </div>
+                                            </div>
+                                            <p class='text-start mb-2 fw-bold'>New Family Tag:</p>
+                                            <input v-model="newFamily" type="text" class="form-control" placeholder="Enter New Family Tag">
+                                            <p v-if="newFamily ==''" class='text-danger text-start mb-2 fw-bold'>Family Tag cannot be empty</p>
+                                            <p class='text-start mb-2 fw-bold'>New Family Hexcode (without the hex):</p>
+                                            <input v-model="hexcode" type="text" class="form-control" placeholder="Enter Hexcode">
+                                            <p v-if="hexcode == ''" class='text-danger text-start mb-2 fw-bold'>Hexcode cannot be empty</p>
+                                        </div>
+                                        <div v-if="addFlavour == 'sub'" class="modal-body">
+                                            <p class='text-start mb-2 fw-bold'>New Sub Tag:</p>
+                                            <input v-model="newSub" type="text" class="form-control">
+                                            <p v-if="newSub ==''" class='text-danger text-start mb-2 fw-bold'>Sub Tag cannot be empty</p>
+                                        </div>
+                                    </div>
+                                    <div v-if="!(errorAddFlavour || successAddFlavour) && confirmCreateFlavour" >
+                                        <p v-if="addFlavour=='family'" class="text-center mb-1"> Do you really want to add {{ newFamily }} with hexcode #{{ hexcode }}?</p>
+                                        <p v-if="addFlavour=='sub'" class="text-center mb-1"> Do you really want to add {{ newSub }} under?</p>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button v-if="!(errorAddFlavour || successAddFlavour)" @click="resetFlavourMode" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button v-if="!(errorAddFlavour || successAddFlavour || confirmCreateFlavour)" @click="confirmAddFlavour" type="button" class="btn btn-primary">Add Tag</button>
+                                        <button v-if="!(errorAddFlavour || successAddFlavour) && confirmCreateFlavour" @click="createNewFlavour" type="button" class="btn btn-primary">Confirm Add Tag</button>
+                                        <button v-if="errorAddFlavour || successAddFlavour" @click="resetFlavourErrors" type="button" class="btn btn-secondary">Return</button>
+                                        <button v-if="errorAddFlavour || successAddFlavour" @click="resetFlavourModal" type="button" data-bs-dismiss="modal" class="btn btn-secondary">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- End of add family/sub tag modal -->
+
+                        <!-- modal for action tag handling -->
                         <div class="modal fade" id="observationModal" tabindex="-1" aria-labelledby="observationModalLabel" aria-hidden="true" data-bs-backdrop="static">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
@@ -644,6 +701,12 @@
                     removableDrinkType:[],
                     addableDrinkType:[],
 
+                    // Flavour tag creation
+                    newFamily:'',
+                    newSub:'',
+                    addFlavour:'',
+                    hexcode:'',
+
                     // creation of new observation tag
                     newObservation:'',
 
@@ -680,6 +743,9 @@
                     errorRemoveMod:false,
 
                     showFlavourControl: false,
+                    errorAddFlavour:false,
+                    successAddFlavour:false,
+                    confirmCreateFlavour:false,
 
                     // Logged in user details
                     userID: null,
@@ -936,7 +1002,7 @@
                     }
                     this.submittingObservation=true
                     this.addingObservation=false
-                    let submitAPI = "http://127.0.0.1:5053/createObservationTag"
+                    let submitAPI = "http://127.0.0.1:5052/createObservationTag"
                     let submitData = {"observationTag":this.newObservation}
                     this.createTag(submitAPI, submitData)
                 },
@@ -1489,6 +1555,53 @@
 
                 toggleFlavourControl(){
                     this.showFlavourControl = !this.showFlavourControl
+                },
+
+                setAddFlavour(mode){
+                    this.addFlavour = mode
+                },
+
+                resetFlavourMode(){
+                    this.addFlavour = ''
+                },
+
+                createNewFlavour(){
+                    let submitURL = ''
+                    let submitData= {}
+                    if(this.addFlavour == 'family'){
+                        submitURL = 'http://127.0.0.1:5052/createFamilyTag'
+                        submitData = {
+                            hexcode: '#' + this.hexcode,
+                            familyTag: this.newFamily
+                        }
+
+                    }
+                    else if(this.addFlavour == 'sub'){
+                        submitURL = 'http://127.0.0.1:5052/createSubTag'
+                    }
+                    this.writeNewTag(submitURL, submitData)
+                },  
+
+                async writeNewTag(submitURL,submitData){
+                    let responseCode = ''
+                    const response = await this.$axios.post(submitURL, submitData)
+                    .then((response)=>{
+                        responseCode = response.data.code
+                    })
+                    .catch((error)=>{
+                        console.error(error);
+                        responseCode = error.response.data.code
+                    });
+                    if(responseCode==201){
+                        this.successAddFlavour=true; // Display success message
+                    }else{
+                        this.errorAddFlavour = true
+                    }
+                    return response
+                },
+
+                confirmAddFlavour(){
+                    this.confirmCreateFlavour = true
                 }
             }
         }

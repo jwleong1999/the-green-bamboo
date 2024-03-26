@@ -180,7 +180,12 @@ class modRequests:
 class flavourTags:
     hexcode: str
     familyTag: str
-    subtag: list
+
+# Dataclass (subTags)
+@dataclass
+class subTags:
+    familyTagId: object
+    subTag: str
 
 # Dataclass (languages)
 @dataclass
