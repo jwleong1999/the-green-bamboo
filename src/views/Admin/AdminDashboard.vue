@@ -1690,6 +1690,7 @@
 
                 resetEditFlavourMode(){
                     this.editFlavour = ''
+                    this.confirmEditFlavour = false
                 },
 
                 createNewFlavour(){
@@ -1842,8 +1843,6 @@
                         this.flavourNoChange = true
                         return null
                     }
-                    console.log(submitData)
-                    console.log(submitURL)
                     this.writeEditTag(submitURL, submitData)
                 },
 
