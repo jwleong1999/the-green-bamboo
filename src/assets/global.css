@@ -79,6 +79,7 @@ body {
     color: whitesmoke;
     background-color: #535C72;
     border-radius: 30px;
+    border: 4px solid #535C72;
 }
 
 .primary-btn-outline, 
@@ -323,8 +324,8 @@ body {
     position: absolute;
     top: 0;
     right: 0;
-    margin-top: 22px;
-    margin-right: 10px;
+    margin-top: 25px;
+    margin-right: 22px;
 }
 
 .image-container-256 {
@@ -571,4 +572,8 @@ body {
     background-color:whitesmoke;
     border: 1px solid #535C72;
     border-radius: 10px;
+}
+
+.notif-pane {
+    max-width: 325px;
 }

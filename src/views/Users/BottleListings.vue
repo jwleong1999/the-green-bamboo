@@ -33,231 +33,232 @@
         <div class="container pt-3">
             <div class="row">
                 <!-- left pane -->
-                <div class="col-3">
-
-                    <!-- [user] your drinks shelf & brands you follow -->
-                    <div v-if="userType == 'user' || userType == ''" class="row">
-                        <!-- [moderator] listing requests -->
-                        <div v-if="isAdmin || isModerator" class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3">
-                                <!-- header text -->
-                                <div class="square-inline text-start">
-                                    <span v-if="totalRequests != 0" class="square-inline text-start mr-auto">
-                                        <h4>
-                                            <span class="title-card-text"> {{ totalRequests }} </span> Pending Listing Requests 
-                                        </h4>
-                                    </span>
-                                    <h4 v-else class="square-inline text-start mr-auto">  No New Pending Listing Requests! </h4>
-                                </div>
-                                <!-- body -->
-                                <div v-if="totalRequests != 0">
-                                    <div style="align-items: center; justify-content: center;">
-                                        <router-link :to="{ path: '/request/view' }">
-                                            <button class="btn secondary-btn-border btn-sm py-2 px-3"> View all requests </button>
-                                        </router-link>
+                <div class="col-lg-3 col-md-4 col-12">
+                    <div class="container p-lg-0 p-md-0 p-4">
+                        <!-- [user] your drinks shelf & brands you follow -->
+                        <div v-if="userType == 'user' || userType == ''" class="row">
+                            <!-- [moderator] listing requests -->
+                            <div v-if="isAdmin || isModerator" class="col-12">
+                                <div class="square primary-square rounded p-3 mb-3">
+                                    <!-- header text -->
+                                    <div class="square-inline text-start">
+                                        <span v-if="totalRequests != 0" class="square-inline text-start mr-auto">
+                                            <h4>
+                                                <span class="title-card-text"> {{ totalRequests }} </span> Pending Listing Requests 
+                                            </h4>
+                                        </span>
+                                        <h4 v-else class="square-inline text-start mr-auto">  No New Pending Listing Requests! </h4>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- your drinks shelf -->
-                        <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3 text-start" style="height: 325px;">
-                                <!-- header text -->
-                                <div class="square-inline">
-                                    <router-link :to="{ path: '/profile/user/'+userID }" class="reverse-clickable-text">
-                                        <h4 class="square-inline text-start mr-auto reverse-clickable-text"> Your Drinks Shelf </h4>
-                                    </router-link>
-                                </div>
-                                <!-- body -->
-                                <div style="height: 85%;">
-                                    <!-- [if] drinks in drink shelf -->
-                                    <div v-if="drinkShelf.length != 0" class="overflow-auto" style="max-height: 100%;">
-                                        <div class="text-start" v-for="listing in drinkShelf" v-bind:key="listing._id">
-                                            <router-link :to="{ path: '/listing/view/' +listing._id.$oid}" class="reverse-clickable-text">
-                                                <div class="d-flex align-items-start mb-3">
-                                                    <img :src="'data:image/png;base64,'+ (listing.photo || defaultProfilePhoto)" style="width: 70px; height: 70px;">
-                                                    <span class="ms-3 reverse-clickable-text"> 
-                                                        <b> {{ listing.listingName }} </b> 
-                                                        <br>
-                                                        {{ getProducerName(listing) }}
-                                                    </span>
-                                                </div>
+                                    <!-- body -->
+                                    <div v-if="totalRequests != 0">
+                                        <div style="align-items: center; justify-content: center;">
+                                            <router-link :to="{ path: '/request/view' }">
+                                                <button class="btn secondary-btn-border btn-sm py-2 px-3"> View all requests </button>
                                             </router-link>
                                         </div>
                                     </div>
-                                    <div v-if="userID && drinkShelf.length == 0" style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <h6 class="fst-italic"> No drinks added yet. </h6>
-                                    </div>
-                                    <div v-else-if="!userID" style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/login' }">
-                                            <button class="btn secondary-btn-border btn-sm py-2 px-3"> Log in to add a drink to shelf </button>
-                                        </router-link>
-                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- brands you follow -->
-                        <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3 text-start" style="height: 325px;">
-                                <!-- header text -->
-                                <div class="square-inline">
-                                    <h4 class="square-inline text-start mr-auto"> Brands You Follow </h4>
-                                </div>
-                                <!-- body -->
-                                <div style="height: 85%;">
-                                    <div v-if="questionsUpdates.length > 0" class="overflow-auto" style="max-height: 100%;">
-                                        <div v-for="(update, index) in questionsUpdates" :key="index">
-                                            <span v-if="update.type == 'producerUpdate' || update.type == 'venueUpdate'">
-                                                    <router-link v-if="update.type == 'producerUpdate'" :to="{ path: '/profile/producer/' + update.id }" class="reverse-text">
-                                                        <img :src="'data:image/png;base64,'+ (update.photo || defaultProfilePhoto)" style="width: 35px; height: 35px;" class="img-border">
-                                                        <b class="ps-2"> {{ update.name }} </b>
-                                                    </router-link>
-                                                    <router-link v-else :to="{ path: '/profile/venue/' + update.id }" class="reverse-text">
-                                                        <img :src="'data:image/png;base64,'+ (update.photo || defaultProfilePhoto)" style="width: 35px; height: 35px;" class="img-border">
-                                                        <b class="ps-2"> {{ update.name }} </b>
-                                                    </router-link>
-                                                <br/>
-                                                updated status: "<b>{{ update.text }}</b>"
-                                                <br>
-                                                <i>{{ getTimeDifference(update.date.$date) }}</i>
-                                                <br><br>
-                                            </span>
+                            <!-- your drinks shelf -->
+                            <div class="col-12">
+                                <div class="square primary-square rounded p-3 mb-3 text-start" style="height: 325px;">
+                                    <!-- header text -->
+                                    <div class="square-inline">
+                                        <router-link :to="{ path: '/profile/user/'+userID }" class="reverse-clickable-text">
+                                            <h4 class="square-inline text-start mr-auto reverse-clickable-text"> Your Drinks Shelf </h4>
+                                        </router-link>
+                                    </div>
+                                    <!-- body -->
+                                    <div style="height: 85%;">
+                                        <!-- [if] drinks in drink shelf -->
+                                        <div v-if="drinkShelf.length != 0" class="overflow-auto" style="max-height: 100%;">
+                                            <div class="text-start" v-for="listing in drinkShelf" v-bind:key="listing._id">
+                                                <router-link :to="{ path: '/listing/view/' +listing._id.$oid}" class="reverse-clickable-text">
+                                                    <div class="d-flex align-items-start mb-3">
+                                                        <img :src="'data:image/png;base64,'+ (listing.photo || defaultProfilePhoto)" style="width: 70px; height: 70px;">
+                                                        <span class="ms-3 reverse-clickable-text"> 
+                                                            <b> {{ listing.listingName }} </b> 
+                                                            <br>
+                                                            {{ getProducerName(listing) }}
+                                                        </span>
+                                                    </div>
+                                                </router-link>
+                                            </div>
+                                        </div>
+                                        <div v-if="userID && drinkShelf.length == 0" style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                                            <h6 class="fst-italic"> No drinks added yet. </h6>
+                                        </div>
+                                        <div v-else-if="!userID" style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                                            <router-link :to="{ path: '/login' }">
+                                                <button class="btn secondary-btn-border btn-sm py-2 px-3"> Log in to add a drink to shelf </button>
+                                            </router-link>
                                         </div>
                                     </div>
-                                    <div v-else-if="userID" style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <h6 class="fst-italic"> No brands added yet. </h6>
+                                </div>
+                            </div>
+                            <!-- brands you follow -->
+                            <div class="col-12">
+                                <div class="square primary-square rounded p-3 mb-3 text-start" style="height: 325px;">
+                                    <!-- header text -->
+                                    <div class="square-inline">
+                                        <h4 class="square-inline text-start mr-auto"> Brands You Follow </h4>
                                     </div>
-                                    <div v-else style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                                        <router-link :to="{ path: '/login' }">
-                                            <button class="btn secondary-btn-border btn-sm py-2 px-3"> Log in to follow your favourite brand</button>
-                                        </router-link>
+                                    <!-- body -->
+                                    <div style="height: 85%;">
+                                        <div v-if="questionsUpdates.length > 0" class="overflow-auto" style="max-height: 100%;">
+                                            <div v-for="(update, index) in questionsUpdates" :key="index">
+                                                <span v-if="update.type == 'producerUpdate' || update.type == 'venueUpdate'">
+                                                        <router-link v-if="update.type == 'producerUpdate'" :to="{ path: '/profile/producer/' + update.id }" class="reverse-text">
+                                                            <img :src="'data:image/png;base64,'+ (update.photo || defaultProfilePhoto)" style="width: 35px; height: 35px;" class="img-border">
+                                                            <b class="ps-2"> {{ update.name }} </b>
+                                                        </router-link>
+                                                        <router-link v-else :to="{ path: '/profile/venue/' + update.id }" class="reverse-text">
+                                                            <img :src="'data:image/png;base64,'+ (update.photo || defaultProfilePhoto)" style="width: 35px; height: 35px;" class="img-border">
+                                                            <b class="ps-2"> {{ update.name }} </b>
+                                                        </router-link>
+                                                    <br/>
+                                                    updated status: "<b>{{ update.text }}</b>"
+                                                    <br>
+                                                    <i>{{ getTimeDifference(update.date.$date) }}</i>
+                                                    <br><br>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div v-else-if="userID" style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                                            <h6 class="fst-italic"> No brands added yet. </h6>
+                                        </div>
+                                        <div v-else style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                                            <router-link :to="{ path: '/login' }">
+                                                <button class="btn secondary-btn-border btn-sm py-2 px-3"> Log in to follow your favourite brand</button>
+                                            </router-link>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- [producer] listing requests / fan questions / activity -->
-                    <div v-else-if="userType == 'producer'" class="row">
-                        <!-- listing requests -->
-                        <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3">
-                                <!-- header text -->
-                                <div class="square-inline text-start">
-                                    <span v-if="totalRequests != 0" class="square-inline text-start mr-auto">
-                                        <h4>
-                                            <span class="title-card-text"> {{ totalRequests }} </span> Pending Listing Requests 
-                                        </h4>
-                                    </span>
-                                    <h4 v-else class="square-inline text-start mr-auto">  No New Pending Listing Requests! </h4>
+                        <!-- [producer] listing requests / fan questions / activity -->
+                        <div v-else-if="userType == 'producer'" class="row">
+                            <!-- listing requests -->
+                            <div class="col-12">
+                                <div class="square primary-square rounded p-3 mb-3">
+                                    <!-- header text -->
+                                    <div class="square-inline text-start">
+                                        <span v-if="totalRequests != 0" class="square-inline text-start mr-auto">
+                                            <h4>
+                                                <span class="title-card-text"> {{ totalRequests }} </span> Pending Listing Requests 
+                                            </h4>
+                                        </span>
+                                        <h4 v-else class="square-inline text-start mr-auto">  No New Pending Listing Requests! </h4>
+                                    </div>
+                                    <!-- body -->
+                                    <div v-if="totalRequests != 0">
+                                        <div style="align-items: center; justify-content: center;">
+                                            <p>
+                                                <span class="title-card-text"> {{producerRequestListings.length}} </span> New Listing Requests
+                                                <br>
+                                                <span class="title-card-text"> {{producerEditRequestListings.length}} </span> Edit Listing Requests
+                                            </p>
+                                            <router-link :to="{ path: '/request/view' }">
+                                                <button class="btn secondary-btn-border btn-sm py-2 px-3"> View all requests </button>
+                                            </router-link>
+                                        </div>
+                                    </div>
                                 </div>
-                                <!-- body -->
-                                <div v-if="totalRequests != 0">
-                                    <div style="align-items: center; justify-content: center;">
-                                        <p>
-                                            <span class="title-card-text"> {{producerRequestListings.length}} </span> New Listing Requests
-                                            <br>
-                                            <span class="title-card-text"> {{producerEditRequestListings.length}} </span> Edit Listing Requests
-                                        </p>
-                                        <router-link :to="{ path: '/request/view' }">
-                                            <button class="btn secondary-btn-border btn-sm py-2 px-3"> View all requests </button>
-                                        </router-link>
+                            </div>
+                            <!-- fan questions -->
+                            <div class="col-12">
+                                <div class="square primary-square rounded p-3 mb-3">
+                                    <!-- header text -->
+                                    <div class="square-inline">
+                                        <span v-if="unansweredQuestions.length != 0" class="square-inline text-start mr-auto">
+                                            <h4>
+                                                <span class="title-card-text"> {{ unansweredQuestions.length }} </span>  Pending Fan Questions For You
+                                            </h4>
+                                        </span>
+                                        <h4 v-else class="square-inline text-start mr-auto">  No New Fan Questions! </h4>
+                                    </div>
+                                    <!-- body -->
+                                    <div v-if="unansweredQuestions.length != 0">
+                                        <div style="display: flex; align-items: center; justify-content: center;">
+                                            <router-link :to="{ path: '/Producers/ProducersQA/' + userID }">
+                                                <button class="btn secondary-btn-border btn-sm py-2 px-3"> Respond to Q&A </button>
+                                            </router-link>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- activity -->
+                            <div class="col-12">
+                                <div class="square primary-square rounded p-3 mb-3">
+                                    <!-- header text -->
+                                    <div class="square-inline">
+                                        <h4 class="square-inline text-start mr-auto"> Activity on Your Listings </h4>
+                                    </div>
+                                    <!-- body -->
+                                    <div>
+                                        <div style="display: flex; align-items: center; justify-content: center;">
+                                            <router-link :to="{ path: '/profile/producer/' + userID }">
+                                                <button class="btn secondary-btn-border btn-sm py-2 px-3"> View Dashboard </button>
+                                            </router-link>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- fan questions -->
-                        <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3">
-                                <!-- header text -->
-                                <div class="square-inline">
-                                    <span v-if="unansweredQuestions.length != 0" class="square-inline text-start mr-auto">
-                                        <h4>
-                                            <span class="title-card-text"> {{ unansweredQuestions.length }} </span>  Pending Fan Questions For You
-                                        </h4>
-                                    </span>
-                                    <h4 v-else class="square-inline text-start mr-auto">  No New Fan Questions! </h4>
-                                </div>
-                                <!-- body -->
-                                <div v-if="unansweredQuestions.length != 0">
-                                    <div style="display: flex; align-items: center; justify-content: center;">
-                                        <router-link :to="{ path: '/Producers/ProducersQA/' + userID }">
-                                            <button class="btn secondary-btn-border btn-sm py-2 px-3"> Respond to Q&A </button>
-                                        </router-link>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- activity -->
-                        <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3">
-                                <!-- header text -->
-                                <div class="square-inline">
-                                    <h4 class="square-inline text-start mr-auto"> Activity on Your Listings </h4>
-                                </div>
-                                <!-- body -->
-                                <div>
-                                    <div style="display: flex; align-items: center; justify-content: center;">
-                                        <router-link :to="{ path: '/profile/producer/' + userID }">
-                                            <button class="btn secondary-btn-border btn-sm py-2 px-3"> View Dashboard </button>
-                                        </router-link>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- [venue] fan questions / check ins -->
-                    <div v-else-if="userType == 'venue'" class="row">
-                        <!-- fan questions -->
-                        <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3">
-                                <!-- header text -->
-                                <div class="square-inline">
-                                    <span v-if="unansweredQuestions.length != 0" class="square-inline text-start mr-auto">
-                                        <h4>
-                                            <span class="title-card-text"> {{ unansweredQuestions.length }} </span>  Pending Fan Questions For You
-                                        </h4>
-                                    </span>
-                                    <h4 v-else class="square-inline text-start mr-auto">  No New Fan Questions! </h4>
+                        <!-- [venue] fan questions / check ins -->
+                        <div v-else-if="userType == 'venue'" class="row">
+                            <!-- fan questions -->
+                            <div class="col-12">
+                                <div class="square primary-square rounded p-3 mb-3">
+                                    <!-- header text -->
+                                    <div class="square-inline">
+                                        <span v-if="unansweredQuestions.length != 0" class="square-inline text-start mr-auto">
+                                            <h4>
+                                                <span class="title-card-text"> {{ unansweredQuestions.length }} </span>  Pending Fan Questions For You
+                                            </h4>
+                                        </span>
+                                        <h4 v-else class="square-inline text-start mr-auto">  No New Fan Questions! </h4>
+                                    </div>
+                                    <!-- body -->
+                                    <div v-if="unansweredQuestions.length != 0">
+                                        <div style="display: flex; align-items: center; justify-content: center;">
+                                            <router-link :to="{ path: '/Venues/VenuesQA/' + userID }">
+                                                <button class="btn secondary-btn-border btn-sm py-2 px-3"> Respond to Q&A </button>
+                                            </router-link>
+                                        </div>
+                                    </div>
                                 </div>
-                                <!-- body -->
-                                <div v-if="unansweredQuestions.length != 0">
-                                    <div style="display: flex; align-items: center; justify-content: center;">
-                                        <router-link :to="{ path: '/Venues/VenuesQA/' + userID }">
-                                            <button class="btn secondary-btn-border btn-sm py-2 px-3"> Respond to Q&A </button>
-                                        </router-link>
+                            </div>
+                            <!-- check ins at your venue -->
+                            <div class="col-12">
+                                <div class="square primary-square rounded p-3 mb-3">
+                                    <!-- header text -->
+                                    <div class="square-inline">
+                                        <h4 class="square-inline text-start mr-auto"> Activity on Your Listings </h4>
+                                    </div>
+                                    <!-- body -->
+                                    <div>
+                                        <div style="display: flex; align-items: center; justify-content: center;">
+                                            <router-link :to="{ path: '/profile/venue/' + userID }">
+                                                <button class="btn secondary-btn-border btn-sm py-2 px-3"> View Dashboard </button>
+                                            </router-link>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- check ins at your venue -->
-                        <div class="col-12">
-                            <div class="square primary-square rounded p-3 mb-3">
-                                <!-- header text -->
-                                <div class="square-inline">
-                                    <h4 class="square-inline text-start mr-auto"> Activity on Your Listings </h4>
-                                </div>
-                                <!-- body -->
-                                <div>
-                                    <div style="display: flex; align-items: center; justify-content: center;">
-                                        <router-link :to="{ path: '/profile/venue/' + userID }">
-                                            <button class="btn secondary-btn-border btn-sm py-2 px-3"> View Dashboard </button>
-                                        </router-link>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
+                    </div>
                 </div>
                 <!-- discover, following & filter by drink type -->
-                <div class="col-9">
+                <div class="col-lg-9 col-md-8 col-12">
                     <div class="container">
                         <!-- buttons -->
                         <div class="row">
                             <!-- discover -->
-                            <div class="col-3">
+                            <div class="col-lg-3 col-12 mb-3">
                                 <div class="d-grid gap-2">
                                     <button class="btn btn-sm" 
                                         :class="{ 'primary-btn': discovery, 'primary-btn-outline': !discovery }"
@@ -267,7 +268,7 @@
                                 </div>
                             </div>
                             <!-- following -->
-                            <div class="col-3">
+                            <div class="col-lg-3 col-12 mb-3">
                                 <div class="d-grid gap-2">
                                     <button class="btn btn-sm"
                                         :class="{ 'primary-btn': following, 'primary-btn-outline': !following }"
@@ -277,7 +278,7 @@
                                 </div>
                             </div>
                             <!-- filter by drink type -->
-                            <div class="col-3">
+                            <div class="col-lg-3 col-12 mb-3">
                                 <div class="d-grid gap-2 dropdown">
                                     <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         {{ selectedDrinkType ? selectedDrinkType['drinkType'] : 'Filter by drink type' }}
@@ -328,19 +329,21 @@
 
                                         <div class="row">
                                             <!-- image -->
-                                            <div class="col-4 image-container" style="height: 300px; width: 300px">
-                                                <img v-if="listing['photo']" :src="'data:image/png;base64,'+listing['photo']" style="width: 300px; height: 300px;" class="img-border">
-                                                <img v-else src="../../../Images/Drinks/Placeholder.png" style="width: 300px; height: 300px;" class="img-border">
-                                                <BookmarkIcon 
-                                                    v-if="user" 
-                                                    :user="user" 
-                                                    :listing="listing" 
-                                                    :overlay="true"
-                                                    size="30"
-                                                    @icon-clicked="handleIconClick" />
+                                            <div class="col-xl-5 col-12">
+                                                <div class="image-container mb-3" style="height: 300px; width: 300px;">
+                                                    <img v-if="listing['photo']" :src="'data:image/png;base64,'+listing['photo']" style="width: 300px; height: 300px;" class="img-border">
+                                                    <img v-else src="../../../Images/Drinks/Placeholder.png" style="width: 300px; height: 300px;" class="img-border">
+                                                    <BookmarkIcon 
+                                                        v-if="user" 
+                                                        :user="user" 
+                                                        :listing="listing" 
+                                                        :overlay="true"
+                                                        size="30"
+                                                        @icon-clicked="handleIconClick" />
+                                                </div>
                                             </div>
                                             <!-- details -->
-                                            <div class="col-8 ps-5">
+                                            <div class="col-xl-7 col-12">
                                                 <!-- expression name -->
                                                 <div class="row pt-1">
                                                     <router-link :to="{ path: '/listing/view/' +listing._id.$oid }" class="primary-clickable-text">
@@ -396,19 +399,21 @@
 
                                         <div class="row">
                                             <!-- image -->
-                                            <div class="col-4 image-container">
-                                                <img v-if="listing['photo']" :src="'data:image/png;base64,'+listing['photo']" style="width: 300px; height: 300px;" class="img-border">
-                                                <img v-else src="../../../Images/Drinks/Placeholder.png" style="width: 300px; height: 300px;" class="img-border">
-                                                <BookmarkIcon 
-                                                    v-if="user" 
-                                                    :user="user" 
-                                                    :listing="listing" 
-                                                    :overlay="true"
-                                                    size="30"
-                                                    @icon-clicked="handleIconClick" />
+                                            <div class="col-xl-5 col-12 mb-3">
+                                                <div class="image-container" style="height: 300px; width: 300px;">
+                                                    <img v-if="listing['photo']" :src="'data:image/png;base64,'+listing['photo']" style="width: 300px; height: 300px;" class="img-border">
+                                                    <img v-else src="../../../Images/Drinks/Placeholder.png" style="width: 300px; height: 300px;" class="img-border">
+                                                    <BookmarkIcon 
+                                                        v-if="user" 
+                                                        :user="user" 
+                                                        :listing="listing" 
+                                                        :overlay="true"
+                                                        size="30"
+                                                        @icon-clicked="handleIconClick" />
+                                                </div>
                                             </div>
                                             <!-- details -->
-                                            <div class="col-8 ps-5">
+                                            <div class="col-xl-7 col-12">
                                                 <!-- expression name -->
                                                 <div class="row pt-1">
                                                     <router-link :to="{ path: '/listing/view/' +listing._id.$oid }" class="primary-clickable-text">
@@ -464,19 +469,21 @@
 
                                         <div class="row">
                                             <!-- image -->
-                                            <div class="col-4 image-container">
-                                                <img v-if="listing['photo']" :src="'data:image/png;base64,'+listing['photo']" style="width: 300px; height: 300px;" class="img-border">
-                                                <img v-else src="../../../Images/Drinks/Placeholder.png" style="width: 300px; height: 300px;" class="img-border">
-                                                <BookmarkIcon 
-                                                    v-if="user" 
-                                                    :user="user" 
-                                                    :listing="listing" 
-                                                    :overlay="true"
-                                                    size="30"
-                                                    @icon-clicked="handleIconClick" />
+                                            <div class="col-xl-5 col-12">
+                                                <div class="image-container mb-3" style="height: 300px; width: 300px;">
+                                                    <img v-if="listing['photo']" :src="'data:image/png;base64,'+listing['photo']" style="width: 300px; height: 300px;" class="img-border">
+                                                    <img v-else src="../../../Images/Drinks/Placeholder.png" style="width: 300px; height: 300px;" class="img-border">
+                                                    <BookmarkIcon 
+                                                        v-if="user" 
+                                                        :user="user" 
+                                                        :listing="listing" 
+                                                        :overlay="true"
+                                                        size="30"
+                                                        @icon-clicked="handleIconClick" />
+                                                </div>
                                             </div>
                                             <!-- details -->
-                                            <div class="col-8 ps-5">
+                                            <div class="col-xl-7 col-12">
                                                 <!-- expression name -->
                                                 <div class="row pt-1">
                                                     <router-link :to="{ path: '/listing/view/' +listing._id.$oid }" class="primary-clickable-text">
