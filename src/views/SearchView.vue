@@ -67,18 +67,16 @@
 
                         <!-- Filter Options -->
                         <div v-if="tabActive == 'listings'" class="col-xxl-6 col-md-12 col-sm-5 col-12 mb-xxl-0 mb-md-2 mb-sm-0 mb-2 dropdown">
-                            <!-- <div v-if="tabActive == 'listings'"> -->
-                                <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden; text-overflow: ellipsis; width: 200px;">
-                                    Filter: {{ searchFilter.drinkType != '' ? searchFilter.drinkType : 'by Drink Type' }}
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><span class="dropdown-item" @click="filterByDrinkType('')">Clear Filter</span></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li v-for="drinkType in drinkTypeList" :key="drinkType._id">
-                                        <span class="dropdown-item" @click="filterByDrinkType(drinkType['drinkType'])">{{ drinkType['drinkType'] }}</span>
-                                    </li>
-                                </ul>
-                            <!-- </div> -->
+                            <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden; text-overflow: ellipsis; width: 200px;">
+                                Filter: {{ searchFilter.drinkType != '' ? searchFilter.drinkType : 'by Drink Type' }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><span class="dropdown-item" @click="filterByDrinkType('')">Clear Filter</span></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li v-for="drinkType in drinkTypeList" :key="drinkType._id">
+                                    <span class="dropdown-item" @click="filterByDrinkType(drinkType['drinkType'])">{{ drinkType['drinkType'] }}</span>
+                                </li>
+                            </ul>
                         </div>
 
                         <!-- Sort Options -->
