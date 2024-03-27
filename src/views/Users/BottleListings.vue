@@ -278,10 +278,10 @@
                                 </div>
                             </div>
                             <!-- filter by drink type -->
-                            <div class="col-lg-3 col-12 mb-3">
+                            <div class="col-lg-2 col-12 mb-3">
                                 <div class="d-grid gap-2 dropdown">
-                                    <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        {{ selectedDrinkType ? selectedDrinkType['drinkType'] : 'Filter by drink type' }}
+                                    <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                                        {{ selectedDrinkType ? selectedDrinkType['drinkType'] : 'Filter: by Drink Type' }}
                                         <span v-if="selectedDrinkType != ''" class="cross-icon" @click="clearSelection">&#10005;</span>
                                     </button>
                                     <ul class="dropdown-menu">
@@ -295,9 +295,9 @@
                             </div> 
 
                             <!-- Dropdown based on category--> 
-                            <div v-if="selectedDrinkType != ''" class="col-3">
+                            <div v-if="selectedDrinkType != ''" class="col-2">
                                 <div class="d-grid gap-2 dropdown">
-                                    <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
                                         {{ selectedCategory ? selectedCategory : 'Filter by drink category' }}
                                         <span v-if="selectedCategory != null" class="cross-icon" @click="clearCategory">&#10005;</span>
                                     </button>
@@ -313,7 +313,21 @@
                                         <li>There is no category for this</li>       
                                     </ul>
                                 </div>
-                            </div>       
+                            </div>    
+                            
+                            <!-- sort by drink type -->
+                            <div class="col-lg-2 col-12 mb-3">
+                                <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                                    Sort: {{ sortSelection.category != '' ? sortSelection.category : 'by Category' }}
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><span class="dropdown-item" @click="sortByCategory('')"> Clear Sort </span></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li v-for="category in sortCategoryList" :key="category">
+                                        <span class="dropdown-item" @click="sortByCategory(category)"> {{ category }} </span>
+                                    </li>
+                                </ul>
+                            </div> 
                         </div>
                         
                         <!-- listings -->
@@ -744,6 +758,20 @@
                 selectedCategory:"",
                 filterSearchResult: [],
                 isFilterType:false,
+
+                // for sort function
+                sortSelection: {
+                    category: ''
+                },
+                sortCategoryList: [
+                    'Alphabetical (A - Z)',
+                    'Alphabetical (Z - A)',
+                    'Date (Newest - Oldest)',
+                    'Date (Oldest - Newest)',
+                    'Ratings (Highest - Lowest)',
+                    'Ratings (Lowest - Highest)',
+                ],
+                sortedListings: [],
 
                 // customization for drinkLists buttons
                 // [TODO] get drink list of user, for now is hardcoded
@@ -1186,7 +1214,62 @@
                     }
                 }
 
-        },
+            },
+
+            sortResults() {
+                let category = this.sortSelection.category;
+
+                // ------ SORT LISTINGS --------
+                // #1: Alphabetical (A - Z)
+                if (category == 'Alphabetical (A - Z)') {
+                    this.filteredListings.sort((a, b) => {
+                        return a.listingName.localeCompare(b.listingName);
+                    });
+                }
+                // #2: Alphabetical (Z - A)
+                else if (category == 'Alphabetical (Z - A)') {
+                    this.filteredListings.sort((a, b) => {
+                        return b.listingName.localeCompare(a.listingName);
+                    });
+                }
+                // #3: Date (Newest - Oldest)
+                else if (category == 'Date (Newest - Oldest)') {
+                    this.filteredListings.sort((a, b) => {
+                        return new Date(b.addedDate.$date) - new Date(a.addedDate.$date);
+                    });
+                }
+                // [DEFAULT] #4: Date (Oldest - Newest)
+                else if (category == '' || category == 'Date (Oldest - Newest)') {
+                    this.filteredListings.sort((a, b) => {
+                        return new Date(a.addedDate.$date) - new Date(b.addedDate.$date);
+                    });
+                }
+                // #5: Ratings (Highest - Lowest)
+                else if (category == 'Ratings (Highest - Lowest)') {
+                    this.filteredListings.sort((a, b) => {
+                        return this.getAllRatings(b) - this.getAllRatings(a);
+                    });
+                }
+                // #6: Ratings (Lowest - Highest)
+                else if (category == 'Ratings (Lowest - Highest)') {
+                    this.filteredListings.sort((a, b) => {
+                        return this.getAllRatings(a) - this.getAllRatings(b);
+                    });
+                }
+            },
+
+            // Sort Support Function (Category)
+            sortByCategory(category) {
+                console.log(category)
+                // Check if the selected filter is the same as the current filter
+                if (this.sortSelection.category == category) {
+                    return;
+                }
+                else {
+                    this.sortSelection.category = category
+                    this.sortResults();
+                }
+            },
 
             //Select drink category like Blended for whiskey 
             selectDrinkCategory(drinkCategory) {
