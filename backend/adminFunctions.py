@@ -80,8 +80,8 @@ def createObservationTag():
 
 # -----------------------------------------------------------------------------------------
     
-# [PUT] Update review
-# - Update review with review metrics
+# [PUT] Update observation tag
+# - Update observation tag with updated data
 # - Possible return codes: 201 (Updated), 400(Observation tag not found), 500 (Error during update)
 @app.route('/updateObservationTag', methods=['PUT'])
 def updateObservationTag():
@@ -132,6 +132,114 @@ def updateObservationTag():
         ), 500
     
 # -----------------------------------------------------------------------------------------
+    
+# [PUT] Update family tag
+# - Update flavour tag with updated family tag data
+# - Possible return codes: 201 (Updated), 400(Flavour tag not found), 500 (Error during update)
+@app.route('/updateFamilyTag', methods=['PUT'])
+def updateFamilyTag():
+    data = request.get_json()
+    # for loop for each family tag and update
+    updates = []
+    for elem in data:
+
+        existingFamilyTag = db.flavourTags.find_one({'_id': ObjectId(elem["_id"])})
+
+        if(existingFamilyTag == None):
+            return jsonify(
+                {   
+                    "code": 400,
+                    "data": {
+                        "familyTag": elem['familyTag']
+                    },
+                    "message": "Family Tag does not exist."
+                }
+            ), 400
+        family_tag = elem['familyTag']
+        hexcode = elem['hexcode']
+        document_id = elem['_id']
+        tag_dict = {"$set": {"familyTag": family_tag, "hexcode": hexcode}}
+        updates.append({"filter": {"_id": ObjectId(document_id)}, "update": tag_dict})
+
+
+    try: 
+        for update in updates:
+            filter_criteria = update["filter"]
+            update_data = update["update"]
+            db.flavourTags.update_many(filter_criteria, update_data)
+        return jsonify(
+            {   
+                "code": 201,
+                "data": elem['familyTag']
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "data": elem['familyTag']
+                },
+                "message": "An error occurred updating the family tags."
+            }
+        ), 500
+    
+# -----------------------------------------------------------------------------------------
+    
+# [PUT] Update sub tag
+# - Update subtag with udpated subtag info
+# - Possible return codes: 201 (Updated), 400(Sub tag not found), 500 (Error during update)
+@app.route('/updateSubTag', methods=['PUT'])
+def updateSubTag():
+    data = request.get_json()
+    # for loop for each sub tag and update
+    updates = []
+    for elem in data:
+
+        existingSubTag = db.subTags.find_one({'_id': ObjectId(elem["_id"])})
+
+        if(existingSubTag == None):
+            return jsonify(
+                {   
+                    "code": 400,
+                    "data": {
+                        "subTag": elem['subTag']
+                    },
+                    "message": "Sub Tag does not exist."
+                }
+            ), 400
+
+        sub_tag = elem['subTag']
+        document_id = elem['_id']
+        tag_dict = {"$set": {"subTag": sub_tag}}
+        updates.append({"filter": {"_id": ObjectId(document_id)}, "update": tag_dict})
+
+    try: 
+        for update in updates:
+            filter_criteria = update["filter"]
+            update_data = update["update"]
+            db.subTags.update_many(filter_criteria, update_data)
+        return jsonify(
+            {   
+                "code": 201,
+                "data": elem['subTag']
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "data": elem['subTag']
+                },
+                "message": "An error occurred updating the sub tags."
+            }
+        ), 500
+    
+# -----------------------------------------------------------------------------------------
+    
 # [DELETE] Deletes a observationTag
 # - Delete entry with specified id from the "observationTag" collection.
 # - Possible return codes: 201 (Deleted), 400 (Review doesn't exist), 500 (Error during deletion)

@@ -80,7 +80,7 @@
                                         <button @click="setAddFlavour('sub')" class="btn btn-warning reverse-clickable-text text-dark" type="button" data-bs-toggle="modal" data-bs-target="#addFlavourModal">
                                             Add Sub Tags
                                         </button>
-                                        <button @click="setEditFlavour('sub')" class="btn btn-primary mx-1 reverse-clickable-text" type="button">
+                                        <button @click="setEditFlavour('sub')" class="btn btn-primary mx-1 reverse-clickable-text" type="button" data-bs-toggle="modal" data-bs-target="#editFlavourModal">
                                             Edit Sub Tags
                                         </button>
                                         <button class="btn btn-danger mx-1 reverse-clickable-text" type="button">
@@ -182,19 +182,20 @@
                                                 <div v-for="tag in editedFlavourTags" class="mb-2 col-md-6"  v-bind:key="tag._id">
                                                     <input v-model="tag.familyTag" type="text" class="form-control" :style="{ color:'black', backgroundColor: tag['hexcode'], borderColor:tag['hexcode'], borderWidth:'1px' }">
                                                     <input v-model="tag.hexcode" type="text" class="form-control">
-                                                    <p v-if="tag.observationTag==''" class='text-danger text-start mb-2 fw-bold'>Action Tag cannot be empty</p>
+                                                    <p v-if="tag.familyTag==''" class='text-danger text-start mb-2 fw-bold'>Flavour tag cannot be empty</p>
                                                 </div>
                                             </div>
 
                                         </div>
                                         
                                         <div v-if="editFlavour == 'sub'" class="modal-body">
-                                            <button class="btn mb-2 me-2" @click="toggleBox(family)" v-for="family in flavourTags" v-bind:key="family['_id']" :style="{ color:'white', backgroundColor: family['hexcode'], borderColor:family['hexcode'], borderWidth:'1px' }">{{ family['familyTag'] }}</button>
-                                            <div v-for="family in flavourTags" :key="family['_id']">
+                                            <button class="btn mb-2 me-2" @click="toggleBox(family)" v-for="family in editedFlavourTags" v-bind:key="family['_id']" :style="{ color:'white', backgroundColor: family['hexcode'], borderColor:family['hexcode'], borderWidth:'1px' }">{{ family['familyTag'] }}</button>
+                                            <div v-for="family in editedFlavourTags" :key="family['_id']">
                                                 <div v-if="family.showBox" class="rounded p-3" :style="{border: '3px solid ' + family['hexcode'] }">
                                                     <div class="row">
                                                         <div class="col-3" v-for="(element, index) in family.subTag2" :key="index">
-                                                            <button @click="toggleFlavourSelection(element.subTag, family['hexcode'],element.id)" class="btn mb-2" :style="{ width: '100px', height: '60px',color:'white', backgroundColor: selectedFlavourTags.includes(element.subTag+family['hexcode']) ? 'grey' :family['hexcode'], borderColor: family['hexcode'], borderWidth:'1px' }">{{ element.subTag }}</button>
+                                                            <input v-model="element.subTag" type="text" class="form-control">
+                                                            <p v-if="element.subTag==''" class='text-danger text-start mb-2 fw-bold'>Sub tag cannot be empty</p>
                                                         </div>                        
                                                     </div>
                                                 </div>
@@ -204,17 +205,15 @@
                                         </div>
                                     </div>
                                     <div v-if="!(errorEditFlavour || successEditFlavour) && confirmEditFlavour" >
-                                        <p v-if="addFlavour=='family'" class="text-center mb-1"></p>
-                                        <p v-if="addFlavour=='sub'" class="text-center mb-1"> </p>
+                                        <p class="text-center mb-1">Are you sure you want to save these changes?</p>
+                                        <p class='text-danger text-center mb-2 fw-bold' v-if="flavourNoChange">There is no changed flavour tag</p>
                                     </div>
 
                                     <div class="modal-footer">
                                         <button v-if="errorEditFlavour || successEditFlavour  || confirmEditFlavour" @click="resetEditFlavourErrors" type="button" class="btn btn-secondary">Return</button>
-                                        <button v-if="!(errorEditFlavour || successEditFlavour  || confirmEditFlavour)" @click="resetEditFlavour" type="button" class="btn btn-primary">Reset Tags</button>
-                                        <!-- TODO: change this function -->
-                                        <button v-if="!(errorEditFlavour || successEditFlavour  || confirmEditFlavour)" @click="confirmAddFlavour" type="button" class="btn btn-primary">Update Tags</button>
-                                        <!-- TODO: change this function -->
-                                        <button v-if="!(errorEditFlavour || successEditFlavour) && confirmEditFlavour" @click="createNewFlavour" type="button" class="btn btn-primary">Confirm Edit Tags</button>
+                                        <button v-if="!(errorEditFlavour || successEditFlavour  || confirmEditFlavour)" @click="resetEditFlavour" type="button" class="btn btn-warning">Reset Tags</button>
+                                        <button v-if="!(errorEditFlavour || successEditFlavour  || confirmEditFlavour)" @click="confirmUpdateFlavour" type="button" class="btn btn-primary">Update Tags</button>
+                                        <button v-if="!(errorEditFlavour || successEditFlavour) && confirmEditFlavour" @click="updateExistingFlavour" type="button" class="btn btn-primary">Confirm Edit Tags</button>
                                         <button v-if="!(errorEditFlavour || successEditFlavour)" @click="resetEditFlavourMode" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                         <button v-if="errorEditFlavour || successEditFlavour" @click="resetEditFlavourModal" type="button" data-bs-dismiss="modal" class="btn btn-secondary">Close</button>
                                     </div>
@@ -786,6 +785,7 @@
                     hexcode:'',
                     tagParent:'',
                     chosenTagParent:null,
+                    flavourNoChange:false,
 
                     // creation of new observation tag
                     newObservation:'',
@@ -1003,7 +1003,7 @@
                         });
                         
                         this.editedFlavourTags = JSON.parse(JSON.stringify(this.flavourTags));
-                        console.log(this.editedFlavourTags === this.flavourTags)
+                        console.log(this.editedFlavourTags)
                     } 
                     catch (error) {
                         console.error(error);
@@ -1067,7 +1067,7 @@
                     if(this.observationTags.find((tag)=> tag.observationTag == '')){
                         this.emptyObservation = true
                     }
-                    let submitAPI = "http://127.0.0.1:5051/updateObservationTag"
+                    let submitAPI = "http://127.0.0.1:5052/updateObservationTag"
                     this.updateTags(submitAPI,submitData)
                 },
 
@@ -1469,7 +1469,6 @@
                     else {
                         this.selectedPromotedUser = null
                         this.addableDrinkType= []
-                        console.log(this.addableDrinkType)
                         usernameError.innerHTML = "Please enter a valid username"
                     }
                 },
@@ -1489,7 +1488,6 @@
                     else {
                         this.selectedRemoveMod = null
                         this.removableDrinkType = []
-                        console.log(this.removableDrinkType)
                         usernameError.innerHTML = "Please enter a valid username"
                     }
                 },
@@ -1764,12 +1762,14 @@
                     this.errorEditFlavour = false
                     this.editFlavour = ''
                     this.confirmEditFlavour= false
+                    this.flavourNoChange= false
                 },
 
                 resetEditFlavourErrors(){
                     this.successEditFlavour = false
                     this.errorEditFlavour = false
                     this.confirmEditFlavour= false
+                    this.flavourNoChange= false
                 },
 
                 resetEditFlavour(){
@@ -1789,6 +1789,81 @@
                         this.chosenTagParent = null
                         tagParentError.innerHTML = "Please enter a valid drink type"
                     }
+                },
+
+                toggleBox(family){
+                    let tempShowBox = family.showBox
+                    this.editedFlavourTags.forEach(item => {
+                        item.showBox = false;
+                    });
+                    family.showBox = !tempShowBox; // Toggle the visibility of the box
+                },
+
+                confirmUpdateFlavour(){
+                    this.confirmEditFlavour = true
+                },
+
+                updateExistingFlavour(){
+                    // check difference in editedFlavourTags and flavourTags
+                    // for familytag mode, check the familyTag
+                    // for sub mode, check subTag2 difference
+                    let submitData=[]
+                    let submitURL=''
+                    if(this.editFlavour=='family'){
+                        submitURL = 'http://127.0.0.1:5052/updateFamilyTag'
+                        for( let i=0;i<this.editedFlavourTags.length;i++){
+                            if(this.editedFlavourTags[i].familyTag!= this.flavourTags[i].familyTag || this.editedFlavourTags[i].hexcode!= this.flavourTags[i].hexcode){
+                                submitData.push(
+                                    {
+                                        _id: this.editedFlavourTags[i]._id.$oid,
+                                        familyTag: this.editedFlavourTags[i].familyTag,
+                                        hexcode: this.editedFlavourTags[i].hexcode,
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    if(this.editFlavour=='sub'){
+                        submitURL = 'http://127.0.0.1:5052/updateSubTag'
+                        for( let i=0;i<this.editedFlavourTags.length;i++){
+                            for(let j=0; j<this.editedFlavourTags[i].subTag2.length;j++){
+                                if(this.editedFlavourTags[i].subTag2[j].subTag != this.flavourTags[i].subTag2[j].subTag){
+                                    submitData.push(
+                                        {
+                                            _id: this.editedFlavourTags[i].subTag2[j].id.$oid,
+                                            subTag: this.editedFlavourTags[i].subTag2[j].subTag
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    if(submitData.length<=0){
+                        this.flavourNoChange = true
+                        return null
+                    }
+                    console.log(submitData)
+                    console.log(submitURL)
+                    this.writeEditTag(submitURL, submitData)
+                },
+
+                async writeEditTag(submitURL,submitData){
+                    let responseCode = ''
+                    const response = await this.$axios.put(submitURL, submitData)
+                    .then((response)=>{
+                        responseCode = response.data.code
+                    })
+                    .catch((error)=>{
+                        console.error(error);
+                        responseCode = error.response.data.code
+                    });
+                    if(responseCode==201){
+                        this.successEditFlavour=true; // Display success message
+                    }else{
+                        this.errorEditFlavour = true
+                    }
+                    this.flavourTags = JSON.parse(JSON.stringify(this.editedFlavourTags));
+                    return response
                 },
             }
         }
