@@ -39,7 +39,8 @@
                                 <b>Drink of Choice</b>
                             </div>
                             <div class="col-7 text-end">
-                                {{ drinkChoice }}
+                                <span v-if="drinkChoice.length == 0"><i>None</i></span>
+                                <span v-else>{{ drinkChoice }}</span>
                             </div>
                         </div>
                     </div>
@@ -414,8 +415,8 @@
                                     </div>
                                     <div style="display: flex; margin-top: auto;" class="mb-1">
                                         <a class="me-4" @click="toggleView(name)" href="#" style="color: #535C72;">View List</a>
-                                        <a v-if="ownProfile && !(name == 'Drinks I Have Tried' || name == 'Drinks I Want To Try')" class="me-4" href="#" style="color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#editListModal${index}`" @click="resetEditList(name, bookmarkList.listDesc)">Edit List</a>
-                                        <a v-if="ownProfile && !(name == 'Drinks I Have Tried' || name == 'Drinks I Want To Try')" href="#" style="color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#deleteListModal${index}`">Delete List</a>
+                                        <a v-if="ownProfile && !(name == 'Drinks I Have Tried' || name == 'Drinks I Want to Try')" class="me-4" href="#" style="color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#editListModal${index}`" @click="resetEditList(name, bookmarkList.listDesc)">Edit List</a>
+                                        <a v-if="ownProfile && !(name == 'Drinks I Have Tried' || name == 'Drinks I Want to Try')" href="#" style="color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#deleteListModal${index}`">Delete List</a>
                                     </div>
                                 </div>
 

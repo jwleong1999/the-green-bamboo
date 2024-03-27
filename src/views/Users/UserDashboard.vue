@@ -32,7 +32,47 @@
                     </button>
                 </div>
 
-                <!-- row 3: recent activity on reviews -->
+                <!-- row 3: recent activity on followers -->
+                <div class="row pt-3">
+                    <div class="square primary-square rounded p-3 mb-3 text-start">
+                        <!-- header text -->
+                        <div class="square-inline pb-2">
+                            <h4 class="square-inline text-start mr-auto"> Recent Activity on Your Followers </h4>
+                        </div>
+                        <!-- body -->
+                        <div style="height: 85%;">
+                            <div class="overflow-auto" style="max-height: 100%;">
+                                <!-- v-for loop here-->
+                                <div v-for="activity in recentFollowerActivity" v-bind:key="activity._id" class="py-2">
+                                    <div v-if="activity.type === 'tag'">
+                                        <i> 
+                                            <router-link :to="{ path: '/profile/user/' + activity.userID.$oid }" class="reverse-clickable-text">
+                                                @<b> {{ getUserFromID(activity.userID.$oid).username }} </b>
+                                            </router-link> 
+                                            tagged you in a review on 
+                                            <router-link :to="{ path: '/listing/view/' + activity.listingID.$oid }" class="reverse-clickable-text">
+                                                <u> {{ getListingFromID(activity.listingID.$oid).listingName }} </u>
+                                            </router-link>
+                                            {{ getTimeDifference(activity.date.$date) }}
+                                        </i>
+                                    </div>
+                                    <div v-else-if="activity.type === 'follow'">
+                                        <i> 
+                                            <router-link :to="{ path: '/profile/user/' + activity.userID.$oid }" class="reverse-clickable-text">
+                                                @<b> {{ activity.username }} </b>
+                                            </router-link> 
+                                            started following you
+                                            {{ getTimeDifference(activity.date.$date) }}
+                                        </i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- row 4: recent activity on reviews -->
                 <div class="row pt-3">
                     <div class="square primary-square rounded p-3 mb-3 text-start">
                         <!-- header text -->
@@ -40,28 +80,30 @@
                             <h4 class="square-inline text-start mr-auto"> Recent Activity on Your Reviews </h4>
                         </div>
                         <!-- body -->
-                        <div>
-                            <!-- v-for loop here-->
-                            <div v-for="activity in recentActivity" v-bind:key="activity._id" class="py-2">
-                                <div v-if="activity.type === 'upvote' || activity.type === 'downvote'">
-                                    <svg v-if="activity.type == 'upvote'" fill="#ffffff" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="m4 14h2 2v3 4c0 .553.447 1 1 1h6c.553 0 1-.447 1-1v-5-2h1 3c.385 0 .734-.221.901-.566.166-.347.12-.758-.12-1.059l-8-10c-.381-.475-1.181-.475-1.562 0l-8 10c-.24.301-.286.712-.12 1.059.167.345.516.566.901.566z"/></svg>
-                                    <svg v-if="activity.type == 'downvote'" fill="#ffffff" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="m20.901 10.566c-.167-.345-.516-.566-.901-.566h-2-2v-3-4c0-.553-.447-1-1-1h-6c-.553 0-1 .447-1 1v5 2h-1-3c-.385 0-.734.221-.901.566-.166.347-.12.758.12 1.059l8 10c.19.237.477.375.781.375s.591-.138.781-.375l8-10c.24-.301.286-.712.12-1.059z"/></svg>
-                                    <i> 
-                                        Someone <span :style="{ color: activity.type === 'upvote' ? '#90ee90' : '#ff7f7f' }">{{ activity.type }}d</span> your review on 
-                                        <router-link :to="{ path: '/listing/view/' + activity.reviewTarget.$oid }" class="reverse-clickable-text">
-                                            <u> {{ getListingFromID(activity.reviewTarget.$oid).listingName }} </u>
-                                        </router-link>
-                                        {{ getTimeDifference(activity.date.$date) }}
-                                    </i>
-                                </div>
-                                <div v-else-if="activity.type === 'follow'">
-                                    <i> 
-                                        <router-link :to="{ path: '/profile/user/' + activity.userID.$oid }" class="reverse-clickable-text">
-                                            @<b> {{ activity.username }} </b>
-                                        </router-link> 
-                                        started following you
-                                        {{ getTimeDifference(activity.date.$date) }}
-                                    </i>
+                        <div style="height: 85%;">
+                            <div class="overflow-auto" style="max-height: 100%;">
+                                <!-- v-for loop here-->
+                                <div v-for="activity in recentReviewActivity" v-bind:key="activity._id" class="py-2">
+                                    <div v-if="activity.type === 'upvote' || activity.type === 'downvote'">
+                                        <svg v-if="activity.type == 'upvote'" fill="#ffffff" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="m4 14h2 2v3 4c0 .553.447 1 1 1h6c.553 0 1-.447 1-1v-5-2h1 3c.385 0 .734-.221.901-.566.166-.347.12-.758-.12-1.059l-8-10c-.381-.475-1.181-.475-1.562 0l-8 10c-.24.301-.286.712-.12 1.059.167.345.516.566.901.566z"/></svg>
+                                        <svg v-if="activity.type == 'downvote'" fill="#ffffff" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="m20.901 10.566c-.167-.345-.516-.566-.901-.566h-2-2v-3-4c0-.553-.447-1-1-1h-6c-.553 0-1 .447-1 1v5 2h-1-3c-.385 0-.734.221-.901.566-.166.347-.12.758.12 1.059l8 10c.19.237.477.375.781.375s.591-.138.781-.375l8-10c.24-.301.286-.712.12-1.059z"/></svg>
+                                        <i> 
+                                            Someone <span :style="{ color: activity.type === 'upvote' ? '#90ee90' : '#ff7f7f' }">{{ activity.type }}d</span> your review on 
+                                            <router-link :to="{ path: '/listing/view/' + activity.reviewTarget.$oid }" class="reverse-clickable-text">
+                                                <u> {{ getListingFromID(activity.reviewTarget.$oid).listingName }} </u>
+                                            </router-link>
+                                            {{ getTimeDifference(activity.date.$date) }}
+                                        </i>
+                                    </div>
+                                    <div v-else-if="activity.type === 'follow'">
+                                        <i> 
+                                            <router-link :to="{ path: '/profile/user/' + activity.userID.$oid }" class="reverse-clickable-text">
+                                                @<b> {{ activity.username }} </b>
+                                            </router-link> 
+                                            started following you
+                                            {{ getTimeDifference(activity.date.$date) }}
+                                        </i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -242,8 +284,46 @@
                 bestRatedCategories.splice(5);
                 return bestRatedCategories;
             }, 
-            recentActivity() {
-                // upvotes and downvotes and follows
+            recentFollowerActivity() {
+                // follows and review tags
+                const follows = this.users
+                    .map(user => {
+                        const followUser = user.followLists.users.find(followUser => followUser.followerID.$oid === this.userID);
+                        return followUser ? {
+                            username: user.username,
+                            userID: user._id,
+                            date: followUser.date
+                        } : null;
+                    })
+                    .filter(Boolean);
+                console.log(this.reviews);
+                const tags = this.reviews
+                    .filter(review => review.reviewType === 'Listing' && review.taggedUsers)
+                    .map(review => {
+                        console.log(review);
+                        console.log(review.taggedUsers);
+                        const taggedReviews = review.taggedUsers.find(taggedUser => taggedUser.$oid === this.userID);
+                        return taggedReviews ? {
+                            userID: review.userID,
+                            listingID: review.reviewTarget,
+                            date: review.createdDate
+                        } : null;
+                    })
+                    .filter(Boolean);
+
+                const activities = [
+                    ...tags.map(tag => ({ ...tag, type: 'tag' })),
+                    ...follows.map(follow => ({ ...follow, type: 'follow' }))
+                ];
+                activities.sort((a, b) => new Date(b.date.$date) - new Date(a.date.$date));
+
+                console.log(activities);
+                
+                return activities;
+
+            },
+            recentReviewActivity() {
+                // upvotes and downvotes
 
                 const upvotes = this.userReviews
                     .map(review => review.userVotes.upvotes
@@ -258,21 +338,9 @@
                     .filter(downvote => downvote.length > 0)
                     .flat();
 
-                const follows = this.users
-                    .map(user => {
-                        const followUser = user.followLists.users.find(followUser => followUser.followerID.$oid === this.userID);
-                        return followUser ? {
-                            username: user.username,
-                            userID: user._id,
-                            date: followUser.date
-                        } : null;
-                    })
-                    .filter(Boolean);
-
                 const activities = [
                     ...upvotes.map(upvote => ({ ...upvote, type: 'upvote' })),
                     ...downvotes.map(downvote => ({ ...downvote, type: 'downvote' })),
-                    ...follows.map(follow => ({ ...follow, type: 'follow' }))
                 ];
                 activities.sort((a, b) => new Date(b.date.$date) - new Date(a.date.$date));
                 
@@ -291,7 +359,15 @@
                     type: Object,
                     default: () => {},
                     scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
                         y: {
+                            grid: {
+                                display: false
+                            },
                             beginAtZero: true,
                             precision: 0,
                             ticks: {
@@ -395,6 +471,10 @@
 
             getListingFromID(listingID) {
                 return this.listings.find(listing => listing._id.$oid == listingID);
+            },
+
+            getUserFromID(userID) {
+                return this.users.find(user => user._id.$oid == userID);
             },
 
         }

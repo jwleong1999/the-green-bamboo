@@ -413,7 +413,7 @@
                             "listDesc":"",
                             "listItems":[]
                         },
-                        "Drinks I Want To Try":{
+                        "Drinks I Want to Try":{
                             "listDesc":"",
                             "listItems":[]
                         }
