@@ -4,99 +4,104 @@
 
     <div class="body-login">
         <!-- select buttons -->
-        <div class="container" style="width: 50%">
-            <div class="pt-5">
-                <form id="login" v-on:submit.prevent="checkLogin" style="background-color:#DDC8A9;">
-                    <!-- login header text -->
-                    <p class="fw-bold fs-1 pt-3" style="font-style: italic; font-family: Radley, serif;">
-                        Join a community of drink lovers.
-                    </p>
+        <!-- <div class="container row" style="width: 50%"> -->
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-sm-10 col-md-8 m-auto">
+                    <div class="pt-5">
+                        <form id="login" v-on:submit.prevent="checkLogin" style="background-color:#DDC8A9;" class="rounded">
+                            <!-- login header text -->
+                            <p class="fw-bold fs-1 pt-3 mx-3" style="font-style: italic; font-family: Radley, serif;">
+                                Join a community of drink lovers.
+                            </p>
 
-                    <!-- username -->
-                    <div class="row pt-5">
-                        <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
-                            <div class="form-floating">
-                                <input type="text" class="form-control form-box-outline" id="id" placeholder="Username" v-model="ID">
-                                <label for="username"> Username </label>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- password -->
-                    <div class="row pt-2">
-                        <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
-                            <div class="form-floating">
-                                <input type="password" class="form-control form-box-outline" id="password" placeholder="Password" v-model="password">
-                                <label for="password"> Password </label>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- checkbox -->
-                    <div class="row pt-1 pb-3">
-                        <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
-                            <!-- Use Bootstrap grid classes for layout -->
-                            <div class="row g-2">
-                                <!-- Column for the checkbox -->
-                                <div class="col-12 text-start">
-                                    <input type="checkbox" v-on:click="showPassword()" class="form-check-input">
-                                    <label for="password" class="form-check-label"> &nbsp; Show password </label>
+                            <!-- username -->
+                            <div class="row pt-5">
+                                <div class="d-grid gap-2 col-xl-5 col-md-7 col-9 mx-auto">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control form-box-outline" id="id" placeholder="Username" v-model="ID">
+                                        <label for="username"> Username </label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- error handling -->
-                    <div class="row p-3 text-left" v-show="errors.length > 0">
-                        <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
-                            <div class="alert alert-danger" role="alert">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
-                                <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/>
-                                <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/>
-                                </svg>
-                                <h5> Error </h5>
-                                <li v-for="error in errors" :key="error"> {{ error }} </li>
+                            <!-- password -->
+                            <div class="row pt-2">
+                                <div class="d-grid gap-2 col-xl-5 col-md-7 col-9 mx-auto">
+                                    <div class="form-floating">
+                                        <input type="password" class="form-control form-box-outline" id="password" placeholder="Password" v-model="password">
+                                        <label for="password"> Password </label>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <!-- Confirm Selection -->
-                    <div class="row pt-3">
-                        <div class="col">
-                            <button v-if="authPending" type="submit" class="btn secondary-btn-border-thick btn-lg" disabled>Loading...</button>
-                            <button v-else type="submit" class="btn secondary-btn-border-thick btn-lg px-5">Log In</button>
-                        </div>
-                    </div>
+                            <!-- checkbox -->
+                            <div class="row pt-1 pb-3">
+                                <div class="d-grid gap-2 col-xl-5 col-md-7 col-9 mx-auto">
+                                    <!-- Use Bootstrap grid classes for layout -->
+                                    <div class="row g-2">
+                                        <!-- Column for the checkbox -->
+                                        <div class="col-12 text-start">
+                                            <input type="checkbox" v-on:click="showPassword()" class="form-check-input">
+                                            <label for="password" class="form-check-label"> &nbsp; Show password </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                    <div class="row py-2">
-                        <div class="col-6 mx-auto">
-                            <hr class="darker-hr">
-                        </div>
-                    </div>
+                            <!-- error handling -->
+                            <div class="row p-3 text-left" v-show="errors.length > 0">
+                                <div class="d-grid gap-2 col-md-5 col-10 mx-auto">
+                                    <div class="alert alert-danger" role="alert">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
+                                        <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/>
+                                        <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/>
+                                        </svg>
+                                        <h5> Error </h5>
+                                        <li v-for="error in errors" :key="error"> {{ error }} </li>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Confirm Selection -->
+                            <div class="row pt-3">
+                                <div class="col">
+                                    <button v-if="authPending" type="submit" class="btn secondary-btn-border-thick btn-lg" disabled>Loading...</button>
+                                    <button v-else type="submit" class="btn secondary-btn-border-thick btn-lg px-5">Log In</button>
+                                </div>
+                            </div>
 
-                    <!-- Prompt sign up -->
-                    <p class="mt-2 fw-bold fs-3" style="font-style: italic; font-family: Radley, serif;">
-                        Don't have an account?
-                    </p>
-                    <div class="row">
-                        <div class="col">
-                            <router-link :to="{ path: '/signup' }" class="default-text-no-background">
-                                <button class="btn secondary-btn-border-thick btn-lg px-5"> Sign Up </button>
-                            </router-link>
-                        </div>
-                    </div>
+                            <div class="row py-2">
+                                <div class="col-6 mx-auto">
+                                    <hr class="darker-hr">
+                                </div>
+                            </div>
 
-                    <!-- Business sign up -->
-                    <div class="row pt-5 py-3">
-                        <div class="col">
-                            <p>
-                                <b>
-                                    <i>
-                                        If you are a drinks brand, bottler or venue owner trying to create an account, 
-                                        <router-link :to="{ path: '/businessSignup' }"  class="default-body-text-no-background">click here</router-link>.
-                                    </i>
-                                </b>
+                            <!-- Prompt sign up -->
+                            <p class="mt-2 fw-bold fs-3" style="font-style: italic; font-family: Radley, serif;">
+                                Don't have an account?
                             </p>
-                        </div>
+                            <div class="row">
+                                <div class="col">
+                                    <router-link :to="{ path: '/signup' }" class="default-text-no-background">
+                                        <button class="btn secondary-btn-border-thick btn-lg px-5"> Sign Up </button>
+                                    </router-link>
+                                </div>
+                            </div>
+
+                            <!-- Business sign up -->
+                            <div class="row pt-5 pb-3 mx-3">
+                                <div class="col">
+                                    <p>
+                                        <b>
+                                            <i>
+                                                If you are a drinks brand, bottler or venue owner trying to create an account, 
+                                                <router-link :to="{ path: '/businessSignup' }"  class="default-body-text-no-background">click here</router-link>.
+                                            </i>
+                                        </b>
+                                    </p>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
