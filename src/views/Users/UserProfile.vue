@@ -465,7 +465,7 @@
                                             </div>
 
                                             <div class="text-center">
-                                                <img src="../../Images/Others/cancel.png" alt="" class="rounded-circle border border-dark text-center" style="width: 100px; height: 100px;">
+                                                <img src="../../../Images/Others/cancel.png" alt="" class="rounded-circle border border-dark text-center" style="width: 100px; height: 100px;">
                                                 <h3>Are you sure?</h3>
                                                 <br>
                                                 <p>Do you really want to delete <b><i>{{ name }}</i></b>? </p>
@@ -575,7 +575,7 @@
                                             </div>
 
                                             <div class="text-center mx-2">
-                                                <img src="../../Images/Others/cancel.png" alt="" class="rounded-circle border border-dark text-center" style="width: 100px; height: 100px;">
+                                                <img src="../../../Images/Others/cancel.png" alt="" class="rounded-circle border border-dark text-center" style="width: 100px; height: 100px;">
                                                 <h3>Are you sure?</h3>
                                                 <br>
                                                 <p>Do you really want to delete <b><i>{{ getListingFromID(listingID[1].$oid).listingName }}</i></b> from <b><i>{{ currentList }}</i></b>? </p>
