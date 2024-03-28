@@ -321,6 +321,8 @@
                                                         placeholder="Tag your location"
                                                         @place_changed="setPlace"
                                                         class="form-control"
+                                                        ref="autocomplete"
+                                                        :value="selectedLocation"
                                                     >
                                                     </GMapAutocomplete>
                                                 </div>
@@ -623,11 +625,7 @@
                     </div>
                     <!-- END OF MODAL -->
 
-                    <GMapAutocomplete
-                            placeholder="Tag your location"
-                            @place_changed="setPlace"
-                            >
-                    </GMapAutocomplete>
+                    
                 <hr>
 
                 <!-- photos posted by other users -->
@@ -2034,6 +2032,7 @@
 
             clearLocation(){
                 this.selectedLocation = ''
+                this.$refs.autocomplete.$el.value = "";
             },
 
             clearPhoto(){
