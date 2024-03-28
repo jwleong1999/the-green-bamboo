@@ -736,7 +736,6 @@
 
 <script>
     import NavBar from '@/components/NavBar.vue';
-    import { hashPassword } from '../../../backend/other/hashPassword.js'
 
         export default {
             name: 'adminDashboard',
@@ -1244,14 +1243,28 @@
                     }
                     return false;
                 },
+
+                hashPassword(id, password) {
+                    const combinedString = id.toString() + password;
+                    let hash = 0;
+
+                    for (let i = 0; i < combinedString.length; i++) {
+                        const char = combinedString.charCodeAt(i);
+                        hash = (hash << 5) - hash + char;
+                        hash |= 0; // convert to 32-bit integer
+                    }
+
+                    return hash;
+                },
+
                 async reviewAccountRequest(request, action) {
                     const requestID = request._id.$oid;
                     if (action == "approve") {
                         this.businessType = request.businessType;
                         this.businessName = request.businessName;
-                        this.tempPassword = hashPassword(request.businessName).toString();
+                        this.tempPassword = this.hashPassword(request.businessName).toString();
                         this.tempPassword = this.tempPassword.replace(/-/g, '');
-                        const hashedPassword = hashPassword(request.businessName, this.tempPassword);
+                        const hashedPassword = this.hashPassword(request.businessName, this.tempPassword);
 
                         const newBusinessData = {
                             businessName: request.businessName,
@@ -1348,12 +1361,12 @@
                     else {
                         this.addBizError = "";
                         if (this.businessClaimStatus == "true") {
-                            this.tempPassword = hashPassword(this.businessName).toString();
+                            this.tempPassword = this.hashPassword(this.businessName).toString();
                             this.tempPassword = this.tempPassword.replace(/-/g, '');
                         } else {
                             this.tempPassword = "admin1234";
                         }
-                        const hashedPassword = hashPassword(this.businessName, this.tempPassword);
+                        const hashedPassword = this.hashPassword(this.businessName, this.tempPassword);
                         if (this.businessType == "producer") {
                             const newBusinessData = {
                                 producerName: this.businessName,
