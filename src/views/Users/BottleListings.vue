@@ -418,14 +418,13 @@
                                 <!-- v-loop for each listing -->
                                 <div class="container text-start">
                                     <h5 v-if="mostReviews==''" style="display: inline-block;"> There is no listing available for the selected filter </h5>
-                                    <div v-for="listing in mostReviews" v-bind:key="listing._id" class="p-3">
+                                    <div v-for="listing in mostReviews" v-bind:key="listing" class="p-3">
 
-                                        <div class="row">
+                                        <div class="row" v-if="listing != null">
                                             <!-- image -->
                                             <div class="col-xl-5 col-12 mb-3">
                                                 <div class="image-container" style="height: 300px; width: 300px;">
-                                                    <img v-if="listing['photo']" :src="'data:image/png;base64,'+listing['photo']" style="width: 300px; height: 300px;" class="img-border">
-                                                    <img v-else src="../../../Images/Drinks/Placeholder.png" style="width: 300px; height: 300px;" class="img-border">
+                                                    <img :src="'data:image/png;base64,'+ (listing.photo || defaultProfilePhoto)" style="width: 300px; height: 300px;" class="img-border">
                                                     <BookmarkIcon 
                                                         v-if="user" 
                                                         :user="user" 
@@ -1419,15 +1418,39 @@
             return drink_name;
         },
 
+        // find drink name given reviewTarget
+        findDrinkNameForReview(reviewTarget) {
+                let drink = this.listings.find(listing => listing._id["$oid"] == reviewTarget["$oid"]);
+                if (drink) {
+                    let drink_name = drink.listingName; 
+                    return drink_name;
+                }
+            },
+
         // get all reviews that a producer has
         getAllReviews() {
-            let allReviewsCounts = {};
-            this.listings.forEach(listing => {
-                let drink_name = this.findDrinkNameForListing(listing);
-                allReviewsCounts[drink_name] = allReviewsCounts[drink_name] ? 
-                allReviewsCounts[drink_name] + 1 : 1;
+            const reviewCounts = {};
+            // Iterate through all reviews
+            this.reviews.forEach(review => {
+                const reviewTargetName = this.findDrinkNameForReview(review.reviewTarget);
+                // Check if reviewTargetId is already in reviewCounts
+                if (reviewTargetName in reviewCounts) {
+                    reviewCounts[reviewTargetName]++;
+                } else {
+                    reviewCounts[reviewTargetName] = 1;
+                }
             });
-            this.allReviews = allReviewsCounts;
+
+            // Iterate through all drinks
+            this.listings.forEach(drink => {
+                const drinkName = drink.listingName;
+                // Check if drinkId is not in reviewCounts
+                if (! (drinkName in reviewCounts)) {
+                    reviewCounts[drinkName] = 0;
+                }
+            });
+
+            this.allReviews = reviewCounts;
         },
         
         // get top 5 most reviewed items by producer
@@ -1440,6 +1463,7 @@
                 let review = this.getListingByName(drink);
                 this.mostReviews.push(review);
             });
+            console.log(this.mostReviews)
         },
 
         // get listing by name

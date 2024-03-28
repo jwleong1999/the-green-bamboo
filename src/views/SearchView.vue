@@ -570,7 +570,7 @@
                     // clear previous results
                     this.producerListings = [];
 
-                    // search by producerName, bottler
+                    // search by producerName, originCountry
                     this.producerListings = this.producerList.filter((producer) => {
                         return producer["producerName"].toLowerCase().includes(this.searchTerm) || producer["originCountry"].toLowerCase().includes(this.searchTerm);
                     });
@@ -588,7 +588,7 @@
                     // clear previous results
                     this.venueListings = [];
 
-                    // search by producerName, bottler
+                    // search by venueName, originLocation
                     this.venueListings = this.venueList.filter((venue) => {
                         return venue["venueName"].toLowerCase().includes(this.searchTerm) || venue["originLocation"].toLowerCase().includes(this.searchTerm);
                     });
