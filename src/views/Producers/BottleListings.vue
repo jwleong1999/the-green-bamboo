@@ -311,11 +311,16 @@
                                         <div class="col-6 justify-content-start form-group mb-3">
                                             <p class="text-start mb-1 fw-bold">Location</p>                                            
                                             <!-- Link filteredOptions to venues location -->
-                                            <div class="input-group mb-2">
+                                            <!-- <div class="input-group mb-2">
                                                 <select class="form-control" v-model="selectedLocation" @input="filterOptions($event)">
                                                     <option v-for="option in filteredOptions" :key="option.id" :value="option.name">{{ option.name }}</option>
                                                 </select>
-                                            </div>
+                                            </div> -->
+                                            <GMapAutocomplete
+                                                placeholder="Tag your location"
+                                                @place_changed="setPlace"
+                                                >
+                                            </GMapAutocomplete>
                                             <div class="row">
                                                 <div class="col-6 d-flex justify-content-start">
                                                     <button v-if="selectedLocation!==''" class="btn text-start mb-1" style="background-color: #535C72;color: white;" @click="clearLocation">Clear Selection</button>
@@ -427,6 +432,8 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    
 
                                     <!-- TOGGLEABLE SECTION -->
                                     <div v-if="extendReview">
@@ -613,7 +620,11 @@
                     </div>
                     <!-- END OF MODAL -->
 
-
+                    <GMapAutocomplete
+                            placeholder="Tag your location"
+                            @place_changed="setPlace"
+                            >
+                    </GMapAutocomplete>
                 <hr>
 
                 <!-- photos posted by other users -->
@@ -1013,6 +1024,10 @@
             :listings="listings" 
             :listingID="bookmarkListingID" />
     </div> <!-- end of your drinks shelf & brands you follow -->
+
+    
+    
+    
 
 </template>
 
@@ -2344,6 +2359,10 @@
                     Object.entries(distanceObject).sort(([,a],[,b]) => a-b)
                 );
                 return sortedDistanceValues;
+            },
+
+            setPlace(place){
+                this.selectedLocation=place.name
             }
         }
     };
