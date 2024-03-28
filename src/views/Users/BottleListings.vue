@@ -72,17 +72,21 @@
                                     <div style="height: 85%;">
                                         <!-- [if] drinks in drink shelf -->
                                         <div v-if="drinkShelf.length != 0" class="overflow-auto" style="max-height: 100%;">
-                                            <div class="text-start" v-for="listing in drinkShelf" v-bind:key="listing._id">
-                                                <router-link :to="{ path: '/listing/view/' +listing._id.$oid}" class="reverse-clickable-text">
-                                                    <div class="d-flex align-items-start mb-3">
+                                            <div class="text-start mb-2" v-for="listing in drinkShelf" v-bind:key="listing._id">
+                                                <div class="d-flex align-items-start">
+                                                    <router-link :to="{ path: '/listing/view/' +listing._id.$oid}" class="reverse-clickable-text">
                                                         <img :src="'data:image/png;base64,'+ (listing.photo || defaultProfilePhoto)" style="width: 70px; height: 70px;">
-                                                        <span class="ms-3 reverse-clickable-text"> 
+                                                    </router-link>
+                                                    <span class="ms-3 reverse-clickable-text"> 
+                                                        <router-link :to="{ path: '/listing/view/' +listing._id.$oid}" class="reverse-clickable-text">
                                                             <b> {{ listing.listingName }} </b> 
-                                                            <br>
-                                                            {{ getProducerName(listing) }}
-                                                        </span>
-                                                    </div>
-                                                </router-link>
+                                                        </router-link>
+                                                        <br>
+                                                        <router-link :to="{ path: '/profile/producer/' +listing.producerID.$oid}" class="reverse-clickable-text">
+                                                        {{ getProducerName(listing) }}
+                                                        </router-link>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                         <div v-if="userID && drinkShelf.length == 0" style="display: flex; align-items: center; justify-content: center; height: 100%;">
@@ -279,7 +283,7 @@
                             </div>
                             <!-- filter by drink type -->
                             <div class="col-lg-2 col-12 mb-3">
-                                <div class="d-grid gap-2 dropdown">
+                                <div class="d-grid gap-1 dropdown">
                                     <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
                                         {{ selectedDrinkType ? selectedDrinkType['drinkType'] : 'Filter: by Drink Type' }}
                                         <span v-if="selectedDrinkType != ''" class="cross-icon" @click="clearSelection">&#10005;</span>
@@ -296,7 +300,7 @@
 
                             <!-- Dropdown based on category--> 
                             <div v-if="selectedDrinkType != ''" class="col-2">
-                                <div class="d-grid gap-2 dropdown">
+                                <div class="d-grid gap-1 dropdown">
                                     <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
                                         {{ selectedCategory ? selectedCategory : 'Filter by drink category' }}
                                         <span v-if="selectedCategory != null" class="cross-icon" @click="clearCategory">&#10005;</span>
@@ -317,17 +321,19 @@
                             
                             <!-- sort by drink type -->
                             <div class="col-lg-2 col-12 mb-3">
-                                <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
-                                    Sort: {{ sortSelection.category != '' ? sortSelection.category : 'by Category' }}
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><span class="dropdown-item" @click="sortByCategory('')"> Clear Sort </span></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li v-for="category in sortCategoryList" :key="category">
-                                        <span class="dropdown-item" @click="sortByCategory(category)"> {{ category }} </span>
-                                    </li>
-                                </ul>
-                            </div> 
+                                <div class="d-grid gap-1 dropdown">
+                                    <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                                        Sort: {{ sortSelection.category != '' ? sortSelection.category : 'by Category' }}
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><span class="dropdown-item" @click="sortByCategory('')"> Clear Sort </span></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li v-for="category in sortCategoryList" :key="category">
+                                            <span class="dropdown-item" @click="sortByCategory(category)"> {{ category }} </span>
+                                        </li>
+                                    </ul>
+                                </div> 
+                            </div>
                         </div>
                         
                         <!-- listings -->
