@@ -633,7 +633,7 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="centered">
-                                                        <qr-code v-bind:text="currentURL"></qr-code>
+                                                        <qr-code v-bind:text="currentURL" ref="qrCode"></qr-code>
                                                     </div>
                                                     <div class="input-group pt-3">
                                                         <input type="text" class="form-control" aria-label="Link" aria-describedby="button-addon2" v-bind:value="currentURL" disabled>
@@ -904,7 +904,7 @@
                                 <div class="row mb-4">
 
                                     <!-- Section Name -->
-                                    <div class="col-8 d-grid pe-0">
+                                    <div class="col-7 d-grid pe-0">
                                         <button type="button" class="btn secondary-btn-not-rounded rounded-end-0 fs-5 fw-bold text-start" data-bs-toggle="collapse" :data-bs-target="'#collapseEditMenuSection' + menuSection.sectionOrder" aria-expanded="true" :aria-controls="'collapseEditMenuSection' + menuSection.sectionOrder" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
                                             {{ menuSection.sectionName }}
                                         </button>
@@ -912,7 +912,7 @@
 
                                     <!-- Reset Section Content Order -->
                                     <div class="col-2 d-grid p-0">
-                                        <button type="button" class="btn secondary-btn-not-rounded rounded-0 pe-2 text-end" @click="menuSection.sectionMenu.sort((a, b) => (a.itemOrder > b.itemOrder) ? 1 : -1);">
+                                        <button type="button" class="btn secondary-btn-not-rounded rounded-0 pe-2 text-center" @click="menuSection.sectionMenu.sort((a, b) => (a.itemOrder > b.itemOrder) ? 1 : -1);">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
                                                 <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"/>
                                                 <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
@@ -924,8 +924,8 @@
                                     <br>
 
                                     <!-- Edit Section Name -->
-                                    <div class="col-1 d-grid p-0">
-                                        <button type="button" class="btn secondary-btn-not-rounded rounded-0 px-0 text-end" data-bs-toggle="modal" data-bs-target="#renameMenuSectionModal" @click="populateRenameMenuSectionModal(menuSection.sectionOrder)">
+                                    <div class="col-2 d-grid p-0">
+                                        <button type="button" class="btn secondary-btn-not-rounded rounded-0 px-0 text-center" data-bs-toggle="modal" data-bs-target="#renameMenuSectionModal" @click="populateRenameMenuSectionModal(menuSection.sectionOrder)">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
                                                 <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
                                             </svg>
@@ -935,7 +935,7 @@
 
                                     <!-- Delete Section -->
                                     <div class="col-1 d-grid ps-0">
-                                        <button type="button" class="btn secondary-btn-not-rounded rounded-start-0 px-0" @click="deleteMenuSection(menuSection.sectionOrder)">
+                                        <button type="button" class="btn secondary-btn-not-rounded rounded-start-0 px-0 text-center " @click="deleteMenuSection(menuSection.sectionOrder)">
                                             <svg xmlns='http://www.w3.org/2000/svg' width="20" height="20" fill='#f5f5f5' class="pb-1" viewBox='0 0 16 16'>
                                                 <path d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/>
                                             </svg>
