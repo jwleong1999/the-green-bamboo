@@ -316,11 +316,14 @@
                                                     <option v-for="option in filteredOptions" :key="option.id" :value="option.name">{{ option.name }}</option>
                                                 </select>
                                             </div> -->
-                                            <GMapAutocomplete
-                                                placeholder="Tag your location"
-                                                @place_changed="setPlace"
-                                                >
-                                            </GMapAutocomplete>
+                                                <div class="input-group mb-2">
+                                                    <GMapAutocomplete
+                                                        placeholder="Tag your location"
+                                                        @place_changed="setPlace"
+                                                        class="form-control"
+                                                    >
+                                                    </GMapAutocomplete>
+                                                </div>
                                             <div class="row">
                                                 <div class="col-6 d-flex justify-content-start">
                                                     <button v-if="selectedLocation!==''" class="btn text-start mb-1" style="background-color: #535C72;color: white;" @click="clearLocation">Clear Selection</button>

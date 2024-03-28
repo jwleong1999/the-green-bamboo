@@ -584,3 +584,18 @@ body {
 .notif-pane {
     max-width: 325px;
 }
+
+.pac-container {
+    background-color: #FFF;
+    z-index: 1051 !important;
+    position: fixed;
+    display: inline-block;
+}
+
+.modal {
+    z-index: 1050;
+}
+
+.modal-backdrop {
+    z-index: 10;
+}
