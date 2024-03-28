@@ -52,6 +52,13 @@
                                     <!-- body -->
                                     <div v-if="totalRequests != 0">
                                         <div style="align-items: center; justify-content: center;">
+                                            <p>
+                                                <span class="title-card-text"> {{ requestListings.length}} </span> New Listing Requests
+                                                <br>
+                                                <span class="title-card-text"> {{requestEdits.length}} </span> Edit Listing Requests
+                                                <br>
+                                                <span class="title-card-text"> {{requestDupes.length}} </span> Duplicate Reports
+                                            </p>
                                             <router-link :to="{ path: '/request/view' }">
                                                 <button class="btn secondary-btn-border btn-sm py-2 px-3"> View all requests </button>
                                             </router-link>
@@ -159,9 +166,11 @@
                                     <div v-if="totalRequests != 0">
                                         <div style="align-items: center; justify-content: center;">
                                             <p>
-                                                <span class="title-card-text"> {{producerRequestListings.length}} </span> New Listing Requests
+                                                <span class="title-card-text"> {{ requestListings.length}} </span> New Listing Requests
                                                 <br>
-                                                <span class="title-card-text"> {{producerEditRequestListings.length}} </span> Edit Listing Requests
+                                                <span class="title-card-text"> {{requestEdits.length}} </span> Edit Listing Requests
+                                                <br>
+                                                <span class="title-card-text"> {{requestDupes.length}} </span> Duplicate Reports
                                             </p>
                                             <router-link :to="{ path: '/request/view' }">
                                                 <button class="btn secondary-btn-border btn-sm py-2 px-3"> View all requests </button>
@@ -735,11 +744,13 @@
                 drinkTypes: [],
                 requestListings: [],
                 requestEdits: [],
+                requestDupes: [],
                 modRequests: [],
 
                 // for user account credentials
                 userID: "",
-                userType: "",
+                userType: localStorage.getItem('88B_accType'),
+                types: [],
                 username: "",
                 displayName: "",
                 isAdmin: "",
@@ -747,8 +758,6 @@
                 drinkShelf: [],
 
                 // for producer listing information
-                producerRequestListings: [],
-                producerEditRequestListings: [],
                 totalRequests: 0,
                 unansweredQuestions: [],
 
@@ -883,6 +892,11 @@
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
                         this.users = response.data;
+                        if (this.userType == 'user') {
+                            this.types = this.users.find((user) => {
+                                return user["_id"]["$oid"] == this.userID;
+                            }).modType;
+                        }
                         this.user = this.users.find(user => user._id.$oid == this.userID)
                         if (this.user) {
                             this.userBookmarks = this.user.drinkLists;
@@ -923,19 +937,76 @@
                     try {
                             const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
                             this.requestListings = response.data;
+                            // Filter requests based on user role
+                            if (this.userType == 'producer') {
+                                this.requestListings = response.data.filter((request) => {
+                                    return request["reviewStatus"] == false && request["producerID"]["$oid"] == this.userID;
+                                })
+                            }
+                            else if (this.userType == 'user') {
+                                if (this.types.includes("admin")) {
+                                    this.requestListings = response.data.filter((request) => {
+                                        return request["reviewStatus"] == false;
+                                    })
+                                } else {
+                                    this.requestListings = response.data.filter((request) => {
+                                        return request["reviewStatus"] == false && (request["userID"]["$oid"] == this.userID || this.types.includes(request["drinkType"]));
+                                    })
+                                }
+                            }
                         } 
                     catch (error) {
                         console.error(error);
                     }
                 // requestEdits
                 // _id, duplicateLink, editDesc, sourceLink, brandRelation, listingID, userID, reviewStatus
-                    // try {
-                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdits');
-                    //         this.requestEdits = response.data;
-                    //     } 
-                    // catch (error) {
-                    //     console.error(error);
-                    // }
+                    try {
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdits');
+                        let unreviewedRequests = response.data.filter((request) => {
+                            return request["reviewStatus"] == false;
+                        });
+
+                        // Obtain listing data for each request
+                        for (let request of unreviewedRequests) {
+                            let targetListing = this.listings.find((listing) => {
+                                return listing["_id"]["$oid"] == request["listingID"]["$oid"];
+                            });
+                            if (targetListing == undefined) {
+                                continue;
+                            }
+
+                            request['photo'] = targetListing['photo'];
+                            request['listingName'] = targetListing['listingName'];
+                            request['producerID'] = targetListing['producerID'];
+
+                            if (request['duplicateLink']) {
+                                this.requestDupes.push(request);
+                            } else {
+                                this.requestEdits.push(request);
+                            }
+                        }
+
+                        // Filter requests based on user role
+                        if (this.userType == 'producer') {
+                            this.requestEdits = this.requestEdits.filter((request) => {
+                                return request["producerID"]["$oid"] == this.userID;
+                            })
+                            this.requestDupes = this.requestDupes.filter((request) => {
+                                return request["producerID"]["$oid"] == this.userID;
+                            })
+                        }
+                        else if (this.userType == 'user' && !this.types.includes("admin")) {
+                            this.requestEdits = this.requestEdits.filter((request) => {
+                                return request["userID"]["$oid"] == this.userID || this.types.includes(request["drinkType"]);
+                            })
+                            this.requestDupes = this.requestDupes.filter((request) => {
+                                return request["userID"]["$oid"] == this.userID || this.types.includes(request["drinkType"]);
+                            })
+                        }
+                    } 
+                    catch (error) {
+                        console.error(error);
+                    }
                 // modRequests
                 // _id, userID, drinkType, modDesc
                     // try {
@@ -947,6 +1018,8 @@
                     // }
 
                 this.getUsername()
+                // listing requests
+                this.totalRequests = this.requestListings.length + this.requestEdits.length + this.requestDupes.length;
             },
 
             // get username of user accessing page
@@ -960,18 +1033,10 @@
                     // check if user is an admin
                     if (user.isAdmin) {
                         this.isAdmin = true
-                        this.totalRequests = this.requestListings.length
                     }
                     // if user is not admin, check if user is a moderator
                     else if (user.isModerator) {
                         this.isModerator = true
-                        // check number of moderator requests
-                        if (user.modType.length > 0) {
-                            this.totalRequests = user.modType.reduce((acc, drink) => {
-                                const matches = this.requestListings.filter(listing => listing.drinkType === drink);
-                                return acc + matches.length;
-                            }, 0);
-                        }
                     }
                     // drink shelf
                     let allDrinkShelf = Object.values(user.drinkLists).flatMap(obj => obj.listItems);
@@ -992,17 +1057,6 @@
                 }
                 else if (producer) {
                     this.username = producer.producerName
-                    // request listings
-                    this.producerRequestListings = this.requestListings.filter(listing => listing.producerID.$oid === this.userID);
-                    // request edits
-                    for (const obj of this.requestEdits) {
-                        const listingID = obj.listingID.$oid;
-                        const listing = this.listings.find(listing => listing._id.$oid === listingID);
-                        if (listing && listing.producerID.$oid === this.userID) {
-                            this.producerEditRequestListings.push(obj);
-                        }
-                    }
-                    this.totalRequests = this.producerRequestListings.length + this.producerEditRequestListings.length;
                     // Q&A
                     let answeredQuestions = producer["questionsAnswers"];
                     if (answeredQuestions.length > 0) {
