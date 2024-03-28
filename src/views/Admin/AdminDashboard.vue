@@ -70,7 +70,7 @@
                                         <button @click="setEditFlavour('family')" class="btn btn-primary mx-1 reverse-clickable-text" type="button" data-bs-toggle="modal" data-bs-target="#editFlavourModal">
                                             Edit Family Tags
                                         </button>
-                                        <button class="btn btn-danger mx-1 reverse-clickable-text" type="button">
+                                        <button @click="setDeleteFlavour('family')" class="btn btn-danger mx-1 reverse-clickable-text" type="button" data-bs-toggle="modal" data-bs-target="#deleteFlavourModal">
                                             Delete Family Tags
                                         </button>
                                     </div>
@@ -83,7 +83,7 @@
                                         <button @click="setEditFlavour('sub')" class="btn btn-primary mx-1 reverse-clickable-text" type="button" data-bs-toggle="modal" data-bs-target="#editFlavourModal">
                                             Edit Sub Tags
                                         </button>
-                                        <button class="btn btn-danger mx-1 reverse-clickable-text" type="button">
+                                        <button @click="setDeleteFlavour('sub')" class="btn btn-danger mx-1 reverse-clickable-text" type="button" data-bs-toggle="modal" data-bs-target="#deleteFlavourModal">
                                             Delete Sub Tags
                                         </button>
                                     </div> 
@@ -165,11 +165,11 @@
                                     <div class="modal-header" style="background-color: #535C72">
                                         <h1 v-if="editFlavour == 'family'" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Edit Family Tag</h1>
                                         <h1 v-if="editFlavour == 'sub'" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Edit Sub Tag</h1>
-                                        <button @click="resetFlavourMode" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button @click="resetEditFlavourMode" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div v-if="errorEditFlavour || successEditFlavour">
                                         <div v-if="successEditFlavour" class="modal-body text-center text-success fst-italic fw-bold fs-3">
-                                            <span>Flavour tag has successfully been Edit!</span>
+                                            <span>Flavour tag has successfully been edited!</span>
                                         </div>
                                         <div v-if="errorEditFlavour" class="modal-body text-center text-danger fst-italic fw-bold fs-3">
                                             <span>Error has occured while editing flavour tags. Please try again.</span>
@@ -221,6 +221,70 @@
                             </div>
                         </div>
                         <!-- End of Edit family/sub tag modal -->
+
+                        <!-- Delete family/sub tag modal -->
+                        
+                        <div class="modal fade" id="deleteFlavourModal" tabindex="-1" aria-labelledby="deleteFlavourModalLabel" aria-hidden="true" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header" style="background-color: #535C72">
+                                        <h1 v-if="deleteFlavour == 'family'" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Delete Family Tag</h1>
+                                        <h1 v-if="deleteFlavour == 'sub'" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Delete Sub Tag</h1>
+                                        <button @click="resetDeleteFlavourMode" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div v-if="errorDeleteFlavour || successDeleteFlavour">
+                                        <div v-if="successDeleteFlavour" class="modal-body text-center text-success fst-italic fw-bold fs-3">
+                                            <span>Flavour tag has successfully been deleted!</span>
+                                        </div>
+                                        <div v-if="errorDeleteFlavour" class="modal-body text-center text-danger fst-italic fw-bold fs-3">
+                                            <span>Error has occured while deleting flavour tags. Please try again.</span>
+                                        </div>
+                                    </div>
+                                    <div v-if="!(errorDeleteFlavour || successDeleteFlavour)">
+
+                                        <div v-if="deleteFlavour == 'family'" class="modal-body">
+                                            <div class="row">
+                                                <div v-for="tag in editedFlavourTags" class="mb-2 col-md-6"  v-bind:key="tag._id">
+                                                    <button type="text" class="form-control" :style="{ color:'black', backgroundColor: tag['hexcode'], borderColor:tag['hexcode'], borderWidth:'1px' }">{{ tag.familyTag }}</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div v-if="deleteFlavour == 'sub'" class="modal-body">
+                                            <button class="btn mb-2 me-2" @click="toggleBox(family)" v-for="family in editedFlavourTags" v-bind:key="family['_id']" :style="{ color:'white', backgroundColor: family['hexcode'], borderColor:family['hexcode'], borderWidth:'1px' }">{{ family['familyTag'] }}</button>
+                                            <div v-for="family in editedFlavourTags" :key="family['_id']">
+                                                <div v-if="family.showBox" class="rounded p-3" :style="{border: '3px solid ' + family['hexcode'] }">
+                                                    <div class="row">
+                                                        <div class="col-3" v-for="(element, index) in family.subTag2" :key="index">
+                                                            <button @click="selectDeleteSub(element.id, element.subTag, family['hexcode'])" type="button" class="btn mb-1" :style="{ color:'white', backgroundColor: family['hexcode'], borderColor:family['hexcode'], borderWidth:'1px', width: '150px', height: '60px'}">{{ element.subTag }}</button>
+                                                        </div>                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div v-if="subTagToDelete!=''">
+                                                <div class="row">
+                                                    <span class='text-danger mb-2 fw-bold'>Are you sure you want to delete <button class='btn mt-1' type="button" :style="{ color:'white', backgroundColor: subTagToDelete['hexcode'], borderColor:subTagToDelete['hexcode'], borderWidth:'1px', width: '150px', height: '60px'}">{{subTagToDelete.subTag}}</button>?</span>
+                                                </div>
+                                            
+                                            <button @click="confirmDeleteFlavourTag" type="button" class="btn btn-danger mx-1">Confirm Delete</button>
+                                            <button @click="resetDeleteSubTag" type="button" class="btn tertiary-btn reverse-clickable-text">No, do not delete</button>
+
+                                        </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button v-if="!(errorDeleteFlavour || successDeleteFlavour)" @click="resetDeleteFlavourMode" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button v-if="errorDeleteFlavour || successDeleteFlavour" @click="resetDeleteFlavourModal" type="button" data-bs-dismiss="modal" class="btn btn-secondary">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- End of delete family/sub tag modal -->
+
 
                         <!-- modal for action tag handling -->
                         <div class="modal fade" id="observationModal" tabindex="-1" aria-labelledby="observationModalLabel" aria-hidden="true" data-bs-backdrop="static">
@@ -775,7 +839,7 @@
                     removableDrinkType:[],
                     addableDrinkType:[],
 
-                    // Flavour tag creation
+                    // Flavour tag functions
                     newFamily:'',
                     newSub:'',
                     addFlavour:'',
@@ -785,6 +849,7 @@
                     tagParent:'',
                     chosenTagParent:null,
                     flavourNoChange:false,
+                    subTagToDelete:'',
 
                     // creation of new observation tag
                     newObservation:'',
@@ -828,6 +893,9 @@
                     errorEditFlavour:false,
                     successEditFlavour:false,
                     confirmEditFlavour:false,
+
+                    errorDeleteFlavour:false,
+                    successDeleteFlavour:false,
 
                     // Logged in user details
                     userID: null,
@@ -1877,6 +1945,47 @@
                     this.flavourTags = JSON.parse(JSON.stringify(this.editedFlavourTags));
                     return response
                 },
+
+                selectDeleteSub(id, subTag, hexcode){
+                    this.subTagToDelete = {"_id":id.$oid, "subTag":subTag, "hexcode": hexcode}
+                    console.log(this.subTagToDelete)
+                },
+
+                resetDeleteSubTag(){
+                    this.subTagToDelete = ''
+                },
+
+                confirmDeleteFlavourTag(){
+                    let submitURL = ''
+                    if(this.deleteFlavour=='family'){
+                        submitURL = 'http://127.0.0.1:5052/deleteFamilyTag/' 
+                        // submitData=
+                    }
+                    if(this.deleteFlavour=='sub'){
+                        submitURL = 'http://127.0.0.1:5052/deleteSubTag/' + this.subTagToDelete._id
+                        
+                    }
+                    console.log(submitURL)
+                    // this.writeDeleteTag(submitURL)
+                },
+
+                async writeDeleteTag(submitURL){
+                    let responseCode = ''
+                    const response = await this.$axios.delete(submitURL)
+                    .then((response)=>{
+                        responseCode = response.data.code
+                    })
+                    .catch((error)=>{
+                        console.error(error);
+                        responseCode = error.response.data.code
+                    });
+                    if(responseCode==201){
+                        this.successDeleteFlavour=true; // Display success message
+                    }else{
+                        this.errorDeleteFlavour = true
+                    }
+                    return response
+                }
             }
         }
 </script>
