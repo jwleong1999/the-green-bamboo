@@ -365,7 +365,7 @@
                                         </div>
                                         <!-- add photo -->
                                         <div class="col-6 justify-content-start">
-                                            <p class = 'text-start mb-2 fw-bold'>Add Photo<span class="text-danger">*</span></p>
+                                            <p class = 'text-start mb-2 fw-bold'>Add Photo</p>
                                             <input class="form-control mb-2" @change="onFileChange" type="file" id="reviewPhoto">
                                             <div class = "row">
                                                 <img :src="image64 ? 'data:image/jpeg;base64,' + image64 : 'none'" alt="" id="output" class="py-2 review-preview-photo">
@@ -1728,7 +1728,6 @@
                 });
                 return reviews;
             },
-
             getLoggedUserReview(){
                 const specificReview = this.filteredReviews.filter((review) => {
                     return review["userID"]['$oid'] == this.userID;
@@ -1746,20 +1745,27 @@
                     this.rating= specificReview[0].rating
                     // reconcile id with flavourtags
                     // this.selectedFlavourTags= specificReview[0].flavorTag
-                    specificReview[0].flavorTag.forEach(subtag=>{
-                        const subTag = this.subTags.find(subTag=>subtag.$oid===subTag._id.$oid)
-                        const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
-                        const hexcode = familyTag.hexcode
-                        const subtagInfo = subTag.subTag
-                        this.selectedFlavourTags.push(subtagInfo+ hexcode)
-                    })
+                    if(specificReview[0].flavorTag!=null){
+                        specificReview[0].flavorTag.forEach(subtag=>{
+                            const subTag = this.subTags.find(subTag=>subtag.$oid===subTag._id.$oid)
+                            const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
+                            const hexcode = familyTag.hexcode
+                            const subtagInfo = subTag.subTag
+                            this.selectedFlavourTags.push(subtagInfo+ hexcode)
+                        })
+                    }
                     this.finalSelectedFlavourTags = specificReview[0].flavorTag
-                    this.friendTagList = specificReview[0].taggedUsers.map(user => user.$oid);
+                    if(specificReview[0].taggedUsers !=null){
+                        this.friendTagList = specificReview[0].taggedUsers.map(user => user.$oid);
+                    }
                     this.selectedObservations= specificReview[0].observationTag
                     this.image64= specificReview[0].photo
-                    const selectedLocation = this.locationOptions.filter((location)=>{
-                        return location['id']['$oid'] == specificReview[0].location['$oid']
-                    })
+                    let selectedLocation = []
+                    if(specificReview[0].location != null){
+                        selectedLocation = this.locationOptions.filter((location)=>{
+                            return location['id']['$oid'] == specificReview[0].location['$oid']
+                        })
+                    }
                     if(selectedLocation.length !=0){
                         this.selectedLocation = selectedLocation[0].name
                     }
