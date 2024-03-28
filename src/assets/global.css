@@ -568,6 +568,13 @@ body {
     background-color: #DD9E54;
 }
 
+.rounded-circle-no-bg {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    color: whitesmoke;
+}
+
 .qa-card-body {
     background-color:whitesmoke;
     border: 1px solid #535C72;

@@ -20,7 +20,7 @@
                         </div>
                         <!-- profile picture -->
                         <div class="col-4 text-end">
-                            <img :src=" 'data:image/jpeg;base64,' + (displayUser.photo || defaultProfilePhoto)" alt="" class="rounded-circle border border-dark profile-img">
+                            <img :src=" 'data:image/jpeg;base64,' + (displayUser.photo || defaultProfilePhoto)" alt="" class="rounded-circle-no-bg border border-dark profile-img">
                         </div>
                     </div>
 
@@ -177,14 +177,15 @@
                                 <!-- edit profile photo -->
                                 <div class="edit-profile-pic">
                                     <div class="row mb-3">
-                                        <div class="col-4" style="margin: auto;">
+                                        <div class="col-4 text-start ps-5" style="margin: auto;">
                                             Image Preview
                                         </div>
                                         <div class="col-8">
-                                        <img :src="selectedImage || 'data:image/jpeg;base64,' + (user.photo || defaultProfilePhoto)" alt="" class="rounded-circle border border-dark profile-img" id="output">                                        </div>
+                                            <img :src="selectedImage || 'data:image/jpeg;base64,' + (user.photo || defaultProfilePhoto)" alt="" class="rounded-circle-no-bg border border-dark profile-img" id="output">
+                                        </div>
                                     </div>
                                     <div class="row mb-3">
-                                        <div class="col-4" style="margin: auto;">
+                                        <div class="col-4 text-start ps-5" style="margin: auto;">
                                             Edit Image
                                         </div>
                                         <div class="col-8">
@@ -196,10 +197,10 @@
                                 <!-- change drink of choice -->
                                 <div class="edit-drink-choice">
                                     <div class="row">
-                                        <div class="col-4" style="margin: auto;">
+                                        <div class="col-4 text-start ps-5" style="margin: auto;">
                                             Drink Choice
                                         </div>
-                                        <div class="col-8">
+                                        <div class="col-8 text-start">
                                             <!-- checkbox to choose drinks -->
                                             <div v-for="(type, index) in drinkType" :key="index" class="m-1" style="display: inline-block">
                                                 <input type="checkbox" class="btn-check" :id="index" autocomplete="off" v-model="selectedDrinks" :value="type">
