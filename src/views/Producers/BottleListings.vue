@@ -1015,8 +1015,19 @@
                         <!-- header text -->
                         <div class="py-2 text-start">
                             <h4> 88 Bamboo's Review </h4>
-                            <a :href="specified_listing['reviewLink']" class="text-left default-text-no-background">
-                                {{ deepDiveLinkFormatted }}
+                            <a :href="specified_listing['reviewLink']" class="text-left default-text-no-background row">
+                                <div class="row">
+                                    <div class="col-4">
+                                        {{ getOGImage(specified_listing['reviewLink']) }}
+                                        <!-- [if] there is a cover image for the post-->
+                                        <img v-if="ogImage != null" :src="ogImage[specified_listing.reviewLink]" alt="OG Image" style="width: 80px; height: 80px;">
+                                        <!-- [else] there is no cover image for the post (put 88 bamboo's logo) -->                    
+                                        <img v-else src="https://88bamboo.co/cdn/shop/files/88B_New_Logo_-_white_face_transparent_background_180x.png?v=1655894111" style="width: 80px; height: 80px;">                                   
+                                    </div>
+                                    <div class="col-8">
+                                        {{ deepDiveLinkFormatted }}
+                                    </div>
+                                </div>
                             </a>
                         </div>
                         <div class="py-5">
@@ -1208,6 +1219,9 @@
                 nearestBars: [],
                 currentLocation: {lat: 0, lng: 0},
                 venueDetails: {},
+
+                // for the review cover image
+                ogImage: {},
         
         };
 
@@ -2379,6 +2393,31 @@
 
             setPlace(place){
                 this.selectedLocation=place.name
+            },
+
+            // to get webscrapped image data
+            getOGImage(url) {
+                if (url != null) {
+                    this.$axios({
+                        url: url.startsWith('https://88bamboo.co/') ? url.replace('https://88bamboo.co/', '/api/') : url,
+                        method: "get",
+                        headers: {
+                        accept: "*/*",
+                        },
+                    })
+                    .then((res) => {
+                        const html = res.data;
+                        const regex = /<meta property="og:image" content="([^"]+)">/;
+                        const match = html.match(regex);
+                        const img_url = match ? match[1] : null;
+                        this.ogImage[url] = img_url;
+                        console.log(img_url)
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+                }
+                
             }
         }
     };

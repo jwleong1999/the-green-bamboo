@@ -1,19 +1,41 @@
-<!-- Default generated view by Vue CLI, should not be actively used in the final version. -->
-<!-- Could be repurposed for use later. -->
-
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
-  <br>
-
-  <h1 class="text-danger">Testing of bootstrap</h1>
-
-  <div class="test">
-    <h1 class="display-4">This is to test bootstrap</h1>
-    <p class="lead">Welcome to our about page.</p>
-    
-    <!-- Bootstrap button -->
-    <button class="btn btn-primary">Click me</button>
+  <div>
+    <img :src="ogImage" alt="OG Image" />
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      ogImage: null,
+    };
+  },
+  mounted() {
+    this.getOGImage("https://88bamboo.co/blogs/whisky-rum-gin-vodka-distillery-spotlight/a-tranquil-distillery-famous-for-its-giraffes-the-glenmorangie-distillery"); // Call method to fetch OG image URL
+  },
+  methods: {
+    getOGImage(url) {
+      this.$axios({
+        url: url.startsWith('https://88bamboo.co/') ? url.replace('https://88bamboo.co/', '/api/') : url,
+        method: "get",
+        headers: {
+          accept: "*/*",
+        },
+      })
+      .then((res) => {
+        const html = res.data;
+        const regex = /<meta property="og:image" content="([^"]+)">/;
+        const match = html.match(regex);
+        const url = match ? match[1] : null;
+        
+        this.ogImage = url;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }
+
+  }
+};
+</script>

@@ -2,20 +2,17 @@ const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   transpileDependencies: true
 })
-
 module.exports = {
   devServer: {
     proxy: {
-      '^/api': {
-        target: 'http://localhost:8000/',
-        ws: true,
+      '/api': {
+        target: 'https://88bamboo.co',
         changeOrigin: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-          'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+        pathRewrite: {
+          '^/api': 'https://88bamboo.co'
         }
-      },
+      }
     }
   }
 }
+
