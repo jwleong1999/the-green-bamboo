@@ -27,80 +27,76 @@
         <div v-if="dataLoaded && !loadError">
 
             <div class="row">
-                
-                <!-- Back Button -->
-                <div class="d-grid col-sm-1 col-2">
-                    <button class="btn primary-light-dropdown btn-sm" @click="()=>{this.$router.go(-1)}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16" v-on:click="previousListing">
-                            <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
-                        </svg>
-                    </button>
-                </div>
 
-                <!-- Form Title -->
-                <div class="d-grid col-lg-4 col-md-5 col-sm-6 col-10">
-                    <p class="fw-bold fs-3 m-0 text-start">Search Results for:</p>
-                </div>
+                <!-- BACK BUTTON, FORM TITLE, SEARCH TERM -->
+                <div class="col-md-8 col-12">
 
-                <!-- Spacer Column -->
-                <div class="d-md-grid d-none col-lg-3"></div>
+                    <div class="row">
+                    
+                        <!-- Back Button -->
+                        <div class="d-grid col-2">
+                            <button class="btn primary-light-dropdown btn-sm" @click="()=>{this.$router.go(-1)}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16" v-on:click="previousListing">
+                                    <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+                                </svg>
+                            </button>
+                        </div>
 
-                <!-- Filter Options: On smaller screens, this is "moved below" Search Term -->
-                <div class="d-sm-grid d-none col-lg-2 col-md-3 dropdown">
-                    <div v-if="tabActive == 'listings'">
-                        <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
-                            Filter: {{ searchFilter.drinkType != '' ? searchFilter.drinkType : 'by Drink Type' }}
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><span class="dropdown-item" @click="filterByDrinkType('')">Clear Filter</span></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li v-for="drinkType in drinkTypeList" :key="drinkType._id">
-                                <span class="dropdown-item" @click="filterByDrinkType(drinkType['drinkType'])">{{ drinkType['drinkType'] }}</span>
-                            </li>
-                        </ul>
+                        <!-- Form Title -->
+                        <div class="d-grid col-10">
+                            <p class="fw-bold fs-3 m-0 text-start">Search Results for:</p>
+                        </div>
+
                     </div>
+
+                    <!-- Search Term -->
+                    <div class="row">
+                        <!-- Aligner Column (Back Button) -->
+                        <div class="col-2"></div>
+
+                        <div class="col-10">
+                            <p class="fs-3 m-0 text-start" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">"{{ this.$route.params.input }}"</p>
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- Sort Options -->
-                <div class="d-sm-grid d-none col-lg-2 col-md-3 dropdown">
-                    <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
-                        Sort: {{ sortSelection.category != '' ? sortSelection.category : 'by Category' }}
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><span class="dropdown-item" @click="sortByCategory('')"> Clear Sort </span></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li v-for="category in sortCategoryList[tabActive]" :key="category">
-                            <span class="dropdown-item" @click="sortByCategory(category)"> {{ category }} </span>
-                        </li>
-                    </ul>
+                <div class="col-md-4 col-12">
+
+                    <div class="row d-flex justify-content-center">
+
+                        <!-- Filter Options -->
+                        <div v-if="tabActive == 'listings'" class="col-xxl-6 col-md-12 col-sm-5 col-12 mb-xxl-0 mb-md-2 mb-sm-0 mb-2 dropdown">
+                            <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden; text-overflow: ellipsis; width: 200px;">
+                                Filter: {{ searchFilter.drinkType != '' ? searchFilter.drinkType : 'by Drink Type' }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><span class="dropdown-item" @click="filterByDrinkType('')">Clear Filter</span></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li v-for="drinkType in drinkTypeList" :key="drinkType._id">
+                                    <span class="dropdown-item" @click="filterByDrinkType(drinkType['drinkType'])">{{ drinkType['drinkType'] }}</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Sort Options -->
+                        <div class="col-xxl-6 col-md-12 col-sm-5 col-12 dropdown mb-lg-0 mb-3">
+                            <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden; text-overflow: ellipsis; width: 200px;">
+                                Sort: {{ sortSelection.category != '' ? sortSelection.category : 'by Category' }}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><span class="dropdown-item" @click="sortByCategory('')"> Clear Sort </span></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li v-for="category in sortCategoryList[tabActive]" :key="category">
+                                    <span class="dropdown-item" @click="sortByCategory(category)"> {{ category }} </span>
+                                </li>
+                            </ul>
+                        </div>
+                    
+                    </div>
+
                 </div>
 
-            </div>
-
-            <!-- Search Term -->
-            <div class="row">
-                <!-- Aligner Column (Back Button) -->
-                <div class="col-sm-1 col-2"></div>
-
-                <div class="col-sm-11 col-10">
-                    <p class="fs-3 m-0 text-start" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">"{{ this.$route.params.input }}"</p>
-                </div>
-            </div>
-
-            <!-- Filter Options: On larger screens, this is "moved above" Search Term -->
-            <div class="row" v-if="tabActive == 'listings'">
-                <div class="d-grid d-sm-none col-12 dropdown">
-                    <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
-                        Filter: {{ searchFilter.drinkType != '' ? searchFilter.drinkType : 'by Drink Type' }}
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><span class="dropdown-item" @click="filterByDrinkType('')">Clear Filter</span></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li v-for="drinkType in drinkTypeList" :key="drinkType._id">
-                            <span class="dropdown-item" @click="filterByDrinkType(drinkType['drinkType'])">{{ drinkType['drinkType'] }}</span>
-                        </li>
-                    </ul>
-                </div>
             </div>
             
             <!-- Request / Create Listing Link (font size reduced at smaller screen width) -->
@@ -131,7 +127,7 @@
             <nav class="pb-0">
                 <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
                     <!-- Listings -->
-                    <button class="nav-link active w-25" id="nav-listings-tab" data-bs-toggle="tab" data-bs-target="#nav-listings" type="button" role="tab" aria-controls="nav-listings" aria-selected="true" @click="changeActiveTabStatus('listings')"> 
+                    <button class="nav-link active col-lg-3 col-12" id="nav-listings-tab" data-bs-toggle="tab" data-bs-target="#nav-listings" type="button" role="tab" aria-controls="nav-listings" aria-selected="true" @click="changeActiveTabStatus('listings')"> 
                         <span class="d-flex align-items-center justify-content-center mb-0">
                             Listings
                             <span class="rounded-circle mx-3 d-flex align-items-center justify-content-center"> 
@@ -140,7 +136,7 @@
                         </span>
                     </button>
                     <!-- Producers -->
-                    <button class="nav-link w-25" id="nav-producers-tab" data-bs-toggle="tab" data-bs-target="#nav-producers" type="button" role="tab" aria-controls="nav-producers" aria-selected="false" @click="changeActiveTabStatus('producers')">
+                    <button class="nav-link col-lg-3 col-12" id="nav-producers-tab" data-bs-toggle="tab" data-bs-target="#nav-producers" type="button" role="tab" aria-controls="nav-producers" aria-selected="false" @click="changeActiveTabStatus('producers')">
                         <span class="d-flex align-items-center justify-content-center mb-0">
                             Producers
                             <span class="rounded-circle mx-3 d-flex align-items-center justify-content-center"> 
@@ -149,7 +145,7 @@
                         </span>
                     </button>
                     <!-- Venues -->
-                    <button class="nav-link w-25" id="nav-venues-tab" data-bs-toggle="tab" data-bs-target="#nav-venues" type="button" role="tab" aria-controls="nav-venues" aria-selected="false" @click="changeActiveTabStatus('venues')">
+                    <button class="nav-link col-lg-3 col-12" id="nav-venues-tab" data-bs-toggle="tab" data-bs-target="#nav-venues" type="button" role="tab" aria-controls="nav-venues" aria-selected="false" @click="changeActiveTabStatus('venues')">
                         <span class="d-flex align-items-center justify-content-center mb-0">
                             Venues
                             <span class="rounded-circle mx-3 d-flex align-items-center justify-content-center"> 
@@ -172,7 +168,7 @@
                         <div class="row" v-for="resultListing in resultListings" :key="resultListing._id">
                             <hr>
                             <!-- Image -->
-                            <div class="col-3 image-container-256">
+                            <div class="col-lg-3 col-12 image-container-256 mb-3">
                                 <router-link :to="{ path: '/listing/view/' + resultListing._id['$oid'] }">
                                     <img v-if="resultListing['photo']" :src="'data:image/png;base64,' + resultListing['photo']" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px">
                                     <img v-else src="../../Images/Drinks/Placeholder.png" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px"> 
@@ -187,9 +183,9 @@
                             </div>
 
                             <!-- Details -->
-                            <div class="row col-9">
+                            <div class="row col-lg-9 col-12">
 
-                                <div class="col-8">
+                                <div class="col-lg-8 col-12">
                                     <!-- Listing Name + Router Link -->
                                     <router-link class="text-dark text-decoration-none" :to="{ path: '/listing/view/' + resultListing._id['$oid'] }">
                                         <h4 class="fw-bold m-1">{{ resultListing['listingName'] }}</h4>
@@ -215,7 +211,7 @@
 
                                 </div>
 
-                                <div class="col-4 text-end" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                                <div class="col-lg-4 col-12 text-xl-end text-start" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
                                     <!-- Drink Type / Type Category -->
                                     <p class="m-0">
                                         <b> Type: </b>
@@ -225,10 +221,10 @@
                                         <b> Category: </b>
                                         {{ resultListing['typeCategory'] }}</p>
                                     <!-- Rating -->
-                                    <p class="m-0 d-flex justify-content-end">
-                                        <b> Rating: </b> &nbsp;
+                                    <p class="m-0">
+                                        <b> Rating: </b>
                                         {{ getRatings(resultListing) }}
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                             <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                         </svg>
                                     </p>
@@ -274,7 +270,7 @@
                         <div class="row" v-for="producer in producerListings" :key="producer._id">
                             <hr>
                             <!-- Image -->
-                            <div class="col-3 image-container-256">
+                            <div class="col-lg-3 col-12 image-container-256 mb-3">
                                 <router-link :to="{ path: '/profile/producer/' + producer._id['$oid'] }">
                                     <img v-if="producer['photo']" :src="'data:image/png;base64,' + producer['photo']" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px">
                                     <img v-else src="../../Images/Drinks/Placeholder.png" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px"> 
@@ -282,9 +278,9 @@
                             </div>
 
                             <!-- Details -->
-                            <div class="row col-9">
+                            <div class="row col-lg-9 col-12">
 
-                                <div class="col-8">
+                                <div class="col-lg-8 col-12">
                                     <!-- Producer Name + Router Link -->
                                     <router-link class="text-dark text-decoration-none" :to="{ path: '/profile/producer/' + producer._id['$oid'] }">
                                         <h4 class="fw-bold m-1">{{ producer['producerName'] }}</h4>
@@ -303,17 +299,17 @@
                                     </div>
                                 </div>
 
-                                <div class="col-4 text-end" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                                <div class="col-lg-4 col-12 text-xl-end text-start" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
                                     <!-- Rating -->
                                     <p class="m-0">
-                                        <b> Rating: </b> &nbsp;
+                                        <b> Rating: </b>
                                         {{ getAllProducerRating(producer) }}
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                             <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                         </svg>
                                     </p>
                                     <!-- Claim Status -->
-                                    <div class="m-0">
+                                    <div class="m-0 mt-2">
                                         <div v-if="producer['claimStatus']"> 
                                             <button type="button" class="btn secondary-btn-less-round"> Verified </button>
                                         </div>
@@ -343,7 +339,7 @@
                         <div class="row" v-for="venue in venueListings" :key="venue._id">
                             <hr>
                             <!-- Image -->
-                            <div class="col-3 image-container-256">
+                            <div class="col-lg-3 col-12 image-container-256 mb-3">
                                 <router-link :to="{ path: '/profile/venue/' + venue._id['$oid'] }">
                                     <img v-if="venue['photo']" :src="'data:image/png;base64,' + venue['photo']" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px">
                                     <img v-else src="../../Images/Drinks/Placeholder.png" class="img-border img-fluid object-fit-cover" style="width:256px; height:256px"> 
@@ -351,9 +347,9 @@
                             </div>
 
                             <!-- Details -->
-                            <div class="row col-9">
+                            <div class="row col-lg-9 col-12">
 
-                                <div class="col-8">
+                                <div class="col-lg-8 col-12">
                                     <!-- Venue Name + Router Link -->
                                     <router-link class="text-dark text-decoration-none" :to="{ path: '/profile/venue/' + venue._id['$oid'] }">
                                         <h4 class="fw-bold m-1">{{ venue['venueName'] }}</h4>
@@ -375,17 +371,17 @@
                                     </p>
                                 </div>
 
-                                <div class="col-4 text-end" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                                <div class="col-lg-4 col-12 text-xl-end text-start" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
                                     <!-- Rating -->
                                     <p class="m-0">
-                                        <b> Rating: </b> &nbsp;
+                                        <b> Rating: </b>
                                         {{ getAllVenueRating(venue) }}
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-star-fill ms-1" viewBox="0 0 16 16">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                             <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                         </svg>
                                     </p>
                                     <!-- Claim Status -->
-                                    <div class="m-0">
+                                    <div class="m-0 mt-2">
                                         <div v-if="venue['claimStatus']"> 
                                             <button type="button" class="btn secondary-btn-less-round"> Verified </button>
                                         </div>

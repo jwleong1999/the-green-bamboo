@@ -262,7 +262,7 @@
                         <!-- buttons -->
                         <div class="row">
                             <!-- discover -->
-                            <div class="col-lg-3 col-12 mb-3">
+                            <div class="col-xl-3 col-lg-4 col-12 mb-3">
                                 <div class="d-grid gap-2">
                                     <button class="btn btn-sm" 
                                         :class="{ 'primary-btn': discovery, 'primary-btn-outline': !discovery }"
@@ -272,7 +272,7 @@
                                 </div>
                             </div>
                             <!-- following -->
-                            <div class="col-lg-3 col-12 mb-3">
+                            <div class="col-xl-3 col-lg-4 col-12 mb-3">
                                 <div class="d-grid gap-2">
                                     <button class="btn btn-sm"
                                         :class="{ 'primary-btn': following, 'primary-btn-outline': !following }"
@@ -281,17 +281,18 @@
                                     </button>
                                 </div>
                             </div>
+                            <div class="col-4 d-block d-xl-none"></div>
                             <!-- filter by drink type -->
-                            <div class="col-lg-2 col-12 mb-3">
-                                <div class="d-grid gap-1 dropdown">
-                                    <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                            <div class="col-xl-3 col-lg-4 col-12 mb-3">
+                                <div class="d-grid gap-2 dropdown">
+                                    <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden; text-overflow: ellipsis; min-width: 200px;">
                                         {{ selectedDrinkType ? selectedDrinkType['drinkType'] : 'Filter: by Drink Type' }}
                                         <span v-if="selectedDrinkType != ''" class="cross-icon" @click="clearSelection">&#10005;</span>
                                     </button>
                                     <ul class="dropdown-menu">
                                         <!-- Filter button for drink type -->
 
-                                        <li v-for="drinkType in drinkTypes" v-bind:key="drinkType._id" class= "p-3">
+                                        <li v-for="drinkType in drinkTypes" v-bind:key="drinkType._id" class="p-3">
                                         <a class="dropdown-item" @click="selectDrinkType(drinkType)"> {{ drinkType['drinkType'] }} </a>
                                         </li>       
                                     </ul>
@@ -299,16 +300,16 @@
                             </div> 
 
                             <!-- Dropdown based on category--> 
-                            <div v-if="selectedDrinkType != ''" class="col-2">
-                                <div class="d-grid gap-1 dropdown">
-                                    <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                            <div v-if="selectedDrinkType != ''" class="col-xl-3 col-lg-4 col-12 mb-3">
+                                <div class="d-grid gap-2 dropdown">
+                                    <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden; text-overflow: ellipsis; min-width: 200px;">
                                         {{ selectedCategory ? selectedCategory : 'Filter by drink category' }}
                                         <span v-if="selectedCategory != null" class="cross-icon" @click="clearCategory">&#10005;</span>
                                     </button>
                                     <ul v-if="selectedTypeCategory != ''" class="dropdown-menu">
                                         <!-- Filter button for drink category -->
 
-                                        <li v-for="category in selectedTypeCategory" @click="selectDrinkCategory(category)" v-bind:key="category" class= "p-3">
+                                        <li v-for="category in selectedTypeCategory" @click="selectDrinkCategory(category)" v-bind:key="category" class="p-3">
                                             <a class="dropdown-item"> {{ category }} </a>
                                         </li>       
                                         
@@ -317,12 +318,14 @@
                                         <li>There is no category for this</li>       
                                     </ul>
                                 </div>
-                            </div>    
+                            </div>
+
+                            <div v-if="selectedDrinkType != ''" class="col ml-auto"></div>
                             
                             <!-- sort by drink type -->
-                            <div class="col-lg-2 col-12 mb-3">
-                                <div class="d-grid gap-1 dropdown">
-                                    <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
+                            <div class="col-xl-3 col-lg-4 col-12 mb-3 ml-auto">
+                                <div class="d-grid gap-2 dropdown">
+                                    <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis; min-width: 200px;">
                                         Sort: {{ sortSelection.category != '' ? sortSelection.category : 'by Category' }}
                                     </button>
                                     <ul class="dropdown-menu">
@@ -332,8 +335,8 @@
                                             <span class="dropdown-item" @click="sortByCategory(category)"> {{ category }} </span>
                                         </li>
                                     </ul>
-                                </div> 
-                            </div>
+                                </div>
+                            </div> 
                         </div>
                         
                         <!-- listings -->

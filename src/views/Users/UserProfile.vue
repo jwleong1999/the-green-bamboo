@@ -540,7 +540,7 @@
                             <div class="row mb-3" v-for="(listingID, index) in displayUser.drinkLists[currentList].listItems" :key="index">
                                 <div class="col-10" style="display: flex">
                                     <img :src=" 'data:image/png;base64,' + ( getListingFromID(listingID[1].$oid).photo || defaultDrinkImage )" alt="" class="bottle-img me-3">
-                                    <div style="height: 150px; display: flex; flex-direction: column;">
+                                    <div style="min-height: 150px; display: flex; flex-direction: column;">
                                         <a :href="'/listing/view/' + listingID[1].$oid" style="text-decoration: none; color: inherit;">
                                             <h4>{{ getListingFromID(listingID[1].$oid).listingName }}</h4>
                                         </a>
