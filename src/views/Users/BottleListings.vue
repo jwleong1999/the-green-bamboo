@@ -906,6 +906,14 @@
                             this.getListingsByVenue()
                             this.getRecentlyAdded()
                             this.getQuestionsUpdates();
+                            // check if user is an admin
+                            if (this.user.isAdmin) {
+                                this.isAdmin = true
+                            }
+                            // if user is not admin, check if user is a moderator
+                            else if (this.user.isModerator) {
+                                this.isModerator = true
+                            }
                         }
                     } 
                     catch (error) {
@@ -944,7 +952,7 @@
                                 })
                             }
                             else if (this.userType == 'user') {
-                                if (this.types.includes("admin")) {
+                                if (this.isAdmin) {
                                     this.requestListings = response.data.filter((request) => {
                                         return request["reviewStatus"] == false;
                                     })
@@ -995,7 +1003,7 @@
                                 return request["producerID"]["$oid"] == this.userID;
                             })
                         }
-                        else if (this.userType == 'user' && !this.types.includes("admin")) {
+                        else if (this.userType == 'user' && !this.isAdmin) {
                             this.requestEdits = this.requestEdits.filter((request) => {
                                 return request["userID"]["$oid"] == this.userID || this.types.includes(request["drinkType"]);
                             })
@@ -1030,14 +1038,6 @@
                 if (user) {
                     this.username = user.username
                     this.displayName = user.displayName
-                    // check if user is an admin
-                    if (user.isAdmin) {
-                        this.isAdmin = true
-                    }
-                    // if user is not admin, check if user is a moderator
-                    else if (user.isModerator) {
-                        this.isModerator = true
-                    }
                     // drink shelf
                     let allDrinkShelf = Object.values(user.drinkLists).flatMap(obj => obj.listItems);
                     allDrinkShelf.sort((a, b) => {

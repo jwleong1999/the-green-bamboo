@@ -199,6 +199,12 @@
                     requestListings: [],
                     requestEdits: [],
                     requestDupes: [],
+
+                    // user info
+                    user: null,
+                    isAdmin: false, 
+                    isModerator: false,
+
                     // flags
                     dataLoaded: false,
                     loadError: false,
@@ -280,6 +286,17 @@
                                 return user["_id"]["$oid"] == this.accID;
                             }).modType;
                         }
+                        this.user = this.users.find(user => user._id.$oid == this.accID)
+                        if (this.user) {
+                            // check if user is an admin
+                            if (this.user.isAdmin) {
+                                this.isAdmin = true
+                            }
+                            // if user is not admin, check if user is a moderator
+                            else if (this.user.isModerator) {
+                                this.isModerator = true
+                            }
+                        }
                     } 
                     catch (error) {
                         console.error(error);
@@ -296,7 +313,7 @@
                             })
                         }
                         else if (this.role == 'user') {
-                            if (this.types.includes("admin")) {
+                            if (this.isAdmin) {
                                 this.requestListings = response.data.filter((request) => {
                                     return request["reviewStatus"] == false;
                                 })
@@ -347,7 +364,7 @@
                                 return request["producerID"]["$oid"] == this.accID;
                             })
                         }
-                        else if (this.role == 'user' && !this.types.includes("admin")) {
+                        else if (this.role == 'user' && !this.isAdmin) {
                             this.requestEdits = this.requestEdits.filter((request) => {
                                 return request["userID"]["$oid"] == this.accID || this.types.includes(request["drinkType"]);
                             })
