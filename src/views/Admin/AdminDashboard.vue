@@ -114,7 +114,7 @@
                                             <div class = 'row text-center'>
                                                 <div class = 'col'>
                                                     <p>New family tag looks like this:</p>
-                                                    <button :style="{ color: hexcode==''?'black':'white', backgroundColor: '#' + hexcode, width: '100px', height: '60px' }" class="btn mb-1"> {{ newFamily }} </button>
+                                                    <button :style="{ color: hexcode==''?'black':'white', backgroundColor: '#' + hexcode, width: '150px', height: '60px' }" class="btn mb-1"> {{ newFamily }} </button>
                                                 </div>
                                             </div>
                                             <p class='text-start mb-2 fw-bold'>New Family Tag:</p>
@@ -245,8 +245,18 @@
                                         <div v-if="deleteFlavour == 'family'" class="modal-body">
                                             <div class="row">
                                                 <div v-for="tag in editedFlavourTags" class="mb-2 col-md-6"  v-bind:key="tag._id">
-                                                    <button type="text" class="form-control" :style="{ color:'black', backgroundColor: tag['hexcode'], borderColor:tag['hexcode'], borderWidth:'1px' }">{{ tag.familyTag }}</button>
+                                                    <button @click="selectDeleteFamily(tag._id, tag.familyTag, tag.hexcode, tag.subTag2)" type="text" class="form-control" :style="{ color:'black', backgroundColor: tag['hexcode'], borderColor:tag['hexcode'], borderWidth:'1px' }">{{ tag.familyTag }}</button>
                                                 </div>
+                                            </div>
+                                            <div v-if="familyTagToDelete!=''">
+                                                <div class="row">
+                                                    <span class='text-danger mb-2 fw-bold'>Are you sure you want to delete family tag <button class='btn mt-1' type="button" :style="{ color:'white', backgroundColor: familyTagToDelete['hexcode'], borderColor:familyTagToDelete['hexcode'], borderWidth:'1px', width: '150px', height: '60px'}">{{familyTagToDelete.familyTag}}</button>?</span>
+                                                    <span class='text-danger mb-2 fw-bold'>NOTE: All sub tags will be deleted!</span>
+                                                </div>
+                                            
+                                                <button @click="confirmDeleteFlavourTag" type="button" class="btn btn-danger mx-1">Confirm Delete</button>
+                                                <button @click="resetDeleteFamilyTag" type="button" class="btn tertiary-btn reverse-clickable-text">No, do not delete</button>
+
                                             </div>
                                         </div>
                                         
@@ -267,16 +277,17 @@
                                                     <span class='text-danger mb-2 fw-bold'>Are you sure you want to delete <button class='btn mt-1' type="button" :style="{ color:'white', backgroundColor: subTagToDelete['hexcode'], borderColor:subTagToDelete['hexcode'], borderWidth:'1px', width: '150px', height: '60px'}">{{subTagToDelete.subTag}}</button>?</span>
                                                 </div>
                                             
-                                            <button @click="confirmDeleteFlavourTag" type="button" class="btn btn-danger mx-1">Confirm Delete</button>
-                                            <button @click="resetDeleteSubTag" type="button" class="btn tertiary-btn reverse-clickable-text">No, do not delete</button>
+                                                <button @click="confirmDeleteFlavourTag" type="button" class="btn btn-danger mx-1">Confirm Delete</button>
+                                                <button @click="resetDeleteSubTag" type="button" class="btn tertiary-btn reverse-clickable-text">No, do not delete</button>
 
-                                        </div>
+                                            </div>
 
                                         </div>
                                     </div>
 
                                     <div class="modal-footer">
                                         <button v-if="!(errorDeleteFlavour || successDeleteFlavour)" @click="resetDeleteFlavourMode" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button v-if="errorDeleteFlavour || successDeleteFlavour" @click="resetDeleteFlavourMode" type="button" class="btn btn-secondary">Return</button>
                                         <button v-if="errorDeleteFlavour || successDeleteFlavour" @click="resetDeleteFlavourModal" type="button" data-bs-dismiss="modal" class="btn btn-secondary">Close</button>
                                     </div>
                                 </div>
@@ -850,6 +861,7 @@
                     chosenTagParent:null,
                     flavourNoChange:false,
                     subTagToDelete:'',
+                    familyTagToDelete:'',
 
                     // creation of new observation tag
                     newObservation:'',
@@ -1193,9 +1205,12 @@
 
                 async createTag(submitAPI, submitData){
                     let responseCode = ''
+                    let newObservationId = ''
                     const response = await this.$axios.post(submitAPI, submitData)
                     .then((response)=>{
                         responseCode = response.data.code
+                        newObservationId = response.data.data
+                        console.log(newObservationId)
                     })
                     .catch((error)=>{
                         console.error(error);
@@ -1204,6 +1219,15 @@
                     this.submittingObservation = false
                     if(responseCode==201){
                         this.successCreateObservation=true; // Display success message
+                        this.editedObservationTags.push({
+                            _id:{'$oid': newObservationId},
+                            observationTag: this.newObservation
+                        })
+                        this.observationTags.push({
+                            _id:{'$oid': newObservationId},
+                            observationTag: this.newObservation
+                        })
+                        
                     }else{
                         this.errorCreateObservation = true
                         if(responseCode==400){
@@ -1792,14 +1816,16 @@
                             subTag: this.newSub
                         }
                     }
-                    this.writeNewTag(submitURL, submitData)
+                    this.writeNewFlavourTag(submitURL, submitData)
                 },  
 
-                async writeNewTag(submitURL,submitData){
+                async writeNewFlavourTag(submitURL,submitData){
                     let responseCode = ''
+                    let tagNewId = ''
                     const response = await this.$axios.post(submitURL, submitData)
                     .then((response)=>{
                         responseCode = response.data.code
+                        tagNewId = response.data.data
                     })
                     .catch((error)=>{
                         console.error(error);
@@ -1807,6 +1833,39 @@
                     });
                     if(responseCode==201){
                         this.successAddFlavour=true; // Display success message
+                        if(this.addFlavour=='family'){
+                            this.editedFlavourTags.push({
+                                familyTag: this.newFamily,
+                                hexcode: '#' + this.hexcode,
+                                subTag2: [],
+                                showBox: false,
+                                _id: {'$oid': tagNewId}
+                            })
+                            this.flavourTags.push({
+                                familyTag: this.newFamily,
+                                hexcode: '#' + this.hexcode,
+                                subTag2: [],
+                                showBox: false,
+                                _id: {'$oid': tagNewId}
+                            })
+                        }
+                        if(this.addFlavour=='sub'){
+                            let parentTagIndex = this.editedFlavourTags.findIndex(flavourTag=>{
+                                return flavourTag._id.$oid == this.chosenTagParent._id.$oid
+                            })
+                            if (parentTagIndex !== -1) {
+                                // Update the editedFlavourTags array
+                                this.editedFlavourTags[parentTagIndex].subTag2.push({
+                                    id: { '$oid': tagNewId },
+                                    subTag: this.newSub
+                                });
+                                this.flavourTags[parentTagIndex].subTag2.push({
+                                    id: { '$oid': tagNewId },
+                                    subTag: this.newSub
+                                });
+                            }
+                        }
+                        console.log(this.editedFlavourTags)
                     }else{
                         this.errorAddFlavour = true
                     }
@@ -1948,25 +2007,28 @@
 
                 selectDeleteSub(id, subTag, hexcode){
                     this.subTagToDelete = {"_id":id.$oid, "subTag":subTag, "hexcode": hexcode}
-                    console.log(this.subTagToDelete)
+                },
+                selectDeleteFamily(id, familyTag, hexcode, subTag2){
+                    this.familyTagToDelete = {"_id":id.$oid, "familyTag":familyTag, "hexcode": hexcode, subTag2}
                 },
 
                 resetDeleteSubTag(){
                     this.subTagToDelete = ''
                 },
+                resetDeleteFamilyTag(){
+                    this.familyTagToDelete = ''
+                },
 
                 confirmDeleteFlavourTag(){
                     let submitURL = ''
                     if(this.deleteFlavour=='family'){
-                        submitURL = 'http://127.0.0.1:5052/deleteFamilyTag/' 
-                        // submitData=
+                        submitURL = 'http://127.0.0.1:5052/deleteFamilyTag/' + this.familyTagToDelete._id
                     }
                     if(this.deleteFlavour=='sub'){
                         submitURL = 'http://127.0.0.1:5052/deleteSubTag/' + this.subTagToDelete._id
                         
                     }
-                    console.log(submitURL)
-                    // this.writeDeleteTag(submitURL)
+                    this.writeDeleteTag(submitURL)
                 },
 
                 async writeDeleteTag(submitURL){
@@ -1981,11 +2043,48 @@
                     });
                     if(responseCode==201){
                         this.successDeleteFlavour=true; // Display success message
+                        if(this.deleteFlavour == 'sub'){
+                            this.editedFlavourTags = this.editedFlavourTags.map(item => {
+                                // Filter the subTags array of each main object to remove the one with the specified ID
+                                const updatedSubTags = item.subTag2.filter(subTag => subTag.id.$oid !== this.subTagToDelete._id);
+                                // Return a new object with the updated subTags array
+                                return { ...item, subTag2: updatedSubTags };
+                            });
+                            this.flavourTags = this.flavourTags.map(item => {
+                                // Filter the subTags array of each main object to remove the one with the specified ID
+                                const updatedSubTags = item.subTag2.filter(subTag => subTag.id.$oid !== this.subTagToDelete._id);
+                                // Return a new object with the updated subTags array
+                                return { ...item, subTag2: updatedSubTags };
+                            });
+                        }
+                        if(this.deleteFlavour == 'family'){
+                            this.editedFlavourTags = this.editedFlavourTags.filter(flavourTag=>{
+                                return flavourTag._id.$oid != this.familyTagToDelete._id
+                            })
+                            this.flavourTags = this.flavourTags.filter(flavourTag=>{
+                                return flavourTag._id.$oid != this.familyTagToDelete._id
+                            })
+                        }
                     }else{
                         this.errorDeleteFlavour = true
                     }
                     return response
-                }
+                },
+
+                resetDeleteFlavourModal(){
+                    this.successDeleteFlavour = false;
+                    this.errorDeleteFlavour = false;
+                    this.subTagToDelete = ''
+                    this.familyTagToDelete = ''
+                    this.deleteFlavour = ''
+                },
+
+                resetDeleteFlavourMode(){
+                    this.successDeleteFlavour = false;
+                    this.errorDeleteFlavour = false;
+                    this.subTagToDelete = ''
+                    this.familyTagToDelete = ''
+                },
             }
         }
 </script>

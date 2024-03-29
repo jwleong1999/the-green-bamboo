@@ -1767,11 +1767,14 @@
                     // this.selectedFlavourTags= specificReview[0].flavorTag
                     if(specificReview[0].flavorTag!=null){
                         specificReview[0].flavorTag.forEach(subtag=>{
-                            const subTag = this.subTags.find(subTag=>subtag.$oid===subTag._id.$oid)
-                            const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
-                            const hexcode = familyTag.hexcode
-                            const subtagInfo = subTag.subTag
-                            this.selectedFlavourTags.push(subtagInfo+ hexcode)
+                            const subTag = this.subTags.find(subTag=>subtag.$oid===subTag._id.$oid)          
+                            console.log(subTag)                  
+                            if(subTag){
+                                const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
+                                const hexcode = familyTag.hexcode
+                                const subtagInfo = subTag.subTag
+                                this.selectedFlavourTags.push(subtagInfo+ hexcode)
+                            }
                         })
                     }
                     this.finalSelectedFlavourTags = specificReview[0].flavorTag
@@ -2138,21 +2141,33 @@
             },
             getTagName(tag) {
                 const subTag = this.subTags.find(subTag=>subTag._id.$oid === tag.$oid)
-                const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
-                const hexcode = familyTag.hexcode
-                const subtagInfo = subTag.subTag
-                const tagInfo = subtagInfo + hexcode
-                const tagParts = tagInfo.split("#");
-                return tagParts[0];
+                if(subTag){
+                    const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
+                    if(familyTag){
+                        const hexcode = familyTag.hexcode
+                        const subtagInfo = subTag.subTag
+                        const tagInfo = subtagInfo + hexcode
+                        const tagParts = tagInfo.split("#");
+                        return tagParts[0];
+                    }
+                }else{
+                    return "<deleted tag>"
+                }
             },
             getTagColor(tag) {
                 const subTag = this.subTags.find(subTag=>subTag._id.$oid === tag.$oid)
-                const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
-                const hexcode = familyTag.hexcode
-                const subtagInfo = subTag.subTag
-                const tagInfo = subtagInfo + hexcode
-                const tagParts = tagInfo.split("#");
-                return "#" + tagParts[1];
+                if(subTag){
+                    const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
+                    if(familyTag){
+                        const hexcode = familyTag.hexcode
+                        const subtagInfo = subTag.subTag
+                        const tagInfo = subtagInfo + hexcode
+                        const tagParts = tagInfo.split("#");
+                        return "#" + tagParts[1];
+                    }
+                }else{
+                    return "#" + "030303"
+                }
             },
 
             formatDeepDiveLink() {
@@ -2273,10 +2288,12 @@
                         // convert ID into the string instead, make life easier
                         // flavorTags.push(tag)
                         const subTag = this.subTags.find(subTag=>subTag._id.$oid === tag.$oid)
-                        const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
-                        const hexcode = familyTag.hexcode
-                        const subtagInfo = subTag.subTag
-                        flavorTags.push(subtagInfo + hexcode)
+                        if(subTag){
+                            const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
+                            const hexcode = familyTag.hexcode
+                            const subtagInfo = subTag.subTag
+                            flavorTags.push(subtagInfo + hexcode)
+                        }
                     }
                 }
                 let flavorTagCounts = {}

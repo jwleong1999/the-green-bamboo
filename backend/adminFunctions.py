@@ -59,11 +59,11 @@ def createObservationTag():
     newAccount = data.observationTags(**rawTag)
     try:
         insertResult = db.observationTags.insert_one(data.asdict(newAccount))
-
+        created_id = str(insertResult.inserted_id)
         return jsonify( 
             {   
                 "code": 201,
-                "data": rawObservation
+                "data": created_id
             }
         ), 201
     except Exception as e:
@@ -240,33 +240,77 @@ def updateSubTag():
     
 # -----------------------------------------------------------------------------------------
     
-# [DELETE] Deletes a observationTag
-# - Delete entry with specified id from the "observationTag" collection.
-# - Possible return codes: 201 (Deleted), 400 (Review doesn't exist), 500 (Error during deletion)
-@app.route("/deleteObservationTag/<id>", methods= ['DELETE'])
-def deleteObservationTag(id):
+# [DELETE] Deletes a familyTag
+# - Delete entry with specified id from the "flavourTags" collection.
+# - Possible return codes: 201 (Deleted), 400 (family tag doesn't exist), 500 (Error during deletion)
+@app.route("/deleteFamilyTag/<id>", methods= ['DELETE'])
+def deleteFamilyTag(id):
 
-    # Find the review entry with the specified id
-    existingObservation = db.observationTags.find_one({"_id": ObjectId(id)})
-    if(existingObservation == None):
+    # Find the flavour tag entry with the specified id
+    existingFamilyTag = db.flavourTags.find_one({"_id": ObjectId(id)})
+    if(existingFamilyTag == None):
         return jsonify(
             {   
                 "code": 400,
                 "data": {
                     "id": id
                 },
-                "message": "Observation tag doesn't exist."
+                "message": "Family tag doesn't exist."
             }
         ), 400
     
 
     # Delete the review entry with the specified id
     try:
-        deleteObservation = db.observationTags.delete_one({"_id": ObjectId(id)})
+        deleteFamily = db.flavourTags.delete_one({"_id": ObjectId(id)})
 
         return jsonify( 
             {   
-                "code": 200,
+                "code": 201,
+                "data": id
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "id": id
+                },
+                "message": "An error occurred deleting the family tag."
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------    
+    
+# [DELETE] Deletes a flavour subTag
+# - Delete entry with specified id from the "subTags" collection.
+# - Possible return codes: 201 (Deleted), 400 (Subtag doesn't exist), 500 (Error during deletion)
+@app.route("/deleteSubTag/<id>", methods= ['DELETE'])
+def deleteSubTag(id):
+
+    # Find the review entry with the specified id
+    existingSubTag = db.subTags.find_one({"_id": ObjectId(id)})
+    if(existingSubTag == None):
+        return jsonify(
+            {   
+                "code": 400,
+                "data": {
+                    "id": id
+                },
+                "message": "Sub tag doesn't exist."
+            }
+        ), 400
+    
+
+    # Delete the review entry with the specified id
+    try:
+        deletesubTag = db.subTags.delete_one({"_id": ObjectId(id)})
+
+        return jsonify( 
+            {   
+                "code": 201,
                 "data": id
             }
         ), 201
@@ -310,11 +354,11 @@ def createFamilyTag():
     newFamily = data.flavourTags(**rawTag)
     try:
         insertResult = db.flavourTags.insert_one(data.asdict(newFamily))
-
+        created_id = str(insertResult.inserted_id)
         return jsonify( 
             {   
                 "code": 201,
-                "data": rawFamily
+                "data": created_id
             }
         ), 201
     except Exception as e:
@@ -357,11 +401,11 @@ def createSubTag():
     newSub = data.subTags(**rawTag)
     try:
         insertResult = db.subTags.insert_one(data.asdict(newSub))
-
+        created_id = str(insertResult.inserted_id)
         return jsonify( 
             {   
                 "code": 201,
-                "data": rawSub
+                "data": created_id
             }
         ), 201
     except Exception as e:
