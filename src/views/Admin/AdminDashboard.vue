@@ -1571,6 +1571,8 @@
                         this.addableDrinkType = this.drinkTypes.filter(drinkType=>{
                             return !currentMod.includes(drinkType.drinkType);
                         })
+                        this.addableDrinkType.sort((a, b) => a.drinkType.localeCompare(b.drinkType))
+
                     }
                     else {
                         this.selectedPromotedUser = null
@@ -1590,6 +1592,7 @@
                         this.removableDrinkType = this.drinkTypes.filter(drinkType=>{
                             return currentMod.includes(drinkType.drinkType);
                         })
+                        this.removableDrinkType.sort((a, b) => a.drinkType.localeCompare(b.drinkType))
                     }
                     else {
                         this.selectedRemoveMod = null
