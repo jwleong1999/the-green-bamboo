@@ -718,6 +718,7 @@
                                         </a>
                                     </b>
                                     
+                                    <span class="me-3" v-if="review.taggedUsers.length > 0"> drank with {{ review.taggedUsers.length }} others </span>
                                     <span v-if="checkModFromUserID(review.userID)" class="badge rounded-pill" style="color: black; background-color: white;">Moderator</span>
                                     <!-- Insert Edit modal here -->
 
@@ -928,6 +929,17 @@
                                 <hr>
                                 <h5 class="text-center">Tags</h5>
                                 <hr>
+                                <!-- friend tag -->
+                                <div class="row mt-2">
+                                    <div class="col-3">
+                                        <b>Friend Tags</b>
+                                    </div>
+                                    <div class="col-9">
+                                        <router-link v-for="(user, index) in detailedReview.taggedUsers" :key="index" :to="`/profile/user/${user.$oid}`">
+                                            {{ getUsernameFromId(user.$oid) }}
+                                        </router-link>
+                                    </div>
+                                </div>
                                 <!-- flavour tag -->
                                 <div class="row mt-2">
                                     <div class="col-3">
@@ -1832,6 +1844,15 @@
             getUsernameFromReview(review) {
                 const user = this.users.find((user) => {
                     return user["_id"]["$oid"] == review["userID"]["$oid"];
+                });
+                if (user) {
+                    return user["username"];
+                }
+            },
+
+            getUsernameFromId(id) {
+                const user = this.users.find((user) => {
+                    return user["_id"]["$oid"] == id;
                 });
                 if (user) {
                     return user["username"];
