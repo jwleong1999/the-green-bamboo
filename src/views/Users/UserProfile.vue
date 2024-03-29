@@ -715,7 +715,7 @@ export default {
                 return "This user is currently not a moderator!"
             }
             else{
-                return "This use is currently a moderator for <b>" + this.displayUser.modType.join(', ') +"</b>!";
+                return "This user is currently a moderator for <b>" + this.displayUser.modType.join(', ') +"</b>!";
             }
         },
     },

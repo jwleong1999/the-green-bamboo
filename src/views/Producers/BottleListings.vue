@@ -296,7 +296,7 @@
                                     <div class="row">
                                         <!-- language-->
                                         <div class="col-6 justify-content-start">
-                                            <p class = 'text-start mb-2 fw-bold'>Language <span class="text-danger">*</span></p>
+                                            <p class = 'text-start mb-2 fw-bold'>Language<span class="text-danger">*</span></p>
                                             <div class="input-group">                                                    
                                                 <select v-model="selectedLanguage" class="form-select" id="inputGroupSelect01">
                                                     <!-- Add in the languages here -->
@@ -400,7 +400,7 @@
                                     <div class="row">
                                         <div class = 'col justify-content-start mb-3'>
                                             <div class = "col-md-12">
-                                                <p class='text-start mb-2 fw-bold'>Review <span class="text-danger">*</span></p>
+                                                <p class='text-start mb-2 fw-bold'>Review<span class="text-danger">*</span></p>
                                                 <textarea v-model="reviewDesc" class="form-control" id="reviewTextarea" rows="3" placeholder="Min 20 characters"></textarea>
                                             </div>
                                             <div v-if="reviewDescError!==''" class ="col-md-12">
@@ -855,7 +855,7 @@
                                 <!-- location -->
                                 <div class="row mt-2">
                                     <div class="col-3">
-                                        <b>Locaion</b>
+                                        <b>Location</b>
                                     </div>
                                     <div class="col-9">
                                         <div v-if="detailedReview.location">
