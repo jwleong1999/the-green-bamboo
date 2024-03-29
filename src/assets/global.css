@@ -69,9 +69,18 @@ body {
     text-decoration: none;
 }
 
+.false-clickable-text {
+    color: lightgrey;
+    text-decoration: none;
+}
+
+.true-clickable-text {
+    color: #c27e30;
+    text-decoration: none;
+}
+
 .tertiary-text {
     color: darkgrey;
-
 }
 
 .primary-btn, 
@@ -598,4 +607,8 @@ body {
 
 .modal-backdrop {
     z-index: 10;
+}
+
+.pac-container pac-logo hdpi {
+    width: 100%
 }

@@ -307,36 +307,36 @@
                                                 <p class='text-danger text-start mb-2 fw-bold'>Please select a language</p>
                                             </div>
                                         </div>
-                                        <!-- location -->
-                                        <div v-if="locationOnWebsite" class="col-6 justify-content-start form-group mb-3">
-                                            <p class="text-start mb-1 fw-bold me-1">Location <a @click="changeLocationInput" class="text-danger">(Click to search more venues)</a>  </p>                                          
+                                        <!-- select location -->
+                                        <div class="col-6 justify-content-start form-group mb-3">
+                                            <p class="text-start mb-1 fw-bold me-1" style="display: flex; align-items: center;">Location 
+                                                &nbsp;
+                                                <a @click="changeLocationInput('find')" :class="{ 'false-clickable-text': !isActive['find'], 'true-clickable-text': isActive['find'] }">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                                                    </svg>
+                                                    Find existing
+                                                </a> 
+                                                &nbsp;|&nbsp;
+                                                <a @click="changeLocationInput('add')" :class="{ 'false-clickable-text': !isActive['add'], 'true-clickable-text': isActive['add']  }">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                                                    </svg>
+                                                    Add new
+                                                </a> 
+                                            </p>     
                                             <!-- Link filteredOptions to venues location -->
-                                            
                                             <div v-if="locationOnWebsite" class="input-group mb-2">
                                                 <select class="form-control" v-model="selectedLocation" @input="filterOptions($event)">
+                                                    <option value="" disabled selected>Select a location</option>
                                                     <option v-for="option in filteredOptions" :key="option.id" :value="option.name">{{ option.name }}</option>
-                                                    
                                                 </select>
                                                 
                                             </div>
-                                            
-                                            <div class="row">
-                                                <div class="col-6 d-flex justify-content-start">
-                                                    <button v-if="selectedLocation!==''" class="btn text-start mb-1" style="background-color: #535C72;color: white;" @click="clearLocation">Clear Selection</button>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        
-
-                                        <!-- location -->
-                                        <div v-else class="col-6 justify-content-start form-group mb-3">
-                                            <p class="text-start mb-1 fw-bold me-1">Location <a @click="changeLocationInput" class="text-danger">(Find a venue on the website)</a> </p>                                       
-                                            
-                                            
-                                            <div class="input-group mb-2">
+                                            <div v-else class="input-group mb-2">
                                                 <GMapAutocomplete
-                                                    placeholder="Tag your location"
+                                                    placeholder="Search for location"
                                                     @place_changed="setPlace"
                                                     class="form-control"
                                                     ref="autocomplete"
@@ -1250,6 +1250,10 @@
 
                 // for review location
                 locationOnWebsite:true,
+                isActive: {
+                    find: true,
+                    add: false
+                },
         
         };
 
@@ -2442,8 +2446,18 @@
 
             // For review tag location
 
-            changeLocationInput(){
-                this.locationOnWebsite = !this.locationOnWebsite
+            changeLocationInput(status){
+                this.selectedLocation = ''
+                if (status == "add") {
+                    this.isActive['add'] = true
+                    this.isActive['find'] = false
+                    this.locationOnWebsite = false
+                }
+                else if (status == "find") {
+                    this.isActive['add'] = false
+                    this.isActive['find'] = true
+                    this.locationOnWebsite = true
+                }
             },
 
             setPlace(place){

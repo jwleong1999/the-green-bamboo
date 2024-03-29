@@ -644,6 +644,7 @@
                                             <span v-if="businessType == 'venue'">Venue account: {{ businessName }}</span>
                                             <br>
                                             Temporary password: <b>{{ tempPassword }}</b>
+                                            <br>
                                             <button type="button" class="btn secondary-btn-less-round"  v-on:click="downloadCSV()"> Download login details </button>
                                         </div>
                                     </div>
