@@ -291,7 +291,7 @@
 
                                 <!-- This is where modal starts for review-->
                                 <div class="modal-body px-4">
-
+                                    
                                     <!-- row 1: language, location -->
                                     <div class="row">
                                         <!-- language-->
@@ -308,24 +308,42 @@
                                             </div>
                                         </div>
                                         <!-- location -->
-                                        <div class="col-6 justify-content-start form-group mb-3">
-                                            <p class="text-start mb-1 fw-bold">Location</p>                                            
+                                        <div v-if="locationOnWebsite" class="col-6 justify-content-start form-group mb-3">
+                                            <p class="text-start mb-1 fw-bold me-1">Location <a @click="changeLocationInput" class="text-danger">(Click to search more venues)</a>  </p>                                          
                                             <!-- Link filteredOptions to venues location -->
-                                            <!-- <div class="input-group mb-2">
+                                            
+                                            <div v-if="locationOnWebsite" class="input-group mb-2">
                                                 <select class="form-control" v-model="selectedLocation" @input="filterOptions($event)">
                                                     <option v-for="option in filteredOptions" :key="option.id" :value="option.name">{{ option.name }}</option>
+                                                    
                                                 </select>
-                                            </div> -->
-                                                <div class="input-group mb-2">
-                                                    <GMapAutocomplete
-                                                        placeholder="Tag your location"
-                                                        @place_changed="setPlace"
-                                                        class="form-control"
-                                                        ref="autocomplete"
-                                                        :value="selectedLocation"
-                                                    >
-                                                    </GMapAutocomplete>
+                                                
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-6 d-flex justify-content-start">
+                                                    <button v-if="selectedLocation!==''" class="btn text-start mb-1" style="background-color: #535C72;color: white;" @click="clearLocation">Clear Selection</button>
                                                 </div>
+                                            </div>
+                                        </div>
+
+                                        
+
+                                        <!-- location -->
+                                        <div v-else class="col-6 justify-content-start form-group mb-3">
+                                            <p class="text-start mb-1 fw-bold me-1">Location <a @click="changeLocationInput" class="text-danger">(Find a venue on the website)</a> </p>                                       
+                                            
+                                            
+                                            <div class="input-group mb-2">
+                                                <GMapAutocomplete
+                                                    placeholder="Tag your location"
+                                                    @place_changed="setPlace"
+                                                    class="form-control"
+                                                    ref="autocomplete"
+                                                    :value="selectedLocation"
+                                                >
+                                                </GMapAutocomplete>
+                                            </div>
                                             <div class="row">
                                                 <div class="col-6 d-flex justify-content-start">
                                                     <button v-if="selectedLocation!==''" class="btn text-start mb-1" style="background-color: #535C72;color: white;" @click="clearLocation">Clear Selection</button>
@@ -688,7 +706,14 @@
                                     </svg>
                                     
                                     <b>
-                                        <a v-if="review.location !== ''" :href="'https://www.google.com/maps/search/' + review.location" class="me-3" style="color: inherit"> 
+                                        <a v-if="review.location !== '' && checkVenue(review.location)"  class="me-3" style="color: inherit" > 
+                                            <router-link :to="'/profile/venue/' + checkVenue(review.location)" style="color: inherit">
+                                            at {{ review.location }}
+                                            
+                                            </router-link>
+                                        </a>
+
+                                        <a v-else-if="review.location !== ''" :href="'https://www.google.com/maps/search/' + review.location" class="me-3" style="color: inherit" target="_blank"> 
                                             at {{ review.location }}
                                         </a>
                                     </b>
@@ -1222,6 +1247,9 @@
 
                 // for the review cover image
                 ogImage: {},
+
+                // for review location
+                locationOnWebsite:true,
         
         };
 
@@ -2057,7 +2085,11 @@
 
             clearLocation(){
                 this.selectedLocation = ''
-                this.$refs.autocomplete.$el.value = "";
+                if(!this.locationOnWebsite){
+                    this.$refs.autocomplete.$el.value = "";
+                    
+                }
+                
             },
 
             clearPhoto(){
@@ -2408,8 +2440,43 @@
                 return sortedDistanceValues;
             },
 
+            // For review tag location
+
+            changeLocationInput(){
+                this.locationOnWebsite = !this.locationOnWebsite
+            },
+
             setPlace(place){
                 this.selectedLocation=place.name
+            },
+
+            // return place id
+
+            checkVenue(place){
+                // Querying MongoDB venues collection to check if a place exists
+                
+                // // Querying MongoDB venues collection to check if a place exists
+                // if (this.filteredOptions.hasOwnProperty(place)) {
+                //     // Place exists as a key in filtered options
+                //     console.log("Place exists");
+                // } else {
+                //     // Place does not exist as a key in filtered options
+                //     console.log("Place does not exist");
+                // }
+                const selectedPlace = this.filteredOptions.find(option => option.name === place);
+                if(selectedPlace){
+                    return selectedPlace.id.$oid;
+                }
+                else{
+                    return false;
+                }
+
+
+            
+                
+                
+                
+                
             },
 
             // to get webscrapped image data
