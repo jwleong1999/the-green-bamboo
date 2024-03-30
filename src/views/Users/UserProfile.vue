@@ -772,7 +772,6 @@ export default {
                 this.users = response.data;
                 this.user = this.getUser(this.userID);
                 this.displayUser = this.getUser(this.displayUserID);
-                console.log(this.user);
                 
                 if (this.userID === this.displayUserID) {
                     this.ownProfile = true;
@@ -914,9 +913,6 @@ export default {
                 const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
 
                 this.image64 = base64String;
-              
-                // console.log("image64");
-                // console.log(this.image64);
 
             };
             reader.readAsDataURL(file);

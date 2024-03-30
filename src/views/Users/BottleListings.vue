@@ -1043,7 +1043,6 @@
                     allDrinkShelf.sort((a, b) => {
                         return new Date(b[0].$date) - new Date(a[0].$date);
                     })
-                    console.log(allDrinkShelf)
                     let allDrinks = []
                     for (const item of allDrinkShelf) {
                         const listing = this.listings.find(listing => listing._id.$oid === item[1].$oid);
@@ -1053,7 +1052,6 @@
                         }
                     }
                     this.drinkShelf = [...new Set(allDrinks)];
-                    console.log(this.drinkShelf)
                 }
                 else if (producer) {
                     this.username = producer.producerName
@@ -1322,7 +1320,6 @@
 
             // Sort Support Function (Category)
             sortByCategory(category) {
-                console.log(category)
                 // Check if the selected filter is the same as the current filter
                 if (this.sortSelection.category == category) {
                     return;
@@ -1517,7 +1514,6 @@
                 let review = this.getListingByName(drink);
                 this.mostReviews.push(review);
             });
-            console.log(this.mostReviews)
         },
 
         // get listing by name

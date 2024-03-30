@@ -473,8 +473,6 @@ export default {
 
             // Function to add review
             addReview(){
-                console.log(this.wouldBuyAgain)
-                console.log(this.wouldRecommend)
                 // let errorPhrase = "Your completion is incomplete"
                 // form validation
                 if(this.reviewDesc.length < 20){
@@ -520,7 +518,6 @@ export default {
                     "observationTag": this.selectedObservations,
                     "createdDate": createdDate
                 }
-                console.log( submitData)
                 this.writeReview(submitAPI, submitData)
                 
             },
@@ -531,10 +528,8 @@ export default {
                     this.reviewResponseCode = response.data.code
                 })
                 .catch((error)=>{
-                    console.log(error);
                     this.reviewResponseCode = error.response.data.code
                 });
-                console.log(this.reviewResponseCode)
                 if(this.reviewResponseCode==201){
                     this.successSubmission=true; // Display success message
                     this.addingReview=false; // Hide submission in progress message

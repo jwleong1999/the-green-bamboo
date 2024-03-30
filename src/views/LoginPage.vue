@@ -244,7 +244,6 @@
 
                 // [User]
                 if (this.role == "user") {
-                    console.log("here")
                     this.$router.push({path: '/'});
                 }
                 // [Producer]

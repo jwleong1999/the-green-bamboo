@@ -158,7 +158,6 @@
             var userType = localStorage.getItem('88B_accType');
             if(userType != null){
                 this.userType = userType;
-                console.log(this.userType)
             }
 
             await this.loadData();

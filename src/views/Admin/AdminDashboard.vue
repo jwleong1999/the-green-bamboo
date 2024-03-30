@@ -1017,6 +1017,7 @@
                         const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
                         this.producers = response.data;
                         // check for producer with no producer name and retrieve id
+                        // [TO BE REMOVED?]
                         for (let i = 0; i < this.producers.length; i++) {
                             if (!this.producers[i].producerName) {
                                 console.log("no name");
@@ -1083,7 +1084,6 @@
                         });
                         
                         this.editedFlavourTags = JSON.parse(JSON.stringify(this.flavourTags));
-                        console.log(this.editedFlavourTags)
                     } 
                     catch (error) {
                         console.error(error);
@@ -1211,7 +1211,6 @@
                     .then((response)=>{
                         responseCode = response.data.code
                         newObservationId = response.data.data
-                        console.log(newObservationId)
                     })
                     .catch((error)=>{
                         console.error(error);
@@ -1768,7 +1767,6 @@
                         csvContent += row + "\n";
                     });
 
-                    console.log(csvContent)
                     const encodedUri = encodeURI(csvContent);
                     const link = document.createElement("a");
                     link.setAttribute("href", encodedUri);
@@ -1869,7 +1867,6 @@
                                 });
                             }
                         }
-                        console.log(this.editedFlavourTags)
                     }else{
                         this.errorAddFlavour = true
                     }

@@ -988,7 +988,6 @@
 
             // Function to write listing to database
             async writeListing(submitAPI, submitData) {
-                console.log(submitData)
 
                 this.fillForm = false; // Hide form
                 this.submitForm = true; // Display submission in progress message

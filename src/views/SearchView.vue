@@ -920,7 +920,6 @@
                 let [year, month, day] = datePart.split("-");
                 // formatting the date
                 let formattedDate = `${day}/${month}/${year}`;
-                console.log(formattedDate)
                 return formattedDate;
             },
 
@@ -957,7 +956,6 @@
                             "userID": this.userID,
                             
                 }
-                console.log(submitData)
                 await this.$axios.put('http://127.0.0.1:5070/addToTried/', submitData)
                     .then((response) => {
                         responseCode = response.data.code;
@@ -983,7 +981,6 @@
                             "userID": this.userID,
                             
                 }
-                console.log(submitData)
                 await this.$axios.put('http://127.0.0.1:5070/addToWant/', submitData)
                     .then((response) => {
                         responseCode = response.data.code;

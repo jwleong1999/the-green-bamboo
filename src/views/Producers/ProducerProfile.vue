@@ -972,15 +972,6 @@
                             this.correctProducer = true;
                         }
                     }
-                // countries
-                // _id, originCountry
-                // try {
-                //         const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
-                //         this.countries = response.data;
-                //     } 
-                //     catch (error) {
-                //         console.error(error);
-                //     },
                 // producers
                 // _id, producerName, producerDesc, originCountry, statusOB, mainDrinks
                 try {
@@ -1069,59 +1060,12 @@
                         }
                     }
                 }
-
-                // venuesAPI
-                // _id, venueName, venueDesc, originCountry
-                // try {
-                //         const response = await this.$axios.get('http://127.0.0.1:5000/getVenuesAPI');
-                //         this.venuesAPI = response.data;
-                //     } 
-                //     catch (error) {
-                //         console.error(error);
-                //     }
-                // drinkTypes
-                // _id, drinkType, typeCategory
-                    // try {
-                    //     const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
-                    //     this.drinkTypes = response.data;
-                    // } 
-                    // catch (error) {
-                    //     console.error(error);
-                    // }
-                // requestListings
-                // _id, listingName, producerNew, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, sourceLink, brandRelation, reviewStatus, userID, photo
-                    // try {
-                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getRequestListings');
-                    //         this.requestListings = response.data;
-                    //     } 
-                    // catch (error) {
-                    //     console.error(error);
-                    // }
-                // requestEdits
-                // _id, duplicateLink, editDesc, sourceLink, brandRelation, listingID, userID, reviewStatus
-                    // try {
-                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getRequestEdits');
-                    //         this.requestEdits = response.data;
-                    //     } 
-                    // catch (error) {
-                    //     console.error(error);
-                    // }
-                // modRequests
-                // _id, userID, drinkType, modDesc
-                    // try {
-                    //         const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
-                    //         this.modRequests = response.data;
-                    //     } 
-                    // catch (error) {
-                    //     console.error(error);
-                    // }
             },
 
             // get all drinks that a producer has
             async getAllDrinks() {
                 let allProducerDrinks = this.listings.filter(listing => listing.producerID["$oid"] == this.producer_id);
                 this.allDrinks = allProducerDrinks;
-                console.log(allProducerDrinks)
                 this.allDrinksCount = allProducerDrinks.length
             },
 
@@ -1132,7 +1076,6 @@
                     let all_drinks = this.allDrinks;
                     return all_drinks.some(drink => drink._id["$oid"] === review_target);
                 });
-                console.log(allProducerReviews);
                 this.allReviews = allProducerReviews;
                 this.allReviewsCount = allProducerReviews.length
             },
@@ -1170,7 +1113,6 @@
                                                             allProducerDrinkCounts[drink_name] + 1 : 1;
                 });
                 this.drinkCounts = allProducerDrinkCounts;
-                console.log(allProducerDrinkCounts);
             },
 
             // get average ratings for each listing
@@ -1837,7 +1779,6 @@
                         // get current view
                         let views = this.producerProfileViewInfo.views.find(view => view.date["$date"] == currDate);
                         let viewsID = views._id["$oid"];
-                        console.log(this.producerProfileID, viewsID)
                         try {
                             const response = this.$axios.post('http://127.0.0.1:5200/addProfileCount', 
                                 {
@@ -2107,7 +2048,6 @@
                         const match = html.match(regex);
                         const img_url = match ? match[1] : null;
                         this.ogImage[url] = img_url;
-                        console.log(img_url)
                     })
                     .catch((err) => {
                         console.log(err);

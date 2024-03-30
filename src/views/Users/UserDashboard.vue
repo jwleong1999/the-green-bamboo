@@ -296,12 +296,9 @@
                         } : null;
                     })
                     .filter(Boolean);
-                console.log(this.reviews);
                 const tags = this.reviews
                     .filter(review => review.reviewType === 'Listing' && review.taggedUsers)
                     .map(review => {
-                        console.log(review);
-                        console.log(review.taggedUsers);
                         const taggedReviews = review.taggedUsers.find(taggedUser => taggedUser.$oid === this.userID);
                         return taggedReviews ? {
                             userID: review.userID,
@@ -316,8 +313,6 @@
                     ...follows.map(follow => ({ ...follow, type: 'follow' }))
                 ];
                 activities.sort((a, b) => new Date(b.date.$date) - new Date(a.date.$date));
-
-                console.log(activities);
                 
                 return activities;
 

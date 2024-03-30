@@ -394,7 +394,6 @@
             var userType = localStorage.getItem('88B_accType');
             if(userType != null){
                 this.userType = userType;
-                console.log(this.userType)
             }
 
             await this.loadData();
@@ -702,7 +701,6 @@
                 });
 
                 this.categoryReviewCounts = categoryReviewCounts;
-                console.log(this.categoryReviewCounts)
             },
 
             // get total counts for each listing
@@ -719,7 +717,6 @@
                 reviewCountsArray.sort((a, b) => b[1] - a[1]);
                 const sortedProducerReviewCounts = Object.fromEntries(reviewCountsArray);
                 this.sortedReviewCounts = sortedProducerReviewCounts;
-                console.log(this.sortedReviewCounts)
             },
 
             // get total counts for each category
@@ -728,7 +725,6 @@
                 drinkCategoryCountsArray.sort((a, b) => b[1] - a[1]);
                 const sortedCategoryCounts = Object.fromEntries(drinkCategoryCountsArray);
                 this.sortedCategoryCounts = sortedCategoryCounts;
-                console.log(this.sortedCategoryCounts)
             },
 
             // get the most popular drinks
@@ -763,7 +759,6 @@
             getMostDiscussed() {
                 // get the drink counts
                 const drinkCounts = this.sortedReviewCounts;
-                console.log(this.sortedReviewCounts)
                 // get the first 5 items from the drink counts
                 let firstFiveItems = Object.entries(drinkCounts).slice(0, 5);
                 firstFiveItems = firstFiveItems.map(item => {
@@ -804,7 +799,6 @@
                     roundedAverageRatings[drink] = Math.round(rating);
                 }
                 this.roundedSortedRatings = roundedAverageRatings;
-                console.log(this.roundedSortedRatings)
             },
 
             formatDateMonthYear(dateTimeString) {

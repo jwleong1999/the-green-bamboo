@@ -196,14 +196,12 @@
                 }
                 else {
                     this.correctVenue = true
-                    console.log("correct")
                 }
                 // listings
                 // _id, listingName, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, officialDesc, sourceLink, photo
                     try {
                         const response = await this.$axios.get('http://127.0.0.1:5000/getListings');
                         this.listings = response.data;
-                        console.log(this.listings)
                     } 
                     catch (error) {
                         console.error(error);
@@ -233,7 +231,6 @@
                 try {
                     const response = await this.$axios.get('http://127.0.0.1:5000/getServingTypes');
                     this.servingTypes = response.data;
-                    console.log(this.servingTypes)
                 }
                 catch (error) {
                     console.error(error);
@@ -275,7 +272,6 @@
             updateServingType() {
                 // get id of servingType 
                 this.servingTypeId = this.selectedServingType._id.$oid
-                console.log(this.servingTypeId)
                 // get error message element
                 let servingTypeError = document.getElementById("servingTypeError")
                 if (this.selectedServingType != "") {

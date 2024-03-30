@@ -2435,18 +2435,6 @@
                 }
             },
 
-            // Save Update Edits
-            async saveUpdateEdits(update) {
-                alert("Not implemented yet!");
-                console.log(update);
-            },
-
-            // Delete Update
-            async deleteUpdate(update) {
-                alert("Not implemented yet!");
-                console.log(update);
-            },
-
             // Send Answer to a Question
             async sendAnswer(qa) {
                 try {

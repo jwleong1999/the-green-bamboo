@@ -232,19 +232,12 @@
 
             updateListing() {
                 this.updateStatus = true;
-                console.log(this.tempTypeCategoryList)
-
             },
 
             saveListing() {
                 this.updateStatus = false;
                 
                 
-            },
-            temp() {
-                console.log(this.editable)
-                console.log(this.tempBottler)
-
             },
             getDrinkCategoryList() {
                 for (let category of this.drinkCategories) {
@@ -270,7 +263,6 @@
                     this.tempBottler = 'OB'
                     
                 }
-                console.log(this.independentStatus);
             },
 
             
@@ -290,8 +282,6 @@
                     const producer = listing["Producer"].toLowerCase();
                     return expressionName.includes(searchInput) || producer.includes(searchInput);
                 });
-
-                console.log(searchResults)
 
                 // if nothing found
                 if (searchResults.length == 0) {
