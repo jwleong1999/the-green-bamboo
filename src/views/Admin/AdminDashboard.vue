@@ -1366,31 +1366,20 @@
                             claimStatus: true,
                         }
                         const businessID = request.businessLink.split("/").pop()
+                        let apiURL = '';
+
                         // producers
                         if (request.businessType == "producer") {
-                            try {
-                                const response = await this.$axios.post('http://127.0.0.1:5200/updateProducerStatus', 
-                                    {
-                                        businessID: businessID,
-                                        newBusinessData: newBusinessData,
-                                    }, {
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    }
-                                });
-
-                                if (response.data.code == 201) {
-                                    this.createBusinessSuccess = true;
-                                } 
-
-                            } catch (error) {
-                                console.error(error);
-                            }
+                            apiURL = 'http://127.0.0.1:5200/updateProducerStatus';
                         }
                         // venues 
                         else if (request.businessType == "venue") {
+                            apiURL = 'http://127.0.0.1:5300/updateVenueStatus';
+                        }
+
+                        if (apiURL != '') {
                             try {
-                                const response = await this.$axios.post('http://127.0.0.1:5300/updateVenueStatus', 
+                                const response = await this.$axios.post(apiURL, 
                                     {
                                         businessID: businessID,
                                         newBusinessData: newBusinessData,
@@ -1408,6 +1397,7 @@
                                 console.error(error);
                             }
                         }
+
                     }
                     if (action == "add") {
                         this.businessType = request.businessType;
