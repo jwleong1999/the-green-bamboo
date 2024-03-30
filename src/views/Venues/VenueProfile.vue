@@ -334,7 +334,7 @@
                             <!-- Image -->
                             <div class="image-container">
 
-                                <!-- [if] editing profile -->
+                                <!-- [if] editing update -->
                                 <div v-if="editUpdateTarget == targetVenue['updates'][0]._id['$oid']" style="position: relative; text-align: center;">
                                     <!-- image -->
                                     <img :src="'data:image/jpeg;base64,' + (editUpdateContent[targetVenue['updates'][0]._id['$oid']].newPhoto || defaultProfilePhoto)" alt="" style="width: 128px; height: 128px; z-index: 1; opacity: 50%">
@@ -472,15 +472,65 @@
                             <p v-if="targetVenue['updates'].length > 1" class="text-body-secondary fs-5 fw-bold m-0">Viewing {{ targetVenue['updates'].length -1 }} more updates</p>
                             <p v-else class="fs-5 fst-italic m-0">There are no more updates to view!</p>
 
+                            <!-- For Each Update -->
                             <div v-for="updateMore in targetVenue['updates'].slice(1)" v-bind:key="updateMore._id">
-                                <p class="text-start text-decoration-underline fs-5 m-0 pb-2">Posted on: {{ updateMore.date }}</p>
 
                                 <!-- Update Information -->
                                 <div class="row">
 
+                                    <!-- Update Date + Edit / Delete Update -->
+                                    <div class="row">
+                                        <div class="col-xl-8 col-md-6 col-12">
+                                            <p class="text-start text-decoration-underline fs-5 m-0 pb-2">Posted on: {{ updateMore.date }}</p>
+                                        </div>
+                                        <div v-if="selfView || powerView" class="col-xl-4 col-md-6 col-12 text-end">
+                                            <!-- [if] not editing -->
+                                            <button v-if="editUpdateTarget != updateMore._id['$oid']" type="button" class="btn btn-warning rounded-0" @click="editUpdate(updateMore)">
+                                                Edit
+                                            </button>
+                                            <button v-if="editUpdateTarget != updateMore._id['$oid']" type="button" class="btn btn-danger rounded-0 ms-1" @click="deleteUpdate(updateMore)">
+                                                Delete
+                                            </button>
+                                            
+                                            <!-- [else] if editing -->
+                                            <button v-if="editUpdateTarget == updateMore._id['$oid']" type="button" class="btn success-btn rounded-0 reverse-clickable-text" @click="saveUpdate(updateMore)" :disabled="!(editUpdateContent[updateMore._id['$oid']].newText.length > 0)">
+                                                Save
+                                            </button>
+                                            <button v-if="editUpdateTarget == updateMore._id['$oid']" type="button" class="btn secondary-btn rounded-0 reverse-clickable-text ms-1" @click="editUpdateTarget = null">
+                                                Cancel
+                                            </button>
+                                            <button v-if="editUpdateTarget == updateMore._id['$oid']" type="button" class="btn btn-danger rounded-0 reverse-clickable-text ms-1" @click="editUpdateContent[updateMore._id['$oid']] = {newText: updateMore.text, newPhoto: updateMore.photo}">
+                                                Reset
+                                            </button>
+                                        </div>
+                                    </div>
+
                                     <!-- Photo / Number of Likes -->
                                     <div class="col-xl-2 col-md-3">
-                                        <img :src=" 'data:image/jpeg;base64,' + (updateMore.photo || defaultProfilePhoto)" alt="" style="width: 128px; height: 128px;">
+
+                                        <!-- Image -->
+                                        <div class="image-container">
+
+                                            <!-- [if] editing update -->
+                                            <div v-if="editUpdateTarget == updateMore._id['$oid']" style="position: relative; text-align: center;">
+                                                <!-- image -->
+                                                <img :src="'data:image/jpeg;base64,' + (editUpdateContent[updateMore._id['$oid']].newPhoto || defaultProfilePhoto)" alt="" style="width: 128px; height: 128px; z-index: 1; opacity: 50%">
+                                                <!-- change option -->
+                                                <label :for="'fileSelectEditUpdate' + updateMore._id['$oid']" class="btn primary-light-dropdown m-1">Choose File</label>
+                                                <input :id="'fileSelectEditUpdate' + updateMore._id['$oid']" type="file" @change="handleFileSelectEditUpdate" ref="fileInput" style="width: 0px; height: 0px;">
+                                                <!-- reset image option -->
+                                                <button class="btn primary-light-dropdown m-1" @click="editUpdateContent[updateMore._id['$oid']].newPhoto = updateMore.photo">Revert</button>
+                                                <!-- remove image option -->
+                                                <button class="btn primary-light-dropdown m-1" @click="editUpdateContent[updateMore._id['$oid']].newPhoto = ''">Remove</button>
+                                                
+                                            </div>
+
+                                            <!-- [else] not editing -->
+                                            <div v-else>
+                                                <img :src=" 'data:image/jpeg;base64,' + (updateMore.photo || defaultProfilePhoto)" alt="" style="width: 128px; height: 128px; z-index: 1;">
+                                            </div>
+
+                                        </div>
 
                                         <div class="row pt-2">
                                             <!-- Like Symbol -->
@@ -515,7 +565,11 @@
                                     </div>
                                     
                                     <!-- Description -->
-                                    <div class="col-xl-10 col-md-9">
+                                    <div v-if="editUpdateTarget == updateMore._id['$oid']" class="col-xl-10 col-md-9 text-start p-text-lg">
+                                        <label :for="'editUpdateText' + updateMore._id['$oid']"> Update Text </label>
+                                        <textarea type="text" class="form-control" :id="'editUpdateText' + updateMore._id['$oid']" aria-describedby="editUpdateText" v-model="editUpdateContent[updateMore._id['$oid']].newText"></textarea>
+                                    </div>
+                                    <div v-else class="col-xl-10 col-md-9">
                                         <p class="text-start p-text-lg">{{ updateMore.text }}</p>
                                     </div>
 
@@ -2433,6 +2487,55 @@
                         newPhoto: update['photo'],
                     };
                 }
+            },
+
+            // Save Update Edits
+            async saveUpdate(update) {
+                try {
+                    await this.$axios.post('http://127.0.0.1:5300/editUpdate', 
+                        {
+                            venueID: this.targetVenue['_id']['$oid'],
+                            updateID: update['_id']['$oid'],
+                            update: this.editUpdateContent[update['_id']['$oid']].newText,
+                            image64: this.editUpdateContent[update['_id']['$oid']].newPhoto,
+                        },
+                        {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                }
+                catch (error) {
+                    alert("An error occurred while attempting to save your changes, please try again!\nWe have tried to copy your update's text to your clipboard.");
+                    // console.error(error);
+                    this.copyToClipboard(this.editUpdateContent[update['_id']['$oid']].newText);
+                }
+
+                // Refresh page
+                this.$router.go(0);
+            },
+
+            // Delete Update
+            async deleteUpdate(update) {
+                try {
+                    await this.$axios.post('http://127.0.0.1:5300/deleteUpdate', 
+                        {
+                            venueID: this.targetVenue['_id']['$oid'],
+                            updateID: update['_id']['$oid'],
+                        },
+                        {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                }
+                catch (error) {
+                    alert("An error occurred while attempting to save your changes, please try again!");
+                    // console.error(error);
+                }
+
+                // Refresh page
+                this.$router.go(0);
             },
 
             // Send Answer to a Question
