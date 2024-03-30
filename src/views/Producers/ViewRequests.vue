@@ -96,7 +96,7 @@
                                     <li class="list-group-item"><span class="fw-bold">Requested By: </span>{{ findUser(requestNew["userID"]["$oid"]) }}</li>
                                 </ul>
                                 <div class="card-footer">
-                                    <router-link v-if="role == 'producer' || types.includes('admin') || types.includes(requestNew['drinkType'])" :to="{ path: '/listing/create/' + requestNew._id['$oid'] }">
+                                    <router-link v-if="role == 'producer' || isAdmin || types.includes(requestNew['drinkType'])" :to="{ path: '/listing/create/' + requestNew._id['$oid'] }">
                                         <button class="border btn btn-warning btn-sm align-bottom">Review Request</button>
                                     </router-link>
                                     <router-link v-if="role == 'user' && requestNew['userID']['$oid'] == accID" :to="{ path: '/request/new/' + requestNew._id['$oid'] }">
@@ -130,7 +130,7 @@
                                     <li class="list-group-item"><span class="fw-bold">Requested By: </span>{{ findUser(requestEdit["userID"]["$oid"]) }}</li>
                                 </ul>
                                 <div class="card-footer">
-                                    <router-link v-if="role == 'producer' || types.includes('admin') || types.includes(requestEdit['drinkType'])" :to="{ path: '/listing/edit/' + requestEdit.listingID['$oid'] + '/' + requestEdit._id['$oid'] }">
+                                    <router-link v-if="role == 'producer' || isAdmin || types.includes(requestEdit['drinkType'])" :to="{ path: '/listing/edit/' + requestEdit.listingID['$oid'] + '/' + requestEdit._id['$oid'] }">
                                         <button class="border btn btn-secondary btn-sm align-bottom">Review Request</button>
                                     </router-link>
                                     <router-link v-if="role == 'user' && requestEdit['userID']['$oid'] == accID" :to="{ path: '/request/modify/edit/' + requestEdit.listingID['$oid'] + '/' + requestEdit._id['$oid'] }">
@@ -164,7 +164,7 @@
                                     <li class="list-group-item"><span class="fw-bold">Requested By: </span>{{ findUser(requestDupe["userID"]["$oid"]) }}</li>
                                 </ul>
                                 <div class="card-footer">
-                                    <router-link v-if="role == 'producer' || types.includes('admin') || types.includes(requestDupe['drinkType'])" :to="{ path: '/listing/edit/' + requestDupe.listingID['$oid'] + '/' + requestDupe._id['$oid'] }">
+                                    <router-link v-if="role == 'producer' || isAdmin || types.includes(requestDupe['drinkType'])" :to="{ path: '/listing/edit/' + requestDupe.listingID['$oid'] + '/' + requestDupe._id['$oid'] }">
                                         <button class="border btn btn-dark btn-sm align-bottom">Review Request</button>
                                     </router-link>
                                     <router-link v-if="role == 'user' && requestDupe['userID']['$oid'] == accID" :to="{ path: '/request/modify/duplicate/' + requestDupe.listingID['$oid'] + '/' + requestDupe._id['$oid'] }">

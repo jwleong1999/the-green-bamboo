@@ -32,8 +32,9 @@
                 <span v-if="formMode == 'dup'">The duplicate report has successfully been submitted!</span>
             </div>
             <div v-if="formType == 'power'">
-                <span v-if="formMode == 'new'">The bottle listing has successfully been created!</span>
-                <span v-if="formMode == 'edit'">The bottle listing has successfully been edited!</span>
+                <span v-if="formMode == 'new' && requestRemoval == false">The bottle listing has successfully been created!</span>
+                <span v-if="formMode == 'edit' && requestRemoval == false">The bottle listing has successfully been edited!</span>
+                <span v-if="requestRemoval == true">The request has successfully been removed!</span>
             </div>
             <br>
             <button class="btn primary-btn btn-sm" @click="reset" v-if="formMode == 'new'">
@@ -354,6 +355,7 @@
                         <button type="submit" class="btn secondary-btn mx-1 mb-3" v-if="formMode == 'new'">Create New Listing</button>
                         <button type="submit" class="btn secondary-btn mx-1 mb-3" v-if="formMode == 'edit'">Save Listing Edits</button>
 
+                        <button type="button" class="btn btn-danger rounded-pill mx-1 mb-3" v-if="prevListing" @click="updateRequestStatus('reject')">Reject Request</button>
                         <button type="button" class="btn primary-btn mx-1 mb-3" @click="goBack">Return</button>
                     </div>
                 
@@ -384,6 +386,7 @@
                 successSubmission: false,
                 errorSubmission: false,
                 fillForm: false,
+                requestRemoval: false,
 
                 // Error-specific flags
                 errorMessage: false,
@@ -735,7 +738,14 @@
 
             // Helper function to reset form (by refreshing page)
             reset(){
-                this.$router.go(0)
+                if (this.successSubmission == true && this.prevListing == true) {
+                    // Remove requestID router param from current path
+                    let newPath = this.$route.path.split("/").slice(0, -1).join("/");
+                    window.location.replace(newPath);
+                }
+                else {
+                    this.$router.go(0);
+                }
             },
             // Helper function to return to previous page
             goBack() {
@@ -982,6 +992,11 @@
                         }
                     }
 
+                    // Update request status
+                    if (this.prevListing) {
+                        this.updateRequestStatus("approve")
+                    }
+
                     this.writeListing(submitAPI, submitData)
                 }
             },
@@ -1031,6 +1046,68 @@
                     }
                 }
                 return response
+            },
+
+            // Function to update request status
+            async updateRequestStatus(status) {
+
+                let responseCode = "";
+                let submitAPI = "http://127.0.0.1:5011/requestReviewStatus/" + this.$route.params.requestID;
+                let submitData = {};
+
+                // Set up submission data
+                if (this.formMode == "new") {
+                    submitData = {
+                        "targetCollection": "requestListings",
+                        "reviewStatus": false,
+                    }
+                }
+                else if (this.formMode == "edit") {
+                    submitData = {
+                        "targetCollection": "requestEdits",
+                        "reviewStatus": false,
+                    }
+                }
+                else {
+                    // Catching statement for invalid mode
+                    alert("There was an issue with submission. Try to reopen the page after saving your inputs!")
+                    return "Invalid Mode"
+                }
+
+                // Set new review status
+                if (status == "reject") {
+
+                    this.fillForm = false; // Hide form
+                    this.submitForm = true; // Display submission in progress message
+                    submitData["reviewStatus"] = null;
+
+                }
+                else if (status == "approve") {
+                    submitData["reviewStatus"] = true;
+                }
+
+                const response = await this.$axios.post(submitAPI, submitData)
+                .then((response)=>{
+                    responseCode = response.data.code
+                })
+                .catch((error)=>{
+                    responseCode = error.response.data.code
+                });
+                
+                if (responseCode == 201) {
+                    if (status == "reject") {
+                        this.successSubmission = true; // Display success message
+                        this.requestRemoval = true; // Display request removal message
+                        this.submitForm = false; // Hide submission in progress message
+                    }
+                } else {
+                    this.errorSubmission = true; // Display error message
+                    this.fillForm = false; // Hide form
+                    this.submitForm = false; // Hide submission in progress message
+                    this.errorMessage = true // Display generic error message
+                }
+                return response
+
             },
 
         }

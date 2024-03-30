@@ -266,6 +266,43 @@ def requestInaccuracy():
                 "message": "An error occurred while submitting the request."
             }
         ), 500
+
+# -----------------------------------------------------------------------------------------
+# [POST] Edit review status of a submitted request
+# - Update entry with specified id from the specified collection.
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+
+@app.route("/requestReviewStatus/<string:requestID>", methods= ['POST'])
+def requestReviewStatus(requestID):
+
+    requestIDObject = ObjectId(requestID)
+    updateRequest = request.get_json()
+    targetCollection = updateRequest["targetCollection"]
+    status = updateRequest["reviewStatus"]
+
+    try:
+        updateResult = db[targetCollection].update_one({"_id": requestIDObject}, {"$set": {"reviewStatus": status}})
+
+        return jsonify(
+            {
+                "code": 201,
+                "data": requestID
+            }
+        ), 201
+    
+    except Exception as e:
+        print(str(e))
+
+        return jsonify(
+            {
+                "code": 500,
+                "data": {
+                    "requestID": requestID
+                },
+                "message": "An error occurred while updating the review status."
+            }
+        ), 500
+
 # -----------------------------------------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, port = 5011)
