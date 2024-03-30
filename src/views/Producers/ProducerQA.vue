@@ -8,7 +8,7 @@
 
         <!-- title -->
         <div class="d-grid gap-2" style="position: relative;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="ms-5 bi bi-arrow-left-circle" viewBox="0 0 16 16" style="position: absolute; top: 10; left: 0;" v-on:click="goBack">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="ms-md-5 bi bi-arrow-left-circle" viewBox="0 0 16 16" style="position: absolute; top: 10; left: 0;" v-on:click="goBack">
                 <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
             </svg>
             <h1> Q&As for {{ specified_producer["producerName"] }} </h1>
@@ -37,13 +37,13 @@
                     <div class="card text-start">
                         <div class="card-body qa-card-body">
                             <div class="row">
-                                <div class="col-9">
+                                <div class="col-lg-9 col-md-12">
                                     <h5 class="card-title"> 
                                         <b> Question: </b>
                                         {{ qa.question }} 
                                     </h5>
                                 </div>
-                                <div class="col-3 mb-2 text-end">
+                                <div class="col-lg-3 col-md-12  mb-2 text-end">
                                     <!-- [if] not editing -->
                                     <button v-if="editingQA == false || editingQAID != qa._id.$oid" type="button" class="btn btn-warning rounded-0 me-1" v-on:click="editQA(qa)">
                                         Edit answer

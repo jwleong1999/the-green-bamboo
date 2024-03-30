@@ -42,7 +42,7 @@
             <nav class="pb-0">
                 <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
                     <!-- New Listing Requests -->
-                    <button class="nav-link active w-25" id="nav-listing-request-tab" data-bs-toggle="tab" data-bs-target="#nav-listing-request" type="button" role="tab" aria-controls="nav-listing-request" aria-selected="true"> 
+                    <button class="nav-link active flex-grow-1" id="nav-listing-request-tab" data-bs-toggle="tab" data-bs-target="#nav-listing-request" type="button" role="tab" aria-controls="nav-listing-request" aria-selected="true"> 
                         <span class="d-flex align-items-center justify-content-center mb-0">
                             New Listing Requests
                             <span class="rounded-circle mx-3 d-flex align-items-center justify-content-center"> 
@@ -51,7 +51,7 @@
                         </span>
                     </button>
                     <!-- Listing Edit Requests -->
-                    <button class="nav-link w-25" id="nav-listing-edit-tab" data-bs-toggle="tab" data-bs-target="#nav-listing-edit" type="button" role="tab" aria-controls="nav-listing-edit" aria-selected="false">
+                    <button class="nav-link flex-grow-1" id="nav-listing-edit-tab" data-bs-toggle="tab" data-bs-target="#nav-listing-edit" type="button" role="tab" aria-controls="nav-listing-edit" aria-selected="false">
                         <span class="d-flex align-items-center justify-content-center mb-0">
                             Listing Edit Requests
                             <span class="rounded-circle mx-3 d-flex align-items-center justify-content-center"> 
@@ -60,7 +60,7 @@
                         </span>
                     </button>
                     <!-- Duplicate Reports -->
-                    <button class="nav-link w-25" id="nav-duplicate-reports-tab" data-bs-toggle="tab" data-bs-target="#nav-duplicate-reports" type="button" role="tab" aria-controls="nav-duplicate-reports" aria-selected="false">
+                    <button class="nav-link flex-grow-1" id="nav-duplicate-reports-tab" data-bs-toggle="tab" data-bs-target="#nav-duplicate-reports" type="button" role="tab" aria-controls="nav-duplicate-reports" aria-selected="false">
                         <span class="d-flex align-items-center justify-content-center mb-0">
                             Duplicate Reports
                             <span class="rounded-circle mx-3 d-flex align-items-center justify-content-center"> 

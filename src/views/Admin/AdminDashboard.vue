@@ -32,12 +32,13 @@
                     <p class="fw-bold fs-1 m-0">Admin Dashboard</p>
                 </div>
             </div>
-
+            
+            
             <nav>
                 <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
-                    <button class="nav-link active w-25" id="nav-tag-tab" data-bs-toggle="tab" data-bs-target="#nav-tag" type="button" role="tab" aria-controls="nav-tag" aria-selected="true"> Tag Controls </button>
-                    <button class="nav-link w-25" id="nav-moderator-tab" data-bs-toggle="tab" data-bs-target="#nav-moderator" type="button" role="tab" aria-controls="nav-moderator" aria-selected="false"> Moderators </button>
-                    <button class="nav-link w-25" id="nav-business-tab" data-bs-toggle="tab" data-bs-target="#nav-business" type="button" role="tab" aria-controls="nav-business" aria-selected="false"> Business Accounts </button>
+                    <button class="nav-link active flex-grow-1" id="nav-tag-tab" data-bs-toggle="tab" data-bs-target="#nav-tag" type="button" role="tab" aria-controls="nav-tag" aria-selected="true"> Tag Controls </button>
+                    <button class="nav-link flex-grow-1" id="nav-moderator-tab" data-bs-toggle="tab" data-bs-target="#nav-moderator" type="button" role="tab" aria-controls="nav-moderator" aria-selected="false"> Moderators </button>
+                    <button class="nav-link flex-grow-1" id="nav-business-tab" data-bs-toggle="tab" data-bs-target="#nav-business" type="button" role="tab" aria-controls="nav-business" aria-selected="false"> Business Accounts </button>
                 </div>
             </nav>
 
@@ -62,8 +63,8 @@
                                 Flavour Tags
                             </button>
                             <div v-if="showFlavourControl" class="rounded p-3 border border-black">
-                                <div class="rowv mb-1">
-                                    <div class="col-12">
+                                <div class="row mb-1">
+                                    <div class="col-12 pb-2">
                                         <button @click="setAddFlavour('family')" class="btn btn-warning reverse-clickable-text text-dark" type="button" data-bs-toggle="modal" data-bs-target="#addFlavourModal">
                                             Add Family Tags
                                         </button>
@@ -74,9 +75,7 @@
                                             Delete Family Tags
                                         </button>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12">
+                                    <div class="col-12 pb-2">
                                         <button @click="setAddFlavour('sub')" class="btn btn-warning reverse-clickable-text text-dark" type="button" data-bs-toggle="modal" data-bs-target="#addFlavourModal">
                                             Add Sub Tags
                                         </button>
@@ -88,6 +87,9 @@
                                         </button>
                                     </div> 
                                 </div>
+                                
+                                    
+                                
                             </div>
                         
                         </div>
@@ -578,7 +580,7 @@
                         </div>
                         <div>
                             <div v-if="pendingModRequests.length > 0" class="row" style="height: 300px; overflow: auto">
-                                <div v-for="request in pendingModRequests" class="col-3 pb-4" v-bind:key="request._id">
+                                <div v-for="request in pendingModRequests" class="col-md-6 col-lg-4 pb-4 pb-4 pb-4" v-bind:key="request._id">
                                     <div class="card h-100" style="background-color: white">
                                         <div class="card-body">
                                         <ul class="list-group list-group-flush text-start">
@@ -755,7 +757,7 @@
                         </div>
                         <div>
                             <div v-if="pendingAccountRequests.length > 0" class="row" style="height: 525px; overflow: auto">
-                                <div v-for="request in pendingAccountRequests" class="col-3 pb-4" v-bind:key="request._id">
+                                <div v-for="request in pendingAccountRequests" class="col-md-6 col-lg-4 pb-4 pb-4" v-bind:key="request._id">
                                     <div class="card h-100" style="background-color: white">
                                         <div class="card-body">
                                         <span class="fw-bold">Business Information</span>

@@ -38,7 +38,7 @@
         <div class="row" v-if="dataLoaded == true">
 
             <!-- left pane -->
-            <div class="col-3">
+            <div class="col-lg-3 col-md-12 col-sm-12">
 
                 <!-- row 1: venue info -->
                 <div class="row">
@@ -152,19 +152,19 @@
             </div>
 
             <!-- right pane -->
-            <div class="col-9 ps-5">
+            <div class="col-lg-9 col-md-12 col-sm-12 ps-5">
 
                 <!-- row 1: review count + spread of ratings of menu's drinks -->
                 <div class="row">
 
                     <!-- col 1: review count -->
-                    <div class="col text-start mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start mx-3">
                         <h3> Review Count of Drinks </h3>
                         <Line :data="reviewsData" :options="chartOptions"></Line>
                     </div>
 
                     <!-- col 2: spread of ratings -->
-                    <div class="col text-start mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start mx-3">
                         <h3> Spread of Ratings for Drinks </h3>
                         <Bar :data="ratingsData" :options="chartOptions" />
                     </div>

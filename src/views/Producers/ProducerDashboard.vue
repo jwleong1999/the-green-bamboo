@@ -9,7 +9,7 @@
         <div class="row">
 
             <!-- left pane -->
-            <div class="col-3">
+            <div class="col-lg-3 col-md-12 col-sm-12">
 
                 <!-- row 1: producer info -->
                 <div class="row">
@@ -133,19 +133,19 @@
             </div>
 
             <!-- right pane -->
-            <div class="col-9 ps-5">
+            <div class="col-lg-9 col-md-12 col-sm-12 ps-5">
 
                 <!-- row 1: review of your expressions & profile visits -->
                 <div class="row">
 
                     <!-- col 1: review of your expressions -->
-                    <div class="col text-start mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start mx-3">
                         <h3> Review of Your Expressions </h3>
                         <Line :data="reviewsData" :options="chartOptions"></Line>
                     </div>
 
                     <!-- col 2: profile visits -->
-                    <div class="col text-start mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start mx-3">
                         <h3> Profile Visits </h3>
                         <Line :data="profileData" :options="chartOptions"></Line>
                     </div>
