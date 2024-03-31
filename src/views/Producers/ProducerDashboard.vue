@@ -2,9 +2,32 @@
 <template>
     <NavBar />
 
+    <!-- Display when data is still loading -->
+    <div class="text-info-emphasis fst-italic fw-bold fs-5 pt-5" v-if="dataLoaded == false">
+        <span>Loading dashboard, please wait...</span>
+        <br><br>
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Display when data fails to load -->
+    <div class="text-danger fst-italic fw-bold fs-3 pt-5" v-if="dataLoaded == null"> 
+        <span>An error occurred while loading this page, please try again!</span>
+        <br>
+        <button class="btn primary-btn btn-sm" @click="this.$router.go(-1)">
+            <span class="fs-5 fst-italic"> Return to previous page </span>
+        </button>
+        <router-link :to="'/'" class="mx-1">
+            <button class="btn primary-btn btn-sm">
+                <span class="fs-5 fst-italic"> Go to Home page </span>
+            </button>
+        </router-link>
+    </div>
+
     <!-- main content -->
 
-    <div class="container pt-5">
+    <div class="container pt-5" v-if="dataLoaded">
 
         <div class="row">
 
@@ -314,6 +337,7 @@
         },
         data() {
             return {
+                dataLoaded: false,
                 // data from database
                 producers: [],
                 listings: [],
@@ -424,6 +448,7 @@
                     } 
                     catch (error) {
                         console.error(error);
+                        this.dataLoaded = null;
                     }
                 // listings
                 // _id, listingName, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, officialDesc, sourceLink, photo
@@ -433,6 +458,7 @@
                     } 
                     catch (error) {
                         console.error(error);
+                        this.dataLoaded = null;
                     }
                 // reviews
                 // _id, userID, reviewTarget, date, rating, reviewDesc, taggedUsers, reviewTitle, reviewType, flavorTag, photo
@@ -442,6 +468,7 @@
                     }
                     catch (error) {
                         console.error(error);
+                        this.dataLoaded = null;
                     }
                 // users
                 // _id, username, displayName, choiceDrinks, drinkLists, modType, photo
@@ -451,6 +478,7 @@
                     } 
                     catch (error) {
                         console.error(error);
+                        this.dataLoaded = null;
                     }
                  // producersProfileViews
                 // _id, producerID, views
@@ -463,6 +491,7 @@
                     }
                     catch (error) {
                         console.error(error);
+                        this.dataLoaded = null;
                     }
 
                 // fetch all methods
@@ -485,6 +514,11 @@
                 this.getMostPopular()
                 this.getMostDiscussed()
                 this.getMostDiscussedCategory()
+
+                // Set data loaded to true
+                if (this.dataLoaded != null) {
+                    this.dataLoaded = true;
+                }
             },
 
             // go back to profile page
