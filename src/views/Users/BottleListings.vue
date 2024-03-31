@@ -1225,7 +1225,7 @@
                 const averageRating = ratings.reduce((total, rating) => {
                     return total + rating["rating"];
                 }, 0) / ratings.length;
-                return averageRating;
+                return averageRating.toFixed(2);
             },
 
             // get ratings for a listing --> return 0 if no ratings
