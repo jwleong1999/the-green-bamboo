@@ -656,7 +656,7 @@
                                     <div class="modal-body text-start" v-else>
                                         <div>
                                             <div class="mb-2 fw-bold">
-                                                Profile Type
+                                                Profile Type <span style="color: red;">*</span>
                                             </div>
                                             <div class="mb-4">
                                                 <div class="form-check form-check-inline">
@@ -671,7 +671,7 @@
                                         </div>
                                         <div>
                                             <div class="mb-2 fw-bold">
-                                                Name
+                                                Name <span style="color: red;">*</span>
                                             </div>
                                             <div class="mb-4">
                                                 <input type="text" class="form-control" v-model="businessName">
@@ -679,7 +679,7 @@
                                         </div>
                                         <div>
                                             <div class="mb-2 fw-bold">
-                                                Description
+                                                Description <span style="color: red;">*</span>
                                             </div>
                                             <div class="mb-4">
                                                 <input type="text" class="form-control" v-model="businessDesc">
@@ -687,7 +687,7 @@
                                         </div>
                                         <div>
                                             <div class="mb-2 fw-bold">
-                                                Country
+                                                Country <span style="color: red;">*</span>
                                             </div>
                                             <div class="mb-4">
                                                 <div class="input-group">
@@ -701,7 +701,7 @@
                                         </div>
                                         <div v-if="businessType == 'venue'">
                                             <div class="mb-2 fw-bold">
-                                                Address
+                                                Address <span style="color: red;">*</span>
                                             </div>
                                             <div class="mb-4">
                                                 <input type="text" class="form-control" v-model="venueAddress">
@@ -709,7 +709,7 @@
                                         </div>
                                         <div v-if="businessType == 'venue'">
                                             <div class="mb-2 fw-bold">
-                                                Venue Type
+                                                Venue Type <span style="color: red;">*</span>
                                             </div>
                                             <div class="mb-4">
                                                 <input type="text" class="form-control" v-model="venueType">
@@ -717,7 +717,7 @@
                                         </div>
                                         <div>
                                             <div class="mb-2 fw-bold">
-                                                Claim Status
+                                                Claim Status <span style="color: red;">*</span>
                                             </div>
                                             <div class="mb-4">
                                                 <div class="form-check form-check-inline">

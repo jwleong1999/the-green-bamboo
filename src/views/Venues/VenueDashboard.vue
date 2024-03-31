@@ -10,7 +10,7 @@
 
         <!-- Display when data is still loading -->
         <div class="text-info-emphasis fst-italic fw-bold fs-5" v-if="dataLoaded == false">
-            <span>Loading venue dashboard, please wait...</span>
+            <span>Loading dashboard, please wait...</span>
             <br><br>
             <div class="spinner-border" role="status">
                 <span class="visually-hidden">Loading...</span>
