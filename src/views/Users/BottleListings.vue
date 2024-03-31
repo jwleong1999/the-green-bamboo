@@ -327,7 +327,7 @@
                                                 <hr>
                                                 <div v-for="drinkType in drinkTypes" v-bind:key="drinkType._id">
                                                     <!-- Filter button for drink type -->
-                                                    <a class="dropdown-item" :class="{ 'active': selectedDrinkType === drinkType }" :style="{ backgroundColor: selectedDrinkType === drinkType ? '#747D92' : 'white', color: selectedDrinkType === drinkType ? 'whitesmoke' : 'black' }" @click="selectDrinkType(drinkType)"> 
+                                                    <a class="dropdown-item" :class="{ 'active': selectedDrinkType === drinkType }" @click="selectDrinkType(drinkType)"> 
                                                         <span>{{ drinkType['drinkType'] }}</span>
                                                     </a>   
                                                 </div>
@@ -337,13 +337,13 @@
                                                 <hr>
                                                 <div v-if="selectedTypeCategory != ''">
                                                     <div v-for="category in selectedTypeCategory" v-bind:key="category">
-                                                        <a class="dropdown-item" :class="{ 'active': selectedCategory === category }" :style="{ backgroundColor: selectedCategory === category ? '#747D92' : 'white', color: selectedCategory === category ? 'whitesmoke' : 'black' }" @click="selectDrinkCategory(category)">
+                                                        <a class="dropdown-item" :class="{ 'active': selectedCategory === category }" @click="selectDrinkCategory(category)">
                                                             <span>{{ category }}</span>
                                                         </a> 
                                                     </div>
                                                 </div>
                                                 <div v-else>
-                                                    <a class="dropdown-item" :class="{ 'active': selectedCategory === category }" :style="{ backgroundColor: selectedCategory === category ? '#747D92' : 'white', color: selectedCategory === category ? 'whitesmoke' : 'black' }"> 
+                                                    <a class="dropdown-item-disabled default-clickable-text"> 
                                                         <span> There is no category for this </span>
                                                     </a>   
                                                 </div>
@@ -365,7 +365,7 @@
                                         <li><span class="dropdown-item" @click="sortByCategory('')"> Clear Sort </span></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li v-for="category in sortCategoryList" :key="category">
-                                            <span class="dropdown-item" @click="sortByCategory(category)"> {{ category }} </span>
+                                            <span class="dropdown-item" :class="{ 'active': sortSelection.category === category }" @click="sortByCategory(category)"> {{ category }} </span>
                                         </li>
                                     </ul>
                                 </div>
