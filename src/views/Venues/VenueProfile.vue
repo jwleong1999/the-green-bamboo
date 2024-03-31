@@ -825,7 +825,7 @@
                                                 <!-- Bookmark Icon -->
                                                 <div class="col-1 text-end">
                                                     <BookmarkIcon 
-                                                        v-if="userInfo && dataLoaded" 
+                                                        v-if="viewerType == 'user' && dataLoaded && Object.keys(userInfo).length > 0" 
                                                         :user="userInfo" 
                                                         :listing="loadedListings.find(item => item._id['$oid'] === sectionItem.itemID['$oid'])" 
                                                         :overlay="false"

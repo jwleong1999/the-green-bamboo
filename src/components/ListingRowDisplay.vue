@@ -14,7 +14,7 @@
                     </router-link>
                     
                     <BookmarkIcon 
-                        v-if="user" 
+                        v-if="user && Object.keys(user).length > 0" 
                         :user="user" 
                         :listing="listing" 
                         :overlay="true"
