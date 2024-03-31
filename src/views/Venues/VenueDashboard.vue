@@ -175,7 +175,7 @@
                 <div class="row mt-5">
 
                     <!-- col 1: most reviewed drinks on the menu -->
-                    <div class="col text-start mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start mx-3">
                         <h3> Most Reviewed Drinks </h3>
                         <div class="text-start pb-2" v-for="listing in listingsMostReviewed" v-bind:key="listing._id">
                             <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="reverse-clickable-text">
@@ -192,7 +192,7 @@
                     </div>
 
                     <!-- col 2: best rated drinks on the menu -->
-                    <div class="col text-start mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start mx-3">
                         <h3> Best Rated Drinks </h3>
                         <div class="text-start pb-2" v-for="listing in listingsBestRated" v-bind:key="listing._id">
                             <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="reverse-clickable-text">
@@ -217,7 +217,7 @@
                 <div class="row mt-5">
 
                     <!-- col 1: most reviewed sections -->
-                    <div class="col text-start mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start mx-3">
                         <h3> Most Reviewed Sections </h3>
                         <div class="text-start pb-2" v-for="(section, index) in sectionsMostReviewed" v-bind:key="section._id">
                             <div class="row ms-3 default-clickable-text"> 
@@ -234,7 +234,7 @@
                     </div>
 
                     <!-- col 2: best rated sections -->
-                    <div class="col text-start mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start mx-3">
                         <h3> Best Rated Sections </h3>
                         <div class="text-start pb-2" v-for="(section, index) in sectionsBestRated" v-bind:key="section._id">
                             <div class="row ms-3 default-clickable-text"> 
@@ -259,7 +259,7 @@
                 <div class="row">
 
                     <!-- col 1: venue menu summary -->
-                    <div class="col text-start pt-5 mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start pt-5 mx-3">
                         <h3> Venue Menu Summary </h3>
 
                         <!-- Number of Menu Items + Unique Drinks -->

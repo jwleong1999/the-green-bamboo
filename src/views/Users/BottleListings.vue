@@ -325,7 +325,7 @@
                                                 <a class="dropdown-item" :class="{ 'active': selectedDrinkType === drinkType }" :style="{ backgroundColor: selectedDrinkType === drinkType ? '#747D92' : 'white', color: selectedDrinkType === drinkType ? 'whitesmoke' : 'black' }" @click="selectDrinkType(drinkType)"> 
                                                     <span>{{ drinkType['drinkType'] }}</span>
                                                 </a>   
-                                            </div> 
+</div>
                                         </div>
                                         <div class="dropdown-column me-2 mt-2">
                                             <h6> Filter by Drink Category </h6>
@@ -338,7 +338,7 @@
                                                 </div>
                                             </div>
                                             <div v-else>
-                                                <a class="dropdown-item"> 
+                                                <a class="dropdown-item" :class="{ 'active': selectedCategory === category }" :style="{ backgroundColor: selectedCategory === category ? '#747D92' : 'white', color: selectedCategory === category ? 'whitesmoke' : 'black' }"> 
                                                     <span> There is no category for this </span>
                                                 </a>   
                                             </div>
@@ -1217,6 +1217,24 @@
                     return total + rating["rating"];
                 }, 0) / ratings.length;
                 return averageRating;
+            },
+
+            // get ratings for a listing --> return 0 if no ratings
+            getAllRatings(listing) {
+                const ratings = this.reviews.filter((rating) => {
+                    return rating["reviewTarget"]["$oid"] == listing["_id"]["$oid"];
+                });
+                // if there are no ratings
+                if (ratings.length == 0) {
+                    return 0;
+                }
+                // else there are ratings
+                const averageRating = ratings.reduce((total, rating) => {
+                    return total + rating["rating"];
+                }, 0) / ratings.length;
+                // round to 1 decimal place
+                const roundedRating = Math.round(averageRating * 10) / 10;
+                return roundedRating;
             },
 
             // Handle select of drink type filter option like sake, gin, whiskey
