@@ -733,7 +733,7 @@
                             <div class="square-inline">
                                 <h4 class="square-inline text-start mr-auto"> 88 Bamboo's Deepdive </h4>
                             </div>
-                            <div class="py-2 text-start">
+                            <div class="py-2 text-start" v-if="specified_producer['producerLink'] != ''" >
                                 <a class="text-left default-text-no-background" :href="specified_producer['producerLink']">
                                     <div class="row">
                                         <div class="col-4">
