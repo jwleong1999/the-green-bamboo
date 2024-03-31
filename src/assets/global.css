@@ -624,3 +624,13 @@ body {
 .dropdown-column {
     min-width: max-content;
 }
+
+.dropdown-item, .dropdown-item:disabled {
+    background-color: white;
+    color: black
+}
+
+.dropdown-item:active, .dropdown-item:hover, .dropdown-item:focus {
+    background-color: #747D92;
+    color: whitesmoke;
+}
