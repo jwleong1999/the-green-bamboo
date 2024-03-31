@@ -749,7 +749,7 @@
 
                 // for user account credentials
                 userID: "",
-                userType: localStorage.getItem('88B_accType'),
+                userType: "",
                 types: [],
                 username: "",
                 displayName: "",
