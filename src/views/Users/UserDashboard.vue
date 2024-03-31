@@ -9,7 +9,7 @@
         <div class="row">
 
             <!-- left pane -->
-            <div class="col-3">
+            <div class="col-lg-3 col-md-12 col-sm-12">
 
                 <!-- row 1: producer info -->
                 <div class="row">
@@ -115,19 +115,19 @@
             </div>
 
             <!-- right pane -->
-            <div class="col-9 ps-5">
+            <div class="col-lg-9 col-md-12 col-sm-12 ps-5">
 
                 <!-- row 1: review count and spread of ratings -->
                 <div class="row">
 
                     <!-- col 1: review count -->
-                    <div class="col text-start mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start mx-3">
                         <h3> Review Count </h3>
                         <Line :data="reviewsData" :options="chartOptions"></Line>
                     </div>
 
                     <!-- col 2: spread of ratings -->
-                    <div class="col text-start mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start mx-3 mx-3">
                         <h3> Spread of Ratings </h3>
                         <Bar :data="ratingsData" :options="chartOptions" />
                     </div>
@@ -138,7 +138,7 @@
                 <div class="row">
 
                     <!-- col 1: your best rated drinks -->
-                    <div class="col text-start pt-5 mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 pt-5 mx-3">
                         <h3> Your Best Rated Drinks </h3>
                         <div class="text-start pb-2" v-for="listing in bestRatedListings" v-bind:key="listing._id">
                             <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="reverse-clickable-text">
@@ -158,7 +158,7 @@
                     </div>
 
                     <!-- col 2: your best rated categories -->
-                    <div class="col text-start pt-5 mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start pt-5 mx-3">
                         <h3> Your Best Rated Categories </h3>
                         <div class="text-start pb-2" v-for="(category, index) in bestRatedCategories" v-bind:key="category">
                             <div class="row ms-3 default-clickable-text"> 
