@@ -30,11 +30,11 @@
     <div class="container pt-5" v-if="dataLoaded">
         <div class="row">
             <!-- producer information -->
-            <div class="col-9 no-margin">
+            <div class="col-xl-9 col-12 no-margin">
                 <!-- header -->
                 <div class="row">
                     <!-- image -->
-                    <div class="col-3 image-container">
+                    <div class="col-lg-3 col-12 mb-lg-0 mb-3 image-container">
                         <!-- [if] editing -->
                         <div v-if="editing" style="position: relative; text-align: center;">
                             <!-- image -->
@@ -52,7 +52,7 @@
                         </div>
                     </div>
                     <!-- details -->
-                    <div class="col-9 text-start">
+                    <div class="col-lg-9 col-12 text-start">
                         <div class="container text-start">
                             <!-- country  -->
                             <div class="row">
@@ -128,20 +128,34 @@
                     <div class="col-7">
                         <div class="row">
                             <!-- expressions -->
-                            <div class="col-6 text-start">
-                                <h4 class="text-body-secondary rating-text mb-2"> 
-                                    <b> {{ allDrinksCount }}  </b> 
-                                    &nbsp;
-                                    <u v-on:click="showAllListings()"> Expressions </u> 
-                                </h4>
+                            <div class="col-md-6 col-12 text-start">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <h4 class="text-body-secondary rating-text mb-2"> 
+                                            <b> {{ allDrinksCount }}  </b> 
+                                        </h4>
+                                    </div>
+                                     <div class="col-10">
+                                        <h4 class="text-body-secondary rating-text mb-2"> 
+                                            <u v-on:click="showAllListings()"> Expressions </u> 
+                                        </h4>
+                                    </div>
+                                </div>
                             </div>
                             <!-- reviews -->
-                            <div class="col-6 text-start">
-                                <h4 class="text-body-secondary rating-text mb-2"> 
-                                    <b> {{ allReviewsCount }} </b> 
-                                    &nbsp;
-                                    <u v-on:click="showAllReviews()"> Reviews </u> 
-                                </h4>
+                            <div class="col-md-6 col-12 text-start">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <h4 class="text-body-secondary rating-text mb-2"> 
+                                            <b> {{ allReviewsCount }}  </b> 
+                                        </h4>
+                                    </div>
+                                     <div class="col-10">
+                                        <h4 class="text-body-secondary rating-text mb-2"> 
+                                            <u v-on:click="showAllReviews()"> Reviews </u> 
+                                        </h4>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -200,7 +214,7 @@
                         <!-- information -->
                         <div class="row">
                             <!-- profile photo & post timestamp & # of likes -->
-                            <div class="col-2 image-container">
+                            <div class="col-xxl-2 col-md-3 col-4 image-container">
                                 <!-- image -->
                                 <!-- [if] editing -->
                                 <div v-if="editingLatestUpdate" style="position: relative; text-align: center;">
@@ -240,7 +254,7 @@
                                 </div>
                             </div>
                             <!-- description -->
-                            <div class="col-10">
+                            <div class="col-xxl-10 col-md-9 col-8">
                                 <div class="row">
                                     <!-- description -->
                                     <div class="col text-start p-text-lg"> 
@@ -315,7 +329,7 @@
                                     <!-- other info -->
                                     <div class="row pb-2">
                                         <!-- photo & # of likes -->
-                                        <div class="col-2 image-container">
+                                        <div class="col-xxl-2 col-md-3 col-4 image-container">
                                             <!-- image -->
                                             <!-- [if] editing -->
                                             <div v-if="editingRemainingUpdate && editingRemainingUpdateID == update._id.$oid" style="position: relative; text-align: center;">
@@ -348,7 +362,7 @@
                                             </div>
                                         </div>
                                         <!-- description -->
-                                        <div class="col-10">
+                                        <div class="col-xxl-10 col-md-9 col-8">
                                             <div class="row">
                                                 <!-- description -->
                                                 <div class="col text-start p-text-lg"> 
@@ -596,7 +610,7 @@
             </div> <!-- end of producer information -->
             
             <!-- view analytics & q&a for producer & 88 bamboo's deepdive -->
-            <div class="col-3">
+            <div class="col-xl-3 col-12">
                 <div class="row">
                     <!-- view analytics -->
                     <div v-if="correctProducer">
@@ -605,7 +619,7 @@
                         </router-link> 
                     </div>
                     <!-- q&a -->
-                    <div class="col-12">
+                    <div class="col-xl-12 col-lg-4 col-md-6 col-12">
                         <div class="square primary-square rounded p-3 mb-3">
                             <!-- header text -->
                             <div class="square-inline text-start">
@@ -750,21 +764,21 @@
                         </div>
                     </div>
                     <!-- 88 bamboo's deepdive -->
-                    <div class="col-12">
+                    <div class="col-xl-12 col-lg-4 col-md-6 col-12">
                         <div class="square secondary-square rounded p-3 mb-3">
                             <!-- header text -->
                             <div class="py-2 text-start">
                                 <h4> 88 Bamboo's Review </h4>
                                 <a v-if="isHttpValid(specified_producer['producerLink'])" :href="specified_producer['producerLink']" class="text-left default-text-no-background row">
                                     <div class="row">
-                                        <div class="col-4">
+                                        <div class="col-md-5 col-3">
                                             {{ getOGImage(specified_producer['producerLink']) }}
                                             <!-- [if] there is a cover image for the post-->
                                             <img v-if="ogImage != null" :src="ogImage[specified_producer.producerLink]" alt="OG Image" style="width: 80px; height: 80px;">
                                             <!-- [else] there is no cover image for the post (put 88 bamboo's logo) -->                    
                                             <img v-else src="https://88bamboo.co/cdn/shop/files/88B_New_Logo_-_white_face_transparent_background_180x.png?v=1655894111" style="width: 80px; height: 80px;">                                   
                                         </div>
-                                        <div class="col-8">
+                                        <div class="col-md-7 col-9">
                                             {{ deepDiveLinkFormatted }}
                                         </div>
                                     </div>
