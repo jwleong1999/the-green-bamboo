@@ -1574,19 +1574,27 @@
             const user = this.users.find(user => {
                 return user["_id"]["$oid"] == this.userID;
             });
-            this.followedVenues = user.followLists.venues;
+            if (user) {
+                this.followedVenues = user.followLists.venues;
+            }
         },
 
         // get listings by venue
         getListingsByVenue() {
             this.followedVenues.forEach(venue => {
-                const venueID = venue.$oid;
+                const venueID = venue.followerID.$oid;
                 const venueObject = this.venues.find(v => v._id.$oid === venueID);
-                let allMenuItems = venueObject["menu"];
-                let allListingsIDs = allMenuItems.reduce((acc, menuItem) => {
-                    return acc.concat(menuItem.listingsID);
+                let allMenuItems = venueObject["menu"]
+                let allSectionMenus = allMenuItems.reduce((acc, menuItem) => {
+                    return acc.concat(menuItem.sectionMenu);
                 }, []);
+
+                let allListingsIDs = allSectionMenus.reduce((acc, menuItem) => {
+                    return acc.concat(menuItem.itemID); 
+                }, []);
+
                 let uniqueListingsIDs = [...new Set(allListingsIDs.map(item => item["$oid"]))];
+                console.log(uniqueListingsIDs)
                 let allVenueDrinks = this.listings.filter(listing => {
                     let listing_id = listing._id["$oid"];
                     return uniqueListingsIDs.includes(listing_id);
