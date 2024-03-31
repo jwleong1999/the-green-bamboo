@@ -226,7 +226,6 @@ body {
     border: 4px solid #DD9E54;
 }
 
-
 .secondary-btn-not-rounded {
     color: whitesmoke;
     background-color: #DD9E54;
@@ -242,6 +241,17 @@ body {
     background-color: whitesmoke;
     border: 3px solid #535C72;
 }
+
+.secondary-square-btn {
+    color: whitesmoke;
+    background-color: #DD9E54;
+}
+
+.secondary-square-btn:hover {
+    color: whitesmoke;
+    background-color: #c27e30;
+}
+
 
 .tertiary-btn,
 .tertiary-btn-qa {
@@ -416,8 +426,6 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    opacity: 0.8;
-    background-color: lightgrey;
 }
 
 .centered {

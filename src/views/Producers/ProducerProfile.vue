@@ -753,11 +753,9 @@
                     <div class="col-12">
                         <div class="square secondary-square rounded p-3 mb-3">
                             <!-- header text -->
-                            <div class="square-inline">
-                                <h4 class="square-inline text-start mr-auto"> 88 Bamboo's Deepdive </h4>
-                            </div>
-                            <div class="py-2 text-start" v-if="specified_producer['producerLink'] != ''" >
-                                <a class="text-left default-text-no-background" :href="specified_producer['producerLink']">
+                            <div class="py-2 text-start">
+                                <h4> 88 Bamboo's Review </h4>
+                                <a v-if="isHttpValid(specified_producer['producerLink'])" :href="specified_producer['producerLink']" class="text-left default-text-no-background row">
                                     <div class="row">
                                         <div class="col-4">
                                             {{ getOGImage(specified_producer['producerLink']) }}
@@ -2089,6 +2087,16 @@
                     });
                 }
                 
+            },
+
+            isHttpValid(url) {
+                try {
+                    const newUrl = new URL(url);
+                    return newUrl.protocol === 'http:' || newUrl.protocol === 'https:';
+                } 
+                catch (err) {
+                    return false;
+                }
             }
 
         }
