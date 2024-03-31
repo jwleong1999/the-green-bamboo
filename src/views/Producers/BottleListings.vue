@@ -364,7 +364,7 @@
                                                         <div class="col">
                                                             <div class="d-flex flex-wrap gap-2">
                                                                 <div v-for="friend in showFriendTagList" v-bind:key="friend.id" class="mb-0 pb-0">
-                                                                    <button @click='removeFriendTag(friend)' class="btn btn-primary"> {{ friend.username }} </button> 
+                                                                    <button @click='removeFriendTag(friend)' class="btn secondary-square-btn"> {{ friend.username }} </button> 
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -378,7 +378,7 @@
                                                     </option>
                                                 </datalist>  
                                                 <div class="text-start mt-1">                                            
-                                                    <button v-if="selectedFriendTag!==null" class="btn primary-btn-less-round btn-sm" @click="tagSpecificFriend">Tag this friend</button>
+                                                    <button v-if="selectedFriendTag!==null" class="btn tertiary-square-btn mt-1" @click="tagSpecificFriend">Tag This Friend</button>
                                                 </div>  
                                                 <p v-show="friendTag.length > 0" class="text-start mb-1 text-danger" id="friendTagError"></p>
                                             </div>
@@ -936,7 +936,9 @@
                                     </div>
                                     <div class="col-9">
                                         <router-link v-for="(user, index) in detailedReview.taggedUsers" :key="index" :to="`/profile/user/${user.$oid}`">
-                                            {{ getUsernameFromId(user.$oid) }}
+                                            <p class="default-clickable-text">
+                                                @{{ getUsernameFromId(user.$oid) }}
+                                            </p>
                                         </router-link>
                                     </div>
                                 </div>
@@ -1052,7 +1054,7 @@
                         <!-- header text -->
                         <div class="py-2 text-start">
                             <h4> 88 Bamboo's Review </h4>
-                            <a :href="specified_listing['reviewLink']" class="text-left default-text-no-background row">
+                            <a v-if="isHttpValid(specified_listing['reviewLink'])" :href="specified_listing['reviewLink']" class="text-left default-text-no-background row">
                                 <div class="row">
                                     <div class="col-4">
                                         {{ getOGImage(specified_listing['reviewLink']) }}
@@ -2537,6 +2539,16 @@
                     });
                 }
                 
+            },
+
+            isHttpValid(url) {
+                try {
+                    const newUrl = new URL(url);
+                    return newUrl.protocol === 'http:' || newUrl.protocol === 'https:';
+                } 
+                catch (err) {
+                    return false;
+                }
             }
         }
     };
