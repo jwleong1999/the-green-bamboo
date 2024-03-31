@@ -289,7 +289,6 @@
                 <!-- discover, following & filter by drink type -->
                 <div class="col-lg-9 col-md-8 col-12">
                     <div class="container">
-                        <!-- buttons -->
                         <div class="row">
                             <!-- discover -->
                             <div class="col-xl-3 col-lg-4 col-12 mb-3">
@@ -311,47 +310,43 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="col-4 d-block d-xl-none"></div>
-                            <!-- filter by drink type -->
-                            <div class="col-xl-3 col-lg-4 col-12 mb-3">
-                                <div class="d-grid gap-2 dropdown">
-                                    <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden; text-overflow: ellipsis; min-width: 200px;">
-                                        {{ selectedDrinkType ? selectedDrinkType['drinkType'] : 'Filter: by Drink Type' }}
-                                        <span v-if="selectedDrinkType != ''" class="cross-icon" @click="clearSelection">&#10005;</span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <!-- Filter button for drink type -->
-
-                                        <li v-for="drinkType in drinkTypes" v-bind:key="drinkType._id" class="p-3">
-                                        <a class="dropdown-item" @click="selectDrinkType(drinkType)"> {{ drinkType['drinkType'] }} </a>
-                                        </li>       
-                                    </ul>
-                                </div>
-                            </div> 
-
-                            <!-- Dropdown based on category--> 
-                            <div v-if="selectedDrinkType != ''" class="col-xl-3 col-lg-4 col-12 mb-3">
-                                <div class="d-grid gap-2 dropdown">
-                                    <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden; text-overflow: ellipsis; min-width: 200px;">
-                                        {{ selectedCategory ? selectedCategory : 'Filter by drink category' }}
-                                        <span v-if="selectedCategory != null" class="cross-icon" @click="clearCategory">&#10005;</span>
-                                    </button>
-                                    <ul v-if="selectedTypeCategory != ''" class="dropdown-menu">
-                                        <!-- Filter button for drink category -->
-
-                                        <li v-for="category in selectedTypeCategory" @click="selectDrinkCategory(category)" v-bind:key="category" class="p-3">
-                                            <a class="dropdown-item"> {{ category }} </a>
-                                        </li>       
-                                        
-                                    </ul>
-                                    <ul v-else class="dropdown-menu">
-                                        <li>There is no category for this</li>       
-                                    </ul>
+                            <div class="dropdown col-xl-3 col-lg-4 col-12 mb-3">
+                                <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden; text-overflow: ellipsis; min-width: 200px;">
+                                    {{ selectedDrinkType ? selectedDrinkType['drinkType'] : 'Filter: by Drink Type' }}
+                                    <span v-if="selectedDrinkType != ''" class="cross-icon" @click="clearSelection">&#10005;</span>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" @click.stop>
+                                    <div class="d-flex">
+                                        <div class="dropdown-column ms-2 mt-2">
+                                            <h6 class="ms-3"> Filter by Drink Type </h6>
+                                            <hr>
+                                            <div v-for="drinkType in drinkTypes" v-bind:key="drinkType._id">
+                                                <!-- Filter button for drink type -->
+                                                <a class="dropdown-item" :class="{ 'active': selectedDrinkType === drinkType }" :style="{ backgroundColor: selectedDrinkType === drinkType ? '#747D92' : 'white', color: selectedDrinkType === drinkType ? 'whitesmoke' : 'black' }" @click="selectDrinkType(drinkType)"> 
+                                                    <span>{{ drinkType['drinkType'] }}</span>
+                                                </a>   
+                                            </div> 
+                                        </div>
+                                        <div class="dropdown-column me-2 mt-2">
+                                            <h6> Filter by Drink Category </h6>
+                                            <hr>
+                                            <div v-if="selectedTypeCategory != ''">
+                                                <div v-for="category in selectedTypeCategory" v-bind:key="category">
+                                                    <a class="dropdown-item" :class="{ 'active': selectedCategory === category }" :style="{ backgroundColor: selectedCategory === category ? '#747D92' : 'white', color: selectedCategory === category ? 'whitesmoke' : 'black' }" @click="selectDrinkCategory(category)">
+                                                        <span>{{ category }}</span>
+                                                    </a> 
+                                                </div>
+                                            </div>
+                                            <div v-else>
+                                                <a class="dropdown-item"> 
+                                                    <span> There is no category for this </span>
+                                                </a>   
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div v-if="selectedDrinkType != ''" class="col ml-auto"></div>
-                            
                             <!-- sort by drink type -->
                             <div class="col-xl-3 col-lg-4 col-12 mb-3 ml-auto">
                                 <div class="d-grid gap-2 dropdown">
