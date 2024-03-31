@@ -188,7 +188,7 @@
                                 <div class="col-lg-8 col-12">
                                     <!-- Listing Name + Router Link -->
                                     <router-link class="text-dark text-decoration-none" :to="{ path: '/listing/view/' + resultListing._id['$oid'] }">
-                                        <h4 class="fw-bold m-1">{{ resultListing['listingName'] }}</h4>
+                                        <h4 class="fw-bold my-1">{{ resultListing['listingName'] }}</h4>
                                     </router-link>
                                     <!-- Producer Name + Router Link -->
                                     <router-link class="text-secondary-emphasis text-decoration-none" :to="{ path: '/profile/producer/' + resultListing.producerID['$oid'] }">
@@ -283,7 +283,7 @@
                                 <div class="col-lg-8 col-12">
                                     <!-- Producer Name + Router Link -->
                                     <router-link class="text-dark text-decoration-none" :to="{ path: '/profile/producer/' + producer._id['$oid'] }">
-                                        <h4 class="fw-bold m-1">{{ producer['producerName'] }}</h4>
+                                        <h4 class="fw-bold my-1">{{ producer['producerName'] }}</h4>
                                     </router-link>
                                     <!-- Country of Origin -->
                                     <p class="m-0">
@@ -352,7 +352,7 @@
                                 <div class="col-lg-8 col-12">
                                     <!-- Venue Name + Router Link -->
                                     <router-link class="text-dark text-decoration-none" :to="{ path: '/profile/venue/' + venue._id['$oid'] }">
-                                        <h4 class="fw-bold m-1">{{ venue['venueName'] }}</h4>
+                                        <h4 class="fw-bold my-1">{{ venue['venueName'] }}</h4>
                                     </router-link>
                                     <!-- Country of Origin -->
                                     <p class="m-0">
