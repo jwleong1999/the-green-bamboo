@@ -1046,7 +1046,6 @@
                     let allDrinks = []
                     for (const item of allDrinkShelf) {
                         const listing = this.listings.find(listing => listing._id.$oid === item[1].$oid);
-                        console.log(listing)
                         if (listing) {
                             allDrinks.push(listing);
                         }
