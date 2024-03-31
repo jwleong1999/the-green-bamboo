@@ -338,7 +338,7 @@
                                                 </div>
                                             </div>
                                             <div v-else>
-                                                <a class="dropdown-item"> 
+                                                <a class="dropdown-item" :class="{ 'active': selectedCategory === category }" :style="{ backgroundColor: selectedCategory === category ? '#747D92' : 'white', color: selectedCategory === category ? 'whitesmoke' : 'black' }"> 
                                                     <span> There is no category for this </span>
                                                 </a>   
                                             </div>
