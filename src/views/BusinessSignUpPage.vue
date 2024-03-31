@@ -1,6 +1,29 @@
 <template>
     <NavBar />
 
+    <!-- Display when data is still loading -->
+    <div class="text-info-emphasis fst-italic fw-bold fs-5 pt-5" v-if="dataLoaded == false">
+        <span>Loading page, please wait...</span>
+        <br><br>
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Display when data fails to load -->
+    <div class="text-danger fst-italic fw-bold fs-3 pt-5" v-if="dataLoaded == null"> 
+        <span>An error occurred while loading this page, please try again!</span>
+        <br>
+        <button class="btn primary-btn btn-sm" @click="this.$router.go(-1)">
+            <span class="fs-5 fst-italic"> Return to previous page </span>
+        </button>
+        <router-link :to="'/'" class="mx-1">
+            <button class="btn primary-btn btn-sm">
+                <span class="fs-5 fst-italic"> Go to Home page </span>
+            </button>
+        </router-link>
+    </div>
+
     <!-- Display when form is being submitted -->
     <div class="text-info-emphasis fst-italic fw-bold fs-5" v-if="submitForm"> 
         <span>The form is being submitted, please hold on!</span>
@@ -31,7 +54,7 @@
         </button>
     </div>
 
-    <div class="body-login">
+    <div class="body-login" v-if="dataLoaded">
         <div class="container py-5">
 
             <div class="rounded px-5 py-2" v-if="fillForm" style="background-color: #DDC8A9;">
@@ -214,6 +237,7 @@
         },
         data(){
             return{
+                dataLoaded:false,
                 fillForm:true,
                 submitForm:false,
                 successSubmission:false,
@@ -283,12 +307,18 @@
                 }
             },
             async loadData(){
-                const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
-                for (let country of response.data) {
-                    this.countries.push(country.originCountry);
-                }
-                this.countries = this.countries.sort();
-                
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
+                    for (let country of response.data) {
+                        this.countries.push(country.originCountry);
+                    }
+                    this.countries = this.countries.sort();
+                    this.dataLoaded = true;
+                    } 
+                    catch (error) {
+                        console.error(error);
+                        this.dataLoaded = null;
+                    }
             },
             goBack(){
                 this.$router.go(-1)
