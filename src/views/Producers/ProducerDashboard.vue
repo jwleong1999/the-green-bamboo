@@ -198,13 +198,13 @@
                 <div class="row">
 
                     <!-- col 1: spread of ratings -->
-                    <div class="col text-start pt-5 mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start pt-5 mx-3">
                         <h3> Spread of Ratings </h3>
                         <Bar :data="ratingsData" :options="chartOptions" />
                     </div>
 
                     <!-- col 2: your most reviewed categories -->
-                    <div class="col text-start pt-5 mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start pt-5 mx-3">
                         <h3> Your Most Reviewed Categories </h3>
                         <div class="text-start pb-2" v-for="(category, index) in mostDiscussedCategories" v-bind:key="category">
                             <div class="row ms-3 default-clickable-text"> 
