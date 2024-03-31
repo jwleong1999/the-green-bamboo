@@ -612,3 +612,7 @@ body {
 .pac-container pac-logo hdpi {
     width: 100%
 }
+
+.dropdown-column {
+    min-width: max-content;
+}

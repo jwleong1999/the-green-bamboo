@@ -325,7 +325,7 @@
                                                 <a class="dropdown-item" :class="{ 'active': selectedDrinkType === drinkType }" :style="{ backgroundColor: selectedDrinkType === drinkType ? '#747D92' : 'white', color: selectedDrinkType === drinkType ? 'whitesmoke' : 'black' }" @click="selectDrinkType(drinkType)"> 
                                                     <span>{{ drinkType['drinkType'] }}</span>
                                                 </a>   
-                                            </div> 
+</div>
                                         </div>
                                         <div class="dropdown-column me-2 mt-2">
                                             <h6> Filter by Drink Category </h6>
