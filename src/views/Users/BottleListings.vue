@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <!-- Display when venue does not exist -->
+    <!-- Display when data fails to load-->
     <div class="text-danger fst-italic fw-bold fs-3 pt-5" v-if="dataLoaded == null"> 
         <span>An error occurred while loading this page, please try again!</span>
         <br>
