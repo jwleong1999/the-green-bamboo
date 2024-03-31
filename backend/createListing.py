@@ -10,6 +10,9 @@ from flask import Flask, request, jsonify
 from flask_pymongo import PyMongo
 from flask_cors import CORS
 
+from datetime import datetime
+import pytz
+
 import data
 
 app = Flask(__name__)
@@ -28,6 +31,9 @@ def parse_json(data):
 @app.route("/createListing", methods= ['POST'])
 def createListings():
     rawBottle = request.get_json()
+    # Add current datetime to the listing
+    rawBottle['addedDate'] = datetime.now(pytz.timezone('Etc/GMT-8'))
+    rawBottle["allowMod"] = True
 
     # Duplicate listing check: Reject if listing with the same bottle name already exists in the database
     rawBottleName = rawBottle["listingName"]
