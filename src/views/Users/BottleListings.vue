@@ -1219,6 +1219,24 @@
                 return averageRating;
             },
 
+            // get ratings for a listing --> return 0 if no ratings
+            getAllRatings(listing) {
+                const ratings = this.reviews.filter((rating) => {
+                    return rating["reviewTarget"]["$oid"] == listing["_id"]["$oid"];
+                });
+                // if there are no ratings
+                if (ratings.length == 0) {
+                    return 0;
+                }
+                // else there are ratings
+                const averageRating = ratings.reduce((total, rating) => {
+                    return total + rating["rating"];
+                }, 0) / ratings.length;
+                // round to 1 decimal place
+                const roundedRating = Math.round(averageRating * 10) / 10;
+                return roundedRating;
+            },
+
             // Handle select of drink type filter option like sake, gin, whiskey
             selectDrinkType(drinkType) {
 
