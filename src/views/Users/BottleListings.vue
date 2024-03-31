@@ -824,7 +824,6 @@
             };
         },
         mounted() {
-            this.loadData();
             // Load local storage variables
             const accID = localStorage.getItem("88B_accID");
             if(accID !== null){
@@ -834,6 +833,7 @@
             if(userType !=null){
                 this.userType = userType
             }
+            this.loadData();
         },
         methods: {
             // load data from database
@@ -911,7 +911,7 @@
                                 this.isAdmin = true
                             }
                             // if user is not admin, check if user is a moderator
-                            else if (this.user.isModerator) {
+                            if (this.user.modType.length > 0) {
                                 this.isModerator = true
                             }
                         }
