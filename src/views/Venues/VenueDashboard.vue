@@ -439,7 +439,7 @@
                 // Q & A
                 answeredQuestions: [],
                 unansweredQuestions: [],
-                qaMode: 'unanswered',
+                qaMode: 'answered',
                 qaAnswer: '',
 
                 // chart options
@@ -563,6 +563,7 @@
             // Obtain venue data
             if (this.targetVenue != "" && this.targetVenue != undefined) {
                 if (this.selfView) {
+                    this.qaMode = 'unanswered';
                     this.getVenueData();
                 }
             }
