@@ -1568,7 +1568,9 @@
             }) // to get top five, add .slice(0, 5)
             mostProducerReviews.forEach(drink => {
                 let review = this.getListingByName(drink);
-                this.mostReviews.push(review);
+                if(review && review !=''){
+                    this.mostReviews.push(review);
+                }
             });
         },
 
