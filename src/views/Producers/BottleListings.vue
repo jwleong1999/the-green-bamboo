@@ -6,15 +6,16 @@
     <div class="container pt-5">
         <div class="row">
             <!-- producer information -->
-            <div class="col-9 no-margin">
+            <div class="col-12 col-md-9 no-margin">
+                
                 <!-- header -->
                 <div class="row">
                     <!-- image -->
-                    <div class="col-3 image-container">
+                    <div class="col-12 col-lg-3 image-container">
                         <img :src=" 'data:image/jpeg;base64,' + ( specified_listing['photo'] || defaultProfilePhoto )" style="width: 200px; height: 200px;">
                     </div>
                     <!-- details -->
-                    <div class="col-9 text-start">
+                    <div class="col-12 col-lg-9 text-start">
                         <div class="container text-start">
                             <!-- drink category -->
                             <div class="row">
@@ -63,11 +64,11 @@
 
                             <!-- expression name -->
                             <div class="row">
-                                <div class="col-9">
+                                <div class="col-12 col-lg-9">
                                     <h3 class="text-body-secondary"> <b> {{ specified_listing["listingName"] }} </b> </h3>
                                 </div>
                                 <!-- suggest edit & report duplicate -->
-                                <div class="col-3">
+                                <div class="col-12 col-md-3 col-lg-2">
                                     <!-- [if] correct producer-->
                                     <!-- TODO: check if moderator type is for the listing -->
                                     <div v-if="correctProducer || correctModerator">
@@ -93,7 +94,7 @@
                             <!-- producer & bottler -->
                             <div class="row pt-1">
                                 <!-- producer -->
-                                <div class="col-6">
+                                <div class="col-12 col-lg-6">
                                     <h5 class="text-body-secondary">
                                         <router-link :to="{ path: '/profile/producer/' + this.producer_id }" class="default-text-no-background">
                                             <p> {{ getProducerName(specified_listing["producerID"]) }} </p>
@@ -101,7 +102,7 @@
                                     </h5>
                                 </div>
                                 <!-- bottler -->
-                                <div class="col-6">
+                                <div class="col-12 col-lg-6">
                                     <h5 v-if="specified_listing['bottler'] != 'OB'" class="text-body-secondary"> Bottler: <u> {{ specified_listing["bottler"] }} </u>  </h5>
                                         <h5 v-else class="text-body-secondary"> Bottler:
                                             <router-link :to="{ path: '/profile/producer/' + this.producer_id }" class="default-text-no-background"> 
@@ -112,7 +113,7 @@
                             </div>
                             <!-- description -->
                             <div class="row">
-                                <div class="col">
+                                <div class="col-lg-7">
                                     <div class="py-2"></div>
                                     <p> {{ specified_listing["officialDesc"] }} </p>
                                 </div>
@@ -123,15 +124,15 @@
 
                 <!-- more information (category, age, country of origin, abv, list buttons & bookmark)-->
                 <div class="row pt-4">
-                    <div class="col-7">
+                    <div class="col-6 col-lg-4 ">
                         <div class="row">
                             <!-- category -->
-                            <div class="col-4 text-start">
+                            <div class="col-6 col-md-4 text-start">
                                 <p class="mb-2"> <u> Category </u> </p>
                                 <h5 class="text-body-secondary"> <b> {{ specified_listing["typeCategory"] }} </b> </h5>
                             </div>
                             <!-- age --> 
-                            <div class="col-2 text-start">
+                            <div class="col-6 col-md-2 text-start">
                                 <!-- for wine listings -->
                                 <div v-if="specified_listing['drinkType'] == 'Wine'">
                                     <p class="mb-2"> <u> Vintage </u> </p> <!-- to change this to calculate the age -->
@@ -144,27 +145,27 @@
                                 </div>
                             </div>
                             <!-- country of origin -->
-                            <div class="col-4 text-start">
+                            <div class="col-6 col-md-4 text-start">
                                 <p class="mb-2"> <u> Country of Origin </u> </p>
                                 <h5 class="text-body-secondary"> <b> {{ specified_listing["originCountry"] }} </b> </h5>
                             </div>
                             <!-- abv -->
-                            <div class="col-2 text-start">
+                            <div class="col-6 col-md-2 text-start">
                                 <p class="mb-1"> <u> ABV </u> </p>
                                 <h5 class="text-body-secondary"> <b> {{ specified_listing["abv"] }} </b> </h5>
                             </div>
                         </div>
                     </div>
                     <!-- have tried button -->
-                    <div class="col-2 pe-0">
+                    <div class="col-2 pe-0 col-md-2 pe-md-0">
                         <div v-if="user" v-html="checkDrinkLists(specified_listing).buttons.haveTried" class="d-grid" @click="addToTriedList"> </div>
                     </div>
                     <!-- want to try button -->
-                    <div class="col-2 ps-0">
+                    <div class="col-2 pe-0 col-md-2 pe-md-0">
                         <div v-if="user" v-html="checkDrinkLists(specified_listing).buttons.wantToTry" class="d-grid" @click="addToWantList"> </div>
                     </div>
                     <!-- bookmark button -->
-                    <div class="col-1 text-end">
+                    <div class="col-1 text-end col-md-1 text-md-end">
                         <BookmarkIcon 
                             v-if="user" 
                             :user="user" 
@@ -177,7 +178,7 @@
 
                 <!-- more information (average rating, would recommend, would drink again) -->
                 <div class="row pt-3">
-                    <div class="col-7">
+                    <div class="col-12 col-lg-7">
                         <div class="row">
                             <!-- average rating -->
                             <div class="col-4 text-start">
@@ -295,7 +296,7 @@
                                     <!-- row 1: language, location -->
                                     <div class="row">
                                         <!-- language-->
-                                        <div class="col-6 justify-content-start">
+                                        <div class="col-6 col-md-12 justify-content-start mb-3">
                                             <p class = 'text-start mb-2 fw-bold'>Language<span class="text-danger">*</span></p>
                                             <div class="input-group">                                                    
                                                 <select v-model="selectedLanguage" class="form-select" id="inputGroupSelect01">
@@ -308,7 +309,7 @@
                                             </div>
                                         </div>
                                         <!-- select location -->
-                                        <div class="col-6 justify-content-start form-group mb-3">
+                                        <div class="col-6 col-md-12 justify-content-start form-group mb-3">
                                             <p class="text-start mb-1 fw-bold me-1" style="display: flex; align-items: center;">Location 
                                                 &nbsp;
                                                 <a @click="changeLocationInput('find')" :class="{ 'false-clickable-text': !isActive['find'], 'true-clickable-text': isActive['find'] }">
@@ -345,7 +346,7 @@
                                                 </GMapAutocomplete>
                                             </div>
                                             <div class="row">
-                                                <div class="col-6 d-flex justify-content-start">
+                                                <div class="col-6 col-md-12 d-flex justify-content-start">
                                                     <button v-if="selectedLocation!==''" class="btn text-start mb-1" style="background-color: #535C72;color: white;" @click="clearLocation">Clear Selection</button>
                                                 </div>
                                             </div>
@@ -355,7 +356,7 @@
                                     <!-- row 2: tag friends, add photo -->
                                     <div class="row">
                                         <!-- language-->
-                                        <div class="col-6 justify-content-start">
+                                        <div class="col-6 col-md-12 justify-content-start">
                                             <p class = 'text-start mb-2 fw-bold'>Tag Friends</p>
                                             <div class="form-group mb-2">
                                                 <div v-if="showFriendTagList.length > 0" class="form-label pb-2 text-start"> 
@@ -384,7 +385,7 @@
                                             </div>
                                         </div>
                                         <!-- add photo -->
-                                        <div class="col-6 justify-content-start">
+                                        <div class="col-6 col-md-12 justify-content-start">
                                             <p class = 'text-start mb-2 fw-bold'>Add Photo</p>
                                             <input class="form-control mb-2" @change="onFileChange" type="file" id="reviewPhoto">
                                             <div class = "row">
@@ -463,7 +464,7 @@
 
                                         <!-- row 7: colours -->
                                         <div class="row">
-                                            <div class="col-6 justify-content-start">
+                                            <div class="col-6 col-md-12 justify-content-start">
                                                 <p class = 'text-start mb-2 fw-bold'>Colour <span class="text-danger">*</span></p>
                                             </div>
                                         </div>
@@ -507,7 +508,7 @@
                                                 </button>
                                             </div>
                                             <!-- Special gradient -->
-                                            <div class="col-5">
+                                            <div class="col-md-5 col-12">
                                                 <button @click="displaySelectColour(key)" v-for="(value, key) in specialColours" :key="key" type="button" :value="key" class="btn" data-bs-toggle="button" :style="{ width: '30px', height: '30px', borderRadius: '0', borderColor:'grey', borderWidth:'1px', backgroundImage: `linear-gradient(to bottom right, ${value[0]}, ${value[1]}`}">                                
                                                 </button>
                                             </div>
@@ -653,7 +654,7 @@
                             <!-- [if] user has not added a review yet, add new photo -->
                             <div v-if="userType == 'user' && userID !== 'defaultUser' && !inEdit" class="row">
                                 <!-- (1) add button -->
-                                <div class="col-2">
+                                <div class="col-sm-6 col-md-4 col-lg-2">
                                     <div data-bs-toggle="modal" data-bs-target="#reviewModal">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
                                             <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
@@ -661,14 +662,14 @@
                                     </div>
                                 </div>
                                 <!-- (2) to (5) other photos -->
-                                <div v-for="review in filteredReviewsWithImages.slice(0,4)" v-bind:key="review" class="col-2">
+                                <div v-for="review in filteredReviewsWithImages.slice(0,4)" v-bind:key="review" class="col-sm-8 col-md-6 col-lg-3">
                                     <img :src=" 'data:image/jpeg;base64,' + (review['photo'] || defaultProfilePhoto)" alt="" class="review-image" style="width: 150px; height: 150px">
                                 </div>
                             </div>
                             <!-- [else] user has added a review -->
                             <!-- (1) to (5) display all photos -->
                             <div v-else class="row">
-                                <div v-for="review in filteredReviewsWithImages" v-bind:key="review" class="col-2">
+                                <div v-for="review in filteredReviewsWithImages" v-bind:key="review" class="col-sm-8 col-md-6 col-lg-3">
                                     <img :src="'data:image/jpeg;base64,' + (review['photo'] || defaultProfilePhoto)" alt="" class="review-image" style="width: 150px; height: 150px">
                                 </div>
                             </div>
@@ -683,13 +684,13 @@
                 <div>
                     <div class="row mb-3" v-for="review in filteredReviews" v-bind:key="review._id">
                         <!-- profile photo -->
-                        <div class="col-1">
+                        <div class="col-12 col-sm-1">
                             <router-link :to="`/profile/user/${review.userID.$oid}`">
                                 <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromReview(review) || defaultProfilePhoto)" alt="" class="profile-image">
                             </router-link>
                         </div>
                         <!-- user reviews -->
-                        <div class="col-9">
+                        <div class="col-12 col-sm-10">
                             <div class="row">
                                 <div class="d-flex align-items-center text-start mb-2">
                                     <router-link :to="`/profile/user/${review.userID.$oid}`" style="color: inherit">
@@ -755,7 +756,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-2">
+                        <div class="col-12 col-sm-1">
                             <div class="text-end">
                                 <!-- review photo -->
                                 <img :src=" 'data:image/jpeg;base64,' + (review['photo'] || defaultProfilePhoto)" alt="" class="review-image" style="width: 125px; height: 125px">
@@ -979,7 +980,7 @@
             </div> <!-- end of producer information -->
             
             <!-- where to buy & where to try & 88 bamboo's review -->
-            <div class="col-3">
+            <div class="col-sm-12 col-md-9 col-lg-3">
                 <!-- where to buy -->
                 <div class="row">
                     <div class="square primary-square rounded p-3 mb-3 text-start" style="height: 250px;">
@@ -1056,14 +1057,14 @@
                             <h4> 88 Bamboo's Review </h4>
                             <a v-if="isHttpValid(specified_listing['reviewLink'])" :href="specified_listing['reviewLink']" class="text-left default-text-no-background row">
                                 <div class="row">
-                                    <div class="col-4">
+                                    <div class="col-lg-4 col-md-6 col-sm-12">
                                         {{ getOGImage(specified_listing['reviewLink']) }}
                                         <!-- [if] there is a cover image for the post-->
                                         <img v-if="ogImage != null" :src="ogImage[specified_listing.reviewLink]" alt="OG Image" style="width: 80px; height: 80px;">
                                         <!-- [else] there is no cover image for the post (put 88 bamboo's logo) -->                    
                                         <img v-else src="https://88bamboo.co/cdn/shop/files/88B_New_Logo_-_white_face_transparent_background_180x.png?v=1655894111" style="width: 80px; height: 80px;">                                   
                                     </div>
-                                    <div class="col-8">
+                                    <div class="col-lg-8 col-md-12">
                                         {{ deepDiveLinkFormatted }}
                                     </div>
                                 </div>
