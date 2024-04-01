@@ -41,8 +41,8 @@
                             <img :src="selectedImage || 'data:image/jpeg;base64,' + (specified_producer['photo'] || defaultProfilePhoto)" 
                                 alt="" style="width: 200px; height: 200px; z-index: 1; opacity: 50%">
                             <!-- change option -->
-                            <label for="file" class="btn primary-light-dropdown mt-3" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose file</label>
-                            <input id="file" type="file" v-on:change="loadFile" ref="fileInput" 
+                            <label for="file1" class="btn primary-light-dropdown mt-3" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose file</label>
+                            <input id="file1" type="file" v-on:change="loadFile" ref="fileInput" 
                             style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; opacity: 0; width: 200px; height: 200px; cursor: pointer;">
                         </div>
                         <!-- [else] not editing -->
@@ -222,8 +222,8 @@
                                     <img :src="selectedLatestUpdateImage || 'data:image/jpeg;base64,' + (latestUpdate['photo'] || defaultProfilePhoto)" 
                                         alt="" style="width: 150px; height: 150px; z-index: 1; opacity: 50%">
                                     <!-- change option -->
-                                    <label for="file" class="btn primary-light-dropdown mt-3" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose</label>
-                                    <input id="file" type="file" v-on:change="loadLatestUpdateFile" ref="fileInput" 
+                                    <label for="file2" class="btn primary-light-dropdown mt-3" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose</label>
+                                    <input id="file2" type="file" v-on:change="loadLatestUpdateFile" ref="fileInput2" 
                                     style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; opacity: 0; width: 200px; height: 200px; cursor: pointer;">
                                 </div>
                                 <!-- [else] not editing -->
@@ -284,7 +284,7 @@
                                                     <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5m0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>
                                                 </svg>
                                             </label>
-                                            <input id="file" type="file" v-on:change="loadUpdateFile" style="display: none;" ref="fileInput">
+                                            <input id="file3" type="file" v-on:change="loadUpdateFile" style="display: none;" ref="fileInput3">
                                         </div>
                                         <div v-on:click="addUpdates" class="send-icon ps-1">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
@@ -332,18 +332,18 @@
                                         <div class="col-xxl-2 col-md-3 col-4 image-container">
                                             <!-- image -->
                                             <!-- [if] editing -->
-                                            <div v-if="editingRemainingUpdate && editingRemainingUpdateID == update._id.$oid" style="position: relative; text-align: center;">
+                                            <div v-if="editingRemainingUpdateID == update._id.$oid" style="position: relative; text-align: center;">
                                                 <!-- image -->
                                                 <img :src="selectedRemainingUpdateImage || 'data:image/jpeg;base64,' + (update['photo'] || defaultProfilePhoto)" 
                                                     alt="" style="width: 150px; height: 150px; z-index: 1; opacity: 50%">
                                                 <!-- change option -->
-                                                <label for="file" class="btn primary-light-dropdown mt-3" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose</label>
-                                                <input id="file" type="file" v-on:change="loadRemainingUpdateFile" ref="fileInput" 
+                                                <label for="file4" class="btn primary-light-dropdown mt-3" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose</label>
+                                                <input id="file4" type="file" v-on:change="loadRemainingUpdateFile" ref="fileInput4" 
                                                 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; opacity: 0; width: 200px; height: 200px; cursor: pointer;">
                                             </div>
                                             <!-- [else] not editing -->
-                                            <div v-else>
-                                                <img :src="selectedRemainingUpdateImage || 'data:image/jpeg;base64,' + (update['photo'] || defaultProfilePhoto)" 
+                                            <div v-else-if="editingRemainingUpdate == false || editingRemainingUpdateID != update._id.$oid">
+                                                <img :src="'data:image/jpeg;base64,' + (update['photo'] || defaultProfilePhoto)" 
                                                     alt="" style="width: 150px; height: 150px; z-index: 1;">
                                             </div>
                                             <!-- # of likes -->
@@ -1532,6 +1532,7 @@
                     }
 
                     this.latestUpdate = latestUpdate
+                    console.log(this.latestUpdate)
 
                     // add likes
                     this.updateLikes = latestUpdate["likes"];
@@ -1886,7 +1887,6 @@
             async loadLatestUpdateFile(event) {
                 try {
                     const file = event.target.files[0];
-                    this.updateFileName = "";
                     const reader = new FileReader();
 
                     reader.onloadend = async () => {
@@ -1907,7 +1907,6 @@
             async loadRemainingUpdateFile(event) {
                 try {
                     const file = event.target.files[0];
-                    this.updateFileName = "";
                     const reader = new FileReader();
 
                     reader.onloadend = async () => {
@@ -1928,6 +1927,11 @@
             saveUpdateEdit(update, status) {
                 if (status == "latest") {
                     this.editingLatestUpdate = false;
+                    // check if image is uploaded
+                    if (this.image64LatestUpdate == null) {
+                        // set default image
+                        this.image64LatestUpdate = this.latestUpdate["photo"];
+                    }
                     // send to backend
                     try {
                         const response = this.$axios.post('http://127.0.0.1:5200/editUpdate', 
@@ -1950,8 +1954,12 @@
                 }
                 else if (status == "remaining") {
                     this.editingRemainingUpdate = false;
-                    this.editingRemainingUpdateID = ""
                     let newUpdate = this.edit_remainingUpdateText[update._id.$oid];
+                    // check if image is uploaded
+                    if (this.image64RemainingUpdate == null) {
+                        // set default image
+                        this.image64RemainingUpdate = this.newUpdate["photo"];
+                    }
                     // send to backend
                     try {
                         const response = this.$axios.post('http://127.0.0.1:5200/editUpdate', 
