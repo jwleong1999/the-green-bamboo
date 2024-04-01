@@ -122,6 +122,9 @@
             // for search feature
             goSearch() {
                 if (this.searchInput != '') {
+                    // remove any '/' from search input
+                    this.searchInput = this.searchInput.replace(/\//g, '');
+
                     // if already on search page, refresh the page with new search input
                     if (this.$route.path.split('/')[1] == 'search') {
                         window.location.href = '/search/' + this.searchInput;
