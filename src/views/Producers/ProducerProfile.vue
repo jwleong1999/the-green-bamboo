@@ -1090,7 +1090,6 @@
                     }
                     catch (error) {
                         console.error(error);
-                        this.dataLoaded = null;
                     }
 
                 // check whether mod can edit any listing at all in the producer page
