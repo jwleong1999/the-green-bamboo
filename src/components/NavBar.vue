@@ -4,9 +4,10 @@
 <!-- TODO: Implement this component into all pages that require them, replacing in-built navbar code -->
 
 <template>
-    <!-- Main NavBar -->
     <div class="navbar-container">
-        <nav class="navbar">
+
+        <!-- Main NavBar -->
+        <nav class="navbar pb-0">
             <div class="container-fluid align-items-center col-xxl-8 col-xl-9 col-lg-10 col-md-11 col-sm-12">
 
                 <!-- logo -->
@@ -42,12 +43,17 @@
                     <!-- dropdown menu -->
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><router-link :to="'/'" class="dropdown-item">Home</router-link></li>
-                        <li><router-link :to="profileURL" class="dropdown-item">My Profile</router-link></li>
-                        <li v-if="accType == 'producer'"><router-link :to="'/listing/create'" class="dropdown-item">Create New Listing</router-link></li>
+
+                        <li v-if="onProfile"><span class="dropdown-item" @click="forceLoad(profileURL)">My Profile</span></li>
+                        <li v-if="!onProfile"><router-link :to="profileURL" class="dropdown-item">My Profile</router-link></li>
+
+                        <li v-if="accType == 'producer' || isAdmin || isModerator"><router-link :to="'/listing/create'" class="dropdown-item">Create New Listing</router-link></li>
                         <li v-if="accType == 'user'"><router-link :to="'/request/new'" class="dropdown-item">Request New Listing</router-link></li>
                         <li v-if="accType == 'user' || accType == 'producer'"><router-link :to="'/request/view'" class="dropdown-item">View Requests</router-link></li>
+
                         <li v-if="isAdmin"><router-link :to="'/admin/dashboard'" class="dropdown-item">Admin Dashboard</router-link></li>
                         <li v-if="isAdmin"><router-link :to="'/admin/importListings'" class="dropdown-item">Import Listings</router-link></li>
+
                         <li><hr class="dropdown-divider"></li>
                         <li v-if="profileURL == '/login'"><router-link :to="'/login'" class="dropdown-item">Login</router-link></li>
                         <li v-if="profileURL == '/login'"><router-link :to="'/signup'" class="dropdown-item">Sign Up</router-link></li>
@@ -55,8 +61,50 @@
                     </ul>
 
                 </div>
+
             </div>
         </nav>
+
+        <!-- secondary nav bar -->
+        <div class="col-12 primary-square mt-2">
+            <div class="container-fluid align-items-center col-xxl-8 col-xl-9 col-lg-10 col-md-11 col-sm-12">
+
+                <router-link :to="'/'">
+                    <button class="btn primary-btn border-0 fw-bold" type="button">
+                        Explore
+                    </button>
+                </router-link>
+
+                <router-link :to="'/'">
+                    <button class="btn primary-btn border-0 fw-bold" type="button">
+                        Best Of
+                    </button>
+                </router-link>
+
+                <router-link :to="dashboardURL">
+                    <button class="btn primary-btn border-0 fw-bold" type="button">
+                        My {{ dashboardWord }} Stats
+                    </button>
+                </router-link>
+
+                <button class="btn primary-btn border-0 fw-bold" type="button" @click="externalURL('https://88bamboo.co/')">
+                    Latest Drink News
+                </button>
+
+                <router-link v-if="accType == 'user'" :to="'/request/new'">
+                    <button class="btn primary-btn border-0 fw-bold text-warning" type="button">
+                        Submit A Drink
+                    </button>
+                </router-link>
+
+                <router-link v-if="accType == 'producer' || isAdmin || isModerator" :to="'/listing/create'">
+                    <button class="btn primary-btn border-0 fw-bold text-warning" type="button">
+                        Add A New Drink
+                    </button>
+                </router-link>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -69,7 +117,11 @@
                 accType: '',
                 photo: '',
                 profileURL: '/login',
-                isAdmin:false,
+                dashboardURL: '/login',
+                isAdmin: false,
+                isModerator: false,
+                onProfile: false,
+                dashboardWord: '',
             }
         },
         mounted() {
@@ -84,14 +136,17 @@
                     url = url + 'User/' + accID;
                     this.loadData(url);
 
-                    // this.profileURL = '/userprofile';
                     this.profileURL = '/profile/user/'+accID;
+                    this.dashboardURL = '/dashboard/user';
+                    this.dashboardWord = 'Drink';
                 } 
                 else if (this.accType == 'producer') {
                     url = url + 'Producer/' + accID;
                     this.loadData(url);
 
                     this.profileURL = '/profile/producer/' + accID;
+                    this.dashboardURL = '/Producers/ProducersDashboard/' + accID;
+                    this.dashboardWord = 'Brand';
                     
                 } 
                 else if (this.accType == 'venue') {
@@ -99,6 +154,13 @@
                     this.loadData(url);
 
                     this.profileURL = '/profile/venue';
+                    this.dashboardURL = '/dashboard/venue';
+                    this.dashboardWord = 'Venue';
+                }
+
+                // check if current page is profile page
+                if (this.$route.path.split('/')[1] == 'profile') {
+                    this.onProfile = true;
                 }
             }
         },
@@ -108,10 +170,14 @@
                     try {
                         const response = await this.$axios.get(url);
                         this.photo = response.data["photo"];
-                        if(this.accType=='user' && response.data.isAdmin){
-                            this.isAdmin = true
-                        }else{
-                            this.isAdmin = false
+
+                        if (this.accType == 'user') {
+                            if (response.data.isAdmin) {
+                                this.isAdmin = true;
+                            }
+                            if (Array.isArray(response.data.modType) && response.data.modType.length > 0) {
+                                this.isModerator = true;
+                            }
                         }
                     } 
                     catch (error) {
@@ -141,6 +207,16 @@
                 localStorage.removeItem('88B_accID');
                 localStorage.removeItem('88B_accType');
                 this.$router.push({path: '/login'});
+            },
+
+            // force reload of page
+            forceLoad(url) {
+                window.location.assign(this.$route.path.split('/')[0] + url);
+            },
+
+            // open external URL
+            externalURL(url) {
+                window.location.assign(url);
             }
 
         }
