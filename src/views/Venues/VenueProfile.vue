@@ -809,7 +809,9 @@
 
                                                 <!-- Item Name -->
                                                 <div class="col-7">
-                                                    <p class="fs-5 fw-bold text-start text-decoration-underline m-0" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">{{ sectionItem.itemDetails['itemName'] }}</p>
+                                                    <router-link class="default-text-no-background" :to="{ path: '/listing/view/' + sectionItem.itemID['$oid'] }">
+                                                        <p class="fs-5 fw-bold text-start text-decoration-underline m-0" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">{{ sectionItem.itemDetails['itemName'] }}</p>
+                                                    </router-link>
                                                 </div>
 
                                                 <!-- Bookmark: Have Tried -->
