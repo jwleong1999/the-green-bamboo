@@ -419,5 +419,21 @@ def getProducersProfileViews():
     return producersProfileViews
 
 # -----------------------------------------------------------------------------------------
+# [GET] requestInaccuracy by venueID
+@app.route("/getRequestInaccuracyByVenue/<id>")
+def getRequestInaccuracyByVenue(id):
+    # only get requestInaccuracy that has reviewStatus = False
+    data = db.requestInaccuracy.find({"venueID": ObjectId(id), "reviewStatus": False})
+    if data is None:
+        return []
+    allRequestInaccuracy = []
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        allRequestInaccuracy.append(doc)
+    return allRequestInaccuracy
+
+# -----------------------------------------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, port = 5000)

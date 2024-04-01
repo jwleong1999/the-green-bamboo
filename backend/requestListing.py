@@ -11,6 +11,8 @@ from flask_pymongo import PyMongo
 from flask_cors import CORS
 
 from bson.objectid import ObjectId
+from datetime import datetime
+import pytz
 
 import data
 
@@ -243,7 +245,10 @@ def requestInaccuracy():
     rawRequest["venueID"] = ObjectId(rawVenueID)
     rawRequest["userID"] = ObjectId(rawUserID)
     rawRequest["listingID"] = ObjectId(rawListingID)
+    rawRequest["reviewStatus"] = False
+    rawRequest["reportDate"] = datetime.now(pytz.timezone('Etc/GMT-8'))
     newRequest = data.requestInaccuracy(**rawRequest)
+
     try:
         insertResult = db.requestInaccuracy.insert_one(data.asdict(newRequest))
 

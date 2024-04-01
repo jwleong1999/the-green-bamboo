@@ -3057,7 +3057,7 @@
                         "userID": this.viewerID,
                         "venueID": this.targetVenue['_id']['$oid'],
                         "listingID": this.reportItem,
-                        "inaccurateReason": "Menu Section: " + this.reportSection + "\nReason: " + this.reportReason,
+                        "inaccurateReason": "[ Menu Section: " + this.detailedMenu[this.reportSection].sectionName + " ]\nReason: " + this.reportReason,
                     }
 
                     // Send report

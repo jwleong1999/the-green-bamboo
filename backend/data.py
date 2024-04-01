@@ -165,7 +165,9 @@ class requestInaccuracy:
     listingID: object
     userID: object
     venueID:object
+    reportDate: datetime
     inaccurateReason: Optional[str] = None
+    reviewStatus: Optional[bool] = False
     
 # Dataclass (modRequests)
 @dataclass

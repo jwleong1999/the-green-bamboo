@@ -149,6 +149,73 @@
                     </div>
                 </div>
 
+                <!-- row 4: menu inaccuracy reports -->
+                <div class="row pt-3">
+                    <div class="col-12">
+                        <div class="square primary-square rounded p-3 mb-3">
+
+                            <!-- Header -->
+                            <div class="square-inline text-start">
+
+                                <!-- [if] Self Venue -->
+                                <div v-if="selfView" class="mr-auto">
+                                    <h4> User Menu Reports </h4>
+                                    <router-link :to="{ path: '/profile/venue' }" class="default-text-no-background">
+                                        <p class="reverse-text no-margin text-decoration-underline text-start pb-2"> Go to Your Profile </p>
+                                    </router-link>
+                                </div>
+
+                                <!-- [else] -->
+                                <div v-else class="mr-auto">
+                                    <h4> User Menu Reports </h4>
+                                    <router-link :to="{ path: '/profile/venue/' + targetVenue._id['$oid'] }" class="default-text-no-background">
+                                        <p class="reverse-text no-margin text-decoration-underline text-start pb-2"> Go to Venue Profile </p>
+                                    </router-link>
+                                </div>
+
+                            </div>
+
+                            <!-- Report Content -->
+                            <div class="text-start pt-2 py-1">
+                                <div class="carousel slide" id="carouselReports">
+                                    <div class="carousel-inner px-4">
+
+                                        <div class="carousel-item active" v-if="pendingReports.length === 0">
+                                            <p class="fst-italic text-center">( No Pending User Reports! )</p>
+                                        </div>
+
+                                        <div class="carousel-item" v-for="(userReport, index) in pendingReports" v-bind:key="userReport._id" v-bind:class="{ 'active': index === 0 }">
+                                            <p class="fw-bold">Menu Item:<br>{{ userReport.listingData["listingName"] }}</p>
+                                            <p> {{ userReport["inaccurateReason"] }} </p>
+                                            <div class="input-group centered pt-2" v-if="selfView">
+                                                <button type="button" class="btn success-btn rounded-0 reverse-clickable-text" @click="updateReportStatus(userReport._id['$oid'], 'approve')">
+                                                    Clear
+                                                </button>
+                                                <button type="button" class="btn btn-danger rounded-0 reverse-clickable-text ms-1" @click="updateReportStatus(userReport._id['$oid'], 'reject')">
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Carousel Control Buttons -->
+                                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselReports" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button" data-bs-target="#carouselReports" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- right pane -->
@@ -360,6 +427,7 @@
                 venueViews: [],
                 menuItemsCount: 0,
                 overallRating: 0,
+                pendingReports: [],
 
                 // flags
                 dataLoaded: false,
@@ -577,9 +645,9 @@
             // Load other data
             async loadData() {
 
-                // Get listing data for each item in menu
                 try {
 
+                    // Get listing data for each item in menu
                     for (let section of this.detailedMenu) {
 
                         section.sectionDetails = {
@@ -705,6 +773,24 @@
                         }
                     });
 
+                    // Get report data for venue
+                    let reportResponse = await this.$axios.get('http://127.0.0.1:5000/getRequestInaccuracyByVenue/' + this.targetVenue['_id']['$oid']);
+                    this.pendingReports = reportResponse.data;
+
+                    // Get listing data
+                    for (let report of this.pendingReports) {
+                        let listingData = this.loadedListings.find(i => i._id['$oid'] == report.listingID['$oid']);
+                        if (listingData != undefined) {
+                            report.listingData = listingData;
+                        }
+                    }
+
+                    // Filter out reports with no listing data
+                    this.pendingReports = this.pendingReports.filter(r => r.listingData != undefined);
+
+                    // Sort reports by date
+                    this.pendingReports.sort((a, b) => (a.reportDate.$date > b.reportDate.$date) ? 1 : -1);
+
                     // Set data loaded flag
                     this.dataLoaded = true;
                     
@@ -764,6 +850,43 @@
 
                 // Refresh page
                 this.$router.go(0);
+            },
+
+            // Function to update report status
+            async updateReportStatus(reportID, status) {
+
+                let responseCode = "";
+                let submitAPI = "http://127.0.0.1:5011/requestReviewStatus/" + reportID;
+                let submitData = {
+                    "targetCollection": "requestInaccuracy",
+                    "reviewStatus": false,
+                };
+
+                // Set new report status
+                if (status == "reject") {
+                    submitData["reviewStatus"] = null;
+                }
+                else if (status == "approve") {
+                    submitData["reviewStatus"] = true;
+                }
+
+                await this.$axios.post(submitAPI, submitData)
+                .then((response)=>{
+                    responseCode = response.data.code
+                })
+                .catch((error)=>{
+                    responseCode = error.response.data.code
+                });
+                
+                if (responseCode == 201) {
+                    alert("Report status updated successfully!");
+                } else {
+                    alert("An error occurred while attempting to update the report status, please try again!");
+                }
+
+                // Refresh page
+                this.$router.go(0);
+
             },
 
         }
