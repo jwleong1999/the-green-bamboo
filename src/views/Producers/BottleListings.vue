@@ -2,8 +2,31 @@
 <template>
     <NavBar />
 
+    <!-- Display when data is still loading -->
+    <div class="text-info-emphasis fst-italic fw-bold fs-5 pt-5" v-if="dataLoaded == false">
+        <span>Loading listing, please wait...</span>
+        <br><br>
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Display when data fails to load -->
+    <div class="text-danger fst-italic fw-bold fs-3 pt-5" v-if="dataLoaded == null"> 
+        <span>An error occurred while loading this page, please try again!</span>
+        <br>
+        <button class="btn primary-btn btn-sm" @click="this.$router.go(-1)">
+            <span class="fs-5 fst-italic"> Return to previous page </span>
+        </button>
+        <router-link :to="'/'" class="mx-1">
+            <button class="btn primary-btn btn-sm">
+                <span class="fs-5 fst-italic"> Go to Home page </span>
+            </button>
+        </router-link>
+    </div>
+
     <!-- main content -->
-    <div class="container pt-5">
+    <div class="container pt-5" v-if="dataLoaded">
         <div class="row">
             <!-- producer information -->
             <div class="col-12 col-md-9 no-margin">
@@ -1110,6 +1133,7 @@
         },
         data() {
             return {
+                dataLoaded: false,
                 // data from database
                 countries: [],
                 listings: [],
@@ -1335,6 +1359,7 @@
                         }
                         catch (error) {
                             console.error(error);
+                            this.dataLoaded = null;
                         }
                     // flavourTags
                     // _id, hexcode, familyTag, subtag, showbox
@@ -1345,6 +1370,7 @@
                                 })                            } 
                         catch (error) {
                             console.error(error);
+                            this.dataLoaded = null;
                         }
                     // subTags
                     // _id, familyTagId, subtag
@@ -1365,6 +1391,7 @@
                             } 
                         catch (error) {
                             console.error(error);
+                            this.dataLoaded = null;
                         }
                     // observationTags
                     // observationTag
@@ -1375,7 +1402,8 @@
                             }
                         } 
                         catch(error){
-                            console.error(error)
+                            console.error(error);
+                            this.dataLoaded = null;
                         }
                     
                     // colours
@@ -1387,7 +1415,8 @@
                             }
                         } 
                         catch(error){
-                            console.error(error)
+                            console.error(error);
+                            this.dataLoaded = null;
                         }
                     // specialColours
                         try {
@@ -1398,7 +1427,8 @@
                             }, {});
                         } 
                         catch(error){
-                            console.error(error)
+                            console.error(error);
+                            this.dataLoaded = null;
                         }
                     
                     // venues
@@ -1411,6 +1441,7 @@
                         } 
                         catch (error) {
                             console.error(error);
+                            this.dataLoaded = null;
                         }
                 // listings
                 // _id, listingName, producerID, bottler, originCountry, drinkType, typeCategory, age, abv, reviewLink, officialDesc, sourceLink, photo
@@ -1431,6 +1462,7 @@
                     } 
                     catch (error) {
                         console.error(error);
+                        this.dataLoaded = null;
                     }
                 // languages
                 // _id, language
@@ -1442,6 +1474,7 @@
                     } 
                     catch (error) {
                         console.error(error);
+                        this.dataLoaded = null;
                     }
                 // producers
                 // _id, producerName, producerDesc, originCountry, statusOB, mainDrinks
@@ -1451,6 +1484,7 @@
                     } 
                     catch (error) {
                         console.error(error);
+                        this.dataLoaded = null;
                     }
                 // users
                 // _id, username, displayName, choiceDrinks, drinkLists, modType, photo
@@ -1494,6 +1528,7 @@
                     } 
                     catch (error) {
                         console.error(error);
+                        this.dataLoaded = null;
                     }
                 
                 // venuesAPI
@@ -1558,6 +1593,11 @@
                     }
                 }else{
                     this.correctModerator=false
+                }
+
+                // Set dataLoaded to true if all data is loaded
+                if (this.dataLoaded != null) {
+                    this.dataLoaded = true;
                 }
             
             },
