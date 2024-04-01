@@ -874,7 +874,7 @@
 
                                                 <!-- Item Price / Item Serving Type -->
                                                 <div class="col-4">
-                                                    <p class="text-start fs-5 fw-bold default-text-no-background">${{ sectionItem.itemPrice }} / {{ sectionItem.itemDetails.itemServingTypeName }}</p>
+                                                    <p class="text-start fs-5 fw-bold default-text-no-background">${{ sectionItem.itemPrice || " -" }} / {{ sectionItem.itemDetails.itemServingTypeName }}</p>
                                                 </div>
 
                                                 <!-- See User Reviews -->
@@ -1075,7 +1075,7 @@
                                                                 <div class="col-3">
                                                                     <div class="input-group">
                                                                         <span class="input-group-text fw-bold">$</span>
-                                                                        <input type="number" class="form-control" v-model="menuItem.itemPrice" placeholder="0" min="0" step="0.01">
+                                                                        <input type="number" class="form-control" v-model="menuItem.itemPrice" placeholder="-" min="0" step="0.01">
                                                                     </div>
                                                                 </div>
 
@@ -1128,7 +1128,7 @@
                                     <div class="modal-body">
 
                                         <!-- Note -->
-                                        <p class="fst-italic text-primary-emphasis">All newly added menu items are:<br>- set as "Available" at $0 / serving<br>- set to appear last in your selected target section.<br>Please modify them to your own satisfaction later!</p>
+                                        <p class="fst-italic text-primary-emphasis">All newly added menu items are set to appear last in your selected target section.<br>Please modify them to your own satisfaction later!</p>
 
                                         <!-- [input] bottle name -->
                                         <div class="form-group mb-3">
@@ -1152,6 +1152,20 @@
                                             </select>
                                             <p v-show="Object.keys(this.newMenuItemTargetSection).length !== 0" class="text-start mb-1 text-danger" id="newMenuItemTargetSectionError"></p>
                                             <p v-show="Object.keys(this.newMenuItemTargetSection).length !== 0" class="text-start mb-1 text-warning-emphasis fst-italic" id="newMenuItemTargetSectionNotice"></p>
+                                        </div>
+
+                                        <!-- [input] menu item price -->
+                                        <div class="form-group mb-3">
+                                            <p class="text-start mb-1"> Menu Item Price </p>
+                                            <input type="number" class="form-control" v-model="newMenuItemPrice" placeholder="-" min="0" step="0.01">
+                                        </div>
+
+                                        <!-- [input] menu serving type -->
+                                        <div class="form-group mb-3">
+                                            <p class="text-start mb-1"> Menu Item Serving Type </p>
+                                            <select class="form-select" v-model="newMenuItemServingType">
+                                                <option v-for="servingType in servingTypes" :key="servingType._id" :value="servingType._id">{{ servingType.servingType }}</option>
+                                            </select>
                                         </div>
 
                                         <!-- ------- START Menu Item Preview ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
@@ -1213,7 +1227,7 @@
 
                                                         <!-- Item Price / Item Serving Type -->
                                                         <div class="col-4">
-                                                            <p class="text-start fs-5 fw-bold default-text-no-background">$0 / Serving</p>
+                                                            <p class="text-start fs-5 fw-bold default-text-no-background">$ {{ newMenuItemPrice || "-" }} / {{ servingTypes.find(i => i._id == newMenuItemServingType).servingType || "-" }}</p>
                                                         </div>
 
                                                         <!-- See User Reviews -->
@@ -1234,7 +1248,7 @@
 
                                     <!-- Modal Footer -->
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="newMenuItemTargetSection = {}; newMenuItemTarget = {} ; newMenuItemID = ''">Cancel</button>
+                                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="newMenuItemTargetSection = {}; newMenuItemTarget = {} ; newMenuItemID = ''; newMenuItemPrice = ''; getDefaultServingType();">Cancel</button>
                                         <button type="button" class="btn tertiary-btn rounded reverse-clickable-text" data-bs-dismiss="modal" @click="addMenuItem"
                                             v-bind:disabled="Object.keys(newMenuItemTargetSection).length === 0 || Object.keys(newMenuItemTarget).length === 0">
                                             Add Item
@@ -1825,6 +1839,8 @@
                 newMenuItemID: '',
                 newMenuItemTarget: {},
                 newMenuItemTargetSection: {},
+                newMenuItemPrice: '',
+                newMenuItemServingType: {},
                 renameMenuSectionModalTarget: {},
                 renameMenuSectionModalOld: '',
                 renameMenuSectionModalNew: '',
@@ -1962,6 +1978,7 @@
                         // Obtain servingTypes
                         const servingTypesResponse = await this.$axios.get('http://127.0.0.1:5000/getServingTypes');
                         this.servingTypes = servingTypesResponse.data;
+                        this.getDefaultServingType();
 
                         // Obtain map data
                         const mapResponse = await this.$axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
@@ -2807,6 +2824,11 @@
                 }
             },
 
+            // Get Default Serving Type
+            getDefaultServingType() {
+                this.newMenuItemServingType = this.servingTypes.find(s => s.servingType == "-")['_id'];
+            },
+
             // Add Menu Item
             addMenuItem() {
                     
@@ -2814,8 +2836,8 @@
                 this.newMenuItemTargetSection.sectionMenu.push({
                     itemID: this.newMenuItemTarget['_id'],
                     itemOrder: this.newMenuItemTargetSection.sectionMenu.length,
-                    itemPrice: 0,
-                    itemServingType: this.servingTypes.find(s => s.servingType == "Serving")['_id'],
+                    itemPrice: this.newMenuItemPrice,
+                    itemServingType: this.newMenuItemServingType,
                     itemAvailability: true,
                     itemDetails: {
                         itemPhoto: this.newMenuItemTarget.photo,
@@ -2831,10 +2853,12 @@
                     }
                 });
 
-                // Reset newMenuItemID, newMenuItemTarget, newMenuItemTargetSection
+                // Reset newMenuItemID, newMenuItemTarget, newMenuItemTargetSection, newMenuItemPrice, newMenuItemServingType
                 this.newMenuItemID = "";
                 this.newMenuItemTarget = {};
                 this.newMenuItemTargetSection = {};
+                this.newMenuItemPrice = '';
+                this.getDefaultServingType();
             },
 
             // Delete Menu Item
