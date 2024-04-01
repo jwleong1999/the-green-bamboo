@@ -377,10 +377,10 @@
                     </div>
 
                     <!-- col 2: profile visits -->
-                    <!-- <div class="col text-start pt-5 mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start mx-3">
                         <h3> Profile Visits </h3>
                         <Line :data="profileData" :options="chartOptions"></Line>
-                    </div> -->
+                    </div>
 
                 </div>
 
@@ -505,29 +505,29 @@
             },
 
             // Profile visits
-            // profileData() {
-            //     const dates = [...new Set(this.venueViews.map(view => this.formatDateMonthYear(view.date.$date)))];
-            //     dates.sort((a, b) => {
-            //         const [monthA, yearA] = a.split('/');
-            //         const [monthB, yearB] = b.split('/');
-            //         if (yearA !== yearB) {
-            //             return yearA - yearB;
-            //         } else {
-            //             return monthA - monthB;
-            //         }
-            //     });
-            //     const counts = dates.map(date => this.venueViews.filter(view => this.formatDateMonthYear(view.date.$date) === date).reduce((total, view) => total + view.count, 0));
-            //     return {
-            //         labels: dates,
-            //         datasets: [
-            //             {
-            //                 label: 'Number of Views',
-            //                 backgroundColor: '#747D92',
-            //                 data: counts
-            //             }
-            //         ]
-            //     }
-            // },
+            profileData() {
+                const dates = [...new Set(this.venueViews.map(view => this.formatDateMonthYear(view.date.$date)))];
+                dates.sort((a, b) => {
+                    const [monthA, yearA] = a.split('/');
+                    const [monthB, yearB] = b.split('/');
+                    if (yearA !== yearB) {
+                        return yearA - yearB;
+                    } else {
+                        return monthA - monthB;
+                    }
+                });
+                const counts = dates.map(date => this.venueViews.filter(view => this.formatDateMonthYear(view.date.$date) === date).reduce((total, view) => total + view.count, 0));
+                return {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: 'Number of Views',
+                            backgroundColor: '#747D92',
+                            data: counts
+                        }
+                    ]
+                }
+            },
         },
         // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         mounted() {
@@ -791,6 +791,12 @@
 
                     // Sort reports by date
                     this.pendingReports.sort((a, b) => (a.reportDate.$date > b.reportDate.$date) ? 1 : -1);
+
+                    // Get venue views data
+                    let viewsResponse = await this.$axios.get('http://127.0.0.1:5000/getVenuesProfileViewsByVenue/' + this.targetVenue._id['$oid']);
+                    if (viewsResponse.data.length > 0) {
+                        this.venueViews = viewsResponse.data[0].views;
+                    }
 
                     // Set data loaded flag
                     this.dataLoaded = true;

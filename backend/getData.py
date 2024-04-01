@@ -419,6 +419,22 @@ def getProducersProfileViews():
     return producersProfileViews
 
 # -----------------------------------------------------------------------------------------
+# [GET] venuesProfileViews by venueID
+@app.route("/getVenuesProfileViewsByVenue/<id>")
+def getVenuesProfileViewsByVenue(id):
+    #this step finds all the items in the collection, specifying venuesProfileViews
+    data = db.venuesProfileViews.find({"venueID": ObjectId(id)})
+    #have to use data.clone so that cursor is not used up
+    print(len(list(data.clone())))
+    venuesProfileViews = []
+    #parse bson as json
+    dataEncode = parse_json(data)
+    for doc in dataEncode:
+        # print(doc)
+        venuesProfileViews.append(doc)
+    return venuesProfileViews
+
+# -----------------------------------------------------------------------------------------
 # [GET] requestInaccuracy by venueID
 @app.route("/getRequestInaccuracyByVenue/<id>")
 def getRequestInaccuracyByVenue(id):

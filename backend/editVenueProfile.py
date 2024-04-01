@@ -710,5 +710,90 @@ def deleteQA():
 
 # -----------------------------------------------------------------------------------------
 
+# [POST] Add profile view count
+# - Add profile view count
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/addProfileCount', methods=['POST'])
+def addProfileCount():
+    data = request.get_json()
+    print(data)
+    venueID = data['venueID']
+    viewsID = data['viewsID']
+
+    try: 
+        addProfileCount = db.venuesProfileViews.update_one(
+            {'_id': ObjectId(venueID), 'views._id': ObjectId(viewsID)},
+            {'$inc': {'views.$.count': 1}}
+        )
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "Profile view count updated successfully!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "message": "An error occurred updating the profile view count."
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------
+
+# [POST] Add new profile view count
+# - Add new profile view count
+# - Possible return codes: 201 (Updated), 500 (Error during update)
+@app.route('/addNewProfileCount', methods=['POST'])
+def addNewProfileCount():
+    data = request.get_json()
+    print(data)
+    venueID = data['venueID']
+    date = datetime.strptime(data['date'], "%Y-%m-%dT%H:%M:%S.%fZ")
+
+    try: 
+        addNewProfileCount = db.venuesProfileViews.update_one(
+            {'_id': ObjectId(venueID)},
+            {'$push': {'views': 
+                        {
+                            '_id': ObjectId(),
+                            'date': date,
+                            'count': 1
+                        }
+                    }
+            }
+        )
+        # If addNewProfileCount does not update any documents, create a new document
+        if addNewProfileCount.matched_count == 0:
+            addNewProfileCount = db.venuesProfileViews.insert_one(
+                {
+                    '_id': ObjectId(venueID),
+                    'venueID': ObjectId(venueID),
+                    'views': 
+                        [{
+                            '_id': ObjectId(),
+                            'date': date,
+                            'count': 1
+                        }]
+                }
+            )
+        return jsonify(
+            {   
+                "code": 201,
+                "message": "New profile view count updated successfully!"
+            }
+        ), 201
+    except Exception as e:
+        print(str(e))
+        return jsonify(
+            {
+                "code": 500,
+                "message": "An error occurred updating the new profile view count."
+            }
+        ), 500
+
+# -----------------------------------------------------------------------------------------
+
 if __name__ == '__main__':
     app.run(debug=True, port=5300)

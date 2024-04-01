@@ -2163,6 +2163,69 @@
                     }
                 }
 
+                // Get profile views
+                try {
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getVenuesProfileViewsByVenue/' + this.targetVenue._id['$oid']);
+                    let venueProfileViewInfo = {};
+                    if (Array.isArray(response.data) && response.data.length != 0) {
+                        venueProfileViewInfo = response.data[0];
+                    }
+
+                    // ensure that it is not the producer viewing their own page
+                    if (this.viewerID != this.targetVenue._id["$oid"]) {
+                        // get current date
+                            let currDate = new Date().toISOString();
+
+                        // check if currDate exists in the venueProfileViewInfo
+                        let dateExists = venueProfileViewInfo && venueProfileViewInfo.views && venueProfileViewInfo.views.some(view => view.date["$date"] == currDate);
+
+                        // if current date already exists, increment the count
+                        if (dateExists) {
+
+                            // get current view
+                            let views = venueProfileViewInfo.views.find(view => view.date["$date"] == currDate);
+                            let viewsID = views._id["$oid"];
+                            try {
+                                this.$axios.post('http://127.0.0.1:5300/addProfileCount', 
+                                    {
+                                        venueID: venueProfileViewInfo._id["$oid"],
+                                        viewsID: viewsID,
+                                    },
+                                    {
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                });
+                            } 
+                            catch (error) {
+                                // console.error(error);
+                            }
+                        } 
+
+                        // if current date does not exist, add a new view
+                        else {
+                            try {
+                                this.$axios.post('http://127.0.0.1:5300/addNewProfileCount', 
+                                    {
+                                        venueID: this.targetVenue._id["$oid"],
+                                        date: currDate,
+                                    },
+                                    {
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    }
+                                });
+                            } 
+                            catch (error) {
+                                // console.error(error);
+                            }
+                        } 
+                    }
+                }
+                catch (error) {
+                    // console.error(error);
+                }
+
                 // Set data loaded flag
                 if (this.dataLoaded != null) {
                     this.dataLoaded = true;
