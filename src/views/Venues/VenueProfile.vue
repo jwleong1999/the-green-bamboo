@@ -2974,7 +2974,7 @@
                             venueID: this.targetVenue['_id']['$oid'],
                             question: this.qaQuestion,
                             answer: "",
-                            date: this.currDate
+                            date: new Date().toISOString()
                         },
                         {
                         headers: {
