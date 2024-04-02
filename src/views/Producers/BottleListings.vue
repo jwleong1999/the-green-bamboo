@@ -587,7 +587,9 @@
                                                     <div class="col">
                                                         <div class="d-flex flex-wrap gap-2">
                                                             <div v-for="flavourTag in selectedFlavourTags" v-bind:key="flavourTag" class="mb-0 pb-0">
-                                                                <button :style="{ color:'white', backgroundColor: '#' + flavourTag.split('#')[1] }" class="btn"> {{ flavourTag.split("#")[0] }} </button> 
+                                                                
+                                                                <button v-if="flavourTag == '<deleted>'" :style="{ color:'white', backgroundColor: '#030303' }" class="btn"> {{ flavourTag }} </button> 
+                                                                <button v-else :style="{ color:'white', backgroundColor: '#' + flavourTag.split('#')[1] }" class="btn"> {{ flavourTag.split("#")[0] }} </button> 
                                                             </div>
                                                         </div>
                                                     </div>
@@ -959,7 +961,7 @@
                                         <b>Friend Tags</b>
                                     </div>
                                     <div class="col-9">
-                                        <router-link v-for="(user, index) in detailedReview.taggedUsers" :key="index" :to="`/profile/user/${user.$oid}`">
+                                        <router-link v-for="(user, index) in detailedReview.taggedUsers" :key="index" :to="`/profile/user/${user.$oid}`" @click="navigateAndReload(`/profile/user/${user.$oid}`)">
                                             <p class="default-clickable-text">
                                                 @{{ getUsernameFromId(user.$oid) }}
                                             </p>
@@ -1851,13 +1853,16 @@
                     // this.selectedFlavourTags= specificReview[0].flavorTag
                     if(specificReview[0].flavorTag!=null){
                         specificReview[0].flavorTag.forEach(subtag=>{
-                            const subTag = this.subTags.find(subTag=>subtag.$oid===subTag._id.$oid)          
-                            console.log(subTag)                  
+                            const subTag = this.subTags.find(subTag=>subtag.$oid===subTag._id.$oid)                       
                             if(subTag){
                                 const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
-                                const hexcode = familyTag.hexcode
-                                const subtagInfo = subTag.subTag
-                                this.selectedFlavourTags.push(subtagInfo+ hexcode)
+                                if(familyTag){
+                                    const hexcode = familyTag.hexcode
+                                    const subtagInfo = subTag.subTag
+                                    this.selectedFlavourTags.push(subtagInfo+ hexcode)
+                                }
+                            }else{
+                                this.selectedFlavourTags.push("<deleted>")
                             }
                         })
                     }
@@ -2387,9 +2392,11 @@
                         const subTag = this.subTags.find(subTag=>subTag._id.$oid === tag.$oid)
                         if(subTag){
                             const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
-                            const hexcode = familyTag.hexcode
-                            const subtagInfo = subTag.subTag
-                            flavorTags.push(subtagInfo + hexcode)
+                            if(familyTag){
+                                const hexcode = familyTag.hexcode
+                                const subtagInfo = subTag.subTag
+                                flavorTags.push(subtagInfo + hexcode)
+                            }
                         }
                     }
                 }
@@ -2587,6 +2594,14 @@
                 catch (err) {
                     return false;
                 }
+            },
+
+            navigateAndReload(to) {
+                // Navigate to the specified route
+                this.$router.push(to).then(() => {
+                    // After navigation is complete, reload the window
+                    window.location.reload(true);
+                });
             }
         }
     };
