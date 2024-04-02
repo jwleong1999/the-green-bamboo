@@ -234,13 +234,13 @@
                                 <div class="row pt-3"> 
                                     <div class="col-6 text-end">
                                         <!-- [if] liked -->
-                                        <div v-if="likeStatus" style="display: inline-block;"  v-on:click="unlikeUpdates">
+                                        <div v-if="likeStatus" style="display: inline-block;"  v-on:click="unlikeUpdates(latestUpdate._id.$oid)">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
                                                 <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
                                             </svg>
                                         </div>
                                         <!-- [else] not liked -->
-                                        <div v-else style="display: inline-block;" v-on:click="likeUpdates">
+                                        <div v-else style="display: inline-block;" v-on:click="likeUpdates(latestUpdate._id.$oid)">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
                                                 <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.090.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
                                             </svg>
@@ -347,15 +347,21 @@
                                             <!-- # of likes -->
                                             <div class="row pt-3"> 
                                                 <div class="col-6 text-end">
+                                                    <!-- [if] liked -->
+                                                    <div v-if="remainingLikeStatus[update._id.$oid]" style="display: inline-block;"  v-on:click="unlikeUpdates(update._id.$oid)">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                            <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                        </svg>
+                                                    </div>
                                                     <!-- [else] not liked -->
-                                                    <div style="display: inline-block;">
+                                                    <div v-else style="display: inline-block;" v-on:click="likeUpdates(update._id.$oid)">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
                                                             <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.090.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
                                                         </svg>
                                                     </div>
                                                 </div>
                                                 <div class="col-6 text-start">
-                                                    <h4> {{ update['likes'].length }} </h4>
+                                                    <h4> {{ updateLikesCount }} </h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -916,6 +922,9 @@
                 // to fetch producer's remaining updates
                 showRemainingUpdates: false,
                 remainingUpdates: [],
+                remainingUpdateLikes: {},
+                remainingLikeStatus: {},
+                remainingLikesCount: {},
 
                 // to get producer's answered questions
                 answeredQuestions: [],
@@ -1526,11 +1535,21 @@
                         this.remainingUpdates.sort((a, b) => {
                             return new Date(b.date.$date) - new Date(a.date.$date);
                         });
+                        for (let update of this.remainingUpdates) {
+                            let remainingUpdateLike = update["likes"];
+                            this.remainingUpdateLikes[update["_id"]["$oid"]] = remainingUpdateLike
+                            try {
+                                this.remainingLikesCount[update["_id"]["$oid"]] = this.remainingUpdateLikes[update["_id"]["$oid"]].length;
+                            }
+                            catch {
+                                this.remainingLikesCount[update["_id"]["$oid"]] = 0;
+                            }
+                            this.checkLiked('remaining');
+                        }
                     }
 
+                    // for latest update ONLY
                     this.latestUpdate = latestUpdate
-                    console.log(this.latestUpdate)
-
                     // add likes
                     this.updateLikes = latestUpdate["likes"];
                     try {
@@ -1539,9 +1558,8 @@
                     catch {
                         this.updateLikesCount = 0;
                     }
-
-                    this.checkLiked();
-                } 
+                    this.checkLiked('latest');
+                }
             },
 
             // get producer's answered questions (to be displayed to the users/venues)
@@ -1611,21 +1629,32 @@
             },
 
             // check if user liked the post
-            checkLiked() {
-                for (let i in this.updateLikes) {
-                    if (this.updateLikes[i]["$oid"] == this.user_id) {
-                        this.likeStatus = true;
+            checkLiked(status) {
+                if (status == 'latest') {
+                    for (let i in this.updateLikes) {
+                        if (this.updateLikes[i]["$oid"] == this.user_id) {
+                            this.likeStatus = true;
+                        }
+                    }
+                }
+                else if (status == 'remaining') {
+                    for (let i in this.remainingUpdateLikes) {
+                        for (let j in this.remainingUpdateLikes[i]) {
+                            if (this.remainingUpdateLikes[i][j]["$oid"] == this.user_id) {
+                                this.remainingLikeStatus[i] = true;
+                            }
+                        }
                     }
                 }
             },
 
             // like updates
-            async likeUpdates() {
+            async likeUpdates(updateID) {
                 try {
                     const response = await this.$axios.post('http://127.0.0.1:5200/likeUpdates', 
                         {
                             producerID: this.producer_id,
-                            updateID: this.update_id,
+                            updateID: updateID,
                             userID: this.user_id,
                         },
                         {
@@ -1644,12 +1673,12 @@
             },
 
             // unlike updates
-            async unlikeUpdates() {
+            async unlikeUpdates(updateID) {
                 try {
                     const response = await this.$axios.post('http://127.0.0.1:5200/unlikeUpdates', 
                         {
                             producerID: this.producer_id,
-                            updateID: this.update_id,
+                            updateID: updateID,
                             userID: this.user_id,
                         },
                         {
