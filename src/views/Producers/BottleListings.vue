@@ -91,7 +91,7 @@
                                     <h3 class="text-body-secondary"> <b> {{ specified_listing["listingName"] }} </b> </h3>
                                 </div>
                                 <!-- suggest edit & report duplicate -->
-                                <div class="col-12 col-md-4 col-lg-3">
+                                <div class="col-12 col-md-4 col-lg-3 text-end">
                                     <!-- [if] correct producer-->
                                     <!-- TODO: check if moderator type is for the listing -->
                                     <div v-if="correctProducer || correctModerator">
@@ -136,7 +136,7 @@
                             </div>
                             <!-- description -->
                             <div class="row">
-                                <div class="col-lg-7">
+                                <div class="col-lg-12">
                                     <div class="py-2"></div>
                                     <p> {{ specified_listing["officialDesc"] }} </p>
                                 </div>
@@ -147,7 +147,7 @@
 
                 <!-- more information (category, age, country of origin, abv, list buttons & bookmark)-->
                 <div class="row pt-4">
-                    <div class="col-6 col-lg-4 ">
+                    <div class="col-7 col-lg-7">
                         <div class="row">
                             <!-- category -->
                             <div class="col-6 col-lg-3 text-start">
@@ -180,15 +180,15 @@
                         </div>
                     </div>
                     <!-- have tried button -->
-                    <div class="col-2 col-lg-2 ">
+                    <div class="col-2 col-lg-2 p-0">
                         <div v-if="user" v-html="checkDrinkLists(specified_listing).buttons.haveTried" class="d-grid" @click="addToTriedList"> </div>
                     </div>
                     <!-- want to try button -->
-                    <div class="col-2 col-lg-2 ">
+                    <div class="col-2 col-lg-2 p-0">
                         <div v-if="user" v-html="checkDrinkLists(specified_listing).buttons.wantToTry" class="d-grid" @click="addToWantList"> </div>
                     </div>
                     <!-- bookmark button -->
-                    <div class="col-1 text-end col-lg-1 text-md-end">
+                    <div class="col-1 col-lg-1 text-center">
                         <BookmarkIcon 
                             v-if="user" 
                             :user="user" 
