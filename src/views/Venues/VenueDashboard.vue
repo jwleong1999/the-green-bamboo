@@ -776,6 +776,9 @@
                     // Obtain overall average rating
                     if (this.allReviews.length > 0) {
                         this.overallRating = this.allReviews.reduce((a, b) => a + b.rating, 0) / this.allReviews.length;
+
+                        // round to 2 dp
+                        this.overallRating = this.overallRating.toFixed(2);
                     }
 
                     // Change rating of drinks to '-' if no reviews, else round to 1 decimal place
@@ -784,7 +787,7 @@
                             listing.avgRating = '-';
                         }
                         else {
-                            listing.avgRating = listing.avgRating.toFixed(1);
+                            listing.avgRating = listing.avgRating.toFixed(2);
                         }
                     });
 
@@ -794,7 +797,7 @@
                             section.sectionDetails.sectionRating = '-';
                         }
                         else {
-                            section.sectionDetails.sectionRating = section.sectionDetails.sectionRating.toFixed(1);
+                            section.sectionDetails.sectionRating = section.sectionDetails.sectionRating.toFixed(2);
                         }
                     });
 
