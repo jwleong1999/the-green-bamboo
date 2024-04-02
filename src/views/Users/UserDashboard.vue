@@ -55,12 +55,12 @@
                     </button>
                 </div>
 
-                <!-- row 3: recent activity on followers -->
+                <!-- row 3: recent activity from followers -->
                 <div class="row pt-3">
                     <div class="square primary-square rounded p-3 mb-3 text-start">
                         <!-- header text -->
                         <div class="square-inline pb-2">
-                            <h4 class="square-inline text-start mr-auto"> Recent Activity on Your Followers </h4>
+                            <h4 class="square-inline text-start mr-auto"> Recent Activity from Your Followers </h4>
                         </div>
                         <!-- body -->
                         <div style="height: 85%;">
