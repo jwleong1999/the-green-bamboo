@@ -2,26 +2,27 @@
 
 <template>
     <NavBar />
+
+    <!-- Display when search is in progress -->
+    <div class="text-info-emphasis fst-italic fw-bold fs-5 pt-5" v-if="!dataLoaded"> 
+        <span>Currently searching, please hold on!</span>
+        <br><br>
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    
+    <!-- Display when searching encounters an error -->
+    <div class="text-danger fst-italic fw-bold fs-3 pt-5" v-if="loadError"> 
+        <span>An error occurred while searching, please try refreshing the page!</span>
+        <br>
+        <button class="btn primary-btn btn-sm" @click="()=>{this.$router.go(0)}">
+            <span class="fs-5 fst-italic"> Refresh Page </span>
+        </button>
+    </div>
+    
     <!-- Header -->
     <div class="container pt-3">
-        
-        <!-- Display when search is in progress -->
-        <div class="text-info-emphasis fst-italic fw-bold fs-5" v-if="!dataLoaded"> 
-            <span>Currently searching, please hold on!</span>
-            <br><br>
-            <div class="spinner-border" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-        
-        <!-- Display when searching encounters an error -->
-        <div class="text-danger fst-italic fw-bold fs-3" v-if="loadError"> 
-            <span>An error occurred while searching, please try refreshing the page!</span>
-            <br>
-            <button class="btn primary-btn btn-sm" @click="()=>{this.$router.go(0)}">
-                <span class="fs-5 fst-italic"> Refresh Page </span>
-            </button>
-        </div>
 
         <!-- Display requests after data loaded -->
         <div v-if="dataLoaded && !loadError">
