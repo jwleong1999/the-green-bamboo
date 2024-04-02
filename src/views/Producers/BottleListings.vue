@@ -709,13 +709,13 @@
                 <div>
                     <div class="row mb-3" v-for="review in filteredReviews" v-bind:key="review._id">
                         <!-- profile photo -->
-                        <div class="col-12 col-md-1">
+                        <div class="col-12 col-lg-1" style="text-align: left;">
                             <router-link :to="`/profile/user/${review.userID.$oid}`">
                                 <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromReview(review) || defaultProfilePhoto)" alt="" class="profile-image">
                             </router-link>
                         </div>
                         <!-- user reviews -->
-                        <div class="col-12 col-md-10">
+                        <div class="col-12 col-lg-10">
                             <div class="row">
                                 <div class="d-flex align-items-center text-start mb-2">
                                     <router-link :to="`/profile/user/${review.userID.$oid}`" style="color: inherit">
@@ -781,11 +781,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-1">
-                            <div class="text-end">
+                        <div class="col-12 col-lg-1" style="text-align: left;">
+                            
                                 <!-- review photo -->
                                 <img :src=" 'data:image/jpeg;base64,' + (review['photo'] || defaultProfilePhoto)" alt="" class="review-image" style="width: 125px; height: 125px">
-                            </div>
+                            
                         </div>
                         <!-- Delete review modal -->
                         <div class="modal fade" id="deleteReview" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
