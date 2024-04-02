@@ -515,7 +515,7 @@
                             <div v-for="listing in filteredListings" v-bind:key="listing._id" class="p-3">
                                 <div class="row">
                                     <!-- image -->
-                                    <div class="col-2 image-container text-center mx-auto">
+                                    <div class="col-lg-2 col-12 image-container text-center mx-auto mb-3 mb-lg-0">
                                         <router-link :to="{ path: '/listing/view/' +listing._id.$oid}" class="default-text-no-background">
                                             <img :src=" 'data:image/jpeg;base64,' + (listing['photo'] || defaultProfilePhoto)" style="width: 150px; height: 150px;">
                                         </router-link>
@@ -538,7 +538,7 @@
                                         </button>
                                     </div>
                                     <!-- details -->
-                                    <div class="col-10 ps-5">
+                                    <div class="col-lg-10 col-12 ps-5">
                                         <!-- expression name, have tried & want to try & bookmark buttons -->
                                         <div class="row">
                                             <!-- expression name -->
