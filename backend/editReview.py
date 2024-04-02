@@ -37,6 +37,8 @@ def voteReview():
     for voteType in userVotes:
         votes = userVotes[voteType]
         for vote in votes:
+            if isinstance(vote["userID"], str):
+                vote["userID"] = ObjectId(vote["userID"])
             if isinstance(vote["date"], str):
                 vote["date"] = datetime.strptime(vote["date"], "%Y-%m-%dT%H:%M:%S.%fZ")
 

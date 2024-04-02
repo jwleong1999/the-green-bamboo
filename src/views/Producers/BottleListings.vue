@@ -2202,20 +2202,20 @@
             },
 
             async voteReview(review, vote){
+                const voteObject = {
+                    userID: this.userID, 
+                    date: new Date()
+                }
                 if (vote == "upvote") {
-                    review.userVotes.upvotes.push(this.userID);
-                    if (review.userVotes.downvotes.some(vote => JSON.stringify(vote) === JSON.stringify(this.userID))) {
-                        review.userVotes.downvotes = review.userVotes.downvotes.filter(vote => JSON.stringify(vote) !== JSON.stringify(this.userID));
-                    } 
+                    review.userVotes.upvotes.push(voteObject);
+                    review.userVotes.downvotes = review.userVotes.downvotes.filter(vote => vote.userID.$oid !== this.userID && vote.userID !== this.userID)
                 } else if (vote == "downvote") {
-                    review.userVotes.downvotes.push(this.userID);
-                    if (review.userVotes.upvotes.some(vote => JSON.stringify(vote) === JSON.stringify(this.userID))) {
-                        review.userVotes.upvotes = review.userVotes.upvotes.filter(vote => JSON.stringify(vote) !== JSON.stringify(this.userID));
-                    }
+                    review.userVotes.downvotes.push(voteObject);
+                    review.userVotes.upvotes = review.userVotes.upvotes.filter(vote => vote.userID.$oid !== this.userID && vote.userID !== this.userID)
                 } else if (vote == "unupvote") {
-                    review.userVotes.upvotes = review.userVotes.upvotes.filter(vote => JSON.stringify(vote) !== JSON.stringify(this.userID));
+                    review.userVotes.upvotes = review.userVotes.upvotes.filter(vote => vote.userID.$oid !== this.userID && vote.userID !== this.userID)
                 } else if (vote == "undownvote") {
-                    review.userVotes.downvotes = review.userVotes.downvotes.filter(vote => JSON.stringify(vote) !== JSON.stringify(this.userID));
+                    review.userVotes.downvotes = review.userVotes.downvotes.filter(vote => vote.userID.$oid !== this.userID && vote.userID !== this.userID)
                 }
 
                 try {
