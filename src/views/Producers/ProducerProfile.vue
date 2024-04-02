@@ -196,7 +196,7 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="row" v-if="hasUpdates">
                             <div class="row">
                                 <div class="col-xl-8 col-md-6 col-12">
                                     <p class="text-decoration-underline text-start fs-5 m-0 pb-3">Posted on: {{ this.formatDate(latestUpdate.date.$date) }}</p>
@@ -272,6 +272,11 @@
                             </div>
                         </div>
 
+                        <!-- no other updates -->
+                        <div v-else>
+                            <p class="fs-5 fst-italic m-0 text-start"> {{ specified_producer["producerName"] }} has not posted any updates! </p>
+                        </div>
+
                         <!-- reply / send to producer -->
                         <div v-if="correctProducer" class="row pt-3">
                             <!-- [if] user type is producer -->
@@ -325,7 +330,7 @@
                         </div>
 
                         <!-- view more updates -->
-                        <div class="row">
+                        <div class="row" v-if="hasUpdates">
 
                             <!-- Toggle Button -->
                             <button type="button" class="btn tertiary-text text-decoration-underline pt-2 no-margin border border-0" data-bs-toggle="collapse" data-bs-target="#collapseMoreUpdates" aria-expanded="false" aria-controls="collapseMoreUpdates" @click="checkToShowRemainingUpdates()"> View <span v-if="showRemainingUpdates">less</span><span v-else>more</span> </button>
@@ -933,6 +938,7 @@
                 deletingListing:false,
 
                 // to fetch producer's latest updates
+                hasUpdates: false,
                 update_id: null,
                 latestUpdate: {},
                 updateLikes: [],
@@ -1545,6 +1551,7 @@
                 let updatesList = this.specified_producer["updates"];
 
                 if (updatesList.length > 0) {
+                    this.hasUpdates = true
                     let latestUpdate = updatesList[updatesList.length - 1];
 
                     // check that there is more than 1 update

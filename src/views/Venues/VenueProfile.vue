@@ -461,7 +461,7 @@
                     <!-- ------- END Add Update / START View More Updates ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
                     <!-- View More Updates -->
-                    <div class="row" v-if="targetVenue['claimStatus']">
+                    <div class="row" v-if="targetVenue['claimStatus'] && (targetVenue['updates'].length > 0)">
 
                         <!-- Toggle Button -->
                         <button v-if="targetVenue['updates'].length > 0" type="button" class="btn tertiary-text text-decoration-underline pt-2 no-margin border border-0" data-bs-toggle="collapse" data-bs-target="#collapseMoreUpdates" aria-expanded="false" aria-controls="collapseMoreUpdates" @click="showMoreUpdates = !showMoreUpdates;"> View <span v-if="showMoreUpdates">less</span><span v-else>more</span> </button>
