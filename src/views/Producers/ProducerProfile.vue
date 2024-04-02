@@ -195,20 +195,18 @@
                                     {{ specified_producer["producerName"] }} 
                                 </b> 
                             </h3>
-                            <div class="row">
-                                <div class="col-6">
-                                    <h5 class="text-decoration-underline text-start">
-                                        Posted on:
-                                        {{ this.formatDate(latestUpdate.date.$date) }}
-                                    </h5>
-                                </div>
-                                <div v-if="correctProducer" class="col-6 text-end">
-                                    <!-- edit & delete button -->
-                                    <button v-if="editingLatestUpdate == false" type="button" class="btn btn-warning rounded-0 me-1" @click="editUpdate(latestUpdate, 'latest')"> Edit </button>
-                                    <button v-if="editingLatestUpdate" type="button" class="btn success-btn rounded-0 reverse-clickable-text me-1" @click="saveUpdateEdit(latestUpdate, 'latest')"> Save Changes </button>
-                                    <button v-if="editingLatestUpdate" type="button" class="btn secondary-btn rounded-0 reverse-clickable-text ms-1" @click="cancelUpdate(latestUpdate, 'latest')"> Cancel </button>
-                                    <button type="button" class="btn btn-danger rounded-0 ms-1" @click="deleteUpdate(latestUpdate)"> Delete </button>
-                                </div>
+                            <div class="col-6">
+                                <h5 class="text-decoration-underline text-start">
+                                    Posted on:
+                                    {{ this.formatDate(latestUpdate.date.$date) }}
+                                </h5>
+                            </div>
+                            <div v-if="correctProducer || isAdmin" class="col-6 text-end">
+                                <!-- edit & delete button -->
+                                <button v-if="correctProducer && (editingLatestUpdate == false)" type="button" class="btn btn-warning rounded-0 me-1" @click="editUpdate(latestUpdate, 'latest')"> Edit </button>
+                                <button v-if="correctProducer && editingLatestUpdate" type="button" class="btn success-btn rounded-0 reverse-clickable-text me-1" @click="saveUpdateEdit(latestUpdate, 'latest')"> Save Changes </button>
+                                <button v-if="correctProducer && editingLatestUpdate" type="button" class="btn secondary-btn rounded-0 reverse-clickable-text ms-1" @click="cancelUpdate(latestUpdate, 'latest')"> Cancel </button>
+                                <button type="button" class="btn btn-danger rounded-0 ms-1" @click="deleteUpdate(latestUpdate)"> Delete </button>
                             </div>
                         </div>
                         <!-- information -->
@@ -318,11 +316,11 @@
                                                 {{ this.formatDate(update.date.$date) }}
                                             </h5>
                                         </div>
-                                        <div v-if="correctProducer" class="col-6 text-end">
+                                        <div v-if="correctProducer || isAdmin" class="col-6 text-end">
                                             <!-- edit & delete button -->
-                                            <button v-if="editingRemainingUpdate == false || editingRemainingUpdateID != update._id.$oid" type="button" class="btn btn-warning rounded-0 me-1" @click="editUpdate(update, 'remaining')"> Edit </button>
-                                            <button v-if="editingRemainingUpdateID == update._id.$oid" type="button" class="btn success-btn rounded-0 reverse-clickable-text me-1" @click="saveUpdateEdit(update, 'remaining')"> Save Changes </button>
-                                            <button v-if="editingRemainingUpdateID == update._id.$oid" type="button" class="btn secondary-btn rounded-0 reverse-clickable-text ms-1" @click="cancelUpdate(update, 'remaining')"> Cancel </button>
+                                            <button v-if="correctProducer && (editingRemainingUpdate == false || editingRemainingUpdateID != update._id.$oid)" type="button" class="btn btn-warning rounded-0 me-1" @click="editUpdate(update, 'remaining')"> Edit </button>
+                                            <button v-if="correctProducer && editingRemainingUpdateID == update._id.$oid" type="button" class="btn success-btn rounded-0 reverse-clickable-text me-1" @click="saveUpdateEdit(update, 'remaining')"> Save Changes </button>
+                                            <button v-if="correctProducer && editingRemainingUpdateID == update._id.$oid" type="button" class="btn secondary-btn rounded-0 reverse-clickable-text ms-1" @click="cancelUpdate(update, 'remaining')"> Cancel </button>
                                             <button type="button" class="btn btn-danger rounded-0 ms-1" @click="deleteUpdate(update)"> Delete </button>
                                         </div>
                                     </div>
@@ -661,21 +659,21 @@
                                     <div id="carouselExample" class="carousel slide">
                                         <div class="carousel-inner px-4">
                                             <!-- [if] user type is producer -->
-                                            <div v-if="correctProducer">
+                                            <div v-if="correctProducer || isAdmin">
                                                 <!-- show answered questions -->
                                                 <div v-if="answerStatus">
                                                     <div class="carousel-item" v-for="(qa, index) in answeredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
                                                         <p> <b> Q: {{ qa["question"] }} </b> </p>
                                                         <!-- [if] not editing -->
-                                                        <button v-if="editingQA == false || editingQAID != qa._id.$oid" type="button" class="btn btn-warning rounded-0 me-1" v-on:click="editQA(qa)">
+                                                        <button v-if="correctProducer && (editingQA == false || editingQAID != qa._id.$oid)" type="button" class="btn btn-warning rounded-0 me-1" v-on:click="editQA(qa)">
                                                             Edit answer
                                                         </button>
                                                         <!-- [else] if editing -->
-                                                        <button v-if="editingQAID == qa._id.$oid" type="button" class="btn success-btn rounded-0 me-1" v-on:click="saveQAEdit(qa)">
+                                                        <button v-if="correctProducer && editingQAID == qa._id.$oid" type="button" class="btn success-btn rounded-0 me-1" v-on:click="saveQAEdit(qa)">
                                                             Save
                                                         </button>
                                                         <!-- [else] if editing -->
-                                                        <button v-if="editingQAID == qa._id.$oid" type="button" class="btn secondary-btn rounded-0 me-1" v-on:click="cancelQAEdit(qa)">
+                                                        <button v-if="correctProducer && editingQAID == qa._id.$oid" type="button" class="btn secondary-btn rounded-0 me-1" v-on:click="cancelQAEdit(qa)">
                                                             Cancel
                                                         </button>
                                                         <!-- delete -->
