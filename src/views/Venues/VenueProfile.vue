@@ -845,7 +845,9 @@
                                                 <!-- Item Producer / Drink Type / Type Category / ABV / Country / Description -->
                                                 <div class="col-10">
                                                     <p class="text-start mb-1" style="white-space: nowrap; overflow:hidden;text-overflow: ellipsis;">
-                                                        <span v-if="sectionItem.itemDetails['itemProducer']">{{ sectionItem.itemDetails['itemProducer'] }} | </span>
+                                                        <router-link v-if="sectionItem.itemDetails['itemProducerID']" style="color: #2c3e50;" class="text-decoration-none" :to="{ path: '/profile/producer/' + sectionItem.itemDetails['itemProducerID'] }">
+                                                            <span v-if="sectionItem.itemDetails['itemProducer']">{{ sectionItem.itemDetails['itemProducer'] }} | </span>
+                                                        </router-link>
                                                         <span v-if="sectionItem.itemDetails['itemType']">{{ sectionItem.itemDetails['itemType'] }} | </span>
                                                         <span v-if="sectionItem.itemDetails['itemTypeCategory']">{{ sectionItem.itemDetails['itemTypeCategory'] }} | </span>
                                                         <span v-if="sectionItem.itemDetails['itemABV']">{{ sectionItem.itemDetails['itemABV'] }} ABV | </span>
@@ -2109,7 +2111,8 @@
                                     itemCountry: listingData["originCountry"],
                                     itemDesc: listingData["officialDesc"],
                                     itemRating: listingData["avgRating"],
-                                    itemProducer: listingData["producerName"]
+                                    itemProducer: listingData["producerName"],
+                                    itemProducerID: listingData["producerID"]['$oid'],
                                 };
 
                                 // Get serving type name
@@ -2851,6 +2854,7 @@
                         itemDesc: this.newMenuItemTarget.officialDesc,
                         itemRating: this.newMenuItemTarget.avgRating,
                         itemProducer: this.newMenuItemTarget.producerName,
+                        itemProducerID: this.newMenuItemTarget.producerID['$oid'],
                         itemServingTypeName: "Serving",
                     }
                 });
