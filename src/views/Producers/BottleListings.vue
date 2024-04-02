@@ -91,7 +91,7 @@
                                     <h3 class="text-body-secondary"> <b> {{ specified_listing["listingName"] }} </b> </h3>
                                 </div>
                                 <!-- suggest edit & report duplicate -->
-                                <div class="col-12 col-md-3 col-lg-2">
+                                <div class="col-12 col-md-4 col-lg-3">
                                     <!-- [if] correct producer-->
                                     <!-- TODO: check if moderator type is for the listing -->
                                     <div v-if="correctProducer || correctModerator">
@@ -150,12 +150,12 @@
                     <div class="col-6 col-lg-4 ">
                         <div class="row">
                             <!-- category -->
-                            <div class="col-6 col-md-4 text-start">
+                            <div class="col-6 col-lg-3 text-start">
                                 <p class="mb-2"> <u> Category </u> </p>
                                 <h5 class="text-body-secondary"> <b> {{ specified_listing["typeCategory"] }} </b> </h5>
                             </div>
                             <!-- age --> 
-                            <div class="col-6 col-md-2 text-start">
+                            <div class="col-6 col-lg-2 text-start">
                                 <!-- for wine listings -->
                                 <div v-if="specified_listing['drinkType'] == 'Wine'">
                                     <p class="mb-2"> <u> Vintage </u> </p> <!-- to change this to calculate the age -->
@@ -168,27 +168,27 @@
                                 </div>
                             </div>
                             <!-- country of origin -->
-                            <div class="col-6 col-md-4 text-start">
+                            <div class="col-6 col-lg-5 text-start">
                                 <p class="mb-2"> <u> Country of Origin </u> </p>
                                 <h5 class="text-body-secondary"> <b> {{ specified_listing["originCountry"] }} </b> </h5>
                             </div>
                             <!-- abv -->
-                            <div class="col-6 col-md-2 text-start">
+                            <div class="col-6 col-lg-2 text-start">
                                 <p class="mb-1"> <u> ABV </u> </p>
                                 <h5 class="text-body-secondary"> <b> {{ specified_listing["abv"] }} </b> </h5>
                             </div>
                         </div>
                     </div>
                     <!-- have tried button -->
-                    <div class="col-2 pe-0 col-md-2 pe-md-0">
+                    <div class="col-2 col-lg-2 ">
                         <div v-if="user" v-html="checkDrinkLists(specified_listing).buttons.haveTried" class="d-grid" @click="addToTriedList"> </div>
                     </div>
                     <!-- want to try button -->
-                    <div class="col-2 pe-0 col-md-2 pe-md-0">
+                    <div class="col-2 col-lg-2 ">
                         <div v-if="user" v-html="checkDrinkLists(specified_listing).buttons.wantToTry" class="d-grid" @click="addToWantList"> </div>
                     </div>
                     <!-- bookmark button -->
-                    <div class="col-1 text-end col-md-1 text-md-end">
+                    <div class="col-1 text-end col-lg-1 text-md-end">
                         <BookmarkIcon 
                             v-if="user" 
                             :user="user" 
@@ -709,13 +709,13 @@
                 <div>
                     <div class="row mb-3" v-for="review in filteredReviews" v-bind:key="review._id">
                         <!-- profile photo -->
-                        <div class="col-12 col-sm-1">
+                        <div class="col-12 col-md-1">
                             <router-link :to="`/profile/user/${review.userID.$oid}`">
                                 <img :src=" 'data:image/jpeg;base64,' + (getPhotoFromReview(review) || defaultProfilePhoto)" alt="" class="profile-image">
                             </router-link>
                         </div>
                         <!-- user reviews -->
-                        <div class="col-12 col-sm-10">
+                        <div class="col-12 col-md-10">
                             <div class="row">
                                 <div class="d-flex align-items-center text-start mb-2">
                                     <router-link :to="`/profile/user/${review.userID.$oid}`" style="color: inherit">
@@ -781,7 +781,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-sm-1">
+                        <div class="col-12 col-md-1">
                             <div class="text-end">
                                 <!-- review photo -->
                                 <img :src=" 'data:image/jpeg;base64,' + (review['photo'] || defaultProfilePhoto)" alt="" class="review-image" style="width: 125px; height: 125px">

@@ -2,26 +2,27 @@
 
 <template>
     <NavBar />
+
+    <!-- Display when search is in progress -->
+    <div class="text-info-emphasis fst-italic fw-bold fs-5 pt-5" v-if="!dataLoaded"> 
+        <span>Currently searching, please hold on!</span>
+        <br><br>
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    
+    <!-- Display when searching encounters an error -->
+    <div class="text-danger fst-italic fw-bold fs-3 pt-5" v-if="loadError"> 
+        <span>An error occurred while searching, please try refreshing the page!</span>
+        <br>
+        <button class="btn primary-btn btn-sm" @click="()=>{this.$router.go(0)}">
+            <span class="fs-5 fst-italic"> Refresh Page </span>
+        </button>
+    </div>
+    
     <!-- Header -->
     <div class="container pt-3">
-        
-        <!-- Display when search is in progress -->
-        <div class="text-info-emphasis fst-italic fw-bold fs-5" v-if="!dataLoaded"> 
-            <span>Currently searching, please hold on!</span>
-            <br><br>
-            <div class="spinner-border" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-        
-        <!-- Display when searching encounters an error -->
-        <div class="text-danger fst-italic fw-bold fs-3" v-if="loadError"> 
-            <span>An error occurred while searching, please try refreshing the page!</span>
-            <br>
-            <button class="btn primary-btn btn-sm" @click="()=>{this.$router.go(0)}">
-                <span class="fs-5 fst-italic"> Refresh Page </span>
-            </button>
-        </div>
 
         <!-- Display requests after data loaded -->
         <div v-if="dataLoaded && !loadError">
@@ -59,6 +60,22 @@
                         </div>
                     </div>
 
+                    <!-- Request / Create Listing Link (font size reduced at smaller screen width) -->
+                    <div class="row">
+                        <router-link class="col-12 text-decoration-none" v-if="role == 'producer'" :to="{ path: '/Producer/Producer-Create-Listing/' }">
+                            <p class="d-none d-md-block fs-5 fst-italic text-start">Don't see what you're looking for? Create a new listing here!</p>
+                            <p class="d-md-none fs-6 fst-italic text-start">Don't see what you're looking for? Create a new listing here!</p>
+                        </router-link>
+                        <router-link class="col-12 text-decoration-none" v-if="role == 'user'" :to="{ path: '/request/new/' }">
+                            <p class="d-none d-md-block fs-5 fst-italic text-start">Don't see what you're looking for? Request a new listing here!</p>
+                            <p class="d-md-none fs-6 fst-italic text-start">Don't see what you're looking for? Request a new listing here!</p>
+                        </router-link>
+                        <router-link class="col-12 text-decoration-none" v-if="role != 'producer' && role != 'user'" :to="{ path: '/login' }">
+                            <p class="d-none d-md-block fs-5 fst-italic text-start">Don't see what you're looking for? Login to request a new listing!</p>
+                            <p class="d-md-none fs-6 fst-italic text-start">Don't see what you're looking for? Login to request a new listing!</p>
+                        </router-link>
+                    </div>
+
                 </div>
 
                 <div class="col-md-4 col-12">
@@ -68,7 +85,7 @@
                         <!-- Filter Options -->
                         <div v-if="tabActive == 'listings'" class="col-xxl-6 col-md-12 col-sm-5 col-12 mb-xxl-0 mb-md-2 mb-sm-0 mb-2 dropdown">
                             <div class="d-grid gap-2">
-                                <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden; text-overflow: ellipsis;">
+                                <button class="btn primary-light-dropdown btn-lg dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden; text-overflow: ellipsis; min-width: 200px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
                                         <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
                                     </svg>
@@ -87,7 +104,7 @@
                         <!-- Sort Options -->
                         <div class="col-xxl-6 col-md-12 col-sm-5 col-12 mb-xxl-0 mb-md-2 mb-sm-0 mb-2 dropdown">
                             <div class="d-grid gap-2">
-                                <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden; text-overflow: ellipsis; width: 200px;">
+                                <button class="btn primary-light-dropdown dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="white-space: nowrap; overflow:hidden; text-overflow: ellipsis; min-width: 200px;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-sort-down" viewBox="0 0 16 16">
                                         <path d="M3.5 2.5a.5.5 0 0 0-1 0v8.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L3.5 11.293zm3.5 1a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5M7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1z"/>
                                     </svg>
@@ -109,21 +126,7 @@
 
             </div>
             
-            <!-- Request / Create Listing Link (font size reduced at smaller screen width) -->
-            <div class="row">
-                <router-link class="col-12 text-decoration-none" v-if="role == 'producer'" :to="{ path: '/Producer/Producer-Create-Listing/' }">
-                    <p class="d-none d-md-block fs-5 fst-italic text-start">Don't see what you're looking for? Create a new listing here!</p>
-                    <p class="d-md-none fs-6 fst-italic text-start">Don't see what you're looking for? Create a new listing here!</p>
-                </router-link>
-                <router-link class="col-12 text-decoration-none" v-if="role == 'user'" :to="{ path: '/request/new/' }">
-                    <p class="d-none d-md-block fs-5 fst-italic text-start">Don't see what you're looking for? Request a new listing here!</p>
-                    <p class="d-md-none fs-6 fst-italic text-start">Don't see what you're looking for? Request a new listing here!</p>
-                </router-link>
-                <router-link class="col-12 text-decoration-none" v-if="role != 'producer' && role != 'user'" :to="{ path: '/login' }">
-                    <p class="d-none d-md-block fs-5 fst-italic text-start">Don't see what you're looking for? Login to request a new listing!</p>
-                    <p class="d-md-none fs-6 fst-italic text-start">Don't see what you're looking for? Login to request a new listing!</p>
-                </router-link>
-            </div>
+            
 
             <!-- Dropdown Buttons -->
             <!-- <hr>
