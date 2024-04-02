@@ -31,18 +31,24 @@
 
     <!-- title -->
     
-    <div class="d-grid gap-2" style="position: relative;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="ms-md-5 bi bi-arrow-left-circle" viewBox="0 0 16 16" style="position: absolute; top: 10; left: 0;" v-on:click="goBack">
-            <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
-        </svg>
-        <h1> Q&As for {{ specified_venue["venueName"] }} </h1>
+    <div class="container">
+    <div class="row align-items-center">
+        <div class="col-lg-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16" style="cursor: pointer;" v-on:click="goBack">
+                <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+            </svg>
+        </div>
+        <div class="col-md-11">
+            <h1>Q&amp;As for {{ specified_venue["venueName"] }}</h1>
+        </div>
+    </div>
     </div>
 
     <!-- navtab to toggle between answered and unanswered -->
     <nav>
         <div class="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
-            <button class="nav-link active w-25" id="nav-answered-tab" data-bs-toggle="tab" data-bs-target="#nav-answered" type="button" role="tab" aria-controls="nav-answered" aria-selected="true"> Answered </button>
-            <button class="nav-link w-25" id="nav-unanswered-tab" data-bs-toggle="tab" data-bs-target="#nav-unanswered" type="button" role="tab" aria-controls="nav-unanswered" aria-selected="false"> Unanswered </button>
+            <button class="nav-link active flex-grow-1" id="nav-answered-tab" data-bs-toggle="tab" data-bs-target="#nav-answered" type="button" role="tab" aria-controls="nav-answered" aria-selected="true"> Answered </button>
+            <button class="nav-link flex-grow-1" id="nav-unanswered-tab" data-bs-toggle="tab" data-bs-target="#nav-unanswered" type="button" role="tab" aria-controls="nav-unanswered" aria-selected="false"> Unanswered </button>
         </div>
     </nav>
 
