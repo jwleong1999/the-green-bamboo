@@ -66,7 +66,7 @@
         </nav>
 
         <!-- secondary nav bar -->
-        <div class="col-12 primary-square mt-2">
+        <div class="col-12 primary-square mt-2 py-1">
             <div class="container-fluid align-items-center col-xxl-8 col-xl-9 col-lg-10 col-md-11 col-sm-12">
 
                 <router-link :to="'/'">

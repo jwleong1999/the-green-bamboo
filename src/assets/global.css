@@ -20,7 +20,6 @@ body {
 .navbar-container {
     justify-content: center;
     align-items: center;
-    border-bottom: 3px solid #535C72;
     position: sticky;
     top: 0;
     left: 0;
