@@ -396,7 +396,7 @@
                     </div>
 
                     <!-- col 2: profile visits -->
-                    <div class="col-lg-5 col-md-12 col-sm-12 text-start mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start mx-3 pt-5">
                         <h3> Profile Visits </h3>
                         <Line :data="profileData" :options="chartOptions"></Line>
                     </div>
@@ -467,11 +467,19 @@
                     type: Object,
                     default: () => {},
                     scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
                         y: {
                             beginAtZero: true,
                             precision: 0,
                             ticks: {
                                 stepSize: 1
+                            },
+                            grid: {
+                                display: false
                             }
                         }
                     }

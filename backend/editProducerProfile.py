@@ -365,6 +365,20 @@ def addNewProfileCount():
                     }
             }
         )
+        # If addNewProfileCount does not update any documents, create a new document
+        if addNewProfileCount.matched_count == 0:
+            addNewProfileCount = db.producersProfileViews.insert_one(
+                {
+                    '_id': ObjectId(producerID),
+                    'producerID': ObjectId(producerID),
+                    'views': 
+                        [{
+                            '_id': ObjectId(),
+                            'date': date,
+                            'count': 1
+                        }]
+                }
+            )
         return jsonify(
             {   
                 "code": 201,
