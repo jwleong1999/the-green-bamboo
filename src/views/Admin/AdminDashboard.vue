@@ -56,12 +56,28 @@
                     <div>
                         <div class="gap-1">
                             <!-- Open a modal prompting to edit or add tags -->
-                            <button class="btn tertiary-btn reverse-clickable-text m-1" type="button" data-bs-toggle="modal" data-bs-target="#observationModal">
+                            <button class="btn tertiary-btn m-1" type="button" @click="toggleObservationControl" :style="{ 'background-color': showObservationControl ? '#535C72' : '#747D92', 'color':'whitesmoke'}">
                                 Action Tags
                             </button>
-                            <button class="btn tertiary-btn reverse-clickable-text m-1" data-bs-toggle="button" type="button" @click="toggleFlavourControl" :style="{ 'background-color': showFlavourControl ? '#535C72' : '', 'color':'whitesmoke'}">
+                            
+                            <button class="btn tertiary-btn m-1" data-bs-toggle="button" type="button" @click="toggleFlavourControl" :style="{ 'background-color': showFlavourControl ? '#535C72' : '#747D92', 'color':'whitesmoke'}">
                                 Flavour Tags
                             </button>
+
+                            <div v-if="showObservationControl" class="rounded p-3 border border-black">
+                                <button class="btn btn-warning reverse-clickable-text text-dark" data-bs-toggle="modal" data-bs-target="#observationModal" @click="addObservation" type="button">
+                                    Add Action Tags
+                                </button> 
+
+                                <button class="btn btn-primary mx-1 reverse-clickable-text" data-bs-toggle="modal" data-bs-target="#observationModal" @click="editObservation" type="button">
+                                    Edit Action Tags
+                                </button>
+
+                                <button class="btn btn-danger mx-1 reverse-clickable-text" data-bs-toggle="modal" data-bs-target="#observationModal" @click="deleteObservations" type="button">
+                                    Delete Action Tags
+                                </button>
+                            </div>
+
                             <div v-if="showFlavourControl" class="rounded p-3 border border-black">
                                 <div class="row mb-1">
                                     <div class="col-12 pb-2">
@@ -87,9 +103,6 @@
                                         </button>
                                     </div> 
                                 </div>
-                                
-                                    
-                                
                             </div>
                         
                         </div>
@@ -308,7 +321,7 @@
                                         <h1 v-if="addingObservation" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Add Action Tag</h1>
                                         <h1 v-if="editingObservation" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Edit Action Tag</h1>
                                         <h1 v-if="deletingObservation" class="modal-title fs-5" id="exampleModalLabel" style="color: white;">Delete Action Tag</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="resetObservation"></button>
                                     </div>
 
                                     <!-- Modal for success and error message -->
@@ -393,8 +406,8 @@
                                     </div>
 
                                     <div class="modal-footer">
-                                        <button v-if="selectingObservation" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button v-if="!selectingObservation" @click="resetObservation" type="button" class="btn btn-secondary">Return</button>
+                                        <!-- <button v-if="selectingObservation" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                                        <button v-if="!(successUpdateObservation || errorUpdateObservation || errorCreateObservation || successCreateObservation || successDeleteObservation || errorDeleteObservation)" @click="resetObservation" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                         <button v-if="editingObservation" @click="updateObservation" type="button" class="btn btn-primary">Save Updates</button>
                                         <button v-if="addingObservation" @click="createNewObservation" type="button" class="btn btn-primary">Add Tag</button>
                                         <button v-if="successUpdateObservation || errorUpdateObservation || errorCreateObservation || successCreateObservation || successDeleteObservation || errorDeleteObservation" @click="resetErrors" type="button" data-bs-dismiss="modal" class="btn btn-secondary">Close</button>
@@ -901,6 +914,7 @@
                     successRemoveMod:false,
                     errorRemoveMod:false,
 
+                    showObservationControl: false,
                     showFlavourControl: false,
                     errorAddFlavour:false,
                     successAddFlavour:false,
@@ -1768,7 +1782,13 @@
                 },
 
                 toggleFlavourControl(){
+                    this.showObservationControl = false
                     this.showFlavourControl = !this.showFlavourControl
+                },
+
+                toggleObservationControl(){
+                    this.showFlavourControl=false
+                    this.showObservationControl = !this.showObservationControl
                 },
 
                 setAddFlavour(mode){
