@@ -206,7 +206,7 @@
                                         <div class="carousel-item" v-for="(userReport, index) in pendingReports" v-bind:key="userReport._id" v-bind:class="{ 'active': index === 0 }">
                                             <p class="fw-bold">Menu Item:<br>{{ userReport.listingData["listingName"] }}</p>
                                             <p> {{ userReport["inaccurateReason"] }} </p>
-                                            <div class="input-group centered pt-2" v-if="selfView">
+                                            <div class="input-group pt-2" v-if="selfView">
                                                 <button type="button" class="btn success-btn rounded-0 reverse-clickable-text" @click="updateReportStatus(userReport._id['$oid'], 'approve')">
                                                     Clear
                                                 </button>
