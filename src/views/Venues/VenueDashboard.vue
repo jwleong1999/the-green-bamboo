@@ -566,7 +566,8 @@
                 }
                 // If logged in as a user, check if user is an administrator
                 else if (this.viewerType == 'user' && this.viewerID != "" && this.viewerID != undefined) {
-                    this.getUserData();
+                    this.$router.push('/login');
+                    // this.getUserData();
                 }
                 // If insufficient permissions, redirect to your own profile page / login
                 else {
@@ -587,7 +588,6 @@
             // Obtain venue data
             if (this.targetVenue != "" && this.targetVenue != undefined) {
                 if (this.selfView) {
-                    // this.qaMode = 'unanswered';
                     this.getVenueData();
                 }
             }
