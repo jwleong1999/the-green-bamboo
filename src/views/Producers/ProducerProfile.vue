@@ -340,74 +340,77 @@
                                 <!-- for each update -->
                                 <div v-for="update in remainingUpdates" v-bind:key="update._id">
                                     <div class="row">
-                                        <div class="col-6">
-                                            <h5 class="text-decoration-underline text-start pb-3">
-                                                Posted on:
-                                                {{ this.formatDate(update.date.$date) }}
-                                            </h5>
-                                        </div>
-                                        <div v-if="correctProducer || isAdmin" class="col-6 text-end">
-                                            <!-- edit & delete button -->
-                                            <button v-if="correctProducer && (editingRemainingUpdate == false || editingRemainingUpdateID != update._id.$oid)" type="button" class="btn btn-warning rounded-0 me-1" @click="editUpdate(update, 'remaining')"> Edit </button>
-                                            <button v-if="correctProducer && editingRemainingUpdateID == update._id.$oid" type="button" class="btn success-btn rounded-0 reverse-clickable-text me-1" @click="saveUpdateEdit(update, 'remaining')"> Save Changes </button>
-                                            <button v-if="correctProducer && editingRemainingUpdateID == update._id.$oid" type="button" class="btn secondary-btn rounded-0 reverse-clickable-text ms-1" @click="cancelUpdate(update, 'remaining')"> Cancel </button>
-                                            <button type="button" class="btn btn-danger rounded-0 ms-1" @click="deleteUpdate(update)"> Delete </button>
-                                        </div>
-                                    </div>
-                                    <!-- other info -->
-                                    <div class="row pb-2">
-                                        <!-- photo & # of likes -->
-                                        <div class="col-xxl-2 col-md-3 col-4 image-container">
-                                            <!-- image -->
-                                            <!-- [if] editing -->
-                                            <div v-if="editingRemainingUpdateID == update._id.$oid" style="position: relative; text-align: center;">
-                                                <!-- image -->
-                                                <img :src="selectedRemainingUpdateImage || 'data:image/jpeg;base64,' + (update['photo'] || defaultProfilePhoto)" 
-                                                    alt="" style="width: 150px; height: 150px; z-index: 1; opacity: 50%">
-                                                <!-- change option -->
-                                                <label for="file4" class="btn primary-light-dropdown mt-3" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose</label>
-                                                <input id="file4" type="file" v-on:change="loadRemainingUpdateFile" ref="fileInput4" 
-                                                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; opacity: 0; width: 200px; height: 200px; cursor: pointer;">
+                                        <div class="row">
+                                            <div class="col-xl-8 col-md-6 col-12">
+                                                <p class="text-start text-decoration-underline fs-5 m-0 pb-3">Posted on: {{ this.formatDate(update.date.$date) }}</p>
                                             </div>
-                                            <!-- [else] not editing -->
-                                            <div v-else-if="editingRemainingUpdate == false || editingRemainingUpdateID != update._id.$oid">
-                                                <img :src="'data:image/jpeg;base64,' + (update['photo'] || defaultProfilePhoto)" 
-                                                    alt="" style="width: 150px; height: 150px; z-index: 1;">
+
+                                            <div v-if="correctProducer || isAdmin" class="col-xl-4 col-md-6 col-12 text-end">
+                                                <!-- edit & delete button -->
+                                                <button v-if="correctProducer && (editingRemainingUpdate == false || editingRemainingUpdateID != update._id.$oid)" type="button" class="btn btn-warning rounded-0" @click="editUpdate(update, 'remaining')"> Edit </button>
+                                                <button v-if="correctProducer && editingRemainingUpdateID == update._id.$oid" type="button" class="btn success-btn rounded-0 reverse-clickable-text" @click="saveUpdateEdit(update, 'remaining')"> Save Changes </button>
+                                                <button v-if="correctProducer && editingRemainingUpdateID == update._id.$oid" type="button" class="btn secondary-btn rounded-0 reverse-clickable-text ms-1" @click="cancelUpdate(update, 'remaining')"> Cancel </button>
+                                                <button type="button" class="btn btn-danger rounded-0 ms-1" @click="deleteUpdate(update)"> Delete </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- other info -->
+                                        <div class="col-xl-2 col-md-3 col-4">
+                                            <!-- photo & # of likes -->
+                                            <div class="image-container">
+                                                <!-- image -->
+                                                <!-- [if] editing -->
+                                                <div v-if="editingRemainingUpdateID == update._id.$oid" style="position: relative; text-align: center;">
+                                                    <!-- image -->
+                                                    <img :src="selectedRemainingUpdateImage || 'data:image/jpeg;base64,' + (update['photo'] || defaultProfilePhoto)" 
+                                                        alt="" style="width: 128px; height: 128px; z-index: 1; opacity: 50%">
+                                                    <!-- change option -->
+                                                    <label for="file4" class="btn primary-light-dropdown" style="position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose</label>
+                                                    <input id="file4" type="file" v-on:change="loadRemainingUpdateFile" ref="fileInput4" style="width: 0px; height: 0px;">
+                                                    <!-- reset image option -->
+                                                    <button class="btn primary-light-dropdown m-1" @click="selectedRemainingUpdateImage = 'data:image/jpeg;base64,' + update['photo']; image64RemainingUpdate = null">Revert</button>
+                                                    <!-- remove image option -->
+                                                    <button class="btn primary-light-dropdown m-1" @click="selectedRemainingUpdateImage = 'data:image/jpeg;base64,' + defaultProfilePhoto; image64RemainingUpdate = ''">Remove</button>
+                                                </div>
+                                                <!-- [else] not editing -->
+                                                <div v-else-if="editingRemainingUpdate == false || editingRemainingUpdateID != update._id.$oid">
+                                                    <img :src="'data:image/jpeg;base64,' + (update['photo'] || defaultProfilePhoto)" 
+                                                        alt="" style="width: 128px; height: 128px; z-index: 1;">
+                                                </div>
                                             </div>
                                             <!-- # of likes -->
-                                            <div class="row pt-3"> 
+                                            <div class="row pt-2"> 
                                                 <div class="col-6 text-end">
                                                     <!-- [if] liked -->
-                                                    <div v-if="remainingLikeStatus[update._id.$oid]" style="display: inline-block;"  v-on:click="unlikeUpdates(update._id.$oid)">
+                                                    <div v-if="remainingLikeStatus[update._id.$oid]" class="d-inline-block"  v-on:click="unlikeUpdates(update._id.$oid)">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
                                                             <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
                                                         </svg>
                                                     </div>
                                                     <!-- [else] not liked -->
-                                                    <div v-else style="display: inline-block;" v-on:click="likeUpdates(update._id.$oid)">
+                                                    <div v-else class="d-inline-block" v-on:click="likeUpdates(update._id.$oid)">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
                                                             <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.090.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
                                                         </svg>
                                                     </div>
                                                 </div>
                                                 <div class="col-6 text-start">
-                                                    <h4> {{ updateLikesCount }} </h4>
+                                                    <p class="text-body-secondary fs-5 m-0"> {{ updateLikesCount }} </p>
                                                 </div>
                                             </div>
                                         </div>
+
                                         <!-- description -->
-                                        <div class="col-xxl-10 col-md-9 col-8">
-                                            <div class="row">
-                                                <!-- description -->
-                                                <div class="col text-start p-text-lg"> 
-                                                    <p v-if="editingRemainingUpdate == false || editingRemainingUpdateID != update._id.$oid">
-                                                        {{update['text']}}
-                                                    </p>
-                                                    <p v-else-if="editingRemainingUpdateID == update._id.$oid">
-                                                        <label for="remainingUpdateText"> Update Text </label>
-                                                        <textarea class="form-control mb-3" id="remainingUpdateText" aria-describedby="remainingUpdateText" v-model="edit_remainingUpdateText[update._id.$oid]"></textarea>
-                                                    </p>
-                                                </div>
+                                        <div class="col-xl-10 col-md-9 col-8">
+                                            <!-- description -->
+                                            <div class="text-start p-text-lg"> 
+                                                <p v-if="editingRemainingUpdate == false || editingRemainingUpdateID != update._id.$oid">
+                                                    {{update['text']}}
+                                                </p>
+                                                <p v-else-if="editingRemainingUpdateID == update._id.$oid">
+                                                    <label for="remainingUpdateText"> Update Text </label>
+                                                    <textarea class="form-control" id="remainingUpdateText" aria-describedby="remainingUpdateText" v-model="edit_remainingUpdateText[update._id.$oid]"></textarea>
+                                                </p>
                                             </div>
                                         </div>
                                     </div>

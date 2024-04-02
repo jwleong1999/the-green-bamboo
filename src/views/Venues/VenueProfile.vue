@@ -464,7 +464,7 @@
                     <div class="row" v-if="targetVenue['claimStatus']">
 
                         <!-- Toggle Button -->
-                        <button type="button" class="btn tertiary-text text-decoration-underline pt-2 no-margin border border-0" data-bs-toggle="collapse" data-bs-target="#collapseMoreUpdates" aria-expanded="false" aria-controls="collapseMoreUpdates" @click="showMoreUpdates = !showMoreUpdates;"> View <span v-if="showMoreUpdates">less</span><span v-else>more</span> </button>
+                        <button v-if="targetVenue['updates'].length > 0" type="button" class="btn tertiary-text text-decoration-underline pt-2 no-margin border border-0" data-bs-toggle="collapse" data-bs-target="#collapseMoreUpdates" aria-expanded="false" aria-controls="collapseMoreUpdates" @click="showMoreUpdates = !showMoreUpdates;"> View <span v-if="showMoreUpdates">less</span><span v-else>more</span> </button>
 
                         <!-- More Updates Collapsible -->
                         <div class="collapse" id="collapseMoreUpdates" v-if="Array.isArray(targetVenue['updates'])">
@@ -506,7 +506,7 @@
                                     </div>
 
                                     <!-- Photo / Number of Likes -->
-                                    <div class="col-xl-2 col-md-3">
+                                    <div class="col-xl-2 col-md-3 col-4">
 
                                         <!-- Image -->
                                         <div class="image-container">
@@ -516,7 +516,7 @@
                                                 <!-- image -->
                                                 <img :src="'data:image/jpeg;base64,' + (editUpdateContent[updateMore._id['$oid']].newPhoto || defaultProfilePhoto)" alt="" style="width: 128px; height: 128px; z-index: 1; opacity: 50%">
                                                 <!-- change option -->
-                                                <label :for="'fileSelectEditUpdate' + updateMore._id['$oid']" class="btn primary-light-dropdown m-1">Choose File</label>
+                                                <label :for="'fileSelectEditUpdate' + updateMore._id['$oid']" class="btn primary-light-dropdown" style="position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose</label>
                                                 <input :id="'fileSelectEditUpdate' + updateMore._id['$oid']" type="file" @change="handleFileSelectEditUpdate" ref="fileInput" style="width: 0px; height: 0px;">
                                                 <!-- reset image option -->
                                                 <button class="btn primary-light-dropdown m-1" @click="editUpdateContent[updateMore._id['$oid']].newPhoto = updateMore.photo">Revert</button>
@@ -565,11 +565,11 @@
                                     </div>
                                     
                                     <!-- Description -->
-                                    <div v-if="editUpdateTarget == updateMore._id['$oid']" class="col-xl-10 col-md-9 text-start p-text-lg">
+                                    <div v-if="editUpdateTarget == updateMore._id['$oid']" class="col-xl-10 col-md-9 col-8 text-start p-text-lg">
                                         <label :for="'editUpdateText' + updateMore._id['$oid']"> Update Text </label>
                                         <textarea type="text" class="form-control" :id="'editUpdateText' + updateMore._id['$oid']" aria-describedby="editUpdateText" v-model="editUpdateContent[updateMore._id['$oid']].newText"></textarea>
                                     </div>
-                                    <div v-else class="col-xl-10 col-md-9">
+                                    <div v-else class="col-xl-10 col-md-9 col-8">
                                         <p class="text-start p-text-lg">{{ updateMore.text }}</p>
                                     </div>
 
