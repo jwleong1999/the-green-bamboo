@@ -43,6 +43,11 @@
             <button class="btn primary-btn btn-sm" @click="goBack" v-if="formMode != 'new'">
                 <span class="fs-5 fst-italic"> Return to previous page </span>
             </button>
+            <router-link :to="'/request/view'" class="mx-1">
+                <button class="btn primary-btn btn-sm">
+                    <span class="fs-5 fst-italic"> View Requests </span>
+                </button>
+            </router-link>
             <router-link :to="'/'" class="mx-1">
                 <button class="btn primary-btn btn-sm">
                     <span class="fs-5 fst-italic"> Go to Home page </span>
