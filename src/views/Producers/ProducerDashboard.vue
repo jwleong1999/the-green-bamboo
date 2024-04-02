@@ -83,27 +83,74 @@
                             <!-- responses to q&a -->
                             <div id="carouselExample" class="carousel slide">
                                 <div class="carousel-inner px-4">
-                                    <!-- show answered questions -->
-                                    <div v-if="answerStatus">
-                                        <div class="carousel-item" v-for="(qa, index) in answeredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
-                                            <p> <b> Q: {{ qa["question"] }} </b> </p>
-                                            <p> A: {{ qa["answer"] }} </p>
+                                    <!-- [if] user type is producer -->
+                                    <div v-if="correctProducer || isAdmin">
+                                        <!-- show answered questions -->
+                                        <div v-if="answerStatus">
+                                            <div class="carousel-item" v-for="(qa, index) in answeredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
+                                                <p> <b> Q: {{ qa["question"] }} </b> </p>
+                                                <!-- [if] not editing -->
+                                                <button v-if="correctProducer && (editingQA == false || editingQAID != qa._id.$oid)" type="button" class="btn btn-warning rounded-0 me-1" v-on:click="editQA(qa)">
+                                                    Edit answer
+                                                </button>
+                                                <!-- [else] if editing -->
+                                                <button v-if="correctProducer && editingQAID == qa._id.$oid" type="button" class="btn success-btn rounded-0 me-1" v-on:click="saveQAEdit(qa)">
+                                                    Save
+                                                </button>
+                                                <!-- [else] if editing -->
+                                                <button v-if="correctProducer && editingQAID == qa._id.$oid" type="button" class="btn secondary-btn rounded-0 me-1" v-on:click="cancelQAEdit(qa)">
+                                                    Cancel
+                                                </button>
+                                                <!-- delete -->
+                                                <button type="button" class="btn btn-danger rounded-0" v-on:click="deleteQAEdit(qa)">
+                                                    Delete
+                                                </button>
+                                                <!-- spacer -->
+                                                <div class="mt-2"></div>
+                                                <p v-if="editingQA == false || editingQAID != qa._id.$oid"> A: {{ qa["answer"] }} </p>
+                                                <textarea v-else-if="editingQAID == qa._id.$oid" class="search-bar form-control rounded fst-italic question-box flex-grow-1" type="text" placeholder="Edit answer." v-model="edit_answer[qa._id.$oid]"></textarea>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <!-- show unanswered questions -->
-                                    <div v-else>
-                                            <div class="carousel-item" v-for="(qa, index) in unansweredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
-                                            <p> <b> Q: {{ qa["question"] }} </b> </p>
-                                            <div class="input-group centered">
-                                                <div class="input-group centered pt-2">
-                                                    <textarea class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Respond to your fans latest questions." v-model="answer"></textarea>
-                                                    <div v-on:click="sendAnswer(qa)" class="send-icon ps-1">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                                                            <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                                                        </svg>
+                                        <!-- show unanswered questions -->
+                                        <div v-else>
+                                                <div class="carousel-item" v-for="(qa, index) in unansweredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
+                                                <p> <b> Q: {{ qa["question"] }} </b> </p>
+                                                <div class="input-group centered">
+                                                    <div class="input-group centered pt-2">
+                                                        <textarea class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Respond to your fans latest questions." v-model="answer"></textarea>
+                                                        <div v-on:click="sendAnswer(qa)" class="send-icon ps-1">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                                                                <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                                            </svg>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- [else] user type is NOT producer -->
+                                    <div v-else>
+                                        <div class="carousel-item" v-for="(qa, index) in answeredQuestions" v-bind:key="qa._id" v-bind:class="{ 'active': index === 0 }">
+                                            <div>
+                                                <p> <b> Q: {{ qa["question"] }} </b> </p>
+                                                <p> A: {{ qa["answer"] }} </p>
+                                            </div>
+                                            <div class="input-group centered pt-2">
+                                                <textarea class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Ask your question!" v-model="question"></textarea>
+                                                <div v-on:click="sendQuestion" class="send-icon ps-1">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                                                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div v-if="answeredQuestions.length === 0" class="input-group centered pt-2">
+                                            <textarea class="search-bar form-control rounded fst-italic question-box" type="text" placeholder="Ask your question!" v-model="question"></textarea>
+                                            <div v-on:click="sendQuestion" class="send-icon ps-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                                                    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                                </svg>
                                             </div>
                                         </div>
                                     </div>
@@ -358,6 +405,11 @@
                 answeredQuestions: [],
                 unansweredQuestions: [],
                 answerStatus: true,
+
+                // for editing Q&A
+                editingQA: false,
+                edit_answer: {},
+                editingQAID: "",
 
                 // all drinks that producer has
                 allDrinks: [],
@@ -842,7 +894,71 @@
                 // formatting the date
                 let formattedDate = `${month}/${year}`;
                 return formattedDate
-            }
+            },
+
+            // for editing Q&A answers
+            editQA(qa) {
+                this.editingQA = true;
+                // set the current details to the edit details
+                this.edit_answer[qa._id.$oid] = qa.answer
+                this.editingQAID = qa._id.$oid;
+            }, 
+
+            saveQAEdit(qa) {
+                // set editing status to false
+                this.editingQA = false;
+                let q_and_a_id = qa._id.$oid;
+                try {
+                    this.$axios.post('http://127.0.0.1:5200/editQA', 
+                        {
+                            producerID: this.producer_id,
+                            questionsAnswersID: q_and_a_id,
+                            answer: this.edit_answer[qa._id.$oid],
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+                // force page to reload
+                window.location.reload();
+            },
+
+            deleteQAEdit(qa) {
+                let q_and_a_id = qa._id.$oid;
+                try {
+                    const response = this.$axios.post('http://127.0.0.1:5200/deleteQA', 
+                        {
+                            producerID: this.producer_id,
+                            questionsAnswersID: q_and_a_id,
+                            answer: "",
+                        },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                    console.log(response.data);
+                } 
+                catch (error) {
+                    console.error(error);
+                }
+
+                // force page to reload
+                window.location.reload();
+            },
+
+            // cancel Q&A edit
+            cancelQAEdit(qa) {
+                this.editingQA = false;
+                this.edit_answer[qa._id.$oid] = "";
+                this.editingQAID = "";
+            },
+
 
         }
     };
