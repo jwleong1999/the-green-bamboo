@@ -25,7 +25,14 @@
                 <div class="col-3 dropdown">
 
                     <!-- profile icon -->
-                    <router-link :to="profileURL" class="me-1">
+                    <button v-if="onProfile" type="button" class="btn p-0 me-1" @click="forceLoad(profileURL)">
+                        <svg v-if="photo == ''" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                        </svg>
+                        <img v-else :src="'data:image/png;base64,'+ photo"  style="width: 30px; height: 30px;" class="img-border">
+                    </button>
+                    <router-link v-if="!onProfile" :to="profileURL" class="me-1">
                         <button type="button" class="btn p-0">
                             <svg v-if="photo == ''" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
                                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
@@ -47,8 +54,12 @@
                         <li v-if="onProfile"><span class="dropdown-item" @click="forceLoad(profileURL)">My Profile</span></li>
                         <li v-if="!onProfile"><router-link :to="profileURL" class="dropdown-item">My Profile</router-link></li>
 
-                        <li v-if="accType == 'producer' || isAdmin || isModerator"><router-link :to="'/listing/create'" class="dropdown-item">Create New Listing</router-link></li>
-                        <li v-if="accType == 'user'"><router-link :to="'/request/new'" class="dropdown-item">Request New Listing</router-link></li>
+                        <li v-if="onCreate && (accType == 'producer' || isAdmin || isModerator)"><span class="dropdown-item" @click="forceLoad('/listing/create')">Create New Listing</span></li>
+                        <li v-if="!onCreate && (accType == 'producer' || isAdmin || isModerator)"><router-link :to="'/listing/create'" class="dropdown-item">Create New Listing</router-link></li>
+
+                        <li v-if="onRequest && accType == 'user'"><span class="dropdown-item" @click="forceLoad('/request/new')">Request New Listing</span></li>
+                        <li v-if="!onRequest && accType == 'user'"><router-link :to="'/request/new'" class="dropdown-item">Request New Listing</router-link></li>
+
                         <li v-if="accType == 'user' || accType == 'producer'"><router-link :to="'/request/view'" class="dropdown-item">View Requests</router-link></li>
 
                         <li v-if="isAdmin"><router-link :to="'/admin/dashboard'" class="dropdown-item">Admin Dashboard</router-link></li>
@@ -91,13 +102,19 @@
                     Latest Drink News
                 </button>
 
-                <router-link v-if="accType == 'user'" :to="'/request/new'">
+                <button @click="forceLoad('/request/new')" v-if="onRequest && accType == 'user'" class="btn primary-btn border-0 fw-bold text-warning" type="button">
+                    Submit A Drink
+                </button>
+                <router-link v-if="!onRequest && accType == 'user'" :to="'/request/new'">
                     <button class="btn primary-btn border-0 fw-bold text-warning" type="button">
                         Submit A Drink
                     </button>
                 </router-link>
 
-                <router-link v-if="accType == 'producer' || isAdmin || isModerator" :to="'/listing/create'">
+                <button @click="forceLoad('/listing/create')" v-if="onCreate && (accType == 'producer' || isAdmin || isModerator)" class="btn primary-btn border-0 fw-bold text-warning" type="button">
+                    Add A New Drink
+                </button>
+                <router-link v-if="!onCreate && (accType == 'producer' || isAdmin || isModerator)" :to="'/listing/create'">
                     <button class="btn primary-btn border-0 fw-bold text-warning" type="button">
                         Add A New Drink
                     </button>
@@ -121,6 +138,8 @@
                 isAdmin: false,
                 isModerator: false,
                 onProfile: false,
+                onCreate: false,
+                onRequest: false,
                 dashboardWord: '',
             }
         },
@@ -161,6 +180,16 @@
                 // check if current page is profile page
                 if (this.$route.path.split('/')[1] == 'profile') {
                     this.onProfile = true;
+                }
+
+                // check if current page is create listing page
+                if (this.$route.path.split('/').length >= 3 && this.$route.path.split('/')[2] == 'create') {
+                    this.onCreate = true;
+                }
+
+                // check if current page is request page
+                if (this.$route.path.split('/')[1] == 'request') {
+                    this.onRequest = true;
                 }
             }
         },

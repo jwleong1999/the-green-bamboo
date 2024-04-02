@@ -42,8 +42,11 @@
                                 alt="" style="width: 200px; height: 200px; z-index: 1; opacity: 50%">
                             <!-- change option -->
                             <label for="file1" class="btn primary-light-dropdown mt-3" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose file</label>
-                            <input id="file1" type="file" v-on:change="loadFile" ref="fileInput" 
-                            style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; opacity: 0; width: 200px; height: 200px; cursor: pointer;">
+                            <input id="file1" type="file" v-on:change="loadFile" ref="fileInput" style="width: 0px; height: 0px;">
+                            <!-- reset image option -->
+                            <button class="btn primary-light-dropdown m-1" @click="selectedImage = 'data:image/jpeg;base64,' + specified_producer['photo']; image64 = null">Revert</button>
+                            <!-- remove image option -->
+                            <button class="btn primary-light-dropdown m-1" @click="selectedImage = 'data:image/jpeg;base64,' + defaultProfilePhoto; image64 = ''">Remove</button>
                         </div>
                         <!-- [else] not editing -->
                         <div v-else>
@@ -521,7 +524,7 @@
                             <div v-for="listing in filteredListings" v-bind:key="listing._id" class="p-3">
                                 <div class="row">
                                     <!-- image -->
-                                    <div class="col-2 image-container text-center mx-auto">
+                                    <div class="col-lg-2 col-12 image-container text-center mx-auto mb-3 mb-lg-0">
                                         <router-link :to="{ path: '/listing/view/' +listing._id.$oid}" class="default-text-no-background">
                                             <img :src=" 'data:image/jpeg;base64,' + (listing['photo'] || defaultProfilePhoto)" style="width: 150px; height: 150px;">
                                         </router-link>
@@ -544,7 +547,7 @@
                                         </button>
                                     </div>
                                     <!-- details -->
-                                    <div class="col-10 ps-5">
+                                    <div class="col-lg-10 col-12 ps-5">
                                         <!-- expression name, have tried & want to try & bookmark buttons -->
                                         <div class="row">
                                             <!-- expression name -->

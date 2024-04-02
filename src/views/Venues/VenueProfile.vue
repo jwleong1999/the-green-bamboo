@@ -304,7 +304,7 @@
                         <!-- Update Date + Edit / Delete Update -->
                         <div class="row">
                             <div class="col-xl-8 col-md-6 col-12">
-                                <p class="text-start text-decoration-underline fs-5 m-0 pb-2">Posted on: {{ targetVenue["updates"][0].date }}</p>
+                                <p class="text-start text-decoration-underline fs-5 m-0 pb-3">Posted on: {{ targetVenue["updates"][0].date }}</p>
                             </div>
                             <div v-if="selfView || powerView" class="col-xl-4 col-md-6 col-12 text-end">
                                 <!-- [if] not editing -->
@@ -481,7 +481,7 @@
                                     <!-- Update Date + Edit / Delete Update -->
                                     <div class="row">
                                         <div class="col-xl-8 col-md-6 col-12">
-                                            <p class="text-start text-decoration-underline fs-5 m-0 pb-2">Posted on: {{ updateMore.date }}</p>
+                                            <p class="text-start text-decoration-underline fs-5 m-0 pb-3">Posted on: {{ updateMore.date }}</p>
                                         </div>
                                         <div v-if="selfView || powerView" class="col-xl-4 col-md-6 col-12 text-end">
                                             <!-- [if] not editing -->
