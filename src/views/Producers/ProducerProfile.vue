@@ -41,7 +41,7 @@
                             <img :src="selectedImage || 'data:image/jpeg;base64,' + (specified_producer['photo'] || defaultProfilePhoto)" 
                                 alt="" style="width: 200px; height: 200px; z-index: 1; opacity: 50%">
                             <!-- change option -->
-                            <label for="file1" class="btn primary-light-dropdown mt-3" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose file</label>
+                            <label for="file1" class="btn primary-light-dropdown" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose File</label>
                             <input id="file1" type="file" v-on:change="loadFile" ref="fileInput" style="width: 0px; height: 0px;">
                             <!-- reset image option -->
                             <button class="btn primary-light-dropdown m-1" @click="selectedImage = 'data:image/jpeg;base64,' + specified_producer['photo']; image64 = null">Revert</button>
@@ -62,20 +62,20 @@
                                 <div class="col-8">
                                     <!-- [if] editing -->
                                     <div v-if="editing">
-                                        <label for="originCountryInput "> Country of origin </label>
+                                        <label for="originCountryInput "> Country of Origin </label>
                                         <input type="text" class="form-control mb-3" id="originCountryInput" aria-describedby="originCountry" v-model="edit_originCountry">
                                     </div>
                                     <!-- [else] not editing -->
-                                    <h5 v-else class="text-body-secondary fs"> {{ specified_producer["originCountry"] }} </h5>
+                                    <h5 v-else class="text-body-secondary"> {{ specified_producer["originCountry"] }} </h5>
                                 </div>
                                 <!-- claim this business / add listing & edit profile -->
                                 <div class="col-4">
                                     <!-- [if] user type is producer / admin -->
                                     <span v-if="correctProducer || isAdmin" class="row"> 
                                         <!-- add listing-->
-                                        <div v-if="correctProducer" class="col d-grid no-padding">
+                                        <div v-if="correctProducer && editing == false" class="col d-grid no-padding">
                                             <!-- if not editing -->
-                                            <button v-if="editing == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
+                                            <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
                                                 <router-link :to="`/listing/create/${producer_id}`" class="reverse-clickable-text">
                                                     Add Listing
                                                 </router-link>
@@ -85,7 +85,7 @@
                                         <div class="col d-grid no-padding">
                                             <!-- [if] not editing -->
                                             <button v-if="editing == false" type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text" v-on:click="editProfile()">
-                                                Edit profile
+                                                Edit Profile
                                             </button>
                                             <!-- [else] if editing -->
                                             <button v-else type="button" class="btn success-btn rounded-0 reverse-clickable-text" v-on:click="saveEdit()">
@@ -103,7 +103,7 @@
                             <div class="row">
                                 <!-- [if] editing -->
                                 <div v-if="editing">
-                                    <label for="producerNameInput"> Producer name </label>
+                                    <label for="producerNameInput"> Producer Name </label>
                                     <input type="text" class="form-control mb-3" id="producerNameInput" aria-describedby="producerDesc" v-model="edit_producerName">
                                 </div>
                                 <!-- [else] not editing -->
@@ -111,15 +111,14 @@
                             </div>
                             <!-- description -->
                             <div class="row">
-                                <div class="col">
-                                    <div class="py-2"></div>
+                                <div class="col-12">
                                     <!-- [if] editing -->
                                     <div v-if="editing">
-                                        <label for="producerDescInput"> Producer description </label>
+                                        <label for="producerDescInput"> Producer Description </label>
                                         <textarea type="text" class="form-control mb-3" id="producerDescInput" aria-describedby="producerDesc" v-model="edit_producerDesc"> </textarea>
                                     </div>
                                     <!-- [else] not editing -->
-                                    <p v-else class="text-body-secondary fs"> {{ specified_producer["producerDesc"] }} </p>
+                                    <p v-else class="text-body-secondary fs m-0"> {{ specified_producer["producerDesc"] }} </p>
                                 </div>
                             </div>
                         </div>
@@ -164,7 +163,7 @@
                     </div>
 
                     <!-- follow this business -->
-                    <div class="col-5" v-if="userType == 'user'" >
+                    <div class="col-5 d-flex justify-content-end" v-if="userType == 'user'" >
                         <div v-if="!following" class="d-grid gap-2">
                             <button class="btn primary-btn-less-round btn-lg" @click="editFollow('follow')"> 
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
@@ -190,75 +189,77 @@
                     <div v-if="claimStatus">
 
                         <!-- latest updates -->
-                        <div class="row pb-3">
+                        <div class="row">
                             <!-- header -->
-                            <h3 class="text-body-secondary text-start"> 
-                                <b> 
-                                    Latest Updates From
-                                    {{ specified_producer["producerName"] }} 
-                                </b> 
-                            </h3>
-                            <div class="col-6">
-                                <h5 class="text-decoration-underline text-start">
-                                    Posted on:
-                                    {{ this.formatDate(latestUpdate.date.$date) }}
-                                </h5>
-                            </div>
-                            <div v-if="correctProducer || isAdmin" class="col-6 text-end">
-                                <!-- edit & delete button -->
-                                <button v-if="correctProducer && (editingLatestUpdate == false)" type="button" class="btn btn-warning rounded-0 me-1" @click="editUpdate(latestUpdate, 'latest')"> Edit </button>
-                                <button v-if="correctProducer && editingLatestUpdate" type="button" class="btn success-btn rounded-0 reverse-clickable-text me-1" @click="saveUpdateEdit(latestUpdate, 'latest')"> Save Changes </button>
-                                <button v-if="correctProducer && editingLatestUpdate" type="button" class="btn secondary-btn rounded-0 reverse-clickable-text ms-1" @click="cancelUpdate(latestUpdate, 'latest')"> Cancel </button>
-                                <button type="button" class="btn btn-danger rounded-0 ms-1" @click="deleteUpdate(latestUpdate)"> Delete </button>
+                            <div class="col-12">
+                                <p class="text-body-secondary text-start fs-3 fw-bold m-0">Latest Updates from {{ specified_producer["producerName"] }}</p>
                             </div>
                         </div>
-                        <!-- information -->
-                        <div class="row">
-                            <!-- profile photo & post timestamp & # of likes -->
-                            <div class="col-xxl-2 col-md-3 col-4 image-container">
-                                <!-- image -->
-                                <!-- [if] editing -->
-                                <div v-if="editingLatestUpdate" style="position: relative; text-align: center;">
-                                    <!-- image -->
-                                    <img :src="selectedLatestUpdateImage || 'data:image/jpeg;base64,' + (latestUpdate['photo'] || defaultProfilePhoto)" 
-                                        alt="" style="width: 150px; height: 150px; z-index: 1; opacity: 50%">
-                                    <!-- change option -->
-                                    <label for="file2" class="btn primary-light-dropdown mt-3" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose</label>
-                                    <input id="file2" type="file" v-on:change="loadLatestUpdateFile" ref="fileInput2" 
-                                    style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; opacity: 0; width: 200px; height: 200px; cursor: pointer;">
-                                </div>
-                                <!-- [else] not editing -->
-                                <div v-else>
-                                    <img :src="selectedLatestUpdateImage || 'data:image/jpeg;base64,' + (latestUpdate['photo'] || defaultProfilePhoto)" 
-                                        alt="" style="width: 150px; height: 150px; z-index: 1;">
-                                </div>
 
-                                <!-- # of likes -->
-                                <div class="row pt-3"> 
-                                    <div class="col-6 text-end">
-                                        <!-- [if] liked -->
-                                        <div v-if="likeStatus" style="display: inline-block;"  v-on:click="unlikeUpdates(latestUpdate._id.$oid)">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                                                <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
-                                            </svg>
-                                        </div>
-                                        <!-- [else] not liked -->
-                                        <div v-else style="display: inline-block;" v-on:click="likeUpdates(latestUpdate._id.$oid)">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.090.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 text-start">
-                                        <h4> {{ updateLikesCount }} </h4>
-                                    </div>
+                        <div class="row">
+                            <div class="row">
+                                <div class="col-xl-8 col-md-6 col-12">
+                                    <p class="text-decoration-underline text-start fs-5 m-0 pb-3">Posted on: {{ this.formatDate(latestUpdate.date.$date) }}</p>
+                                </div>
+                                <div v-if="correctProducer || isAdmin" class="col-xl-4 col-md-6 col-12 text-end">
+                                    <!-- edit & delete button -->
+                                    <button v-if="correctProducer && (editingLatestUpdate == false)" type="button" class="btn btn-warning rounded-0" @click="editUpdate(latestUpdate, 'latest')"> Edit </button>
+                                    <button v-if="correctProducer && editingLatestUpdate" type="button" class="btn success-btn rounded-0 reverse-clickable-text" @click="saveUpdateEdit(latestUpdate, 'latest')"> Save Changes </button>
+                                    <button v-if="correctProducer && editingLatestUpdate" type="button" class="btn secondary-btn rounded-0 reverse-clickable-text ms-1" @click="cancelUpdate(latestUpdate, 'latest')"> Cancel </button>
+                                    <button type="button" class="btn btn-danger rounded-0 ms-1" @click="deleteUpdate(latestUpdate)"> Delete </button>
                                 </div>
                             </div>
-                            <!-- description -->
-                            <div class="col-xxl-10 col-md-9 col-8">
-                                <div class="row">
-                                    <!-- description -->
-                                    <div class="col text-start p-text-lg"> 
+
+                            <!-- information -->
+                            <div class="row">
+                                <!-- profile photo & post timestamp & # of likes -->
+                                <div class="col-xl-2 col-md-3 col-4">
+                                    <!-- image -->
+                                    <div class="image-container">
+                                        <!-- [if] editing -->
+                                        <div v-if="editingLatestUpdate" style="position: relative; text-align: center;">
+                                            <!-- image -->
+                                            <img :src="selectedLatestUpdateImage || 'data:image/jpeg;base64,' + (latestUpdate['photo'] || defaultProfilePhoto)" 
+                                                alt="" style="width: 128px; height: 128px; z-index: 1; opacity: 50%">
+                                            <!-- change option -->
+                                            <label for="file2" class="btn primary-light-dropdown" style="position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose</label>
+                                            <input id="file2" type="file" v-on:change="loadLatestUpdateFile" ref="fileInput2" style="width: 0px; height: 0px;">
+                                            <!-- reset image option -->
+                                            <button class="btn primary-light-dropdown m-1" @click="selectedLatestUpdateImage = 'data:image/jpeg;base64,' + latestUpdate['photo']; image64LatestUpdate = null">Revert</button>
+                                            <!-- remove image option -->
+                                            <button class="btn primary-light-dropdown m-1" @click="selectedLatestUpdateImage = 'data:image/jpeg;base64,' + defaultProfilePhoto; image64LatestUpdate = ''">Remove</button>
+                                        </div>
+                                        <!-- [else] not editing -->
+                                        <div v-else>
+                                            <img :src="selectedLatestUpdateImage || 'data:image/jpeg;base64,' + (latestUpdate['photo'] || defaultProfilePhoto)" 
+                                                alt="" style="width: 128px; height: 128px; z-index: 1;">
+                                        </div>
+                                    </div>
+
+                                    <!-- # of likes -->
+                                    <div class="row pt-2"> 
+                                        <div class="col-6 text-end">
+                                            <!-- [if] liked -->
+                                            <div v-if="likeStatus" class="d-inline-block" v-on:click="unlikeUpdates(latestUpdate._id.$oid)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                                    <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                </svg>
+                                            </div>
+                                            <!-- [else] not liked -->
+                                            <div v-else class="d-inline-block" v-on:click="likeUpdates(latestUpdate._id.$oid)">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.920 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.090.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 text-start">
+                                            <p class="text-body-secondary fs-5 m-0"> {{ updateLikesCount }} </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- description -->
+                                <div class="col-xl-10 col-md-9 col-8">
+                                    <div class="text-start p-text-lg"> 
                                         <p v-if="editingLatestUpdate == false">
                                             {{latestUpdate['text']}}
                                         </p>
@@ -272,46 +273,72 @@
                         </div>
 
                         <!-- reply / send to producer -->
-                        <div class="row pt-3">
+                        <div v-if="correctProducer" class="row pt-3">
                             <!-- [if] user type is producer -->
-                            <div v-if="correctProducer">
-                                <div class="row">
-                                    <div class="input-group centered">
-                                        <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Say hi to your patrons!" style="height: 50px;" v-model="updateText"> 
-                                        <div class="ps-2">
-                                            <label for="file3">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-camera" viewBox="0 0 16 16">
-                                                    <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4z"/>
-                                                    <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5m0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>
-                                                </svg>
-                                            </label>
-                                            <input id="file3" type="file" v-on:change="loadUpdateFile" style="display: none;" ref="fileInput3">
-                                        </div>
-                                        <div v-on:click="addUpdates" class="send-icon ps-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                                                <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
-                                            </svg>
-                                        </div>
+                            <div class="input-group centered">
+                                <input class="search-bar form-control rounded fst-italic" type="text" placeholder="Say hi to your patrons!" v-model="updateText">
+
+                                <label for="file3" class="btn p-0 ms-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-camera" viewBox="0 0 16 16">
+                                        <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4z"/>
+                                        <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5m0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>
+                                    </svg>
+                                </label>
+                                <input id="file3" type="file" v-on:change="loadUpdateFile" style="width: 0px; height: 0px;" ref="fileInput3">
+
+                                <button v-on:click="addUpdates" class="btn send-icon p-0 mx-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                                        <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z"/>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- New Update Preview -->
+                            <div v-if="updateText.length > 0 || updateImage64" class="border border-secondary rounded mt-3">
+
+                                <!-- Header / Clear Button -->
+                                <div class="row my-2">
+                                    <div class="col-10">
+                                        <p class="text-start text-body-secondary fs-5 fw-bold m-0">New Update Preview:</p>
+                                    </div>
+                                    <div class="col-2 d-flex justify-content-end align-items-center">
+                                        <button type="button" class="btn-close" aria-label="Clear New Update Draft" @click="updateText = ''; updateImage64 = ''"></button>
                                     </div>
                                 </div>
-                                <div class="row pt-1 ps-3" v-if="updateFileName != ''">
-                                    The selected file is: {{ updateFileName }}
+
+                                <div class="row mb-3">
+                                    <!-- Photo / Clear Photo -->
+                                    <div class="col-xl-2 col-md-3">
+                                        <div style="position: relative; text-align: center; width: 128px; height: 128px;">
+                                            <img :src=" 'data:image/jpeg;base64,' + (updateImage64 || defaultProfilePhoto)" alt="" style="width: 128px; height: 128px;">
+                                            <button type="button" class="btn-close" @click="updateImage64 = ''" style="position: absolute; top: 10%; left: 90%; transform: translate(-50%, -50%); z-index: 2;"></button>
+                                        </div>
+                                    </div>
+                                    <!-- Description -->
+                                    <div class="col-xl-10 col-md-9">
+                                        <p class="text-start p-text-lg">{{ updateText }}</p>
+                                    </div>
                                 </div>
+
                             </div>
+
                         </div>
-                        <!-- view more -->
+
+                        <!-- view more updates -->
                         <div class="row">
-                            <button v-if="showRemainingUpdates == false" class="btn tertiary-text text-decoration-underline pt-2 no-margin" @click="checkToShowRemainingUpdates()"> View more </button>
-                        </div>
 
-                        <!-- show remaining updates when "view more" is clicked -->
-                        <div v-if="showRemainingUpdates" class="pt-3">
+                            <!-- Toggle Button -->
+                            <button type="button" class="btn tertiary-text text-decoration-underline pt-2 no-margin border border-0" data-bs-toggle="collapse" data-bs-target="#collapseMoreUpdates" aria-expanded="false" aria-controls="collapseMoreUpdates" @click="checkToShowRemainingUpdates()"> View <span v-if="showRemainingUpdates">less</span><span v-else>more</span> </button>
 
-                            <!-- check if there are any updates -->
+                            <!-- show remaining updates when "view more" is clicked -->
+                            <div class="collapse" id="collapseMoreUpdates">
 
-                            <!-- [if] more updates -->
-                            <div v-if="remainingUpdates.length > 0">
-                                <div v-for="(update, index) in remainingUpdates" v-bind:key="update._id" v-bind:class="{ 'active': index === 0 }">
+                                <!-- check if there are any updates -->
+                                <p v-if="remainingUpdates.length > 0" class="text-body-secondary fs-5 fw-bold m-0">Viewing {{ remainingUpdates.length }} more updates</p>
+                                <p v-else class="fs-5 fst-italic m-0">There are no more updates to view!</p>
+
+                                <!-- for each update -->
+                                <div v-for="update in remainingUpdates" v-bind:key="update._id">
                                     <div class="row">
                                         <div class="col-6">
                                             <h5 class="text-decoration-underline text-start pb-3">
@@ -385,24 +412,11 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- [else] no more updates -->
-                            <div v-else>
-                                <h5 class="text-body-secondary text-start"> 
-                                    <b> 
-                                    No more updates from
-                                        {{ specified_producer["producerName"] }} 
-                                    </b> 
-                                </h5>
-                            </div>
-
-                            <!-- view less -->
-                            <div class="row">
-                                <button v-if="showRemainingUpdates" class="btn tertiary-text text-decoration-underline pt-2 no-margin" @click="checkToShowRemainingUpdates()"> View less </button>
                             </div>
 
                         </div>
+
                     </div>
 
                     <!-- [else] account is not claimed -->

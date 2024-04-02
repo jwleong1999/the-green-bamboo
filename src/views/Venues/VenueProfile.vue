@@ -39,7 +39,7 @@
             <!-- ------- START Venue Information ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
             <!-- Venue Information -->
-            <div class="col-9 no-margin">
+            <div class="col-xl-9 col-12 no-margin">
 
                 <!-- ------- START Header ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
@@ -49,7 +49,7 @@
                     <!-- ------- START Image ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
                     <!-- Image -->
-                    <div class="col-3 image-container">
+                    <div class="col-lg-3 col-12 mb-lg-0 mb-3 image-container">
 
                         <!-- [if] editing profile -->
                         <div v-if="editProfile" style="position: relative; text-align: center;">
@@ -57,7 +57,7 @@
                             <img :src="'data:image/jpeg;base64,' + (editProfilePhoto || defaultProfilePhoto)" 
                                 alt="" style="width: 200px; height: 200px; z-index: 1; opacity: 50%">
                             <!-- change option -->
-                            <label for="fileSelectPFP" class="btn primary-light-dropdown mt-3" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose File</label>
+                            <label for="fileSelectPFP" class="btn primary-light-dropdown" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose File</label>
                             <input id="fileSelectPFP" type="file" @change="handleFileSelectPFP" ref="fileInput" style="width: 0px; height: 0px;">
                             <!-- reset image option -->
                             <button class="btn primary-light-dropdown m-1" @click="editProfilePhoto = targetVenue['photo']">Revert</button>
@@ -77,7 +77,7 @@
                     <!-- ------- END Image / START Details ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
                     <!-- Details -->
-                    <div class="col-9 container text-start">
+                    <div class="col-lg-9 col-12 container text-start">
 
                         <div class="row">
 
@@ -329,7 +329,7 @@
                         </div>
 
                         <!-- Photo / Number of Likes -->
-                        <div class="col-xl-2 col-md-3">
+                        <div class="col-xl-2 col-md-3 col-4">
 
                             <!-- Image -->
                             <div class="image-container">
@@ -339,7 +339,7 @@
                                     <!-- image -->
                                     <img :src="'data:image/jpeg;base64,' + (editUpdateContent[targetVenue['updates'][0]._id['$oid']].newPhoto || defaultProfilePhoto)" alt="" style="width: 128px; height: 128px; z-index: 1; opacity: 50%">
                                     <!-- change option -->
-                                    <label :for="'fileSelectEditUpdate' + targetVenue['updates'][0]._id['$oid']" class="btn primary-light-dropdown m-1">Choose File</label>
+                                    <label :for="'fileSelectEditUpdate' + targetVenue['updates'][0]._id['$oid']" class="btn primary-light-dropdown" style="position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); z-index: 2;">Choose</label>
                                     <input :id="'fileSelectEditUpdate' + targetVenue['updates'][0]._id['$oid']" type="file" @change="handleFileSelectEditUpdate" ref="fileInput" style="width: 0px; height: 0px;">
                                     <!-- reset image option -->
                                     <button class="btn primary-light-dropdown m-1" @click="editUpdateContent[targetVenue['updates'][0]._id['$oid']].newPhoto = targetVenue['updates'][0].photo">Revert</button>
@@ -388,11 +388,11 @@
                         </div>
                         
                         <!-- Description -->
-                        <div v-if="editUpdateTarget == targetVenue['updates'][0]._id['$oid']" class="col-xl-10 col-md-9 text-start p-text-lg">
+                        <div v-if="editUpdateTarget == targetVenue['updates'][0]._id['$oid']" class="col-xl-10 col-md-9 col-8 text-start p-text-lg">
                             <label :for="'editUpdateText' + targetVenue['updates'][0]._id['$oid']"> Update Text </label>
                             <textarea type="text" class="form-control" :id="'editUpdateText' + targetVenue['updates'][0]._id['$oid']" aria-describedby="editUpdateText" v-model="editUpdateContent[targetVenue['updates'][0]._id['$oid']].newText"></textarea>
                         </div>
-                        <div v-else class="col-xl-10 col-md-9">
+                        <div v-else class="col-xl-10 col-md-9 col-8">
                             <p class="text-start p-text-lg">{{ targetVenue['updates'][0].text }}</p>
                         </div>
 
@@ -1317,11 +1317,11 @@
                 </div>
 
                 <!-- View Analytics Button (Admin) -->
-                <div v-if="powerView" class="row">
+                <!-- <div v-if="powerView" class="row">
                     <router-link class="d-grid pb-3 text-decoration-none" :to="{ path: '/dashboard/venue/' + targetVenue._id['$oid'] }">
                         <button type="button" class="btn secondary-btn-not-rounded rounded-0"> View Venue's Analytics </button>
                     </router-link>
-                </div>
+                </div> -->
 
                 <!-- ------- END View Analytics / START Q & A ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
