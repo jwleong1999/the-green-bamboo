@@ -440,11 +440,11 @@
                     "email": this.email,
                     "choiceDrinks": [],
                     "drinkLists": {
-                        "Drinks I Have tried":{
+                        "Drinks I Have Tried":{
                             "listDesc":"",
                             "listItems":[]
                         },
-                        "Drinks I Want to Try":{
+                        "Drinks I Want To Try":{
                             "listDesc":"",
                             "listItems":[]
                         }
