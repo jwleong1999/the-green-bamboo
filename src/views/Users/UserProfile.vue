@@ -336,9 +336,9 @@
                     </li>
                 </ul> -->
                 <div class="nav">
-                    <button id="reviewsButton" class="btn active" aria-current="page" data-bs-toggle="pill" data-bs-target="#reviews" style="color: #535C72; background-color: whitesmoke; border-radius: 30px; border: 4px solid #535C72;" @click="switchTab('reviews')">Reviews</button>
-                    <button id="ownListsButton" v-if="ownProfile" class="btn primary-btn ms-2" data-bs-toggle="pill" data-bs-target="#lists" style="color: whitesmoke; background-color: #535C72; border-radius: 30px; border: 4px solid #535C72" @click="switchTab('lists')">My Drink Lists</button>
-                    <button id="listsButton" v-else class="btn primary-btn ms-2" data-bs-toggle="pill" data-bs-target="#lists" style="color: whitesmoke; background-color: #535C72; border-radius: 30px; border: 4px solid #535C72" @click="switchTab('lists')">Drink Lists</button>
+                    <button id="reviewsButton" class="btn active" aria-current="page" data-bs-toggle="pill" data-bs-target="#reviews" style="color: whitesmoke; background-color: #535C72; border-radius: 30px; border: 4px solid #535C72" @click="switchTab('reviews')">Reviews</button>
+                    <button id="ownListsButton" v-if="ownProfile" class="btn primary-btn ms-2" data-bs-toggle="pill" data-bs-target="#lists" style="color: #535C72; background-color: whitesmoke; border-radius: 30px; border: 4px solid #535C72;" @click="switchTab('lists')">My Drink Lists</button>
+                    <button id="listsButton" v-else class="btn primary-btn ms-2" data-bs-toggle="pill" data-bs-target="#lists" style="color: #535C72; background-color: whitesmoke; border-radius: 30px; border: 4px solid #535C72;" @click="switchTab('lists')">Drink Lists</button>
                 </div>
 
                 <div class="tab-content container mt-2">
@@ -442,8 +442,8 @@
                                     </div>
                                     <div style="display: flex; margin-top: auto;" class="mb-1">
                                         <a class="me-4" @click="toggleView(name)" href="#" style="color: #535C72;">View List</a>
-                                        <a v-if="ownProfile && !(name == 'Drinks I Have Tried' || name == 'Drinks I Want to Try')" class="me-4" href="#" style="color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#editListModal${index}`" @click="resetEditList(name, bookmarkList.listDesc)">Edit List</a>
-                                        <a v-if="ownProfile && !(name == 'Drinks I Have Tried' || name == 'Drinks I Want to Try')" href="#" style="color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#deleteListModal${index}`">Delete List</a>
+                                        <a v-if="ownProfile && !(name == 'Drinks I Have Tried' || name == 'Drinks I Want To Try')" class="me-4" href="#" style="color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#editListModal${index}`" @click="resetEditList(name, bookmarkList.listDesc)">Edit List</a>
+                                        <a v-if="ownProfile && !(name == 'Drinks I Have Tried' || name == 'Drinks I Want To Try')" href="#" style="color: #535C72;" data-bs-toggle="modal" :data-bs-target="`#deleteListModal${index}`">Delete List</a>
                                     </div>
                                 </div>
 
@@ -1342,26 +1342,9 @@ export default {
         },
         // css for review and drink list tab
         switchTab(currentTab) {
-            
             if (currentTab === "lists") {
-                document.getElementById("reviewsButton").style.color = "whitesmoke";
-                document.getElementById("reviewsButton").style.backgroundColor = "#535C72";
-                if (this.ownProfile) {
-                    document.getElementById("ownListsButton").style.color = "#535C72";
-                    document.getElementById("ownListsButton").style.backgroundColor = "whitesmoke";
-                    document.getElementById("ownListsButton").style.border = "4px solid #535C72";
-                }
-                else {
-                    document.getElementById("listsButton").style.color = "#535C72";
-                    document.getElementById("listsButton").style.backgroundColor = "whitesmoke";
-                    document.getElementById("listsButton").style.border = "4px solid #535C72";
-                }
-                
-            }
-            else {
                 document.getElementById("reviewsButton").style.color = "#535C72";
                 document.getElementById("reviewsButton").style.backgroundColor = "whitesmoke";
-                document.getElementById("reviewsButton").style.border = "4px solid #535C72";
                 if (this.ownProfile) {
                     document.getElementById("ownListsButton").style.color = "whitesmoke";
                     document.getElementById("ownListsButton").style.backgroundColor = "#535C72";
@@ -1369,6 +1352,18 @@ export default {
                 else {
                     document.getElementById("listsButton").style.color = "whitesmoke";
                     document.getElementById("listsButton").style.backgroundColor = "#535C72";
+                }
+            }
+            else {
+                document.getElementById("reviewsButton").style.color = "whitesmoke";
+                document.getElementById("reviewsButton").style.backgroundColor = "#535C72";
+                if (this.ownProfile) {
+                    document.getElementById("ownListsButton").style.color = "#535C72";
+                    document.getElementById("ownListsButton").style.backgroundColor = "whitesmoke";
+                }
+                else {
+                    document.getElementById("listsButton").style.color = "#535C72";
+                    document.getElementById("listsButton").style.backgroundColor = "whitesmoke";
                 }
             }
         }, 
