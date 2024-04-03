@@ -1421,7 +1421,7 @@
                         this.businessDesc = request.businessDesc;
                         this.businessCountry = request.country;
                         this.venueAddress = request.country;
-                        this.venueType = '';
+                        this.venueType = 'Bar';
                         this.businessClaimStatus = "true";
                         const createSuccess = await this.createBusiness();
                         if (!createSuccess) {
