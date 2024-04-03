@@ -629,7 +629,7 @@ body {
     color: black
 }
 
-.dropdown-item:active, .dropdown-item:hover, .dropdown-item:focus {
+.dropdown-item.active, .dropdown-item:hover, .dropdown-item:focus {
     background-color: #747D92;
     color: whitesmoke;
 }

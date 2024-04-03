@@ -2110,7 +2110,7 @@
                                     itemABV: listingData["abv"],
                                     itemCountry: listingData["originCountry"],
                                     itemDesc: listingData["officialDesc"],
-                                    itemRating: listingData["avgRating"],
+                                    itemRating: listingData["avgRating"].toFixed(2),
                                     itemProducer: listingData["producerName"],
                                     itemProducerID: listingData["producerID"]['$oid'],
                                 };

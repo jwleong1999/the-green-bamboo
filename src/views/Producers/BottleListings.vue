@@ -413,7 +413,9 @@
                                             <input class="form-control mb-2" @change="onFileChange" type="file" id="reviewPhoto">
                                             <div class = "row">
                                                 <img :src="image64 ? 'data:image/jpeg;base64,' + image64 : 'none'" alt="" id="output" class="py-2 review-preview-photo">
-                                                <div class="col-6 d-flex justify-content-start">
+                                            </div>
+                                            <div class="row justify-content-start mb-2">
+                                                <div class="col-md-4 text-start">
                                                     <button v-if="image64!==null" class="btn tertiary-square-btn mb-1" @click="clearPhoto">Clear Photo</button>
                                                 </div>
                                             </div>
@@ -686,15 +688,15 @@
                                         </svg>
                                     </div>
                                 </div>
-                                <!-- (2) to (5) other photos -->
-                                <div v-for="review in filteredReviewsWithImages.slice(0,4)" v-bind:key="review" class="col-sm-8 col-md-6 col-lg-3">
+                                <!-- (2) to (6) other photos -->
+                                <div v-for="review in filteredReviewsWithImages.slice(0,5)" v-bind:key="review" class="col-sm-8 col-md-6 col-lg-2">
                                     <img :src=" 'data:image/jpeg;base64,' + (review['photo'] || defaultProfilePhoto)" alt="" class="review-image" style="width: 150px; height: 150px">
                                 </div>
                             </div>
                             <!-- [else] user has added a review -->
-                            <!-- (1) to (5) display all photos -->
+                            <!-- (1) to (6) display all photos -->
                             <div v-else class="row">
-                                <div v-for="review in filteredReviewsWithImages" v-bind:key="review" class="col-sm-8 col-md-6 col-lg-3">
+                                <div v-for="review in filteredReviewsWithImages" v-bind:key="review" class="col-sm-8 col-md-6 col-lg-2 p-0">
                                     <img :src="'data:image/jpeg;base64,' + (review['photo'] || defaultProfilePhoto)" alt="" class="review-image" style="width: 150px; height: 150px">
                                 </div>
                             </div>
@@ -2373,9 +2375,9 @@
             getFilteredReviewsWithImages() {
                 let allReviews = this.filteredReviews
                 let reviewsWithImages = allReviews.filter(review => review.photo !== null)
-                // if reviewsWithImages more than 5, get the first 5
-                if (reviewsWithImages.length > 5) {
-                    this.filteredReviewsWithImages = reviewsWithImages.slice(0, 5)
+                // if reviewsWithImages more than 6, get the first 6
+                if (reviewsWithImages.length > 6) {
+                    this.filteredReviewsWithImages = reviewsWithImages.slice(0, 6)
                 } else {
                     this.filteredReviewsWithImages = reviewsWithImages
                 }
