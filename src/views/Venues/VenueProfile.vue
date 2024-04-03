@@ -464,7 +464,7 @@
                     <div class="row" v-if="targetVenue['claimStatus'] && (targetVenue['updates'].length > 0)">
 
                         <!-- Toggle Button -->
-                        <button v-if="targetVenue['updates'].length > 0" type="button" class="btn tertiary-text text-decoration-underline pt-2 no-margin border border-0" data-bs-toggle="collapse" data-bs-target="#collapseMoreUpdates" aria-expanded="false" aria-controls="collapseMoreUpdates" @click="showMoreUpdates = !showMoreUpdates;"> View <span v-if="showMoreUpdates">less</span><span v-else>more</span> </button>
+                        <button type="button" class="btn tertiary-text text-decoration-underline pt-2 no-margin border border-0" data-bs-toggle="collapse" data-bs-target="#collapseMoreUpdates" aria-expanded="false" aria-controls="collapseMoreUpdates" @click="showMoreUpdates = !showMoreUpdates;"> View <span v-if="showMoreUpdates">less</span><span v-else>more</span> </button>
 
                         <!-- More Updates Collapsible -->
                         <div class="collapse" id="collapseMoreUpdates" v-if="Array.isArray(targetVenue['updates'])">
@@ -793,14 +793,14 @@
                                     <div class="row">
 
                                         <!-- Item Image -->
-                                        <div class="col-2 image-container text-center mx-auto">
+                                        <div class="col-lg-2 col-12 image-container text-center mx-auto mb-3 mb-lg-0">
                                             <router-link :to="{ path: '/listing/view/' + sectionItem.itemID['$oid'] }" class="default-text-no-background">
                                                 <img :src=" 'data:image/jpeg;base64,' + (sectionItem.itemDetails['itemPhoto'] || defaultProfilePhoto)" style="width: 150px; height: 150px;">
                                             </router-link>
                                         </div>
 
                                         <!-- Item Information -->
-                                        <div class="col-10">
+                                        <div class="col-lg-10 col-12 ps-5">
 
                                             <!-- ------- START Item Info Header ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
@@ -998,12 +998,12 @@
                                                     <div class="row">
 
                                                         <!-- Item Image -->
-                                                        <div class="col-2 image-container text-center mx-auto">
+                                                        <div class="col-lg-2 col-12 image-container text-center mx-auto mb-3 mb-lg-0">
                                                             <img :src=" 'data:image/jpeg;base64,' + (menuItem.itemDetails['itemPhoto'] || defaultProfilePhoto)" style="width: 150px; height: 150px;">
                                                         </div>
 
                                                         <!-- Item Information -->
-                                                        <div class="col-10">
+                                                        <div class="col-lg-10 col-12 ps-5">
 
                                                             <!-- ------- START Item Info Header ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
@@ -1307,7 +1307,7 @@
             <!-- ------- END Venue Information / START Venue Sidebar ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
             <!-- Venue Sidebar -->
-            <div class="col-3">
+            <div class="col-xl-3 col-12">
 
                 <!-- ------- START View Analytics ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
@@ -1329,7 +1329,7 @@
 
                 <!-- Q & A -->
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-xl-12 col-lg-4 col-md-6 col-12">
                         <div class="square primary-square rounded p-3 mb-3">
 
                             <!-- Header -->
@@ -1477,13 +1477,13 @@
 
                         </div>
                     </div>
-                </div>
+                <!-- </div> -->
 
                 <!-- ------- END Q & A / START Map View ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
                 <!-- Map View -->
-                <div class="row">
-                    <div class="col-12">
+                <!-- <div class="row"> -->
+                    <div class="col-xl-12 col-lg-4 col-md-6 col-12">
                         <div class="square secondary-square rounded p-3 mb-3">
 
                             <!-- Header -->
@@ -1534,13 +1534,13 @@
 
                         </div>
                     </div>
-                </div>
+                <!-- </div> -->
 
                 <!-- ------- END Map View / START Opening Hours + Reservation Details ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 
                 <!-- Opening Hours + Reservation Details -->
-                <div class="row">
-                    <div class="col-12">
+                <!-- <div class="row"> -->
+                    <div class="col-xl-12 col-lg-4 col-md-6 col-12">
                         <div class="square secondary-square rounded p-3 mb-3">
 
                             <!-- Header -->
