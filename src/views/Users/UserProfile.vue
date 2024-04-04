@@ -1270,30 +1270,44 @@ export default {
                 return "";
             }
             const subTag = this.subTags.find(subTag=>subTag._id.$oid === tag.$oid)
-            const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
-            if (!familyTag || !subTag) {
-                return "";
+            if(subTag){
+                const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
+                if(familyTag){
+                    const hexcode = familyTag.hexcode
+                    const subtagInfo = subTag.subTag
+                    const tagInfo = subtagInfo + hexcode
+                    const tagParts = tagInfo.split("#");
+                    return tagParts[0];
+                }
+                if (!familyTag || !subTag) {
+                    return "";
+                }
+            }else{
+                return "<deleted>"
             }
-            const hexcode = familyTag.hexcode
-            const subtagInfo = subTag.subTag
-            const tagInfo = subtagInfo + hexcode
-            const tagParts = tagInfo.split("#");
-            return tagParts[0];
+
         },
         getTagColor(tag) {
             if (!this.subTags || !this.flavourTags) {
                 return "";
             }
             const subTag = this.subTags.find(subTag=>subTag._id.$oid === tag.$oid)
-            const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
-            if (!familyTag || !subTag) {
-                return "";
+            if(subTag){
+                const familyTag = this.flavourTags.find(family=>subTag.familyTagId.$oid===family._id.$oid)
+                if(familyTag){
+                    const hexcode = familyTag.hexcode
+                    const subtagInfo = subTag.subTag
+                    const tagInfo = subtagInfo + hexcode
+                    const tagParts = tagInfo.split("#");
+                    return "#" + tagParts[1];
+                }
+                if (!familyTag || !subTag) {
+                    return "";
+                }
+            }else{
+                return "#" + "030303"
             }
-            const hexcode = familyTag.hexcode
-            const subtagInfo = subTag.subTag
-            const tagInfo = subtagInfo + hexcode
-            const tagParts = tagInfo.split("#");
-            return "#" + tagParts[1];
+            
         },
 
         // ------------------- User Follow -------------------
