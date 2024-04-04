@@ -746,7 +746,7 @@
                                         </a>
                                     </b>
                                     
-                                    <span class="me-3" v-if="review.taggedUsers.length > 0"> drank with {{ review.taggedUsers.length }} others </span>
+                                    <span class="me-3" v-if="review.taggedUsers != null"> drank with {{ review.taggedUsers.length }} others </span>
                                     <span v-if="checkModFromUserID(review.userID)" class="badge rounded-pill" style="color: black; background-color: white;">Moderator</span>
                                     <!-- Insert Edit modal here -->
 
