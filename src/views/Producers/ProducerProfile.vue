@@ -817,9 +817,7 @@
                                         <div class="fst-italic">
                                             No reviews available for this listing.
                                             For other 88 Bamboo reviews, 
-                                            <a href="https://88bamboo.co/blogs/news" class="default-text-no-background">
-                                                click here
-                                            </a>.
+                                            <a href="https://88bamboo.co/blogs/news" class="default-text-no-background">click here</a>.
                                         </div>
                                     </div>
                                 </div>
