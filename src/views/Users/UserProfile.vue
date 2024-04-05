@@ -74,11 +74,9 @@
                         <button v-if="ownProfile && user" type="button" class="btn primary-btn-outline-less-round" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
                         <button v-else-if="following && user" type="button" class="btn primary-btn-outline-less-round" @click="editFollow('unfollow')">Following</button>
                         <button v-else-if="user" type="button" class="btn primary-btn-less-round" @click="editFollow('follow')">+ Follow User</button>
-                        <button v-if="ownProfile && user" class="btn btn-warning mt-3">
-                            <router-link :to="{ path: '/dashboard/user' }" class="default-clickable-text">
-                                View My Analytics
-                            </router-link>
-                        </button>
+                        <router-link v-if="ownProfile && user" :to="{ path: '/dashboard/user' }" class="btn btn-warning mt-3 default-clickable-text">
+                            View My Analytics
+                        </router-link>
                         <span style="position: relative; display: inline-block" class="m-0 p-0">
                             <button v-if="!ownProfile && displayUser.modType != []" class="btn btn-warning mt-3 hover-button" style="width: 100%">★ Certified Moderator</button> 
                             <div v-if="!ownProfile && displayUser.modType != []" class="speech-bubble">{{ displayUser.modType ? displayUser.modType.join(', ') : 'None' }}</div>
@@ -363,9 +361,9 @@
                         <h3 class="text-body-secondary text-start pt-4"> 
                             <b> Recent Reviews </b> 
                         </h3>
-                        <div>
-                            <div v-for="(review, index) in reversedReviews" :key="index">
-                                <div style="display: flex" class="mb-3" v-if="review.userID?.$oid === displayUserID && review.reviewType === 'Listing'">
+                        <div v-if="Object.keys(recentReviews).length > 0">
+                            <div v-for="(review, index) in recentReviews" :key="index">
+                                <div style="display: flex" class="mb-3">
                                     <img :src=" 'data:image/png;base64,' + (review.photo||defaultDrinkImage)" alt="" class="rounded bottle-img me-3">
                                     <div>
                                         <a :href="'/listing/view/' + review.reviewTarget.$oid" style="text-decoration: none; color: inherit;">
@@ -385,6 +383,10 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div v-else class="container m-2">
+                            No reviews yet. To explore more drinks in the home page, 
+                            <router-link to="/" style="color: inherit;">click here</router-link>. 
                         </div>
 
                     </div>
@@ -696,6 +698,7 @@ export default {
             // display user drink activity
             favouriteListings: {},
             recentActivity: {},
+            recentReviews: {},
 
             // create list
             currentList: "",
@@ -790,6 +793,7 @@ export default {
                 const response = await this.$axios.get('http://127.0.0.1:5000/getReviews');
                 this.reviews = response.data;
                 this.reversedReviews = this.reviews.reverse();
+                this.recentReviews = this.reversedReviews.filter(review => review.userID?.$oid === this.displayUserID && review.reviewType === 'Listing');
             }
             catch (error) {
                 console.error(error);
@@ -1223,7 +1227,8 @@ export default {
                     
                     // Sort based on the indices in favouriteIdList
                     return indexA - indexB;
-                });
+                })
+                .slice(0, 5);
         },
         // get user's recent activity
         getRecentActivity() {
