@@ -76,7 +76,7 @@
                                         <div v-if="correctProducer && editing == false" class="col d-grid no-padding">
                                             <!-- if not editing -->
                                             <button type="button" class="btn tertiary-btn rounded-0 reverse-clickable-text">
-                                                <router-link :to="`/listing/create/${producer_id}`" class="reverse-clickable-text">
+                                                <router-link :to="`/listing/create`" class="reverse-clickable-text">
                                                     Add Listing
                                                 </router-link>
                                             </button>
@@ -499,7 +499,7 @@
                                 </div>
                                 <div class="col-3 d-grid no padding">
                                     <button type="button" class="btn primary-btn-outline-thick rounded-0">
-                                        <router-link :to="`/listing/create/${producer_id}`" class="default-clickable-text">
+                                        <router-link :to="`/listing/create`" class="default-clickable-text">
                                             Add Listing
                                         </router-link>
                                     </button>
