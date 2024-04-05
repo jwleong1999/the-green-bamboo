@@ -246,7 +246,7 @@
                         </div>
                         <!-- [ELSE] Dropdown menu tied to producerID, show producerNew textbox only if "Other" selected (no producerID). -->
                         <!-- set name only, then before submitting request, put the id, save computation -->
-                        <div class="form-group mb-3">
+                        <div class="form-group mb-3" v-else>
                             <p class="text-start mb-1">New Producer Name <span class="text-danger">*</span></p>
                             <input list="producer-names" v-model="form['producerNew']" class="form-control" id="bottleName" placeholder="Enter Producer Name" @input="getProducerID">
                             <datalist id="producer-names">
