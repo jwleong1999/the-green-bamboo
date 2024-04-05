@@ -329,7 +329,7 @@
                         </div>
 
                         <!-- Photo / Number of Likes -->
-                        <div class="col-xl-2 col-md-3 col-4">
+                        <div class="col-lg-2 col-md-3 col-4">
 
                             <!-- Image -->
                             <div class="image-container">
@@ -506,7 +506,7 @@
                                     </div>
 
                                     <!-- Photo / Number of Likes -->
-                                    <div class="col-xl-2 col-md-3 col-4">
+                                    <div class="col-lg-2 col-md-3 col-4">
 
                                         <!-- Image -->
                                         <div class="image-container">

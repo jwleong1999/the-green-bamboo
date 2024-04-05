@@ -213,7 +213,7 @@
                             <!-- information -->
                             <div class="row">
                                 <!-- profile photo & post timestamp & # of likes -->
-                                <div class="col-xl-2 col-md-3 col-4">
+                                <div class="col-lg-2 col-md-3 col-4">
                                     <!-- image -->
                                     <div class="image-container">
                                         <!-- [if] editing -->
@@ -360,7 +360,7 @@
                                         </div>
 
                                         <!-- other info -->
-                                        <div class="col-xl-2 col-md-3 col-4">
+                                        <div class="col-lg-2 col-md-3 col-4">
                                             <!-- photo & # of likes -->
                                             <div class="image-container">
                                                 <!-- image -->

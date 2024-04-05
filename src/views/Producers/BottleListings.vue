@@ -717,15 +717,18 @@
                             </router-link>
                         </div>
                         <!-- user reviews -->
-                        <div class="col-12 col-lg-10">
+                        <div class="col-12 col-lg-9">
                             <div class="row">
-                                <div class="d-flex align-items-center text-start mb-2">
+                                <div class="text-start mb-2">
+
+                                    <!-- username -->
                                     <router-link :to="`/profile/user/${review.userID.$oid}`" style="color: inherit">
                                         <b>
                                             @{{ getUsernameFromReview(review) }}
-                                            
                                         </b>
                                     </router-link>
+
+                                    <!-- rating -->
                                     &nbsp;rated {{ review['rating'] }}
                                     
                                     <!-- star icon -->
@@ -733,24 +736,27 @@
                                         <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                                     </svg>
                                     
-                                    <b>
-                                        <a v-if="review.location !== '' && checkVenue(review.location)"  class="me-3" style="color: inherit" > 
-                                            <router-link :to="'/profile/venue/' + checkVenue(review.location)" style="color: inherit">
-                                            at {{ review.location }}
-                                            
-                                            </router-link>
-                                        </a>
+                                    <!-- location -->
+                                    <a v-if="review.location !== '' && checkVenue(review.location)" style="color: inherit" > 
+                                        at 
+                                        <router-link :to="'/profile/venue/' + checkVenue(review.location)" style="color: inherit">
+                                            <b>{{ review.location }}</b>
+                                        </router-link>
+                                    </a>
 
-                                        <a v-else-if="review.location !== ''" :href="'https://www.google.com/maps/search/' + review.location" class="me-3" style="color: inherit" target="_blank"> 
-                                            at {{ review.location }}
-                                        </a>
-                                    </b>
+                                    <a v-else-if="review.location !== ''" :href="'https://www.google.com/maps/search/' + review.location" style="color: inherit" target="_blank"> 
+                                        at 
+                                        <b>{{ review.location }}</b>
+                                    </a>
                                     
-                                    <span class="me-3" v-if="review.taggedUsers != null"> drank with {{ review.taggedUsers.length }} others </span>
-                                    <span v-if="checkModFromUserID(review.userID)" class="badge rounded-pill" style="color: black; background-color: white;">Moderator</span>
-                                    <!-- Insert Edit modal here -->
+                                    <!-- tagged friends -->
+                                    <span v-if="review.taggedUsers != null && review.taggedUsers.length > 0"> drank with {{ review.taggedUsers.length }} others </span>
 
-                                    <div v-if="review.userID['$oid'] === userID" class="ms-5 me-2 ml-auto">
+                                    <!-- user title -->
+                                    <span v-if="checkModFromUserID(review.userID)" class="badge rounded-pill ms-3" style="color: black; background-color: white;">Moderator</span>
+                                    
+                                    <!-- Insert Edit modal here -->
+                                    <div v-if="review.userID['$oid'] === userID" class="mt-2">
                                         <button class="btn btn-warning me-1" @click="setUpdateID(review)" data-bs-toggle="modal" data-bs-target="#reviewModal">Edit</button>
                                         <button class="btn btn-danger ms-1" @click="setDeleteID(review)" data-bs-toggle="modal" data-bs-target="#deleteReview">Delete</button>
                                     </div>
@@ -899,8 +905,11 @@
                                         <b>Feedback</b>
                                     </div>
                                     <div class="col-9">
-                                        <div v-if="detailedReview.willRecommend">Would Recommend</div>
-                                        <div v-if="detailedReview.wouldBuyAgain">Would Buy Again</div>
+                                        <div v-if="detailedReview.willRecommend || detailedReview.wouldBuyAgain">
+                                            <div v-if="detailedReview.willRecommend">Would Recommend</div>
+                                            <div v-if="detailedReview.wouldBuyAgain">Would Buy Again</div>
+                                        </div>
+                                        <div v-else>-</div>
                                     </div>
                                 </div>
                                 <!-- more information -->
@@ -963,11 +972,13 @@
                                         <b>Friend Tags</b>
                                     </div>
                                     <div class="col-9">
-                                        <router-link v-for="(user, index) in detailedReview.taggedUsers" :key="index" :to="`/profile/user/${user.$oid}`" @click="navigateAndReload(`/profile/user/${user.$oid}`)">
-                                            <p class="default-clickable-text">
-                                                @{{ getUsernameFromId(user.$oid) }}
-                                            </p>
-                                        </router-link>
+                                        <span v-for="(user, index) in detailedReview.taggedUsers" :key="index">
+                                            @<router-link :to="`/profile/user/${user.$oid}`" @click="navigateAndReload(`/profile/user/${user.$oid}`)" style="text-decoration-color: #535C72;">
+                                                <span class="default-clickable-text">
+                                                    {{ getUsernameFromId(user.$oid) }} 
+                                                </span>
+                                            </router-link>
+                                        </span>
                                     </div>
                                 </div>
                                 <!-- flavour tag -->
