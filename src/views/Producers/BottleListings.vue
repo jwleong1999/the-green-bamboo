@@ -737,18 +737,22 @@
                                     </svg>
                                     
                                     <!-- location -->
-                                    <a v-if="review.location !== '' && checkVenue(review.location)" style="color: inherit" > 
-                                        at 
-                                        <router-link :to="'/profile/venue/' + checkVenue(review.location)" style="color: inherit">
-                                            <b>{{ review.location }}</b>
-                                        </router-link>
-                                    </a>
+                                    <span v-if="review.location !== '' && checkVenue(review.location)">
+                                        <a style="color: inherit" > 
+                                            at 
+                                            <router-link :to="'/profile/venue/' + checkVenue(review.location)" style="color: inherit">
+                                                <b>{{ review.location }}</b>
+                                            </router-link>
+                                        </a>
+                                    </span>
 
-                                    <a v-else-if="review.location !== ''" :href="'https://www.google.com/maps/search/' + review.location" style="color: inherit" target="_blank"> 
+                                    <span v-else-if="review.location !== ''">
                                         at 
-                                        <b>{{ review.location }}</b>
-                                    </a>
-                                    
+                                        <a :href="'https://www.google.com/maps/search/' + review.location" style="color: inherit" target="_blank"> 
+                                            <b>{{ review.location }}</b>
+                                        </a>
+                                    </span>
+
                                     <!-- tagged friends -->
                                     <span v-if="review.taggedUsers != null && review.taggedUsers.length > 0"> drank with {{ review.taggedUsers.length }} others </span>
 
@@ -808,7 +812,7 @@
                                 </div>
                                 <!-- DELETE ERROR -->
                                 <div class="text-danger fst-italic fw-bold fs-3 modal-content" v-if="errorDelete"> 
-                                    <div v-if="errorDeleteMessage" class = "row"> 
+                                    <div v-if="errorDeleteMessage" class="row"> 
                                         <span >An error occurred while attempting to delete, please try again!</span>
                                         <br>
                                         <button class="btn primary-btn btn-sm" @click="reset">
@@ -863,7 +867,13 @@
                                         <b>Username</b>
                                     </div>
                                     <div class="col-9">
-                                        @{{ getUsernameFromReview(detailedReview) }}
+                                        <b>
+                                            @<router-link :to="`/profile/user/${detailedReview.userID.$oid}`" style="text-decoration-color: #535C72;">
+                                                <span class="default-clickable-text">
+                                                    {{ getUsernameFromReview(detailedReview) }}
+                                                </span>
+                                            </router-link>
+                                        </b>
                                     </div>
                                 </div>
                                 <!-- rating -->
@@ -893,10 +903,20 @@
                                         <b>Location</b>
                                     </div>
                                     <div class="col-9">
-                                        <div v-if="detailedReview.location">
-                                            {{ getVenueName(detailedReview.location) }}
-                                        </div>
-                                        <div v-else>-</div>
+                                        <span v-if="detailedReview.location !== '' && checkVenue(detailedReview.location)">
+                                            <a style="color: inherit" >
+                                                <router-link :to="'/profile/venue/' + checkVenue(detailedReview.location)" style="color: inherit">
+                                                    <b>{{ detailedReview.location }}</b>
+                                                </router-link>
+                                            </a>
+                                        </span>
+
+                                        <span v-else-if="detailedReview.location !== ''">
+                                            <a :href="'https://www.google.com/maps/search/' + detailedReview.location" style="color: inherit" target="_blank"> 
+                                                <b>{{ detailedReview.location }}</b>
+                                            </a>
+                                        </span>
+                                        <span v-else>-</span>
                                     </div>
                                 </div>
                                 <!-- feedback -->
@@ -973,11 +993,13 @@
                                     </div>
                                     <div class="col-9">
                                         <span v-for="(user, index) in detailedReview.taggedUsers" :key="index">
-                                            @<router-link :to="`/profile/user/${user.$oid}`" @click="navigateAndReload(`/profile/user/${user.$oid}`)" style="text-decoration-color: #535C72;">
-                                                <span class="default-clickable-text">
-                                                    {{ getUsernameFromId(user.$oid) }} 
-                                                </span>
-                                            </router-link>
+                                            <b>
+                                                @<router-link :to="`/profile/user/${user.$oid}`" style="text-decoration-color: #535C72;">
+                                                    <span class="default-clickable-text">
+                                                        {{ getUsernameFromId(user.$oid) }}
+                                                    </span>
+                                                </router-link>
+                                            </b>
                                         </span>
                                     </div>
                                 </div>
