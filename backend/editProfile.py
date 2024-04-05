@@ -49,7 +49,6 @@ def editDetails():
                 "code": 201,
                 "data": {
                     "userID": userID,
-                    "image": image64[:8],
                     "drinkChoice": drinkChoice
                 }
             }
@@ -61,7 +60,6 @@ def editDetails():
                 "code": 500,
                 "data": {
                     "userID": userID,
-                    "image": image64[:8],
                     "drinkChoice": drinkChoice
                 },
                 "message": "An error occurred updating the image or drink choice."

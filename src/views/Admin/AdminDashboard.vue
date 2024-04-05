@@ -129,15 +129,19 @@
                                             <div class = 'row text-center'>
                                                 <div class = 'col'>
                                                     <p>New family tag looks like this:</p>
-                                                    <button :style="{ color: hexcode==''?'black':'white', backgroundColor: '#' + hexcode, width: '150px', height: '60px' }" class="btn mb-1"> {{ newFamily }} </button>
+                                                    <button :style="{ color: hexcode==''?'black':'white', backgroundColor: hexCodeValid?'#' + hexcode:'', width: '150px', height: '60px' }" class="btn mb-1"> {{ newFamily }} </button>
                                                 </div>
                                             </div>
                                             <p class='text-start mb-2 fw-bold'>New Family Tag:</p>
                                             <input v-model="newFamily" type="text" class="form-control" placeholder="Enter New Family Tag">
                                             <p v-if="newFamily ==''" class='text-danger text-start mb-2 fw-bold'>Family Tag cannot be empty</p>
-                                            <p class='text-start mb-2 fw-bold'>New Family Hexcode (without the hex):</p>
-                                            <input v-model="hexcode" type="text" class="form-control" placeholder="Enter Hexcode">
+                                            <p class='text-start mb-2 fw-bold'>New Family Hexcode (without the hex #):</p>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="basic-addon1">#</span>
+                                                <input v-model="hexcode" @keyup="isValidHexCode" type="text" class="form-control" placeholder="Enter Hexcode">
+                                            </div>
                                             <p v-if="hexcode == ''" class='text-danger text-start mb-2 fw-bold'>Hexcode cannot be empty</p>
+                                            <p v-if="!hexCodeValid && hexcode != ''" class='text-danger text-start mb-2 fw-bold'>Hexcode is invalid</p>
                                         </div>
                                         <div v-if="addFlavour == 'sub'" class="modal-body">
                                             <p class='text-start mb-2 fw-bold'>New Sub Tag:</p>
@@ -878,6 +882,7 @@
                     flavourNoChange:false,
                     subTagToDelete:'',
                     familyTagToDelete:'',
+                    hexCodeValid: false,
 
                     // creation of new observation tag
                     newObservation:'',
@@ -1811,10 +1816,21 @@
                     this.editFlavour = ''
                     this.confirmEditFlavour = false
                 },
-
+                isValidHexCode() {
+                    // Regular expression pattern to match hexadecimal color codes
+                    var hexPattern = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+                    if(hexPattern.test("#" + this.hexcode)){
+                        this.hexCodeValid = true
+                    }else{
+                        this.hexCodeValid = false
+                    }
+                    return null
+                    // Check if the hex code matches the pattern
+                },
                 createNewFlavour(){
                     let submitURL = ''
                     let submitData= {}
+                    
                     if(this.addFlavour == 'family'){
                         submitURL = 'http://127.0.0.1:5052/createFamilyTag'
                         submitData = {
@@ -1894,6 +1910,14 @@
                             return null
                         }
                     }else{
+                        if(!this.hexCodeValid){
+                            alert('Hexcode is not valid')
+                            return null
+                        }
+                        if(this.newFamily == ''){
+                            alert('Please enter a family tag')
+                            return null
+                        }
                         this.confirmCreateFlavour = true
                     }
                 },
