@@ -46,7 +46,7 @@
                                     <h5 class="text-body-secondary fst-italic"> {{ specified_listing["drinkType"] }} </h5>
                                 </div>
                                 <div v-if="correctProducer" class="col-3">
-                                    <div class="text-start mb-3 m-1">
+                                    <div class="text-end mb-3 m-1">
                                         <div class="form-check form-switch form-check-inline">
                                             <input class="form-check-input"  type="checkbox" role="switch" id="lockCheck" name="lockCheck" v-model="specified_listing.allowMod" data-bs-toggle="modal" data-bs-target="#lockModal">
                                             <label class="form-check-label" for="IBCheck" v-if="specified_listing.allowMod">Unlocked</label>
@@ -64,7 +64,7 @@
                                             <button type="button" @click="resetToggle" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
 
-                                        <div class="modal-body">
+                                        <div class="modal-body text-center">
                                             <p v-if="specified_listing.allowMod && inToggle" class="text-primary fst-italic fw-bold fs-3">Are you sure you want to allow moderators to edit this listing?</p>
                                             <p v-if="!specified_listing.allowMod && inToggle" class="text-primary fst-italic fw-bold fs-3">Are you sure you want to stop moderators from editing this listing?</p>  
 
@@ -1096,6 +1096,18 @@
                                     </div>
                                 </div>
                             </a>
+                            <div v-else>
+                                <div class="text-body-secondary">
+                                    <div class="fst-italic">
+                                        No reviews available for this listing.
+                                        For other 88 Bamboo reviews, 
+                                        <a href="https://88bamboo.co/blogs/news" class="default-text-no-background">
+                                            click here
+                                        </a>.
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                         <div class="py-2"></div>
                     </div>
