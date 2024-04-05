@@ -245,26 +245,26 @@
                     <!-- applyModerator start -->
                     <div v-if="user" class="modal fade" id="applyModerator" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-centered">
-                            <div class="modal-content px-5" style="background-color: #DDC8A9;">
-                                <div class="text-end me-2 mt-2">
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="modal-content" style="background-color: #DDC8A9;">
+                                <div class="text-end me-2 mt-2 p-2">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                            <div class="modal-body text-center">
-                                <h3 style="font-family: Radley;">Want to become a moderator and help shape the global drinks community?</h3>
-                                <a href="#" class="m-2" style="font-style: italic; color: inherit">Click here to learn more about being a moderator</a>
-                                <br/>
-                                <div class="px-5">
-                                    <h6 class="m-3">What Drinks Category Are You Applying to Moderate?</h6>
-                                    <select class="form-select w-50 mx-auto" style="border: 2px solid #535C72;" aria-label="Default select example" v-model="modCat">
-                                        <option v-for="(type, index) in filteredDrinkType" :key="index" :value="type">{{type}}</option>
-                                    </select>
-                                    <h6 class="m-3">What's your experience with the chosen category and why do you want to be a moderator?</h6>
-                                    <div class="mb-3">
-                                        <textarea class="form-control w-50 mx-auto" style="border: 2px solid #535C72;" id="exampleFormControlTextarea1" rows="3" v-model="modDesc"></textarea>
+                                <div class="modal-body text-center px-5">
+                                    <h3 style="font-family: Radley;">Want to become a moderator and help shape the global drinks community?</h3>
+                                    <a href="#" class="m-2" style="font-style: italic; color: inherit">Click here to learn more about being a moderator</a>
+                                    <br/>
+                                    <div class="px-5">
+                                        <h6 class="m-3">What Drinks Category Are You Applying to Moderate?</h6>
+                                        <select class="form-select w-50 mx-auto" style="border: 2px solid #535C72;" aria-label="Default select example" v-model="modCat">
+                                            <option v-for="(type, index) in filteredDrinkType" :key="index" :value="type">{{type}}</option>
+                                        </select>
+                                        <h6 class="m-3">What's your experience with the chosen category and why do you want to be a moderator?</h6>
+                                        <div class="mb-3">
+                                            <textarea class="form-control w-50 mx-auto" style="border: 2px solid #535C72;" id="exampleFormControlTextarea1" rows="3" v-model="modDesc"></textarea>
+                                        </div>
                                     </div>
+                                    <btn class="btn secondary-btn-border m-2" data-bs-dismiss="modal" @click="submitModeratorApplication">Submit Moderator Request</btn>
                                 </div>
-                                <btn class="btn secondary-btn-border m-2" data-bs-dismiss="modal" @click="submitModeratorApplication">Submit Moderator Request</btn>
-                            </div>
                             </div>
                         </div>
                     </div>

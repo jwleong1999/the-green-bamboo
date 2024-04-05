@@ -161,7 +161,7 @@
                 <div class="row">
 
                     <!-- col 1: your best rated drinks -->
-                    <div class="col-lg-5 col-md-12 col-sm-12 pt-5 mx-3">
+                    <div class="col-lg-5 col-md-12 col-sm-12 text-start pt-5 mx-3">
                         <h3> Your Best Rated Drinks </h3>
                         <div class="text-start pb-2" v-for="listing in bestRatedListings" v-bind:key="listing._id">
                             <router-link :to="{ path: '/listing/view/' + listing._id.$oid }" class="reverse-clickable-text">
