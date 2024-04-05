@@ -706,6 +706,8 @@
 
                 // Check if producerID is blank
                 if (this.form["producerID"]["$oid"] == "") {
+                    this.form["producerNew"] = previousData.producerNew;
+                    // The code below... is it necessary?
                     if (this.formMode != "new") {
                         if (this.formType == "req") {
                             // In request mode, fill in producerNew
@@ -717,7 +719,7 @@
                         }
                     }
                 } else {
-                    this.tempProducer = this.producerList.find(producer => producer._id["$oid"] == previousData.producerID["$oid"]).producerName;
+                    this.form["producerNew"] = this.producerList.find(producer => producer._id["$oid"] == previousData.producerID["$oid"]).producerName;
                 }
 
                 // If independent bottler, fill in bottler
