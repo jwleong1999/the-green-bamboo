@@ -1000,7 +1000,7 @@
                     }
 
                     // Update request status
-                    if (this.prevListing) {
+                    if (this.prevListing && this.formType == "power") {
                         this.updateRequestStatus("approve")
                     }
 
