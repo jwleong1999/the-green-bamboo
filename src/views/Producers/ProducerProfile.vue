@@ -1992,7 +1992,7 @@
                     // check if image is uploaded
                     if (this.image64LatestUpdate == null) {
                         // set default image
-                        this.image64LatestUpdate = this.latestUpdate["photo"];
+                        this.image64LatestUpdate = update["photo"];
                     }
                     // send to backend
                     try {
@@ -2017,10 +2017,11 @@
                 else if (status == "remaining") {
                     this.editingRemainingUpdate = false;
                     let newUpdate = this.edit_remainingUpdateText[update._id.$oid];
+                    console.log(update)
                     // check if image is uploaded
                     if (this.image64RemainingUpdate == null) {
                         // set default image
-                        this.image64RemainingUpdate = this.newUpdate["photo"];
+                        this.image64RemainingUpdate = update["photo"];
                     }
                     // send to backend
                     try {
