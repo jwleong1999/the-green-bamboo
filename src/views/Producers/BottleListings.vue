@@ -761,8 +761,8 @@
                                     
                                     <!-- Insert Edit modal here -->
                                     <div v-if="review.userID['$oid'] === userID" class="mt-2">
-                                        <button class="btn btn-warning me-1" @click="setUpdateID(review)" data-bs-toggle="modal" data-bs-target="#reviewModal">Edit</button>
-                                        <button class="btn btn-danger ms-1" @click="setDeleteID(review)" data-bs-toggle="modal" data-bs-target="#deleteReview">Delete</button>
+                                        <button class="btn btn-warning me-1 py-1" @click="setUpdateID(review)" data-bs-toggle="modal" data-bs-target="#reviewModal">Edit</button>
+                                        <button class="btn btn-danger ms-1 py-1" @click="setDeleteID(review)" data-bs-toggle="modal" data-bs-target="#deleteReview">Delete</button>
                                     </div>
                                 </div>
                                 <div class="text-start mb-2">
