@@ -596,9 +596,9 @@
                             </div>
                         </div>
                         <div>
-                            <div v-if="pendingModRequests.length > 0" class="row" style="height: 300px; overflow: auto">
+                            <div v-if="pendingModRequests.length > 0" class="row" style="height: 650px; overflow: auto">
                                 <div v-for="request in pendingModRequests" class="col-md-6 col-lg-4 pb-4 pb-4 pb-4" v-bind:key="request._id">
-                                    <div class="card h-100" style="background-color: white">
+                                    <div class="card" style="background-color: white; height: 300px;">
                                         <div class="card-body">
                                         <ul class="list-group list-group-flush text-start">
                                             <li class="list-group-item"><span class="fw-bold">Requested By: </span > <br/>
