@@ -27,6 +27,13 @@ The goal of the project is to build out a program that allows users to search, b
 ## Key Features
 
 <!-- TODO: to be filled -->
+- Browse drinks catalogue (listings table in database)
+- Search, sort and filter drinks listing
+- Find out where to try (venues like bars etc., based on proximity if location enabled) and where to buy (producers like distilleries) listings/drinks
+- Profile dashboards (Users, Venues, Producers)
+- Venue Menu
+- Profile Q & A and updates (Venues, Producers)
+- Administrator controls
 
 ## Getting Started
 
