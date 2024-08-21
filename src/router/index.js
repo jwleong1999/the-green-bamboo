@@ -29,6 +29,11 @@ const routes = [
     component: () => import('../views/BusinessSignUpPage.vue')
   },
   {
+    path: '/billingSecurity',
+    name: 'billingsecurity',
+    component: () => import('../views/BillingSecurity.vue')
+  },
+  {
     path: '/search/:input?',
     name: 'search',
     component: () => import('../views/SearchView.vue')
@@ -37,7 +42,7 @@ const routes = [
 
   // ----------------- PROFILE PAGES -----------------
   {
-    path: '/profile/user/:userID?',
+    path: '/profile/user/:userID?/:listName?',
     name: 'profileuser',
 
     // OLD LINK FOR REFERENECE
@@ -171,6 +176,15 @@ const routes = [
     path: '/dashboard/venue/:venueID?',
     name: 'dashboardVenue',
     component: () => import('../views/Venues/VenueDashboard.vue')
+  },
+
+  // -------------------------------------------------------------------------------------
+
+  // ----------------- SETTINGS PAGES -----------------
+  {
+    path: '/business/settings',
+    name: 'businessSettings',
+    component: () => import('../views/BusinessSettings.vue')
   },
 
   // -------------------------------------------------------------------------------------

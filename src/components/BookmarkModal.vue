@@ -35,7 +35,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" @click="bookmarkItem">Save changes</button>
+                <button type="button" class="btn primary-square" @click="bookmarkItem">Save changes</button>
             </div>
             </div>
         </div>
@@ -151,7 +151,7 @@
                 }
 
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5100/updateBookmark', 
+                    const response = await this.$axios.post('http://127.0.0.1:5000/editProfile/updateBookmark', 
                         {
                             userID: this.userID,
                             bookmark: this.userBookmarks,

@@ -773,18 +773,47 @@
                             </div>
                         </div>
                         <div>
-                            <div v-if="pendingAccountRequests.length > 0" class="row" style="height: 525px; overflow: auto">
-                                <div v-for="request in pendingAccountRequests" class="col-md-6 col-lg-4 pb-4 pb-4" v-bind:key="request._id">
-                                    <div class="card h-100" style="background-color: white">
+                            <div class="my-2">
+                                <!-- filter request -->
+                                <div class="form-check form-check-inline alert alert-warning ps-5" role="alert">
+                                    <input class="form-check-input" type="checkbox" value="pendingApproval" id="flexCheckDefault" v-model="selectedAccountRequests" @change="filterAccountRequests">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                        Pending Approval
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline alert alert-info ps-5" role="alert">
+                                    <input class="form-check-input" type="checkbox" value="pendingPayment" id="flexCheckChecked" v-model="selectedAccountRequests" @change="filterAccountRequests">
+                                    <label class="form-check-label" for="flexCheckChecked">
+                                        Pending Payment
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline alert alert-success ps-5" role="alert">
+                                    <input class="form-check-input" type="checkbox" value="verified" id="flexCheckChecked" v-model="selectedAccountRequests" @change="filterAccountRequests">
+                                    <label class="form-check-label" for="flexCheckChecked">
+                                        Verified
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline alert alert-danger ps-5" role="alert">
+                                    <input class="form-check-input" type="checkbox" value="rejected" id="flexCheckChecked" v-model="selectedAccountRequests" @change="filterAccountRequests">
+                                    <label class="form-check-label" for="flexCheckChecked">
+                                        Rejected
+                                    </label>
+                                </div>
+                            
+                            </div>
+
+                            <div v-if="filteredAccountRequests.length > 0" class="row" style="height: 525px; overflow: auto">
+                                <div v-for="request in filteredAccountRequests" class="col-md-6 col-lg-4 pb-4 pb-4" v-bind:key="request._id">
+                                    <div class="card h-100" :style="{ backgroundColor: request.bgColor}">
                                         <div class="card-body">
                                         <span class="fw-bold">Business Information</span>
                                         <hr>
                                         <ul class="list-group list-group-flush text-start">
-                                            <li class="list-group-item"><span class="fw-bold">Type: </span> {{ request.businessType }} </li>
-                                            <li class="list-group-item"><span class="fw-bold">Name: </span> {{ request.businessName }} </li>
-                                            <li class="list-group-item"><span class="fw-bold">Description: </span> {{ request.businessDesc }} </li>
-                                            <li class="list-group-item"><span class="fw-bold">Country: </span> {{ request.country }} </li>
-                                            <li class="list-group-item"><span class="fw-bold">Site: </span> 
+                                            <li class="list-group-item" :class="request.liClass"><span class="fw-bold">Type: </span> {{ request.businessType }} </li>
+                                            <li class="list-group-item" :class="request.liClass"><span class="fw-bold">Name: </span> {{ request.businessName }} </li>
+                                            <li class="list-group-item" :class="request.liClass"><span class="fw-bold">Description: </span> {{ request.businessDesc }} </li>
+                                            <li class="list-group-item" :class="request.liClass"><span class="fw-bold">Country: </span> {{ request.country }} </li>
+                                            <li class="list-group-item" :class="request.liClass"><span class="fw-bold">Site: </span> 
                                                 <router-link v-if="request.businessLink" :to="{ path: request.businessLink }" style="color: inherit;">
                                                     Link
                                                 </router-link> 
@@ -795,19 +824,26 @@
                                         <span class="fw-bold">Requestor Information</span>
                                         <hr>
                                         <ul class="list-group list-group-flush text-start">
-                                            <li class="list-group-item"><span class="fw-bold">First Name: </span> {{ request.firstName }} </li>
-                                            <li class="list-group-item"><span class="fw-bold">Last Name: </span> {{ request.lastName }} </li>
-                                            <li class="list-group-item"><span class="fw-bold">Email: </span> {{ request.email }} </li>
-                                            <li class="list-group-item"><span class="fw-bold">Relationship: </span> {{ request.relationship }} </li>
-                                            <li class="list-group-item"><span class="fw-bold">Price Plan: </span> {{ request.pricing }} </li>
+                                            <li class="list-group-item" :class="request.liClass"><span class="fw-bold">First Name: </span> {{ request.firstName }} </li>
+                                            <li class="list-group-item" :class="request.liClass"><span class="fw-bold">Last Name: </span> {{ request.lastName }} </li>
+                                            <li class="list-group-item" :class="request.liClass"><span class="fw-bold">Relationship: </span> {{ request.relationship }} </li>
+                                            <li class="list-group-item" :class="request.liClass"><span class="fw-bold">Email: </span> {{ request.email }} </li>
+                                            <li class="list-group-item" :class="request.liClass"><span class="fw-bold">Reference: </span>
+                                                <a @click.prevent="openDocumentInNewTab(request.referenceDocument)" style="text-decoration: underline; cursor: pointer;">View Document</a>
+                                            </li>
+                                            <li class="list-group-item" :class="request.liClass"><span class="fw-bold">Price Plan: </span> {{ request.pricing }} </li>
 
 
                                         </ul>
                                         </div>
-                                        <div class="card-footer">
-                                            <button v-if="checkBusinessExist(request.businessLink)" class="btn btn-success btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'approve')" data-bs-toggle="modal" data-bs-target="#addBusinessModal">Approve</button>
+                                        <div v-if="request.isPending" class="card-footer">
+                                            <!-- <button v-if="checkBusinessExist(request.businessLink)" class="btn btn-success btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'approve')" data-bs-toggle="modal" data-bs-target="#addBusinessModal">Approve</button>
                                             <button v-else class="btn btn-primary btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'add')" data-bs-toggle="modal" data-bs-target="#addBusinessModal">Add</button>
-                                            <button class="btn btn-danger btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'reject')">Reject</button>
+                                            <button class="btn btn-danger btn-sm mx-3 my-1" type="button" style="width: 75px;" @click="reviewAccountRequest(request, 'reject')">Reject</button> -->
+                                            
+                                            <button v-if="request.status == 'pendingApproval'" class="btn btn-success btn-sm mx-3 my-1" type="button" style="width: 125px;" @click="reviewAccountRequest(request, 'approve')">Approve</button>
+                                            <button v-if="request.status == 'pendingPayment'" class="btn btn-primary btn-sm mx-3 my-1" type="button" style="width: 125px;" @click="reviewAccountRequest(request, 'resend')">Resend Email</button>
+                                            <button v-if="request.isPending" class="btn btn-danger btn-sm mx-3 my-1" type="button" style="width: 125px;" @click="reviewAccountRequest(request, 'reject')">Reject</button>
                                         </div>
                                     </div>
                                 </div>
@@ -815,7 +851,7 @@
                                 
                             </div>
                             <div v-else>
-                                No New Business Account Request
+                                No Business Account Requests to Show
                             </div>
                         </div>
                     </div>
@@ -843,6 +879,7 @@
                     observationTags: [],
                     modRequests: [],
                     accountRequests: [],
+                    selectedAccountRequests: ["pendingApproval", "pendingPayment"],
                     producers: [],
                     venues: [],
                     countries: [],
@@ -851,7 +888,7 @@
                     editedObservationTags: [],
                     editedFlavourTags: [],
                     pendingModRequests: [],
-                    pendingAccountRequests: [],
+                    filteredAccountRequests: [],
                     moderators:[],
 
                     observationToDelete:'',
@@ -947,6 +984,7 @@
                     tempPassword: "",
                     createBusinessError: "",
                     createBusinessSuccess: false,
+                    requestId: "",
 
                 }
             },
@@ -987,7 +1025,7 @@
                     // Check if admin, if not reroute to home page
                     // users
                     try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getUsers');
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getData/getUsers');
                         this.users = response.data;
                         if (this.userType == "user") {
                             this.user = this.users.find(user => user["_id"]["$oid"] == this.userID);
@@ -1005,7 +1043,7 @@
                     }
                     // observation tags
                     try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getObservationTags');
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getData/getObservationTags');
                         this.observationTags = response.data;
                         this.editedObservationTags = JSON.parse(JSON.stringify(response.data));
                     } 
@@ -1015,7 +1053,7 @@
                     }
                     // mod requests
                     try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getModRequests');
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getData/getModRequests');
                         this.modRequests = response.data;
                         this.pendingModRequests = this.modRequests.filter(request => request.reviewStatus);
                     } 
@@ -1025,9 +1063,33 @@
                     }
                     // account requests
                     try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getAccountRequests');
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getData/getAccountRequests');
                         this.accountRequests = response.data;
-                        this.pendingAccountRequests = this.accountRequests.filter(request => request.reviewStatus);
+
+                        this.accountRequests = response.data.map(request => {
+                            if (request.isPending && !request.isApproved) {
+                                request.status = 'pendingApproval';
+                                request.bgColor = '#FFF2CD';
+                                request.liClass = 'list-group-item-warning';
+                            } else if (request.isPending && request.isApproved) {
+                                request.status = 'pendingPayment';
+                                request.bgColor = '#D0F4FC';
+                                request.liClass = 'list-group-item-info';
+                            } else if (!request.isPending && request.isApproved) {
+                                request.status = 'verified';
+                                request.bgColor = '#D1E6DD';
+                                request.liClass = 'list-group-item-success';
+                            } else {
+                                request.status = 'rejected';
+                                request.bgColor = '#F9D8DA';
+                                request.liClass = 'list-group-item-danger';
+                            }
+                            return request;
+                        });
+
+                        this.filteredAccountRequests = this.accountRequests.filter(request => {
+                            return this.selectedAccountRequests.includes(request.status)
+                        });
                     } 
                     catch (error) {
                         console.error(error);
@@ -1035,7 +1097,7 @@
                     }
                     // producer
                     try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getData/getProducers');
                         this.producers = response.data;
                         // check for producer with no producer name and retrieve id
                         // [TO BE REMOVED?]
@@ -1052,7 +1114,7 @@
                     }
                     // venues
                     try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getVenues');
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getData/getVenues');
                         this.venues = response.data;
                     } 
                     catch (error) {
@@ -1061,7 +1123,7 @@
                     }
                     // countries
                     try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getData/getCountries');
                         this.countries = response.data;
                     } 
                     catch (error) {
@@ -1070,7 +1132,7 @@
                     }
                     // drinkType
                     try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getDrinkTypes');
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getData/getDrinkTypes');
                         this.drinkTypes = response.data;
                     } 
                     catch (error) {
@@ -1079,7 +1141,7 @@
                     }
                     // flavour tag
                     try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getFlavourTags');
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getData/getFlavourTags');
                         this.flavourTags = response.data.map(item => {
                             return { ...item, showBox: false };
                         })                            
@@ -1090,7 +1152,7 @@
                     }
                     // sub tags
                     try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getSubTags');
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getData/getSubTags');
                         this.subTags = response.data
                         this.flavourTags.forEach(flavourTag => {
                             // Filter subtags belonging to the current flavor tag
@@ -1168,7 +1230,7 @@
                     if(this.observationTags.find((tag)=> tag.observationTag == '')){
                         this.emptyObservation = true
                     }
-                    let submitAPI = "http://127.0.0.1:5052/updateObservationTag"
+                    let submitAPI = "http://127.0.0.1:5000/adminFunctions/updateObservationTag"
                     this.updateTags(submitAPI,submitData)
                 },
 
@@ -1220,7 +1282,7 @@
                     }
                     this.submittingObservation=true
                     this.addingObservation=false
-                    let submitAPI = "http://127.0.0.1:5052/createObservationTag"
+                    let submitAPI = "http://127.0.0.1:5000/adminFunctions/createObservationTag"
                     let submitData = {"observationTag":this.newObservation}
                     this.createTag(submitAPI, submitData)
                 },
@@ -1266,7 +1328,7 @@
                 },
                 async confirmDeleteTag(){
                     let responseCode = ''
-                    let deleteAPI = "http://127.0.0.1:5052/deleteObservationTag/" + this.observationToDelete.tagId.$oid
+                    let deleteAPI = "http://127.0.0.1:5000/adminFunctions/deleteObservationTag/" + this.observationToDelete.tagId.$oid
                     const response = await this.$axios.delete(deleteAPI)
                     .then((response)=>{
                         responseCode = response.data.code
@@ -1309,7 +1371,7 @@
                         const newModType = request.drinkType;
 
                         try {
-                            await this.$axios.post('http://127.0.0.1:5100/updateModType', 
+                            await this.$axios.post('http://127.0.0.1:5000/editProfile/updateModType', 
                                 {
                                     userID: userID,
                                     newModType: newModType,
@@ -1325,7 +1387,7 @@
                     
                     // update mod request db
                     try {
-                        await this.$axios.post('http://127.0.0.1:5101/updateModRequest', 
+                        await this.$axios.post('http://127.0.0.1:5000/editModRequests/updateModRequest', 
                             {
                                 requestID: requestID,
                                 reviewStatus: false,
@@ -1374,85 +1436,162 @@
                     const requestID = request._id.$oid;
                     if (action == "approve") {
                         this.businessType = request.businessType;
-                        this.businessName = request.businessName;
-                        this.tempPassword = this.hashPassword(request.businessName).toString();
-                        this.tempPassword = this.tempPassword.replace(/-/g, '');
-                        const hashedPassword = this.hashPassword(request.businessName, this.tempPassword);
 
-                        const newBusinessData = {
-                            businessName: request.businessName,
-                            businessDesc: request.businessDesc,
-                            country: request.country,
-                            hashedPassword: hashedPassword,
-                            claimStatus: true,
-                        }
-                        const businessID = request.businessLink.split("/").pop()
-                        let apiURL = '';
+                        const businessExist = this.checkBusinessExist(request.businessLink);
 
-                        // producers
-                        if (request.businessType == "producer") {
-                            apiURL = 'http://127.0.0.1:5200/updateProducerStatus';
-                        }
-                        // venues 
-                        else if (request.businessType == "venue") {
-                            apiURL = 'http://127.0.0.1:5300/updateVenueStatus';
-                        }
-
-                        if (apiURL != '') {
-                            try {
-                                const response = await this.$axios.post(apiURL, 
-                                    {
-                                        businessID: businessID,
-                                        newBusinessData: newBusinessData,
-                                    }, {
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    }
-                                });
-
-                                if (response.data.code == 201) {
-                                    this.createBusinessSuccess = true;
-                                } 
-
-                            } catch (error) {
-                                console.error(error);
+                        if (businessExist) {
+                            const businessID = request.businessLink.split("/").pop()
+                            this.businessName = request.businessName;
+                            this.tempPassword = this.hashPassword(request.businessName).toString();
+                            this.tempPassword = this.tempPassword.replace(/-/g, '');
+                            const hashedPassword = this.hashPassword(request.businessName, this.tempPassword);
+    
+                            const newBusinessData = {
+                                businessName: request.businessName,
+                                businessDesc: request.businessDesc,
+                                country: request.country,
+                                hashedPassword: hashedPassword,
+                                claimStatus: false,
+                                requestId: requestID,
                             }
-                        }
-
-                    }
-                    if (action == "add") {
-                        this.businessType = request.businessType;
-                        this.businessName = request.businessName;
-                        this.businessDesc = request.businessDesc;
-                        this.businessCountry = request.country;
-                        this.venueAddress = request.country;
-                        this.venueType = 'Bar';
-                        this.businessClaimStatus = "true";
-                        const createSuccess = await this.createBusiness();
-                        if (!createSuccess) {
-                            return;
-                        }
-                    }
-
-                    // update review status
-                    try {
-                        await this.$axios.post('http://127.0.0.1:5031/updateAccountRequest', 
-                            {
-                                requestID: requestID,
-                                reviewStatus: false,
-                            }, {
-                            headers: {
-                                'Content-Type': 'application/json'
+                            let apiURL = '';
+    
+                            // producers
+                            if (request.businessType == "producer") {
+                                apiURL = 'http://127.0.0.1:5000/editProducerProfile/updateProducerStatus';
                             }
-                        });
-                    } catch (error) {
-                        console.error(error);
+                            // venues 
+                            else if (request.businessType == "venue") {
+                                apiURL = 'http://127.0.0.1:5000/editVenueProfile/updateVenueStatus';
+                            }
+    
+                            if (apiURL != '') {
+                                try {
+                                    const response = await this.$axios.post(apiURL, 
+                                        {
+                                            businessID: businessID,
+                                            newBusinessData: newBusinessData,
+                                        }, {
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        }
+                                    });
+    
+                                    if (response.data.code == 201) {
+                                        this.createBusinessSuccess = true;
+                                    } 
+    
+                                } catch (error) {
+                                    console.error(error);
+                                }
+                            }
+
+                            // token
+                            const link = await this.generateToken(businessID, request._id.$oid);
+                            this.emailLink(request, link);
+
+                        } 
+                        else {
+                            this.businessType = request.businessType;
+                            this.businessName = request.businessName;
+                            this.businessDesc = request.businessDesc;
+                            this.businessCountry = request.country;
+                            this.venueAddress = request.country;
+                            this.venueType = 'Bar';
+                            this.businessClaimStatus = "false";
+                            this.requestId = request._id.$oid;
+                            const createSuccess = await this.createBusiness();
+                            if (!createSuccess) {
+                                return;
+                            }
+                            const link = await this.generateToken(createSuccess, request._id.$oid)
+                            this.emailLink(request, link);
+                        }
+
+                        // update review status
+                        try {
+                            await this.$axios.post('http://127.0.0.1:5000/createAccount/updateAccountRequest', 
+                                {
+                                    requestID: requestID,
+                                    isPending: true,
+                                    isApproved: true,
+                                }, {
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+                        } catch (error) {
+                            console.error(error);
+                        }
+
+                        // update frontend
+                        const index = this.accountRequests.findIndex(request => request._id.$oid == requestID);
+                        this.accountRequests[index].isPending = true;
+                        this.accountRequests[index].isApproved = true;
+
+                        this.accountRequests[index].status = 'pendingPayment';
+                        this.accountRequests[index].bgColor = '#D0F4FC';
+                        this.accountRequests[index].liClass = 'list-group-item-info';
+
+                        this.filterAccountRequests();
+                    } 
+                    else if (action == "reject") {
+                        // update review status
+                        try {
+                            await this.$axios.post('http://127.0.0.1:5000/createAccount/updateAccountRequest', 
+                                {
+                                    requestID: requestID,
+                                    isPending: false,
+                                    isApproved: false,
+                                }, {
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+                        } catch (error) {
+                            console.error(error);
+                        }
+
+                        // delete token if exist
+                        try {
+                            const response = await this.$axios.get(`http://127.0.0.1:5000/getData/getTokenByRequestId/${requestID}`);
+                            const tokenData = response.data;
+                            if (Object.keys(tokenData).length > 0) {
+                                this.deleteToken(tokenData.token)
+                            }
+                        } 
+                        catch (error) {
+                            console.error(error);
+                        }
+
+                        // update frontend
+                        const index = this.accountRequests.findIndex(request => request._id.$oid == requestID);
+                        this.accountRequests[index].isPending = false;
+                        this.accountRequests[index].isApproved = false;
+
+                        this.accountRequests[index].status = 'rejected';
+                        this.accountRequests[index].bgColor = '#F9D8DA';
+                        this.accountRequests[index].liClass = 'list-group-item-danger';
+
+                        this.filterAccountRequests();
+                        
                     }
 
-                    // update frontend
-                    const index = this.accountRequests.findIndex(request => request._id.$oid == requestID);
-                    this.accountRequests[index].reviewStatus = false;
-                    this.pendingAccountRequests = this.accountRequests.filter(request => request.reviewStatus);
+                    else if (action == "resend") {
+                        try {
+                            const requestId = request._id.$oid;
+                            console.log(requestId);
+                            const response = await this.$axios.get(`http://127.0.0.1:5000/getData/get${request.businessType.charAt(0).toUpperCase()}${request.businessType.slice(1)}ByRequestId/${requestId}`);
+                            console.log(response);
+                            const businessId = response.data._id.$oid;
+                            console.log(businessId);
+                            const link = await this.generateToken(businessId, requestId)
+                            console.log(link);
+                            this.emailLink(request, link);
+                        } catch (error) {
+                            console.error(error);
+                        }
+                    }
 
                 }, 
                 async createBusiness() {
@@ -1463,12 +1602,7 @@
                     }
                     else {
                         this.addBizError = "";
-                        if (this.businessClaimStatus == "true") {
-                            this.tempPassword = this.hashPassword(this.businessName).toString();
-                            this.tempPassword = this.tempPassword.replace(/-/g, '');
-                        } else {
-                            this.tempPassword = "admin1234";
-                        }
+                        this.tempPassword = "admin1234";
                         const hashedPassword = this.hashPassword(this.businessName, this.tempPassword);
                         if (this.businessType == "producer") {
                             const newBusinessData = {
@@ -1482,10 +1616,11 @@
                                 questionsAnswers: [],
                                 updates: [],
                                 producerLink: "",
-                                claimStatus: this.businessClaimStatus === "true",
+                                claimStatus: this.businessClaimStatus === "false",
+                                requestId: this.requestId
                             }
                             try {
-                                const response = await this.$axios.post('http://127.0.0.1:5031/createProducerAccount', 
+                                const response = await this.$axios.post('http://127.0.0.1:5000/createAccount/createProducerAccount', 
                                     {
                                         newBusinessData
                                     }, {
@@ -1496,7 +1631,7 @@
 
                                 if (response.data.code == 201) {
                                     this.createBusinessSuccess = true;
-                                    return true
+                                    return response.data.data._id
                                 } 
                             } catch (error) {
                                 console.error(error);
@@ -1518,7 +1653,7 @@
                                 hashedPassword: hashedPassword,
                                 questionsAnswers: [],
                                 updates: [],
-                                claimStatus: this.businessClaimStatus === "true",
+                                claimStatus: this.businessClaimStatus === "false",
                                 openingHours: {
                                     Monday: ["", ""],
                                     Tuesday: ["", ""],
@@ -1530,9 +1665,10 @@
                                 },
                                 publicHolidays: "",
                                 reservationDetails: "",
+                                requestId: this.requestId
                             }
                             try {
-                                const response = await this.$axios.post('http://127.0.0.1:5031/createVenueAccount', 
+                                const response = await this.$axios.post('http://127.0.0.1:5000/createAccount/createVenueAccount', 
                                     {
                                         newBusinessData
                                     }, {
@@ -1543,7 +1679,7 @@
 
                                 if (response.data.code == 201) {
                                     this.createBusinessSuccess = true;
-                                    return true
+                                    return response.data.data._id
                                 } 
                             } catch (error) {
                                 console.error(error);
@@ -1557,16 +1693,50 @@
                 }, 
                 // reset when add a business button is clicked
                 resetAddBusinessModal() {
-                        this.businessType = "";
-                        this.businessName = "";
-                        this.businessDesc = "";
-                        this.businessCountry = "";
-                        this.venueAddress = "";
-                        this.venueType = "";
-                        this.businessClaimStatus = "";
-                        this.tempPassword = "";
-                        this.createBusinessSuccess = false;
-                        this.createBusinessError = "";
+                    this.businessType = "";
+                    this.businessName = "";
+                    this.businessDesc = "";
+                    this.businessCountry = "";
+                    this.venueAddress = "";
+                    this.venueType = "";
+                    this.businessClaimStatus = "";
+                    this.tempPassword = "";
+                    this.createBusinessSuccess = false;
+                    this.createBusinessError = "";
+                },
+
+                async generateToken(businessId, requestId) {
+                    try {
+                        const response = await this.$axios.post('http://127.0.0.1:5000/createAccount/createToken', 
+                            {
+                                businessId: businessId,
+                                requestId: requestId,
+                                isNew: true,
+                            }, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        const link = `http://localhost:8080/billingSecurity?token=${response.data.data.token}`;
+                        console.log(link);
+                        return link;
+                    } catch (error) {
+                        console.error(error);
+                    }
+                },
+
+                async emailLink(request, link) {
+
+                    const emailDetails = {
+                        recipient: request.email,
+                        subject: "Reset Your Password with Drink X",
+                        message: `Hi ${request.firstName}, \n\nClick on the link below to reset your password: \n${link} \n\nIf you did not initiate this request, please contact us immediately. \n\nThank you, \nDrinkX`
+                    };
+                    try {
+                        await this.$axios.post('http://127.0.0.1:5000/createAccount/sendEmail', emailDetails);
+                    } catch (error) {
+                        console.error('Failed to send email:', error);
+                    }
                 },
 
                 updateUsername(){
@@ -1687,7 +1857,7 @@
 
                 async confirmAddModerator(){
                     try {
-                        await this.$axios.post('http://127.0.0.1:5100/updateModType', 
+                        await this.$axios.post('http://127.0.0.1:5000/editProfile/updateModType', 
                             {
                                 userID: this.selectedPromotedUser._id.$oid,
                                 newModType: this.selectedPromotedType.drinkType,
@@ -1711,7 +1881,7 @@
                 },
                 async confirmDowngradeModerator(){
                     try {
-                        await this.$axios.post('http://127.0.0.1:5100/removeModType', 
+                        await this.$axios.post('http://127.0.0.1:5000/editProfile/removeModType', 
                             {
                                 userID: this.selectedRemoveMod._id.$oid,
                                 removeModType: this.selectedRemoveType.drinkType,
@@ -1832,7 +2002,7 @@
                     let submitData= {}
                     
                     if(this.addFlavour == 'family'){
-                        submitURL = 'http://127.0.0.1:5052/createFamilyTag'
+                        submitURL = 'http://127.0.0.1:5000/adminFunctions/createFamilyTag'
                         submitData = {
                             hexcode: '#' + this.hexcode,
                             familyTag: this.newFamily
@@ -1840,7 +2010,7 @@
 
                     }
                     else if(this.addFlavour == 'sub'){
-                        submitURL = 'http://127.0.0.1:5052/createSubTag'
+                        submitURL = 'http://127.0.0.1:5000/adminFunctions/createSubTag'
                         submitData = {
                             familyTagId: this.chosenTagParent._id.$oid,
                             subTag: this.newSub
@@ -1988,7 +2158,7 @@
                     let submitData=[]
                     let submitURL=''
                     if(this.editFlavour=='family'){
-                        submitURL = 'http://127.0.0.1:5052/updateFamilyTag'
+                        submitURL = 'http://127.0.0.1:5000/adminFunctions/updateFamilyTag'
                         for( let i=0;i<this.editedFlavourTags.length;i++){
                             if(this.editedFlavourTags[i].familyTag!= this.flavourTags[i].familyTag || this.editedFlavourTags[i].hexcode!= this.flavourTags[i].hexcode){
                                 submitData.push(
@@ -2002,7 +2172,7 @@
                         }
                     }
                     if(this.editFlavour=='sub'){
-                        submitURL = 'http://127.0.0.1:5052/updateSubTag'
+                        submitURL = 'http://127.0.0.1:5000/adminFunctions/updateSubTag'
                         for( let i=0;i<this.editedFlavourTags.length;i++){
                             for(let j=0; j<this.editedFlavourTags[i].subTag2.length;j++){
                                 if(this.editedFlavourTags[i].subTag2[j].subTag != this.flavourTags[i].subTag2[j].subTag){
@@ -2059,10 +2229,10 @@
                 confirmDeleteFlavourTag(){
                     let submitURL = ''
                     if(this.deleteFlavour=='family'){
-                        submitURL = 'http://127.0.0.1:5052/deleteFamilyTag/' + this.familyTagToDelete._id
+                        submitURL = 'http://127.0.0.1:5000/adminFunctions/deleteFamilyTag/' + this.familyTagToDelete._id
                     }
                     if(this.deleteFlavour=='sub'){
-                        submitURL = 'http://127.0.0.1:5052/deleteSubTag/' + this.subTagToDelete._id
+                        submitURL = 'http://127.0.0.1:5000/adminFunctions/deleteSubTag/' + this.subTagToDelete._id
                         
                     }
                     this.writeDeleteTag(submitURL)
@@ -2121,6 +2291,44 @@
                     this.errorDeleteFlavour = false;
                     this.subTagToDelete = ''
                     this.familyTagToDelete = ''
+                },
+
+                filterAccountRequests() {
+                    this.filteredAccountRequests = this.accountRequests.filter(request => {
+                        return this.selectedAccountRequests.includes(request.status)
+                    });
+                    
+                },
+                openDocumentInNewTab(referenceDocument) {
+                    const byteCharacters = atob(referenceDocument);
+                    const byteNumbers = new Array(byteCharacters.length);
+                    for (let i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    const byteArray = new Uint8Array(byteNumbers);
+                    const blob = new Blob([byteArray], { type: 'application/pdf' });
+                    const blobUrl = URL.createObjectURL(blob);
+                    
+                    const newTab = window.open(blobUrl, '_blank');
+                    if (!newTab || newTab.closed || typeof newTab.closed == 'undefined') {
+                        alert('Pop-up blocker is preventing the document from opening. Please allow pop-ups for this site.');
+                    }
+                },
+                async deleteToken(token) {
+                    try {
+                        const response = await this.$axios.post(`http://127.0.0.1:5000/createAccount/deleteToken`,
+                            {
+                                token: token,
+                            }, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        console.log(response.data);
+
+                    } catch (error) {
+                        console.error(error);
+                    }
                 },
             }
         }

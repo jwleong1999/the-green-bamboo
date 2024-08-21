@@ -55,9 +55,9 @@
     </div>
 
     <div class="body-login" v-if="dataLoaded">
-        <div class="container py-5">
+        <div class="container py-5 mobile-ps-0 mobile-pe-0 mobile-pt-0">
 
-            <div class="rounded px-5 py-2" v-if="fillForm" style="background-color: #DDC8A9;">
+            <div class="rounded px-5 py-2 mobile-px-4" v-if="fillForm" style="background-color: #DDC8A9;">
 
                 <div class="row">
 
@@ -65,13 +65,13 @@
                     <div class="col-lg-8 col-md-12" style="background-color:#DDC8A9;">
 
                         <div class="d-grid gap-2" style="position: relative;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="ms-1 mt-2 bi bi-arrow-left-circle" viewBox="0 0 16 16" style="position: absolute; top: 10; left: 0;" v-on:click="goBack">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="ms-1 mt-2 bi bi-arrow-left-circle mobile-view-hide" viewBox="0 0 16 16" style="position: absolute; top: 10; left: 0;" v-on:click="goBack">
                                 <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
                             </svg>
-                            <p class="fw-bold fs-1 mb-0 mx-5" style="font-style: italic; font-family: Radley, serif;">Are you a distiller, brewery or bar owner?</p>
+                            <p class="fw-bold fs-3 mb-0 mx-5 mt-2 mobile-mx-0 mobile-text-align-left" style="font-style: italic; ">Are you a distiller, brewery or bar owner?</p>
                         </div>
 
-                        <h3 class="text-start my-3">Apply for a Business Account</h3>
+                        <h3 class="text-start my-3">Apply for a Business Account to connect to a community of drink lovers!</h3>
 
 
                         <!-- Start of form -->
@@ -80,9 +80,9 @@
                         
                         <!-- Profile Type -->
                         <!-- Radio for would recommend and would buy again -->
-                            <div class = 'row justify-content-start mb-3 text-start'>
+                            <div class='row justify-content-start mb-3 text-start'>
                                 <p class="text-start mb-1">Choose Your Profile Type <span style="color: red;">*</span></p>
-                                <div class = "col-md-12 justify-content-between">
+                                <div class="col-md-12 justify-content-between">
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" id="inlineCheckbox1" v-model="businessType" value="producer" name="business">
                                         <label class="form-check-label text-start fw-bold" for="inlineCheckbox1">Brand/Producer</label>
@@ -150,21 +150,49 @@
                             </div>
                         </div>
 
-                        <!-- Input: Email -->
-                            <div class="form-group mb-3">
-                                <p class="text-start mb-1">Email <span style="color: red;">*</span></p>
-                                <input type="text" class="form-control" style="border-color: black" v-model="email" id="email" placeholder="Email">
-                                <span v-if="missingEmail" class="text-danger">Please enter an email.</span>
-                                <span v-if="invalidEmail" class="text-danger">Please enter a valid email.</span>
-                            </div>
-
-
                         <!-- Input: Is business account on the site already, provide link -->
-                            <div class="form-group mb-3">
-                                <p class="text-start mb-1">Representative's Relationship to Brand/Venue <span style="color: red;">*</span></p>
-                                <input type="text" class="form-control" style="border-color: black" v-model="relationship" id="relationship" placeholder="Relationship">
-                                <span v-if="missingRelationship" class="text-danger">Please enter your relationship with the business.</span>
+                        <div class="form-group mb-3">
+                            <p class="text-start mb-1">Representative's Relationship to Brand/Venue <span style="color: red;">*</span></p>
+                            <input type="text" class="form-control" style="border-color: black" v-model="relationship" id="relationship" placeholder="Relationship">
+                            <span v-if="missingRelationship" class="text-danger">Please enter your relationship with the business.</span>
+                        </div>
+
+                        <!-- Input: Email -->
+                        <div class="form-group mb-3">
+                            <p class="text-start mb-1">Email Address (This will be the email tied to the account) <span style="color: red;">*</span></p>
+                            <input type="text" class="form-control" style="border-color: black" v-model="email" id="email" placeholder="Email">
+                            <span v-if="missingEmail" class="text-danger">Please enter an email.</span>
+                            <span v-if="invalidEmail" class="text-danger">Please enter a valid email.</span>
+                        </div>
+
+                        <!-- Input: Contact Number -->
+                        <div class="form-group mb-3">
+                            <p class="text-start mb-1">Contact Number <span style="color: red;">*</span></p>
+                            <input type="text" class="form-control" style="border-color: black" v-model="contact" id="contact" placeholder="Contact">
+                            <span v-if="missingContact" class="text-danger">Please enter a contact number.</span>
+                            <span v-if="invalidContact" class="text-danger">Please enter a valid contact number.</span>
+                        </div>
+
+                        <!-- Input Reference Document -->
+                        <div class="form-group">
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <p class="text-start my-auto">Upload Reference Document <span style="color: red;">*</span></p>
+                                    <div>
+                                        <a v-if="fileName" :href="pdfPreview" target="_blank" class="me-2 my-auto" style="font-size: 12px;">
+                                            {{ fileName.length > 50 ? fileName.slice(0, 50) + '...' : fileName }}
+                                        </a>
+                                        <button type="button" class="btn" style="background-color: white; border: 1px solid black; border-radius: 0px;">
+                                            <input type="file" id="actual-btn" hidden accept="application/pdf" @change="handleFileSelect"/>
+                                            <label for="actual-btn">Upload Document</label>
+                                        </button>
+                                    </div>
+                                </div>
+                                <span v-if="missingDocument" class="text-danger">Please upload a reference document.</span>
                             </div>
+                            <p class="text-start" style="font-style: italic; font-size: 15px;">Documents should reflect the relevant business name and location details to verify your identity as the company representative. </p>
+                        
+                        </div>
 
 
                         </form>
@@ -175,7 +203,7 @@
                         <div class="d-grid gap-2 mt-3">
                             <p class="fs-3">Subscribe to a Business Account to connect directly with your fans and grow your business.</p>
                         </div>
-                        <div class="row justify-content-center">
+                        <div class="row justify-content-center mobile-view-hide">
                             <!-- <div class="col-xl-2 col-lg-1 col-md-1"></div> -->
                             <button class="btn rounded p-3 text-start mx-3 mb-3 col-8" @click="toggleMonthlyPricing" :style="{ backgroundColor: selectedMonthlyPricing ? '#DD9E54' :'white', 
                                                                                                                                 color: selectedMonthlyPricing ? 'white' :'black', 
@@ -185,10 +213,11 @@
                                     <h6> <b> Monthly plan </b> </h6>
                                     <p class="m-0"> $65 / Month </p> 
                                     <small class="fst-italic p-0"> Billed monthly </small>
+                                    <h6 class="mt-1" style="color: green;"><b>Cancel anytime.</b></h6>
                                 </span>
                             </button>
                         </div>
-                        <div class="row justify-content-center">
+                        <div class="row justify-content-center mobile-view-hide">
                             <!-- <div class="col-xl-2 col-lg-1 col-md-1"></div> -->
                             <button class="btn rounded p-3 text-start mx-3 mb-3 col-8" @click="toggleYearlyPricing" :style="{ backgroundColor: selectedYearlyPricing ? '#DD9E54' :'white', 
                                                                                                                                 color: selectedYearlyPricing ? 'white' :'black', 
@@ -196,15 +225,44 @@
                                                                                                                                 borderWidth:'3px' }">
                                 <div class="row">
                                     <div class="col-7"> <h6> <b> Yearly plan </b> </h6> </div> 
-                                    <div class="rounded col-5 text-center" style="background-color: green; color: white;">Save 23%</div>
+                                    
                                 </div>
                                 <span>
                                     <p class="m-0"> $50 / Month </p> 
                                     <small class="fst-italic p-0"> $600 Billed annually </small>
+                                    <h6 class="mt-2" style="color: green;"><b>Save 23%!</b></h6>
                                 </span>
                             
                             </button>
                         </div>
+                        <div class="row justify-content-center mobile-view-show">
+                            <button class="btn rounded p-3 text-start mx-0 mb-3 col-6" @click="toggleMonthlyPricing" :style="{ backgroundColor: selectedMonthlyPricing ? '#DD9E54' :'white', 
+                                                                                                                                color: selectedMonthlyPricing ? 'white' :'black', 
+                                                                                                                                borderColor: '#DD9E54', 
+                                                                                                                                borderWidth:'3px' }">
+                                <span>
+                                    <h6> <b> Monthly plan </b> </h6>
+                                    <p class="m-0"> $65 / Month </p> 
+                                    <small class="fst-italic p-0"> Billed monthly </small>
+                                    <h6 class="mt-2" style="color: green;"><b>Cancel anytime.</b></h6>
+                                </span>
+                            </button>
+                            <button class="btn rounded p-3 text-start mx-0 mb-3 col-6" @click="toggleYearlyPricing" :style="{ backgroundColor: selectedYearlyPricing ? '#DD9E54' :'white', 
+                                                                                                                                color: selectedYearlyPricing ? 'white' :'black', 
+                                                                                                                                borderColor: '#DD9E54', 
+                                                                                                                                borderWidth:'3px' }">
+                                <div class="row">
+                                    <div class="col-7"> <h6> <b> Yearly plan </b> </h6> </div> 
+                                    
+                                </div>
+                                <span>
+                                    <p class="m-0"> $50 / Month </p> 
+                                    <small class="fst-italic p-0"> $600 Billed annually </small>
+                                    <h5 class="mt-2" style="color: green;"><b>Save 23%!</b></h5>
+                                </span>
+                            
+                            </button>
+                        </div>    
                         <span v-if="missingPlan" class="text-danger">Please select a plan.</span>
                     </div>
 
@@ -212,7 +270,7 @@
 
                 <div class="row">
                     <div class="col-lg-8 col-md-12">
-                        <button type="submit" class="btn btn-sm secondary-btn mx-auto mb-3" @click="signUp">Sign Up</button>
+                        <button type="submit" class="btn btn-lg secondary-btn-border-thick mx-auto mb-3" @click="signUp">Register for Account</button>
                     </div>
                 </div>
 
@@ -251,11 +309,14 @@
                 missingBusinessType:false,
                 missingEmail:false,
                 invalidEmail:false,
+                missingContact:false,
+                invalidContact:false,
                 missingFirstName:false,
                 missingLastName:false,
                 missingRelationship:false,
                 missingSelectedCountry:false,
                 missingPlan:false,
+                missingDocument:false,
 
                 // form variables
                 businessType:'',
@@ -265,9 +326,14 @@
                 firstName:'',
                 lastName:'',
                 email:'',
+                contact:'',
                 relationship:'',
                 selectedCountry:'',
                 countries: [],
+                fileName:'',
+                selectedFile: null,
+                pdfPreview: null,
+                pdfBase64:'',
                 selectedMonthlyPricing:false,
                 selectedYearlyPricing:false,
                 selectedPricing:'',
@@ -276,11 +342,21 @@
         },
         created() {
             let accountDetails = this.$route.query
-            this.businessType = accountDetails.businessType
-            this.businessName = accountDetails.businessName
+            if(accountDetails.businessType){
+                this.businessType = accountDetails.businessType
+            }
+            if(accountDetails.businessName){
+                this.businessName = accountDetails.businessName
+            }
+            if(accountDetails.businessDesc){
             this.businessDesc = accountDetails.businessDesc
-            this.businessLink = accountDetails.businessLink
-            this.selectedCountry = accountDetails.originCountry
+            }
+            if(accountDetails.businessLink){
+                this.businessLink = accountDetails.businessLink
+            }
+            if(accountDetails.originCountry){
+                this.selectedCountry = accountDetails.originCountry
+            }
         },
         mounted(){
             this.loadData()
@@ -308,7 +384,7 @@
             },
             async loadData(){
                 try {
-                    const response = await this.$axios.get('http://127.0.0.1:5000/getCountries');
+                    const response = await this.$axios.get('http://127.0.0.1:5000/getData/getCountries');
                     for (let country of response.data) {
                         this.countries.push(country.originCountry);
                     }
@@ -320,11 +396,37 @@
                         this.dataLoaded = null;
                     }
             },
+            handleFileSelect(event){
+                const file = event.target.files[0];
+
+                if (file && file.type === "application/pdf") {
+                    this.fileName = file.name
+                    this.pdfPreview = URL.createObjectURL(file);
+
+                    // convert to base64
+                    this.selectedFile = file;
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.pdfBase64 = e.target.result; // Assigns Base64 string to pdfBase64
+                        this.pdfBase64 = this.pdfBase64.split('data:application/pdf;base64,')[1];
+                    };
+                    reader.readAsDataURL(this.selectedFile);
+
+
+                } else {
+                    this.pdfPreview = null;
+                }
+            },
+
             goBack(){
                 this.$router.go(-1)
             },
 
             signUp(){
+                console.log(this.businessType)
+                console.log(this.businessName)
+                console.log(this.businessDesc)
                 this.resetError()
                 this.selectedPricing=''
 
@@ -375,6 +477,15 @@
                     errorCount++
                 }
 
+                // Contact validation
+                if(this.contact==''){
+                    this.missingContact = true
+                    errorCount++
+                }else if(!this.contact.match(/^\+?\d+$/)){
+                    this.invalidContact = true
+                    errorCount++
+                }
+
                 // First name validation
                 if(this.firstName == ''){
                     this.missingFirstName = true
@@ -387,12 +498,18 @@
                     errorCount++
                 }
 
+                // Document validation
+                if(this.pdfPreview == null){
+                    this.missingDocument = true
+                    errorCount++
+                }
+
                 if(errorCount>0){
                     return null
                 }
-`               `
+
                 let joinDate = new Date().toISOString();
-                let submitAPI =  "http://127.0.0.1:5031/createAccountRequest"
+                let submitAPI =  "http://127.0.0.1:5000/createAccount/createAccountRequest"
                 let submitData = {
                     "businessName": this.businessName,
                     "businessType": this.businessType,
@@ -402,11 +519,15 @@
                     "businessLink": this.businessLink,
                     "firstName": this.firstName,
                     "lastName": this.lastName,
-                    "email": this.email,
                     "relationship": this.relationship,
+                    "email": this.email,
+                    "contact": this.contact,
+                    "referenceDocument": this.pdfBase64,
                     "photo": "",
                     "joinDate": joinDate,
-                    "reviewStatus": true
+                    "isPending": true,
+                    "isApproved": false,
+                    "isNew": true
                 }
                 this.createAccount(submitAPI,submitData)
             },
@@ -461,10 +582,14 @@
                 this.missingBusinessType=false
                 this.missingEmail=false
                 this.invalidEmail=false
+                this.missingContact=false
+                this.invalidContact=false
                 this.missingFirstName=false
                 this.missingLastName=false
                 this.missingRelationship=false
                 this.missingSelectedCountry=false
+                this.missingPlan=false
+                this.missingDocument=false
             },
         },
     }

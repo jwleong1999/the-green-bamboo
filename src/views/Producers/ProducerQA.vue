@@ -207,11 +207,14 @@
                         if(this.user_id == this.producer_id && this.userType == "producer"){
                             this.correctProducer = true;
                         }
+                        else {
+                            this.$router.push('/');
+                        }
                     }
                 // producers
                 // _id, producerName, producerDesc, originCountry, statusOB, mainDrinks
                 try {
-                        const response = await this.$axios.get('http://127.0.0.1:5000/getProducers');
+                        const response = await this.$axios.get('http://127.0.0.1:5000/getData/getProducers');
                         this.producers = response.data;
                         this.specified_producer = this.producers.find(producer => producer["_id"]["$oid"] == this.producer_id); // find specified producer
                         this.checkProducerQuestions();
@@ -259,7 +262,7 @@
                 let q_and_a_id = qa._id.$oid;
                 let answer = this.answers[q_and_a_id];
                 try {
-                    const response = await this.$axios.post('http://127.0.0.1:5200/sendAnswers', 
+                    const response = await this.$axios.post('http://127.0.0.1:5000/editProducerProfile/sendAnswers', 
                         {
                             producerID: this.producer_id,
                             questionsAnswersID: q_and_a_id,
@@ -293,7 +296,7 @@
                 this.editingQA = false;
                 let q_and_a_id = qa._id.$oid;
                 try {
-                    this.$axios.post('http://127.0.0.1:5200/editQA', 
+                    this.$axios.post('http://127.0.0.1:5000/editProducerProfile/editQA', 
                         {
                             producerID: this.producer_id,
                             questionsAnswersID: q_and_a_id,
@@ -315,7 +318,7 @@
             deleteQAEdit(qa) {
                 let q_and_a_id = qa._id.$oid;
                 try {
-                    const response = this.$axios.post('http://127.0.0.1:5200/deleteQA', 
+                    const response = this.$axios.post('http://127.0.0.1:5000/editProducerProfile/deleteQA', 
                         {
                             producerID: this.producer_id,
                             questionsAnswersID: q_and_a_id,

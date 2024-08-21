@@ -7,16 +7,18 @@
         <!-- <div class="container row" style="width: 50%"> -->
         <div class="container">
             <div class="row">
-                <div class="col-12 col-sm-10 col-md-8 m-auto">
-                    <div class="pt-5">
+                <div class="col-12 col-sm-10 col-md-8 m-auto mobile-ps-0 mobile-pe-0">
+                    <div class="pt-5 mobile-pt-0">
                         <form id="login" v-on:submit.prevent="checkLogin" style="background-color:#DDC8A9;" class="rounded">
                             <!-- login header text -->
-                            <p class="fw-bold fs-1 pt-3 mx-3" style="font-style: italic; font-family: Radley, serif;">
+                            <p class="fw-bold fs-1 pt-4 mx-3 mobile-fs-4 mobile-mb-1" style="font-style: italic; ">
                                 Join a community of drink lovers.
                             </p>
-
+                            <p class="fw-bold  mx-4 mobile-fs-6 mobile-view-show" style="font-style: italic; ">
+                                Discover new juice and log your tasting notes!
+                            </p>
                             <!-- username -->
-                            <div class="row pt-5">
+                            <div class="row pt-5 mobile-pt-2">
                                 <div class="d-grid gap-2 col-xl-5 col-md-7 col-9 mx-auto">
                                     <div class="form-floating">
                                         <input type="text" class="form-control form-box-outline" id="id" placeholder="Username" v-model="ID">
@@ -65,8 +67,11 @@
                                 <div class="col">
                                     <button v-if="authPending" type="submit" class="btn secondary-btn-border-thick btn-lg" disabled>Loading...</button>
                                     <button v-else type="submit" class="btn secondary-btn-border-thick btn-lg px-5">Log In</button>
+                                    <GoogleSignIn />
                                 </div>
                             </div>
+
+
 
                             <div class="row py-2">
                                 <div class="col-6 mx-auto">
@@ -75,7 +80,7 @@
                             </div>
 
                             <!-- Prompt sign up -->
-                            <p class="mt-2 fw-bold fs-3" style="font-style: italic; font-family: Radley, serif;">
+                            <p class="mt-2 fw-bold fs-3" style="font-style: italic; ">
                                 Don't have an account?
                             </p>
                             <div class="row">
@@ -111,12 +116,14 @@
 <script>
     // import components used
     import NavBar from '@/components/NavBar.vue';
+    import GoogleSignIn from '@/components/GoogleSignIn.vue';
 
     // specify components used
     export default {
         name: 'LoginPage',
         components: {
-            NavBar
+            NavBar,
+            GoogleSignIn
         },
 
         data() {
@@ -187,7 +194,7 @@
                     // Check login validity
                     let hashedPassword = this.hashPassword(this.ID, this.password)
                     let loginInfo = { "username": this.ID, "password": hashedPassword }
-                    this.auth(loginInfo, "http://127.0.0.1:5030/authcheck");
+                    this.auth(loginInfo, "http://127.0.0.1:5000/authcheck/authcheck");
                 }
 
             },
